@@ -9,8 +9,8 @@ on:
       - 'requirements.txt'
       - '.github/workflows/update.yml'
   schedule:
-    # Refresh the catalog every 30 minutes, away from the top of the hour.
-    - cron: '11,41 * * * *'
+    # Refresh the catalog every 30 minutes.
+    - cron: '*/30 * * * *'
   workflow_dispatch:
 
 permissions:
