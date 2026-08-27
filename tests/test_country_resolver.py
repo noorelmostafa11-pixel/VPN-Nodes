@@ -39,6 +39,7 @@ assert (
 )
 
 assert mod.source_hint_from_url("https://example.invalid/CA.txt") == "CA"
-assert mod.source_hint_from_url("https://example.invalid/ws.txt") is None
+# WS is a valid ISO-3166 code (Samoa) when it appears as an explicit filename.
+assert mod.source_hint_from_url("https://example.invalid/ws.txt") == "WS"
 
 print("country/protocol/source tests: PASS")
