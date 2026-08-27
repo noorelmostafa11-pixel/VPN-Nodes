@@ -19,12 +19,10 @@ OUT = ROOT / "output"
 
 MAX_SOURCE_BYTES = 2_000_000
 MAX_GENERATED_PER_COUNTRY = 250
-HEALTH_CANDIDATES_PER_COUNTRY = 32
-MIN_CANDIDATES_PER_PROTOCOL = 8
 
 CONNECT_TIMEOUT = 1.5
 READ_TIMEOUT = 5.0
-HEALTH_WORKERS = 32
+HEALTH_WORKERS = 128
 FREE_HEALTH_DELAY_MS = 200
 ALLOWED_PORTS = {80, 443}
 PROTOCOLS = {"vless", "vmess", "trojan", "shadowsocks"}
@@ -297,37 +295,7 @@ def tcp_check(item):
 
 
 def select_health_candidates(rows):
-    grouped = defaultdict(lambda: defaultdict(list))
-    for row in rows:
-        grouped[row["country"]][row["protocol"]].append(row)
-
-    selected = []
-    for country, protocols in grouped.items():
-        country_selected = []
-        seen = set()
-        for protocol in sorted(PROTOCOLS):
-            bucket = sorted(protocols.get(protocol, []), key=lambda r: (-r.get("source_priority", 0), r["host"].lower(), r["port"]))
-            for row in bucket[:MIN_CANDIDATES_PER_PROTOCOL]:
-                key = dedup_key(row["uri"])
-                if key not in seen:
-                    seen.add(key)
-                    country_selected.append(row)
-
-        if len(country_selected) < HEALTH_CANDIDATES_PER_COUNTRY:
-            remainder = []
-            for bucket in protocols.values():
-                remainder.extend(bucket)
-            remainder.sort(key=lambda r: (-r.get("source_priority", 0), r["protocol"], r["host"].lower()))
-            for row in remainder:
-                key = dedup_key(row["uri"])
-                if key in seen:
-                    continue
-                seen.add(key)
-                country_selected.append(row)
-                if len(country_selected) >= HEALTH_CANDIDATES_PER_COUNTRY:
-                    break
-        selected.extend(country_selected[:HEALTH_CANDIDATES_PER_COUNTRY])
-    return selected
+    return list(rows)
 
 
 def iso_name(code: str) -> str:
@@ -374,7 +342,7 @@ def main():
             row["country"] = "UNKNOWN"
 
     candidates = select_health_candidates(rows)
-    print(f"INFO parsed={len(rows)} health_candidates={len(candidates)}")
+    print(f"INFO parsed={len(rows)} health_candidates={len(candidates)} full_pool_health_check=true")
 
     checked = []
     if candidates:
@@ -427,7 +395,7 @@ def main():
         "countries": len(by_country),
         "country_names": {country: iso_name(country) for country in sorted(by_country)},
         "country_policy": "ISO-3166 alpha-2 only; explicit node metadata wins over feed hint; unresolved nodes go to UNKNOWN",
-        "health_policy": "TCP reachability on ports 80/443; final Xray end-to-end Internet verification is performed by the Android client",
+        "health_policy": "Every parsed node is TCP-screened on ports 80/443; latency is recorded; Android performs authoritative Xray end-to-end Internet verification",
         "source_failures": len(failed_sources),
         "files": {"countries": "countries/", "protocols": "protocols/"},
     }

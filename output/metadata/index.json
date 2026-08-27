@@ -1,21 +1,21 @@
 {
   "schema": 2,
-  "generated_at": "2026-08-27T13:29:04Z",
-  "total_fetched": 81039,
-  "unique_parsed": 47645,
-  "health_candidates": 2296,
-  "reachable_published": 1223,
+  "generated_at": "2026-08-27T13:59:07Z",
+  "total_fetched": 81385,
+  "unique_parsed": 47718,
+  "health_candidates": 47718,
+  "reachable_published": 31322,
   "allowed_ports": [
     80,
     443
   ],
   "protocols": {
-    "shadowsocks": 183,
-    "trojan": 369,
-    "vless": 668,
+    "shadowsocks": 742,
+    "trojan": 3624,
+    "vless": 26953,
     "vmess": 3
   },
-  "countries": 92,
+  "countries": 93,
   "country_names": {
     "AE": "United Arab Emirates",
     "AL": "Albania",
@@ -69,6 +69,7 @@
     "LT": "Lithuania",
     "LU": "Luxembourg",
     "LV": "Latvia",
+    "MD": "Moldova, Republic of",
     "MH": "Marshall Islands",
     "MK": "North Macedonia",
     "MN": "Mongolia",
@@ -111,7 +112,7 @@
     "ZA": "South Africa"
   },
   "country_policy": "ISO-3166 alpha-2 only; explicit node metadata wins over feed hint; unresolved nodes go to UNKNOWN",
-  "health_policy": "TCP reachability on ports 80/443; final Xray end-to-end Internet verification is performed by the Android client",
+  "health_policy": "Every parsed node is TCP-screened on ports 80/443; latency is recorded; Android performs authoritative Xray end-to-end Internet verification",
   "source_failures": 0,
   "files": {
     "countries": "countries/",
