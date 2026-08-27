@@ -9,7 +9,10 @@ on:
       - 'requirements.txt'
       - '.github/workflows/update.yml'
   schedule:
-    - cron: '17 */6 * * *'
+    # GitHub cannot receive push events from arbitrary upstream repositories.
+    # Poll their fingerprints every 5 minutes and run the heavy collector only
+    # when an upstream source actually changed.
+    - cron: '3/5 * * * *'
   workflow_dispatch:
 
 permissions:
@@ -29,18 +32,34 @@ jobs:
 
       - run: pip install -r requirements.txt
 
+      - name: Detect upstream source changes
+        id: source-check
+        if: github.event_name == 'schedule'
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python scripts/check_sources.py
+
       - name: Run regression tests
+        if: github.event_name != 'schedule' || steps.source-check.outputs.changed == 'true'
         run: python tests/test_country_resolver.py
 
       - name: Collect and publish
+        if: github.event_name != 'schedule' || steps.source-check.outputs.changed == 'true'
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: python scripts/update_catalog.py
 
-      - name: Commit generated feeds
+      - name: Promote source state after successful refresh
+        if: github.event_name != 'schedule' || steps.source-check.outputs.changed == 'true'
+        run: |
+          if [ -f .github/source_state.pending.json ]; then
+            mv .github/source_state.pending.json .github/source_state.json
+          fi
+
+      - name: Commit generated feeds and source state
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add output sources
+          git add output sources .github/source_state.json
           git diff --cached --quiet || git commit -m "chore: refresh node catalog"
           git push
