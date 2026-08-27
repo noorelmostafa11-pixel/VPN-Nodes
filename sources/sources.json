@@ -1,8 +1,8 @@
 {
-  "version": 1,
+  "version": 2,
   "sources": [
     {"name":"fastnodes_everything","url":"https://raw.githubusercontent.com/rtwo2/FastNodes/main/sub/everything.txt","kind":"global","format":"auto","priority":100},
-    {"name":"fastnodes_countries_index","url":"https://api.github.com/repos/rtwo2/FastNodes/contents/sub/countries?ref=main","kind":"index","format":"github_api","priority":110},
+    {"name":"fastnodes_countries_index","url":"https://api.github.com/repos/rtwo2/FastNodes/contents/sub/countries?ref=main","kind":"index","format":"github_api","priority":115},
     {"name":"baarcuda_vless","url":"https://api.github.com/repos/Baarcuda/vpn-configs/contents/vless?ref=master","kind":"index","format":"github_api","priority":100},
     {"name":"baarcuda_vmess","url":"https://api.github.com/repos/Baarcuda/vpn-configs/contents/vmess?ref=master","kind":"index","format":"github_api","priority":100},
     {"name":"baarcuda_trojan","url":"https://api.github.com/repos/Baarcuda/vpn-configs/contents/trojan?ref=master","kind":"index","format":"github_api","priority":100},
@@ -15,8 +15,8 @@
     {"name":"zengfr_vmess","url":"https://raw.githubusercontent.com/zengfr/free-vpn-subscribe/main/vpn_sub_raw_vmess.txt","kind":"global","format":"auto","priority":85},
     {"name":"zengfr_trojan","url":"https://raw.githubusercontent.com/zengfr/free-vpn-subscribe/main/vpn_sub_raw_trojan.txt","kind":"global","format":"auto","priority":85},
     {"name":"zengfr_ss","url":"https://raw.githubusercontent.com/zengfr/free-vpn-subscribe/main/vpn_sub_raw_shadowsocks.txt","kind":"global","format":"auto","priority":85},
-    {"name":"openray_country_template","url":"https://raw.githubusercontent.com/sakha1370/OpenRay/main/output/country/{country}.txt","kind":"country_template","format":"auto","priority":80},
-    {"name":"au1rxx_country","url":"https://raw.githubusercontent.com/Au1rxx/free-vpn-subscriptions/main/output/country/{country}/v2ray-base64-0001.txt","kind":"country_template","format":"base64","priority":80},
-    {"name":"solispirit_country","url":"https://raw.githubusercontent.com/SoliSpirit/v2ray-configs/main/Countries/{country}.txt","kind":"country_template","format":"auto","priority":75}
+    {"name":"openray_countries","url":"https://api.github.com/repos/sakha1370/OpenRay/git/trees/main?recursive=1","kind":"country_tree","format":"github_tree","owner":"sakha1370","repo":"OpenRay","ref":"main","path_regex":"^output/country/[A-Z]{2}\\.txt$","priority":80},
+    {"name":"au1rxx_countries","url":"https://api.github.com/repos/Au1rxx/free-vpn-subscriptions/git/trees/main?recursive=1","kind":"country_tree","format":"github_tree","owner":"Au1rxx","repo":"free-vpn-subscriptions","ref":"main","path_regex":"^output/country/[A-Z]{2}/v2ray-base64-0001\\.txt$","priority":80},
+    {"name":"solispirit_countries","url":"https://api.github.com/repos/SoliSpirit/v2ray-configs/git/trees/main?recursive=1","kind":"country_tree","format":"github_tree","owner":"SoliSpirit","repo":"v2ray-configs","ref":"main","path_regex":"^Countries/[^/]+\\.txt$","priority":75}
   ]
 }
