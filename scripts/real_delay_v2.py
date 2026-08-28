@@ -117,6 +117,16 @@ def outbound(uri):
     if s=='shadowsocks': return ss(uri)
     raise ValueError('unsupported protocol')
 
+# Robustness: malformed/unsupported nodes must be recorded as failed by the
+# health checker, never abort an entire Xray batch. Blackhole guarantees that
+# a parse/config failure cannot be mistaken for a successful direct connection.
+_original_outbound = outbound
+def outbound(uri):
+    try:
+        return _original_outbound(uri)
+    except Exception:
+        return {'protocol':'blackhole','settings':{}}
+
 def rx(sock,n):
     b=b''
     while len(b)<n:
