@@ -2,9 +2,10 @@
 """Lightweight Xray GET health check.
 
 Keeps the existing full reachable-pool selection and protocol handling, but
-replaces the Real Delay ranking stage with a simple HTTP GET through Xray.
-Success means the configured node can establish the Xray tunnel and receive an
-HTTP response from the fixed test endpoint. Failure is recorded as -1.
+replaces the old Real Delay ranking stage with a lightweight HTTP GET through
+Xray. Success means the configured node can establish the Xray tunnel and
+receive an HTTP response from the fixed test endpoint. The measured GET time
+is retained as delay_ms and healthy nodes are ranked ascending by that value.
 """
 from __future__ import annotations
 
@@ -20,7 +21,7 @@ from real_delay_v2 import XRAY, WORKERS, test
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "output"
-LIMIT = int(os.environ.get("GET_HEALTH_CANDIDATES", "3200"))
+LIMIT = int(os.environ.get("GET_HEALTH_CANDIDATES", "10000"))
 MAX_PER_COUNTRY = int(os.environ.get("GET_HEALTH_PUBLISH_PER_COUNTRY", "250"))
 
 
@@ -49,6 +50,8 @@ def load_reachable_pool():
 
 def choose_candidates(pool):
     total = min(LIMIT, len(pool))
+    if not total:
+        return []
     by_country = defaultdict(list)
     for item in pool:
         by_country[item["country"]].append(item)
@@ -77,7 +80,7 @@ def choose_candidates(pool):
 
 
 def publish(pool, results):
-    alive = [r for r in results if r.get("alive")]
+    alive = [r for r in results if r.get("alive") and r.get("delay_ms", -1) > 0]
     alive_by_country = defaultdict(list)
     all_by_country = defaultdict(list)
     for item in pool:
@@ -85,10 +88,10 @@ def publish(pool, results):
     for item in alive:
         alive_by_country[item["country"]].append(item)
     for items in alive_by_country.values():
-        # Preserve the existing catalog ordering after the GET health pass.
+        # The measured GET time is the primary ranking key: lower is always better.
         items.sort(key=lambda r: (
-            -(r.get("source_priority", 0)),
-            r.get("latency_ms") if r.get("latency_ms") is not None else 999999,
+            r.get("delay_ms") if r.get("delay_ms") is not None else 10**9,
+            r.get("source_priority", 0) * -1,
             r.get("protocol", ""),
             r.get("uri", ""),
         ))
@@ -111,8 +114,8 @@ def publish(pool, results):
         passed_uris = {x["uri"] for x in passed}
         fallback = [x for x in items if x["uri"] not in passed_uris]
         fallback.sort(key=lambda r: (
-            -(r.get("source_priority", 0)),
             r.get("latency_ms") if r.get("latency_ms") is not None else 999999,
+            -(r.get("source_priority", 0)),
             r.get("protocol", ""),
             r.get("uri", ""),
         ))
@@ -134,7 +137,7 @@ def publish(pool, results):
 
     now = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
     payload = {
-        "schema": 1,
+        "schema": 2,
         "generated_at": now,
         "engine": "Xray",
         "test": "GET https://www.gstatic.com/generate_204 through Xray SOCKS tunnel",
@@ -144,19 +147,29 @@ def publish(pool, results):
         "alive": len(alive),
         "dead": len(results) - len(alive),
         "publish_limit_per_country": MAX_PER_COUNTRY,
-        "results": results,
+        "results": sorted(results, key=lambda r: (
+            r.get("country", "UNKNOWN"),
+            0 if r.get("alive") else 1,
+            r.get("delay_ms") if r.get("delay_ms", -1) > 0 else 10**9,
+            r.get("protocol", ""),
+            r["uri"],
+        )),
     }
-    (metadata_dir / "get_health.json").write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    (metadata_dir / "get_health_summary.json").write_text(json.dumps({
-        "generated_at": now,
-        "reachable_pool": len(pool),
-        "get_candidates": len(results),
-        "alive": len(alive),
-        "dead": len(results) - len(alive),
-        "untested_reachable_retained_as_fallback": len(pool) - len(results),
-        "countries_published": len(final),
-        "protocols_published": {p: len(v) for p, v in sorted(by_protocol.items())},
-    }, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    (metadata_dir / "get_health.json").write_text(
+        json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
+    )
+    (metadata_dir / "get_health_summary.json").write_text(
+        json.dumps({
+            "generated_at": now,
+            "reachable_pool": len(pool),
+            "get_candidates": len(results),
+            "alive": len(alive),
+            "dead": len(results) - len(alive),
+            "untested_reachable_retained_as_fallback": len(pool) - len(results),
+            "countries_published": len(final),
+            "protocols_published": {p: len(v) for p, v in sorted(by_protocol.items())},
+        }, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
+    )
 
 
 def main():
@@ -164,22 +177,32 @@ def main():
         raise SystemExit(f"Xray binary not found: {XRAY}")
     pool = load_reachable_pool()
     candidates = choose_candidates(pool)
-    print(f"INFO get_health_pool={len(pool)} selected={len(candidates)} workers={WORKERS} selection_source=metadata/reachable_pool.jsonl")
+    print(
+        f"INFO get_health_pool={len(pool)} selected={len(candidates)} "
+        f"workers={WORKERS} selection_source=metadata/reachable_pool.jsonl"
+    )
+    if not candidates:
+        raise SystemExit("No reachable candidates available for GET health test")
     results = []
     with ThreadPoolExecutor(max_workers=WORKERS) as executor:
         futures = [executor.submit(test, item, i) for i, item in enumerate(candidates)]
         for n, future in enumerate(as_completed(futures), 1):
             result = future.result()
-            # The existing Xray GET worker already proves tunnel + HTTP GET;
-            # the exact latency is not used for ranking in this stage.
             if not result.get("alive"):
                 result["delay_ms"] = -1
             results.append(result)
-            if n % 100 == 0 or n == len(candidates):
-                print(f"INFO get_health_progress={n}/{len(candidates)} alive={sum(1 for r in results if r.get('alive'))}")
+            if n % 250 == 0 or n == len(candidates):
+                print(
+                    f"INFO get_health_progress={n}/{len(candidates)} "
+                    f"alive={sum(1 for r in results if r.get('alive'))}"
+                )
     publish(pool, results)
     alive = sum(1 for r in results if r.get("alive"))
-    print(f"OK get_health selected={len(results)} alive={alive} dead={len(results)-alive} published_from_full_reachable=true")
+    print(
+        f"OK get_health selected={len(results)} alive={alive} "
+        f"dead={len(results)-alive} ranked_by_get_delay=true "
+        f"published_from_full_reachable=true"
+    )
 
 
 if __name__ == "__main__":
