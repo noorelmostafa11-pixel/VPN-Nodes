@@ -85,7 +85,7 @@ for country in pycountry.countries:
 session = requests.Session()
 session.headers.update({"User-Agent": "Ahmed-VPN-Nodes/2.0 (+public-aggregator)"})
 if os.getenv("GITHUB_TOKEN"):
-    session.headers.update({"Authorization": f"Bearer {os.environ['GITHUB_TOKEN']}"})
+    session.headers.update({"Authorization": f"Bearer {os.getenv('GITHUB_TOKEN')}"})
 
 
 def fetch(url: str) -> bytes:
@@ -153,10 +153,66 @@ def protocol_from_uri(uri: str) -> str | None:
     return None
 
 
+def _decode_vmess_payload(uri: str):
+    """Decode the legacy vmess://Base64(JSON) format used by public feeds."""
+    payload = uri.split("://", 1)[1].split("#", 1)[0].strip()
+    payload = unquote(payload).strip()
+    if not payload:
+        return None
+
+    padded = payload + "=" * (-len(payload) % 4)
+    try:
+        decoded = base64.b64decode(padded, altchars=b"-_", validate=False)
+    except Exception:
+        try:
+            decoded = base64.urlsafe_b64decode(padded)
+        except Exception:
+            return None
+
+    try:
+        obj = json.loads(decoded.decode("utf-8-sig", errors="strict"))
+    except Exception:
+        return None
+    if not isinstance(obj, dict):
+        return None
+
+    host = str(obj.get("add") or obj.get("address") or "").strip()
+    try:
+        port = int(obj.get("port"))
+    except (TypeError, ValueError):
+        port = None
+    if not host or port is None:
+        return None
+
+    remark = str(obj.get("ps") or obj.get("remark") or "").strip()
+    query = {}
+    for src, dst in (
+        ("id", "uuid"),
+        ("aid", "alterId"),
+        ("net", "type"),
+        ("type", "headerType"),
+        ("host", "host"),
+        ("path", "path"),
+        ("tls", "security"),
+        ("sni", "sni"),
+        ("scy", "encryption"),
+    ):
+        value = obj.get(src)
+        if value not in (None, ""):
+            query[dst] = [str(value)]
+    return host, port, remark, query
+
+
 def endpoint_from_uri(uri: str):
     scheme = uri.split(":", 1)[0].lower()
     try:
-        if scheme in {"vless", "vmess", "trojan"}:
+        if scheme == "vmess":
+            decoded = _decode_vmess_payload(uri)
+            if decoded:
+                return decoded
+            parsed = urlparse(uri)
+            return parsed.hostname, parsed.port, unquote(parsed.fragment or ""), parse_qs(parsed.query)
+        if scheme in {"vless", "trojan"}:
             parsed = urlparse(uri)
             return parsed.hostname, parsed.port, unquote(parsed.fragment or ""), parse_qs(parsed.query)
         if scheme == "ss":
