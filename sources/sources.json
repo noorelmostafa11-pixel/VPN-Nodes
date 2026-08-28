@@ -1,5 +1,5 @@
 {
-  "version": 10,
+  "version": 11,
   "mode": "direct-public-sources",
   "refresh_policy": "external Oracle scheduler continues every 30 minutes",
   "source_policy": "Prefer externally hosted public feeds and active Telegram channels; GitHub raw feeds are not primary node inputs.",
@@ -15,6 +15,8 @@
     {"name":"telegram_v2ray_config_list","url":"https://t.me/s/V2rayConfigList","kind":"telegram_public","format":"telegram_html","channel":"V2rayConfigList","max_pages":8,"max_uris":4000,"priority":273},
     {"name":"freenode_featured_subscription","url":"https://freenode.biz/api/featured?format=nsubscribe","kind":"global","format":"auto","priority":250},
     {"name":"freeproxydb_public_v2ray","url":"https://freeproxydb.com/api/proxy/subscribe?count=500&protocol=vmess%2Cvless%2Ctrojan%2Css&subscribe_format=original","kind":"global","format":"auto","priority":248},
+    {"name":"freenodebiz_secondary_clash_feed","url":"https://freenode.biz/api/featured?format=clash","kind":"global","format":"auto","priority":247},
+    {"name":"singbox_info_daily_nodes","url":"https://sing-box.info/docs/Tutorial/Free-sing-box-node-sharing-long-term-updates/","kind":"global","format":"auto","priority":246},
     {"name":"whitedns_primary_subscription","url":"https://sub.whitedns.one/sub/base64.txt","kind":"global","format":"auto","priority":240},
     {"name":"whitedns_backup_subscription_2","url":"https://sub.iampedi2.live/sub/base64.txt","kind":"global","format":"auto","priority":239},
     {"name":"whitedns_backup_subscription_4","url":"https://sub.iampedi4.live/sub/base64.txt","kind":"global","format":"auto","priority":238},
