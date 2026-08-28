@@ -1,21 +1,22 @@
 {
-  "schema": 2,
-  "generated_at": "2026-08-28T08:24:25Z",
-  "total_fetched": 82649,
-  "unique_parsed": 48378,
-  "health_candidates": 48378,
-  "reachable_published": 31930,
+  "schema": 3,
+  "generated_at": "2026-08-28T09:24:25Z",
+  "total_fetched": 48528,
+  "unique_parsed": 48528,
+  "health_candidates": 48528,
+  "reachable_published": 28148,
+  "published_total": 7826,
   "allowed_ports": [
     80,
     443
   ],
   "protocols": {
-    "shadowsocks": 725,
-    "trojan": 3915,
-    "vless": 27286,
-    "vmess": 4
+    "shadowsocks": 186,
+    "trojan": 1024,
+    "vless": 6616,
+    "vmess": 0
   },
-  "countries": 95,
+  "countries": 94,
   "country_names": {
     "AE": "United Arab Emirates",
     "AL": "Albania",
@@ -28,7 +29,6 @@
     "BA": "Bosnia and Herzegovina",
     "BE": "Belgium",
     "BG": "Bulgaria",
-    "BH": "Bahrain",
     "BR": "Brazil",
     "BY": "Belarus",
     "BZ": "Belize",
@@ -114,8 +114,9 @@
     "ZA": "South Africa"
   },
   "country_policy": "ISO-3166 alpha-2 only; explicit node metadata wins over feed hint; unresolved nodes go to UNKNOWN",
-  "health_policy": "Every parsed node is TCP-screened on ports 80/443; legacy source priority precedes latency; Android performs authoritative Xray end-to-end Internet verification",
+  "health_policy": "Every parsed node is asynchronously TCP-screened on ports 80/443; TCP latency is the primary ranking metric; source priority is a tie-breaker only; no Xray/GET health stage",
   "source_failures": 0,
+  "tcp_workers": 512,
   "files": {
     "countries": "countries/",
     "protocols": "protocols/"
