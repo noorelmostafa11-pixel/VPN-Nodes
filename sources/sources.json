@@ -1,8 +1,11 @@
 {
-  "version": 2,
+  "version": 3,
   "sources": [
-    {"name":"fastnodes_everything","url":"https://raw.githubusercontent.com/rtwo2/FastNodes/main/sub/everything.txt","kind":"global","format":"auto","priority":160},
+    {"name":"morpheusadam_best","url":"https://raw.githubusercontent.com/morpheusadam/v2ray-config/main/subs/bundles/best.txt","kind":"global","format":"auto","priority":210},
     {"name":"fastnodes_countries_index","url":"https://api.github.com/repos/rtwo2/FastNodes/contents/sub/countries?ref=main","kind":"index","format":"github_api","priority":170},
+    {"name":"fastnodes_everything","url":"https://raw.githubusercontent.com/rtwo2/FastNodes/main/sub/everything.txt","kind":"global","format":"auto","priority":160},
+    {"name":"baarcuda_top100","url":"https://raw.githubusercontent.com/Baarcuda/vpn-configs/master/top100.txt","kind":"global","format":"auto","priority":155},
+    {"name":"nexus_nodes_light","url":"https://raw.githubusercontent.com/ninjastrikers/Nexus-nodes/main/configs/light.txt","kind":"global","format":"auto","priority":150},
     {"name":"baarcuda_vless","url":"https://api.github.com/repos/Baarcuda/vpn-configs/contents/vless?ref=master","kind":"index","format":"github_api","priority":120},
     {"name":"baarcuda_vmess","url":"https://api.github.com/repos/Baarcuda/vpn-configs/contents/vmess?ref=master","kind":"index","format":"github_api","priority":120},
     {"name":"baarcuda_trojan","url":"https://api.github.com/repos/Baarcuda/vpn-configs/contents/trojan?ref=master","kind":"index","format":"github_api","priority":120},
