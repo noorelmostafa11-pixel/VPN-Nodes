@@ -50,9 +50,10 @@ jobs:
       - name: Protocol-aware GET health check for every reachable node
         env:
           XRAY_BIN: /opt/hostedtoolcache/xray/xray
-          GET_HEALTH_BATCH_SIZE: 256
-          GET_HEALTH_WORKERS: 128
+          GET_HEALTH_BATCH_SIZE: 128
+          GET_HEALTH_WORKERS: 64
           GET_HEALTH_TIMEOUT: 6
+          GET_HEALTH_STARTUP_TIMEOUT: 12
           GET_HEALTH_PUBLISH_PER_COUNTRY: 250
           GET_HEALTH_TEST_HOST: www.gstatic.com
           GET_HEALTH_TEST_PATH: /generate_204
