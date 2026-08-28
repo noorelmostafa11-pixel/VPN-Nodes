@@ -18,7 +18,8 @@ SOURCES = ROOT / "sources" / "sources.json"
 
 TCP_TIMEOUT = float(catalog.CONNECT_TIMEOUT)
 TCP_WORKERS = 512
-MAX_PER_COUNTRY = int(catalog.MAX_GENERATED_PER_COUNTRY)
+# Publish every TCP-reachable node; countries are created dynamically from live nodes.
+MAX_PER_COUNTRY = 10**9
 
 
 def iso_name(code: str) -> str:
