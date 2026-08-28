@@ -19,6 +19,7 @@ SOURCES = ROOT / "sources" / "sources.json"
 TCP_TIMEOUT = float(catalog.CONNECT_TIMEOUT)
 TCP_WORKERS = 512
 MAX_PER_COUNTRY = 10**9
+GLOBAL_SERVER_SIZE = 500
 
 
 def iso_name(code: str) -> str:
@@ -59,10 +60,14 @@ def write_catalog(checked, all_rows, source_health):
     published_by_country = {c: v[:MAX_PER_COUNTRY] for c, v in sorted(by_country.items())}
     rejected = {c: max(0, len(by_country[c]) - len(published_by_country[c])) for c in sorted(by_country)}
     rejected_total = sum(rejected.values())
+    unknown_items = list(published_by_country.get("UNKNOWN", []))
+    global_servers = [unknown_items[i:i + GLOBAL_SERVER_SIZE] for i in range(0, len(unknown_items), GLOBAL_SERVER_SIZE)]
     print(f"INFO publication reachable={len(checked)} published={sum(map(len, published_by_country.values()))} country_cap_rejected={rejected_total} max_per_country={MAX_PER_COUNTRY}")
-    for directory in (OUT / "countries", OUT / "protocols", OUT / "metadata"): directory.mkdir(parents=True, exist_ok=True)
+    print(f"INFO global_unknown={len(unknown_items)} global_servers={len(global_servers)} server_size={GLOBAL_SERVER_SIZE}")
+    for directory in (OUT / "countries", OUT / "protocols", OUT / "global", OUT / "metadata"): directory.mkdir(parents=True, exist_ok=True)
     for path in (OUT / "countries").glob("*.txt"): path.unlink()
     for path in (OUT / "protocols").glob("*.txt"): path.unlink()
+    for path in (OUT / "global").glob("server-*.txt"): path.unlink()
     for country, items in published_by_country.items():
         text = "\n".join(item["uri"] for item in items)
         if text: text += "\n"
@@ -72,11 +77,14 @@ def write_catalog(checked, all_rows, source_health):
         for item in items: published_protocols[item["protocol"]].append(item)
     for protocol, items in published_protocols.items():
         items.sort(key=rank); (OUT / "protocols" / f"{protocol}.txt").write_text("\n".join(item["uri"] for item in items) + "\n", encoding="utf-8")
+    for number, items in enumerate(global_servers, 1):
+        (OUT / "global" / f"server-{number}.txt").write_text("\n".join(item["uri"] for item in items) + "\n", encoding="utf-8")
     generated_at = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
-    index = {"schema": 5, "generated_at": generated_at, "total_fetched": len(all_rows), "unique_parsed": len(all_rows), "health_candidates": len(all_rows), "reachable_total": len(checked), "reachable_published": len(checked), "published_total": sum(map(len, published_by_country.values())), "publication_rejected_total": rejected_total, "publication_rejection_reasons": {"country_cap": rejected_total}, "reachable_by_country": reachable_by_country, "published_by_country": {c: len(v) for c, v in published_by_country.items()}, "country_cap_rejected_by_country": rejected, "allowed_ports": [80, 443], "protocols": {p: len(published_protocols.get(p, [])) for p in sorted(catalog.PROTOCOLS)}, "countries": len(published_by_country), "country_names": {c: iso_name(c) for c in sorted(published_by_country)}, "country_policy": "Dynamic ISO-3166 countries from live nodes; explicit node metadata wins; hostname fallback only for unresolved nodes; unresolved nodes remain UNKNOWN", "health_policy": "Every parsed node is asynchronously TCP-screened on ports 80/443; TCP latency is the primary ranking metric; source priority is a tie-breaker only; no Xray/GET health stage", "source_failures": sum(1 for s in source_health if not s["ok"]), "tcp_workers": TCP_WORKERS, "max_per_country": MAX_PER_COUNTRY, "files": {"countries": "countries/", "protocols": "protocols/"}}
+    resolver_stats = {"hostname": sum(1 for r in checked if r.get("country_resolution") == "hostname"), "ip_geolocation": sum(1 for r in checked if r.get("country_resolution") == "ip_geolocation"), "unknown": sum(1 for r in checked if r.get("country") == "UNKNOWN")}
+    index = {"schema": 6, "generated_at": generated_at, "total_fetched": len(all_rows), "unique_parsed": len(all_rows), "health_candidates": len(all_rows), "reachable_total": len(checked), "reachable_published": len(checked), "published_total": sum(map(len, published_by_country.values())), "publication_rejected_total": rejected_total, "publication_rejection_reasons": {"country_cap": rejected_total}, "reachable_by_country": reachable_by_country, "published_by_country": {c: len(v) for c, v in published_by_country.items()}, "country_cap_rejected_by_country": rejected, "allowed_ports": [80, 443], "protocols": {p: len(published_protocols.get(p, [])) for p in sorted(catalog.PROTOCOLS)}, "countries": len(published_by_country), "country_names": {c: iso_name(c) for c in sorted(published_by_country)}, "country_policy": "Dynamic ISO-3166 countries from live nodes; explicit node metadata wins; hostname then IP geolocation are fallbacks; unresolved nodes remain UNKNOWN and are published in global Server tabs", "health_policy": "Every parsed node is asynchronously TCP-screened on ports 80/443; TCP latency is the primary ranking metric; source priority is a tie-breaker only; no Xray/GET health stage", "source_failures": sum(1 for s in source_health if not s["ok"]), "tcp_workers": TCP_WORKERS, "max_per_country": MAX_PER_COUNTRY, "global_unknown": {"total": len(unknown_items), "server_size": GLOBAL_SERVER_SIZE, "servers": len(global_servers), "files": "global/server-N.txt"}, "country_resolution": resolver_stats, "files": {"countries": "countries/", "protocols": "protocols/", "global": "global/"}}
     (OUT / "metadata/index.json").write_text(json.dumps(index, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     (OUT / "metadata/countries.json").write_text(json.dumps({"countries": [{"code": c, "name": iso_name(c), "nodes": len(v), "reachable": reachable_by_country.get(c, 0), "cap_rejected": rejected.get(c, 0)} for c, v in sorted(published_by_country.items())]}, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    (OUT / "metadata/health.json").write_text(json.dumps({"generated_at": generated_at, "sources": source_health, "reachable_total": len(checked), "reachable_published": len(checked), "published_total": sum(map(len, published_by_country.values())), "publication_rejected_total": rejected_total, "reachable_by_country": reachable_by_country, "published_by_country": {c: len(v) for c, v in published_by_country.items()}, "country_cap_rejected_by_country": rejected, "health_candidates": len(all_rows), "tcp_workers": TCP_WORKERS, "country_resolution": {"hostname_resolved": sum(1 for r in checked if r.get("country_resolution") == "hostname"), "unknown_remaining": sum(1 for r in checked if r.get("country") == "UNKNOWN")}}, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    (OUT / "metadata/health.json").write_text(json.dumps({"generated_at": generated_at, "sources": source_health, "reachable_total": len(checked), "reachable_published": len(checked), "published_total": sum(map(len, published_by_country.values())), "publication_rejected_total": rejected_total, "reachable_by_country": reachable_by_country, "published_by_country": {c: len(v) for c, v in published_by_country.items()}, "country_cap_rejected_by_country": rejected, "health_candidates": len(all_rows), "tcp_workers": TCP_WORKERS, "country_resolution": resolver_stats, "global_unknown": {"total": len(unknown_items), "server_size": GLOBAL_SERVER_SIZE, "servers": len(global_servers)}}, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(json.dumps(index, ensure_ascii=False, indent=2)); return index
 
 def main():
@@ -98,8 +106,8 @@ def main():
     rows=list(unique.values())
     for row in rows:
         if row["country"] not in catalog.ISO_CODES: row["country"]="UNKNOWN"
-    resolved=country_resolver.resolve_rows(rows)
-    print(f"INFO country_hostname_resolved={resolved} unknown_remaining={sum(1 for r in rows if r.get('country') == 'UNKNOWN')}")
+    resolution=country_resolver.resolve_rows(rows)
+    print(f"INFO country_hostname_resolved={resolution['hostname']} ip_geolocation_resolved={resolution['ip_geolocation']} unknown_remaining={resolution['unknown']}")
     print(f"INFO parsed={len(rows)} tcp_candidates={len(rows)} async_tcp=true workers={TCP_WORKERS}")
     checked=asyncio.run(run_tcp_checks(rows)); print(f"INFO tcp_reachable={len(checked)} tcp_dead={len(rows)-len(checked)}")
     write_catalog(checked, rows, source_health)
