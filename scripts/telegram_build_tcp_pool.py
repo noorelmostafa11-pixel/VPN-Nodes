@@ -11,9 +11,6 @@ from __future__ import annotations
 import html
 import re
 import time
-from urllib.parse import unquote
-
-import requests
 
 import build_tcp_pool as pool
 import update_catalog as catalog
@@ -23,10 +20,7 @@ DEFAULT_MAX_PAGES = 8
 DEFAULT_MAX_URIS = 5000
 PAGE_DELAY = 0.10
 
-URI_RE = re.compile(
-    r"(?:vless|vmess|trojan|ss)://[^\s\"'<>`]+",
-    re.IGNORECASE,
-)
+URI_RE = re.compile(r"(?:vless|vmess|trojan|ss)://[^\s\"'<>`]+", re.IGNORECASE)
 
 
 def _telegram_page(channel: str, before: int | None = None) -> str:
@@ -38,15 +32,29 @@ def _telegram_page(channel: str, before: int | None = None) -> str:
     return response.text
 
 
-def _extract_post_ids(channel: str, page: str) -> list[int]:
-    # Telegram preview HTML has used several link forms over time. Accept both
-    # absolute and relative post links and both /channel/id and /s/channel/id.
+def _extract_before(channel: str, page: str, current_before: int | None) -> int | None:
+    """Find the next older message id from Telegram's preview pagination."""
+    candidates: set[int] = set()
+
+    # Pagination links normally contain ?before=<message_id>.
+    for match in re.finditer(r"[?&]before=(\d+)", page, re.IGNORECASE):
+        value = int(match.group(1))
+        if value > 0:
+            candidates.add(value)
+
+    # Fallback: post links themselves are stable message ids.
     pattern = re.compile(
         rf"(?:https?://t\.me/|/)(?:s/)?{re.escape(channel)}/(\d+)(?:[\"'/?#]|$)",
         re.IGNORECASE,
     )
-    ids = {int(match.group(1)) for match in pattern.finditer(page)}
-    return sorted(ids)
+    for match in pattern.finditer(page):
+        value = int(match.group(1))
+        if value > 0:
+            candidates.add(value)
+
+    if current_before is not None:
+        candidates = {value for value in candidates if value < current_before}
+    return min(candidates) if candidates else None
 
 
 def collect_telegram(item: dict) -> list[dict]:
@@ -71,7 +79,6 @@ def collect_telegram(item: dict) -> list[dict]:
 
         pages_ok += 1
         decoded = html.unescape(page)
-        decoded = unquote(decoded)
         page_uris = URI_RE.findall(decoded)
 
         # Feed each URI through the exact parser already used by the catalog.
@@ -95,11 +102,8 @@ def collect_telegram(item: dict) -> list[dict]:
         if len(rows) >= max_uris:
             break
 
-        post_ids = _extract_post_ids(channel, page)
-        if not post_ids:
-            break
-        next_before = min(post_ids)
-        if before is not None and next_before >= before:
+        next_before = _extract_before(channel, page, before)
+        if next_before is None:
             break
         before = next_before
         if page_number + 1 < max_pages:
