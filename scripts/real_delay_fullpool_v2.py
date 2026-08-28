@@ -2,9 +2,9 @@
 """Run Xray Real Delay against 3200 candidates from the complete TCP-reachable output.
 
 Preferred input: metadata/reachable_pool.jsonl produced by update_catalog.py.
-Fallback: protocol outputs, which contain the full reachable protocol pool in the
-current catalog. Country files are used to recover authoritative country labels
-for already-published nodes; otherwise the node remark is classified to a country.
+This script deliberately does NOT fall back to published protocol/country feeds:
+those feeds may be publication-limited and would allow reachable nodes to bypass
+Real Delay selection.
 """
 from __future__ import annotations
 
@@ -63,38 +63,31 @@ def key(uri: str) -> str:
 
 def load_pool():
     staging = OUT / "metadata" / "reachable_pool.jsonl"
+    if not staging.exists():
+        raise SystemExit(
+            "Missing complete reachable pool: metadata/reachable_pool.jsonl"
+        )
+
     rows = {}
-    source = None
-    if staging.exists():
-        source = "metadata/reachable_pool.jsonl"
-        for line in staging.read_text(encoding="utf-8", errors="replace").splitlines():
-            if not line.strip():
-                continue
-            try:
-                item = json.loads(line)
-            except Exception:
-                continue
-            uri = str(item.get("uri", "")).strip()
-            if not uri:
-                continue
-            item["country"] = item.get("country") or "UNKNOWN"
-            item["protocol"] = item.get("protocol") or proto(uri)
-            rows.setdefault(key(uri), item)
-    else:
-        source = "output/protocols/*.txt"
-        # Protocol feeds are the complete reachable protocol indexes in the
-        # existing catalog; unlike countries/*.txt they are not country-capped.
-        for path in sorted((OUT / "protocols").glob("*.txt")):
-            for line in path.read_text(encoding="utf-8", errors="replace").splitlines():
-                uri = line.strip()
-                if not re.match(r"^(vless|vmess|trojan|ss)://", uri, re.I):
-                    continue
-                rows.setdefault(key(uri), {
-                    "uri": uri,
-                    "country": country_from_uri(uri),
-                    "protocol": proto(uri),
-                })
-    return list(rows.values()), source
+    for line in staging.read_text(
+        encoding="utf-8", errors="replace"
+    ).splitlines():
+        if not line.strip():
+            continue
+        try:
+            item = json.loads(line)
+        except Exception:
+            continue
+        uri = str(item.get("uri", "")).strip()
+        if not uri:
+            continue
+        item["country"] = item.get("country") or "UNKNOWN"
+        item["protocol"] = item.get("protocol") or proto(uri)
+        rows.setdefault(key(uri), item)
+
+    if not rows:
+        raise SystemExit("Complete reachable pool is empty: metadata/reachable_pool.jsonl")
+    return list(rows.values()), "metadata/reachable_pool.jsonl"
 
 
 def choose_candidates(pool):
@@ -105,7 +98,10 @@ def choose_candidates(pool):
     for item in pool:
         by_country[item.get("country") or "UNKNOWN"].append(item)
     countries = sorted(by_country)
-    quotas = {c: max(1, int(total * len(by_country[c]) / len(pool))) for c in countries}
+    quotas = {
+        c: max(1, int(total * len(by_country[c]) / len(pool)))
+        for c in countries
+    }
     while sum(quotas.values()) > total:
         c = max(quotas, key=lambda x: (quotas[x], len(by_country[x])))
         if quotas[c] <= 1:
@@ -123,13 +119,19 @@ def choose_candidates(pool):
         if n == len(items):
             chosen.extend(items)
             continue
-        idx = sorted({min(len(items) - 1, int(i * len(items) / n)) for i in range(n)})
+        idx = sorted({
+            min(len(items) - 1, int(i * len(items) / n))
+            for i in range(n)
+        })
         chosen.extend(items[i] for i in idx[:n])
     return chosen[:total]
 
 
 def publish(pool, results):
-    alive = [r for r in results if r.get("alive") and r.get("delay_ms", -1) > 0]
+    alive = [
+        r for r in results
+        if r.get("alive") and r.get("delay_ms", -1) > 0
+    ]
     alive_by_country = defaultdict(list)
     all_by_country = defaultdict(list)
     for item in pool:
@@ -137,7 +139,9 @@ def publish(pool, results):
     for item in alive:
         alive_by_country[item.get("country") or "UNKNOWN"].append(item)
     for items in alive_by_country.values():
-        items.sort(key=lambda r: (r["delay_ms"], r.get("protocol", ""), r["uri"]))
+        items.sort(key=lambda r: (
+            r["delay_ms"], r.get("protocol", ""), r["uri"]
+        ))
 
     countries_dir = OUT / "countries"
     protocols_dir = OUT / "protocols"
@@ -157,42 +161,68 @@ def publish(pool, results):
         fallback = [x for x in items if x["uri"] not in promoted_uris]
         fallback.sort(key=lambda r: (
             r.get("latency_ms") if r.get("latency_ms") is not None else 999999,
-            -r.get("source_priority", 0), r.get("protocol", ""), r.get("uri", "")))
+            -r.get("source_priority", 0),
+            r.get("protocol", ""),
+            r.get("uri", ""),
+        ))
         final[country] = (promoted + fallback)[:MAX_PER_COUNTRY]
         (countries_dir / f"{country}.txt").write_text(
-            "\n".join(x["uri"] for x in final[country]) + ("\n" if final[country] else ""),
-            encoding="utf-8")
+            "\n".join(x["uri"] for x in final[country]) +
+            ("\n" if final[country] else ""),
+            encoding="utf-8"
+        )
 
     by_protocol = defaultdict(list)
     for items in final.values():
         for item in items:
-            by_protocol[item.get("protocol") or proto(item["uri"])].append(item)
+            by_protocol[
+                item.get("protocol") or proto(item["uri"])
+            ].append(item)
     for name, items in sorted(by_protocol.items()):
         (protocols_dir / f"{name}.txt").write_text(
-            "\n".join(x["uri"] for x in items) + ("\n" if items else ""),
-            encoding="utf-8")
+            "\n".join(x["uri"] for x in items) +
+            ("\n" if items else ""),
+            encoding="utf-8"
+        )
 
     now = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
-    (metadata_dir / "real_delay.json").write_text(json.dumps({
-        "schema": 4, "generated_at": now, "engine": "Xray",
-        "target": "https://www.gstatic.com/generate_204",
-        "candidate_source": "complete reachable pool",
-        "reachable_pool": len(pool), "real_delay_candidates": len(results),
-        "alive": len(alive), "dead": len(results) - len(alive),
-        "publish_limit_per_country": MAX_PER_COUNTRY,
-        "results": sorted(results, key=lambda r: (
-            r.get("country", "UNKNOWN"), 0 if r.get("alive") else 1,
-            r.get("delay_ms") if r.get("delay_ms", -1) > 0 else 10**9,
-            r.get("protocol", ""), r["uri"])),
-    }, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    (metadata_dir / "real_delay_summary.json").write_text(json.dumps({
-        "generated_at": now, "reachable_pool": len(pool),
-        "real_delay_candidates": len(results), "alive": len(alive),
-        "dead": len(results) - len(alive),
-        "untested_reachable_retained_as_fallback": len(pool) - len(results),
-        "countries_published": len(final),
-        "protocols_published": {p: len(v) for p, v in sorted(by_protocol.items())},
-    }, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    (metadata_dir / "real_delay.json").write_text(
+        json.dumps({
+            "schema": 4,
+            "generated_at": now,
+            "engine": "Xray",
+            "target": "https://www.gstatic.com/generate_204",
+            "candidate_source": "complete reachable pool",
+            "reachable_pool": len(pool),
+            "real_delay_candidates": len(results),
+            "alive": len(alive),
+            "dead": len(results) - len(alive),
+            "publish_limit_per_country": MAX_PER_COUNTRY,
+            "results": sorted(results, key=lambda r: (
+                r.get("country", "UNKNOWN"),
+                0 if r.get("alive") else 1,
+                r.get("delay_ms") if r.get("delay_ms", -1) > 0 else 10**9,
+                r.get("protocol", ""),
+                r["uri"],
+            )),
+        }, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8"
+    )
+    (metadata_dir / "real_delay_summary.json").write_text(
+        json.dumps({
+            "generated_at": now,
+            "reachable_pool": len(pool),
+            "real_delay_candidates": len(results),
+            "alive": len(alive),
+            "dead": len(results) - len(alive),
+            "untested_reachable_retained_as_fallback": len(pool) - len(results),
+            "countries_published": len(final),
+            "protocols_published": {
+                p: len(v) for p, v in sorted(by_protocol.items())
+            },
+        }, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8"
+    )
 
 
 def main():
@@ -200,19 +230,33 @@ def main():
         raise SystemExit(f"Xray binary not found: {XRAY}")
     pool, source = load_pool()
     candidates = choose_candidates(pool)
-    print(f"INFO real_delay_pool={len(pool)} selected={len(candidates)} workers={WORKERS} selection_source={source}")
+    print(
+        f"INFO real_delay_pool={len(pool)} selected={len(candidates)} "
+        f"workers={WORKERS} selection_source={source}"
+    )
     if not candidates:
         raise SystemExit("No reachable candidates available for Real Delay")
+
     results = []
     with ThreadPoolExecutor(max_workers=WORKERS) as executor:
-        futures = [executor.submit(test, item, i) for i, item in enumerate(candidates)]
+        futures = [
+            executor.submit(test, item, i)
+            for i, item in enumerate(candidates)
+        ]
         for n, future in enumerate(as_completed(futures), 1):
             results.append(future.result())
             if n % 100 == 0 or n == len(candidates):
-                print(f"INFO real_delay_progress={n}/{len(candidates)} alive={sum(1 for r in results if r.get('alive'))}")
+                print(
+                    f"INFO real_delay_progress={n}/{len(candidates)} "
+                    f"alive={sum(1 for r in results if r.get('alive'))}"
+                )
+
     publish(pool, results)
     alive = sum(1 for r in results if r.get("alive"))
-    print(f"OK real_delay selected={len(results)} alive={alive} dead={len(results)-alive} published_from_full_reachable=true")
+    print(
+        f"OK real_delay selected={len(results)} alive={alive} "
+        f"dead={len(results)-alive} published_from_full_reachable=true"
+    )
 
 
 if __name__ == "__main__":
