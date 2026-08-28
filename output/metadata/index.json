@@ -1,22 +1,22 @@
 {
   "schema": 3,
-  "generated_at": "2026-08-28T13:57:20Z",
-  "total_fetched": 6574,
-  "unique_parsed": 6574,
-  "health_candidates": 6574,
-  "reachable_published": 3502,
-  "published_total": 620,
+  "generated_at": "2026-08-28T14:16:29Z",
+  "total_fetched": 6557,
+  "unique_parsed": 6557,
+  "health_candidates": 6557,
+  "reachable_published": 3517,
+  "published_total": 626,
   "allowed_ports": [
     80,
     443
   ],
   "protocols": {
-    "shadowsocks": 27,
-    "trojan": 46,
-    "vless": 528,
-    "vmess": 19
+    "shadowsocks": 21,
+    "trojan": 47,
+    "vless": 540,
+    "vmess": 18
   },
-  "countries": 28,
+  "countries": 27,
   "country_names": {
     "AT": "Austria",
     "AU": "Australia",
@@ -38,7 +38,6 @@
     "LV": "Latvia",
     "MY": "Malaysia",
     "NL": "Netherlands",
-    "PL": "Poland",
     "RU": "Russian Federation",
     "SE": "Sweden",
     "SG": "Singapore",
@@ -49,7 +48,7 @@
   },
   "country_policy": "ISO-3166 alpha-2 only; explicit node metadata wins over feed hint; unresolved nodes go to UNKNOWN",
   "health_policy": "Every parsed node is asynchronously TCP-screened on ports 80/443; TCP latency is the primary ranking metric; source priority is a tie-breaker only; no Xray/GET health stage",
-  "source_failures": 1,
+  "source_failures": 0,
   "tcp_workers": 512,
   "files": {
     "countries": "countries/",

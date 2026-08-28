@@ -1,141 +1,140 @@
 {
-  "generated_at": "2026-08-28T13:57:20Z",
+  "generated_at": "2026-08-28T14:16:29Z",
   "sources": [
     {
       "name": "telegram_catalog_direct",
       "ok": true,
-      "nodes": 14249,
-      "elapsed_ms": 29840.0
+      "nodes": 14188,
+      "elapsed_ms": 24616.7
     },
     {
       "name": "telegram_abc_configs",
       "ok": true,
       "nodes": 0,
-      "elapsed_ms": 296.9
+      "elapsed_ms": 193.4
     },
     {
       "name": "telegram_v2hive",
       "ok": true,
       "nodes": 0,
-      "elapsed_ms": 297.9
+      "elapsed_ms": 199.6
     },
     {
       "name": "telegram_v2ray_free_conf",
       "ok": true,
       "nodes": 96,
-      "elapsed_ms": 2568.4
+      "elapsed_ms": 2086.6
     },
     {
       "name": "telegram_safenet_server",
       "ok": true,
       "nodes": 25,
-      "elapsed_ms": 2841.4
+      "elapsed_ms": 2477.6
     },
     {
       "name": "telegram_configv2rayng",
       "ok": true,
       "nodes": 138,
-      "elapsed_ms": 1892.1
+      "elapsed_ms": 1612.1
     },
     {
       "name": "telegram_vpnfail_v2ray",
       "ok": true,
-      "nodes": 77,
-      "elapsed_ms": 2614.4
+      "nodes": 76,
+      "elapsed_ms": 2130.6
     },
     {
       "name": "telegram_viproxys",
       "ok": true,
       "nodes": 0,
-      "elapsed_ms": 232.9
+      "elapsed_ms": 131.9
     },
     {
       "name": "telegram_v2ray_config_list",
       "ok": true,
       "nodes": 93,
-      "elapsed_ms": 2537.1
+      "elapsed_ms": 2155.6
     },
     {
       "name": "freenode_featured_subscription",
       "ok": true,
       "nodes": 25,
-      "elapsed_ms": 484.9
+      "elapsed_ms": 423.2
     },
     {
       "name": "freeproxydb_public_v2ray",
       "ok": true,
       "nodes": 106,
-      "elapsed_ms": 756.3
+      "elapsed_ms": 539.4
     },
     {
       "name": "whitedns_primary_subscription",
       "ok": true,
       "nodes": 109,
-      "elapsed_ms": 729.1
+      "elapsed_ms": 1534.6
     },
     {
       "name": "whitedns_backup_subscription_2",
       "ok": true,
       "nodes": 109,
-      "elapsed_ms": 754.8
+      "elapsed_ms": 492.5
     },
     {
       "name": "whitedns_backup_subscription_4",
       "ok": true,
       "nodes": 109,
-      "elapsed_ms": 726.6
+      "elapsed_ms": 503.4
     },
     {
       "name": "kaveh_best_internet_iran",
-      "ok": false,
-      "nodes": 0,
-      "error": "HTTPSConnectionPool(host='kaveh.yebekhe.workers.dev', port=443): Read timed out. (read timeout=5.0)",
-      "elapsed_ms": 5069.1
+      "ok": true,
+      "nodes": 12,
+      "elapsed_ms": 3780.2
     },
     {
       "name": "kaveh_donations",
       "ok": true,
       "nodes": 412,
-      "elapsed_ms": 4863.2
+      "elapsed_ms": 4229.1
     },
     {
       "name": "mifa_vless",
       "ok": true,
       "nodes": 0,
-      "elapsed_ms": 1480.1
+      "elapsed_ms": 586.5
     },
     {
       "name": "mifa_vmess",
       "ok": true,
       "nodes": 0,
-      "elapsed_ms": 316.6
+      "elapsed_ms": 226.6
     },
     {
       "name": "mifa_trojan",
       "ok": true,
       "nodes": 0,
-      "elapsed_ms": 287.6
+      "elapsed_ms": 233.2
     },
     {
       "name": "mifa_ss",
       "ok": true,
       "nodes": 0,
-      "elapsed_ms": 294.1
+      "elapsed_ms": 246.5
     },
     {
       "name": "vpnfail_v2ray_public",
       "ok": true,
       "nodes": 0,
-      "elapsed_ms": 2637.1
+      "elapsed_ms": 2038.2
     },
     {
       "name": "xrayvip_free_v2ray",
       "ok": true,
       "nodes": 77,
-      "elapsed_ms": 326.0
+      "elapsed_ms": 305.9
     }
   ],
-  "reachable_published": 3502,
-  "health_candidates": 6574,
+  "reachable_published": 3517,
+  "health_candidates": 6557,
   "tcp_workers": 512
 }
