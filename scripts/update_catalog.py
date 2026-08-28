@@ -29,15 +29,17 @@ PROTOCOLS = {"vless", "vmess", "trojan", "shadowsocks"}
 
 ISO_CODES = {c.alpha_2.upper() for c in pycountry.countries}
 
-# Legacy source order preserved from the Android 1.5.1 generation path.
-# Higher numeric priority wins BEFORE latency, so proven source families are
-# not displaced merely because a lower-priority endpoint answered TCP faster.
+# Source priority is a tie-breaker only. Measured TCP latency is the primary
+# ranking metric: lower latency always wins within each published pool.
 LEGACY_SOURCE_PRIORITY = {
+    "morpheusadam_best": 210,
     "au1rxx_countries": 200,
     "openray_countries": 190,
     "solispirit_countries": 180,
     "fastnodes_countries_index": 170,
     "fastnodes_everything": 160,
+    "baarcuda_top100": 155,
+    "nexus_nodes_light": 150,
     "radikal_top100": 135,
     "radikal_verified": 130,
     "alirewa_main": 125,
@@ -386,12 +388,17 @@ def main():
         by_country[row["country"]].append(row)
         by_protocol[row["protocol"]].append(row)
 
+    def rank(row):
+        latency = row.get("latency_ms")
+        if latency is None:
+            latency = 999999
+        return (latency, -row.get("source_priority", 0), row.get("protocol", ""), row.get("host", ""), row.get("uri", ""))
+
     for country in by_country:
-        # Legacy ranking: source quality first, measured TCP latency second.
-        by_country[country].sort(key=lambda r: (-r.get("source_priority", 0), r.get("latency_ms", 999999), r["protocol"], r["host"]))
+        by_country[country].sort(key=rank)
         by_country[country] = by_country[country][:MAX_GENERATED_PER_COUNTRY]
     for protocol in by_protocol:
-        by_protocol[protocol].sort(key=lambda r: (-r.get("source_priority", 0), r.get("latency_ms", 999999), r["host"]))
+        by_protocol[protocol].sort(key=rank)
 
     for directory in (OUT / "countries", OUT / "protocols", OUT / "metadata"):
         directory.mkdir(parents=True, exist_ok=True)
@@ -418,7 +425,7 @@ def main():
         "countries": len(by_country),
         "country_names": {country: iso_name(country) for country in sorted(by_country)},
         "country_policy": "ISO-3166 alpha-2 only; explicit node metadata wins over feed hint; unresolved nodes go to UNKNOWN",
-        "health_policy": "Every parsed node is TCP-screened on ports 80/443; legacy source priority precedes latency; Android performs authoritative Xray end-to-end Internet verification",
+        "health_policy": "Every parsed node is TCP-screened on ports 80/443; TCP latency is the primary ranking metric; source priority is a tie-breaker; Android performs authoritative Xray end-to-end Internet verification",
         "source_failures": len(failed_sources),
         "files": {"countries": "countries/", "protocols": "protocols/"},
     }
@@ -428,5 +435,4 @@ def main():
     print(json.dumps(index, ensure_ascii=False, indent=2))
 
 
-if __name__ == "__main__":
-    main()
+if __name__ == "__main__": main()
