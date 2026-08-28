@@ -1,9 +1,11 @@
 {
-  "version": 7,
+  "version": 8,
   "mode": "direct-public-sources",
   "refresh_policy": "external Oracle scheduler continues every 30 minutes",
   "sources": [
     {"name":"telegram_catalog_direct","url":"https://t.me/s/","kind":"telegram_public_catalog","format":"telegram_catalog","catalog":"sources/telegram_channels.json","max_pages":4,"max_uris":2000,"priority":270},
+    {"name":"telegram_abc_configs","url":"https://t.me/s/abc_configs","kind":"telegram_public","format":"telegram_html","channel":"abc_configs","max_pages":8,"max_uris":5000,"priority":270},
+    {"name":"telegram_v2hive","url":"https://t.me/s/v2hive","kind":"telegram_public","format":"telegram_html","channel":"v2hive","max_pages":6,"max_uris":3000,"priority":270},
     {"name":"telegram_v2ray_free_conf","url":"https://t.me/s/v2ray_free_conf","kind":"telegram_public","format":"telegram_html","channel":"v2ray_free_conf","max_pages":8,"max_uris":5000,"priority":269},
     {"name":"telegram_safenet_server","url":"https://t.me/s/SafeNet_Server","kind":"telegram_public","format":"telegram_html","channel":"SafeNet_Server","max_pages":8,"max_uris":5000,"priority":268},
     {"name":"telegram_configv2rayng","url":"https://t.me/s/ConfigV2RayNG","kind":"telegram_public","format":"telegram_html","channel":"ConfigV2RayNG","max_pages":8,"max_uris":5000,"priority":267},
