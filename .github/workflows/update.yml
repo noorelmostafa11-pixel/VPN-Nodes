@@ -33,7 +33,7 @@ jobs:
       - name: Run regression tests
         run: python tests/test_country_resolver.py
 
-      - name: Expand health check to full parsed pool
+      - name: Expand health check to full parsed pool and preserve legacy source ranking
         run: |
           python - <<'PY'
           from pathlib import Path
@@ -45,7 +45,12 @@ jobs:
           b = s.index('\ndef iso_name(code: str)', a)
           s = s[:a] + 'def select_health_candidates(rows):\n    return list(rows)\n\n\n' + s[b + 1:]
           s = s.replace('print(f"INFO parsed={len(rows)} health_candidates={len(candidates)}")', 'print(f"INFO parsed={len(rows)} health_candidates={len(candidates)} full_pool_health_check=true")')
-          s = s.replace('"health_policy": "TCP reachability on ports 80/443; final Xray end-to-end Internet verification is performed by the Android client",', '"health_policy": "Every parsed node is TCP-screened on ports 80/443; latency is recorded; Android performs authoritative Xray end-to-end Internet verification",')
+          old_sort = 'by_country[country].sort(key=lambda r: (r.get("latency_ms", 999999), -r.get("source_priority", 0), r["protocol"], r["host"]))'
+          new_sort = 'by_country[country].sort(key=lambda r: (-r.get("source_priority", 0), r.get("latency_ms", 999999), r["protocol"], r["host"]))'
+          if old_sort not in s:
+              raise SystemExit('ERROR expected country ranking expression not found')
+          s = s.replace(old_sort, new_sort)
+          s = s.replace('"health_policy": "TCP reachability on ports 80/443; final Xray end-to-end Internet verification is performed by the Android client",', '"health_policy": "Every parsed node is TCP-screened on ports 80/443; source priority is preserved before latency; Android performs authoritative Xray end-to-end Internet verification",')
           p.write_text(s, encoding='utf-8')
           PY
 
