@@ -17,7 +17,8 @@ from collections import defaultdict
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
-from real_delay_v2 import XRAY, WORKERS, test_one
+# real_delay_v2 exposes the worker as `test` (not `test_one`).
+from real_delay_v2 import XRAY, WORKERS, test
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "output"
@@ -123,8 +124,8 @@ def publish(pool, results):
     for items in final_by_country.values():
         for item in items:
             by_protocol[item.get("protocol", item["uri"].split(":", 1)[0].lower())].append(item)
-    for proto, items in sorted(by_protocol.items()):
-        (protocols_dir / f"{proto}.txt").write_text(
+    for proto_name, items in sorted(by_protocol.items()):
+        (protocols_dir / f"{proto_name}.txt").write_text(
             "\n".join(x["uri"] for x in items) + ("\n" if items else ""),
             encoding="utf-8",
         )
@@ -171,7 +172,7 @@ def main():
         raise SystemExit("No reachable candidates available for Real Delay")
     results = []
     with ThreadPoolExecutor(max_workers=WORKERS) as executor:
-        futures = [executor.submit(test_one, item, i) for i, item in enumerate(candidates)]
+        futures = [executor.submit(test, item, i) for i, item in enumerate(candidates)]
         for n, future in enumerate(as_completed(futures), 1):
             results.append(future.result())
             if n % 100 == 0 or n == len(candidates):
