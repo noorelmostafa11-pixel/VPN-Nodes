@@ -1,5 +1,5 @@
 {
-  "version": 8,
+  "version": 9,
   "mode": "direct-public-sources",
   "refresh_policy": "external Oracle scheduler continues every 30 minutes",
   "sources": [
@@ -22,6 +22,10 @@
     {"name":"mifa_vmess","url":"https://mifa.world/vmess","kind":"global","format":"auto","priority":210},
     {"name":"mifa_trojan","url":"https://mifa.world/trojan","kind":"global","format":"auto","priority":210},
     {"name":"mifa_ss","url":"https://mifa.world/ss","kind":"global","format":"auto","priority":210},
-    {"name":"vpnfail_v2ray_public","url":"https://vpn.fail/free-proxy/v2ray","kind":"global","format":"auto","priority":200}
+    {"name":"vpnfail_v2ray_public","url":"https://vpn.fail/free-proxy/v2ray","kind":"global","format":"auto","priority":200},
+    {"name":"xrayvip_free_v2ray","url":"https://www.xrayvip.com/free.txt","kind":"global","format":"auto","priority":205},
+    {"name":"geek_spot_free_all","url":"https://raw.githubusercontent.com/geek-spot/Free-Config/main/all","kind":"global","format":"auto","priority":195},
+    {"name":"geek_spot_free_vmess","url":"https://raw.githubusercontent.com/geek-spot/Free-Config/main/vmess","kind":"global","format":"auto","priority":194},
+    {"name":"geek_spot_free_vless","url":"https://raw.githubusercontent.com/geek-spot/Free-Config/main/vless","kind":"global","format":"auto","priority":193}
   ]
 }
