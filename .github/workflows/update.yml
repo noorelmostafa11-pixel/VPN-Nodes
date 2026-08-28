@@ -9,12 +9,15 @@ on:
       - 'requirements.txt'
       - '.github/workflows/update.yml'
   schedule:
-    # Refresh the catalog every 30 minutes.
     - cron: '*/30 * * * *'
   workflow_dispatch:
 
 permissions:
   contents: write
+
+concurrency:
+  group: catalog-refresh-${{ github.ref }}
+  cancel-in-progress: false
 
 jobs:
   update:
@@ -22,6 +25,8 @@ jobs:
     timeout-minutes: 25
     steps:
       - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
 
       - uses: actions/setup-python@v6
         with:
@@ -65,4 +70,6 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add output scripts/update_catalog.py
           git diff --cached --quiet || git commit -m "chore: refresh node catalog"
-          git push
+          git fetch origin main
+          git rebase origin/main
+          git push origin HEAD:main
