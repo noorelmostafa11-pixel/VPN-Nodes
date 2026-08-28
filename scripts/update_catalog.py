@@ -365,7 +365,7 @@ def main():
         by_protocol[row["protocol"]].append(row)
 
     for country in by_country:
-        by_country[country].sort(key=lambda r: (r.get("latency_ms", 999999), -r.get("source_priority", 0), r["protocol"], r["host"]))
+        by_country[country].sort(key=lambda r: (-r.get("source_priority", 0), r.get("latency_ms", 999999), r["protocol"], r["host"]))
         by_country[country] = by_country[country][:MAX_GENERATED_PER_COUNTRY]
     for protocol in by_protocol:
         by_protocol[protocol].sort(key=lambda r: (r.get("latency_ms", 999999), -r.get("source_priority", 0), r["host"]))
