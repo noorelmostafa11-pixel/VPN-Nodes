@@ -1,14 +1,5 @@
 #!/usr/bin/env python3
-"""Build the complete TCP-reachable node catalog without Xray/GET health.
-
-Pipeline for this workflow step:
-  all parsed nodes -> ports 80/443 + supported protocols -> async TCP reachability
-  -> country grouping -> latency_ms ASC -> publish country/protocol catalogs.
-
-Country resolution remains local: update_catalog.parse_lines() resolves explicit
-node metadata / feed hints to ISO-3166 alpha-2 codes with pycountry; no external
-GeoIP/API service is used during classification.
-"""
+"""Build the complete TCP-reachable node catalog without Xray/GET health."""
 from __future__ import annotations
 
 import asyncio
@@ -100,10 +91,33 @@ def write_catalog(checked: list[dict], all_rows: list[dict], source_health: list
     for items in by_protocol.values():
         items.sort(key=rank)
 
+    reachable_by_country = {
+        country: len(items) for country, items in sorted(by_country.items())
+    }
     published_by_country = {
         country: items[:MAX_PER_COUNTRY]
         for country, items in sorted(by_country.items())
     }
+    rejected_by_country_cap = {
+        country: max(0, len(by_country[country]) - len(published_by_country[country]))
+        for country in sorted(by_country)
+    }
+    cap_rejected_total = sum(rejected_by_country_cap.values())
+
+    print(
+        f"INFO publication reachable={len(checked)} "
+        f"published={sum(len(v) for v in published_by_country.values())} "
+        f"country_cap_rejected={cap_rejected_total} max_per_country={MAX_PER_COUNTRY}"
+    )
+    for country in sorted(reachable_by_country):
+        rejected = rejected_by_country_cap[country]
+        if rejected:
+            print(
+                f"INFO publication_country={country} "
+                f"reachable={reachable_by_country[country]} "
+                f"published={len(published_by_country[country])} "
+                f"cap_rejected={rejected}"
+            )
 
     for directory in (OUT / "countries", OUT / "protocols", OUT / "metadata"):
         directory.mkdir(parents=True, exist_ok=True)
@@ -131,13 +145,23 @@ def write_catalog(checked: list[dict], all_rows: list[dict], source_health: list
 
     generated_at = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
     index = {
-        "schema": 3,
+        "schema": 4,
         "generated_at": generated_at,
         "total_fetched": len(all_rows),
         "unique_parsed": len(all_rows),
         "health_candidates": len(all_rows),
+        "reachable_total": len(checked),
         "reachable_published": len(checked),
         "published_total": sum(len(v) for v in published_by_country.values()),
+        "publication_rejected_total": cap_rejected_total,
+        "publication_rejection_reasons": {
+            "country_cap": cap_rejected_total,
+        },
+        "reachable_by_country": reachable_by_country,
+        "published_by_country": {
+            country: len(items) for country, items in published_by_country.items()
+        },
+        "country_cap_rejected_by_country": rejected_by_country_cap,
         "allowed_ports": [80, 443],
         "protocols": {p: len(published_protocols.get(p, [])) for p in sorted(catalog.PROTOCOLS)},
         "countries": len(published_by_country),
@@ -148,6 +172,7 @@ def write_catalog(checked: list[dict], all_rows: list[dict], source_health: list
         "health_policy": "Every parsed node is asynchronously TCP-screened on ports 80/443; TCP latency is the primary ranking metric; source priority is a tie-breaker only; no Xray/GET health stage",
         "source_failures": sum(1 for source in source_health if not source["ok"]),
         "tcp_workers": TCP_WORKERS,
+        "max_per_country": MAX_PER_COUNTRY,
         "files": {"countries": "countries/", "protocols": "protocols/"},
     }
     (OUT / "metadata/index.json").write_text(
@@ -157,7 +182,13 @@ def write_catalog(checked: list[dict], all_rows: list[dict], source_health: list
         json.dumps(
             {
                 "countries": [
-                    {"code": c, "name": iso_name(c), "nodes": len(items)}
+                    {
+                        "code": c,
+                        "name": iso_name(c),
+                        "nodes": len(items),
+                        "reachable": reachable_by_country.get(c, 0),
+                        "cap_rejected": rejected_by_country_cap.get(c, 0),
+                    }
                     for c, items in sorted(published_by_country.items())
                 ]
             },
@@ -172,7 +203,16 @@ def write_catalog(checked: list[dict], all_rows: list[dict], source_health: list
             {
                 "generated_at": generated_at,
                 "sources": source_health,
+                "reachable_total": len(checked),
                 "reachable_published": len(checked),
+                "published_total": sum(len(v) for v in published_by_country.values()),
+                "publication_rejected_total": cap_rejected_total,
+                "publication_rejection_reasons": {"country_cap": cap_rejected_total},
+                "reachable_by_country": reachable_by_country,
+                "published_by_country": {
+                    country: len(items) for country, items in published_by_country.items()
+                },
+                "country_cap_rejected_by_country": rejected_by_country_cap,
                 "health_candidates": len(all_rows),
                 "tcp_workers": TCP_WORKERS,
             },
