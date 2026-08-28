@@ -20,7 +20,7 @@ concurrency:
 jobs:
   update:
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 40
     steps:
       - uses: actions/checkout@v5
         with:
@@ -41,6 +41,23 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
         run: python scripts/update_catalog.py
 
+      - name: Install Xray core
+        run: |
+          set -euo pipefail
+          mkdir -p /opt/hostedtoolcache/xray
+          curl -fsSL -o /tmp/xray.zip https://github.com/XTLS/Xray-core/releases/download/v26.7.31/Xray-linux-64.zip
+          unzip -oq /tmp/xray.zip xray -d /opt/hostedtoolcache/xray
+          chmod +x /opt/hostedtoolcache/xray/xray
+          /opt/hostedtoolcache/xray/xray version
+
+      - name: Real Xray delay test (3200 candidates)
+        env:
+          XRAY_BIN: /opt/hostedtoolcache/xray/xray
+          REAL_DELAY_CANDIDATES: 3200
+          REAL_DELAY_WORKERS: 32
+          REAL_DELAY_NODE_TIMEOUT: 6
+        run: python scripts/real_delay_v2.py
+
       - name: Commit generated feeds
         run: |
           git config user.name "github-actions[bot]"
@@ -50,7 +67,7 @@ jobs:
             echo "No catalog changes detected"
             exit 0
           fi
-          git commit -m "chore: refresh node catalog"
+          git commit -m "chore: refresh node catalog with real delay"
           git fetch origin main
           git rebase origin/main
           git push origin HEAD:main
