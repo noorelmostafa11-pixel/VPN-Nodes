@@ -16,77 +16,51 @@ import requests
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "output"
-
 MAX_SOURCE_BYTES = 2_000_000
 MAX_GENERATED_PER_COUNTRY = 250
-
 CONNECT_TIMEOUT = 1.5
 READ_TIMEOUT = 5.0
 HEALTH_WORKERS = 128
 FREE_HEALTH_DELAY_MS = 200
 ALLOWED_PORTS = {80, 443}
 PROTOCOLS = {"vless", "vmess", "trojan", "shadowsocks"}
-
 ISO_CODES = {c.alpha_2.upper() for c in pycountry.countries}
 
-# Source priority is a tie-breaker only. Measured TCP latency is the primary
-# ranking metric: lower latency always wins within each published pool.
 LEGACY_SOURCE_PRIORITY = {
-    "morpheusadam_best": 210,
-    "au1rxx_countries": 200,
-    "openray_countries": 190,
-    "solispirit_countries": 180,
-    "fastnodes_countries_index": 170,
-    "fastnodes_everything": 160,
-    "baarcuda_top100": 155,
-    "nexus_nodes_light": 150,
-    "radikal_top100": 135,
-    "radikal_verified": 130,
-    "alirewa_main": 125,
-    "baarcuda_vless": 120,
-    "baarcuda_vmess": 120,
-    "baarcuda_trojan": 120,
-    "baarcuda_ss": 120,
-    "zengfr_vless": 115,
-    "zengfr_vmess": 115,
-    "zengfr_trojan": 115,
-    "zengfr_ss": 115,
-    "epodonios_vless": 110,
+    "morpheusadam_best": 210, "au1rxx_countries": 200, "openray_countries": 190,
+    "solispirit_countries": 180, "fastnodes_countries_index": 170, "fastnodes_everything": 160,
+    "baarcuda_top100": 155, "nexus_nodes_light": 150, "radikal_top100": 135,
+    "radikal_verified": 130, "alirewa_main": 125, "baarcuda_vless": 120,
+    "baarcuda_vmess": 120, "baarcuda_trojan": 120, "baarcuda_ss": 120,
+    "zengfr_vless": 115, "zengfr_vmess": 115, "zengfr_trojan": 115,
+    "zengfr_ss": 115, "epodonios_vless": 110,
 }
-
 ALIASES = {
     "uk": "GB", "england": "GB", "greatbritain": "GB", "unitedkingdom": "GB",
-    "uae": "AE", "emirates": "AE", "unitedarabemirates": "AE",
-    "usa": "US", "america": "US", "unitedstates": "US",
-    "southkorea": "KR", "korea": "KR", "northkorea": "KP",
-    "russia": "RU", "iran": "IR", "taiwan": "TW", "japan": "JP",
+    "uae": "AE", "emirates": "AE", "unitedarabemirates": "AE", "usa": "US",
+    "america": "US", "unitedstates": "US", "southkorea": "KR", "korea": "KR",
+    "northkorea": "KP", "russia": "RU", "iran": "IR", "taiwan": "TW", "japan": "JP",
     "singapore": "SG", "seychelles": "SC", "germany": "DE", "france": "FR",
     "canada": "CA", "australia": "AU", "austria": "AT", "netherlands": "NL",
     "poland": "PL", "slovenia": "SI", "turkey": "TR", "turkiye": "TR",
     "hongkong": "HK", "finland": "FI", "sweden": "SE", "denmark": "DK",
     "bulgaria": "BG", "azerbaijan": "AZ", "china": "CN", "estonia": "EE",
-    "czechrepublic": "CZ", "czechia": "CZ", "southafrica": "ZA",
-    "newzealand": "NZ", "saudiarabia": "SA",
+    "czechrepublic": "CZ", "czechia": "CZ", "southafrica": "ZA", "newzealand": "NZ",
+    "saudiarabia": "SA",
 }
-
-TECHNICAL_TOKENS = {
-    "ws", "tls", "tcp", "raw", "grpc", "reality", "http", "https", "udp",
-    "auto", "none", "vless", "vmess", "trojan", "shadowsocks",
-}
-
+TECHNICAL_TOKENS = {"ws", "tls", "tcp", "raw", "grpc", "reality", "http", "https", "udp", "auto", "none", "vless", "vmess", "trojan", "shadowsocks"}
 COUNTRY_NAME_TO_CODE = {}
 for country in pycountry.countries:
     COUNTRY_NAME_TO_CODE[re.sub(r"[^a-z0-9]+", "", country.name.lower())] = country.alpha_2.upper()
     if hasattr(country, "official_name"):
-        COUNTRY_NAME_TO_CODE[
-            re.sub(r"[^a-z0-9]+", "", country.official_name.lower())
-        ] = country.alpha_2.upper()
+        COUNTRY_NAME_TO_CODE[re.sub(r"[^a-z0-9]+", "", country.official_name.lower())] = country.alpha_2.upper()
 
 session = requests.Session()
 session.headers.update({"User-Agent": "Ahmed-VPN-Nodes/2.0 (+public-aggregator)"})
 if os.getenv("GITHUB_TOKEN"):
-    session.headers.update({"Authorization": f"Bearer {os.getenv('GITHUB_TOKEN')}"})
+    session.headers.update({"Authorization": f"Bearer {os.getenv('GITHUB_TOKEN') }"})
 
+VMESS_DIAGNOSTICS = {"seen": 0, "decode_ok": 0, "decode_failed": 0, "bad_host": 0, "bad_port": 0}
 
 def fetch(url: str) -> bytes:
     response = session.get(url, timeout=(CONNECT_TIMEOUT, READ_TIMEOUT), stream=True)
@@ -97,7 +71,6 @@ def fetch(url: str) -> bytes:
         if len(data) > MAX_SOURCE_BYTES:
             break
     return bytes(data[:MAX_SOURCE_BYTES])
-
 
 def maybe_decode(data: bytes) -> str:
     text = data.decode("utf-8", errors="replace")
@@ -112,29 +85,22 @@ def maybe_decode(data: bytes) -> str:
             pass
     return text
 
-
 def normalize_country_token(value: str) -> str:
     return re.sub(r"[^a-z0-9]+", "", unquote(value).lower())
-
 
 def country_from_text(value: str, allow_iso: bool = True) -> str | None:
     if not value:
         return None
     raw = unquote(value)
     compact = normalize_country_token(raw)
-
     for token, code in ALIASES.items():
         if token in compact:
             return code
-
     for token, code in COUNTRY_NAME_TO_CODE.items():
         if token and token in compact:
             return code
-
     if allow_iso:
-        for match in re.finditer(
-            r"(?<![A-Za-z0-9._/\\])([A-Za-z]{2})(?![A-Za-z0-9._/\\])", raw
-        ):
+        for match in re.finditer(r"(?<![A-Za-z0-9._/\\])([A-Za-z]{2})(?![A-Za-z0-9._/\\])", raw):
             token = match.group(1).lower()
             if token in TECHNICAL_TOKENS:
                 continue
@@ -142,7 +108,6 @@ def country_from_text(value: str, allow_iso: bool = True) -> str | None:
             if code in ISO_CODES:
                 return code
     return None
-
 
 def protocol_from_uri(uri: str) -> str | None:
     scheme = uri.split(":", 1)[0].lower()
@@ -152,14 +117,11 @@ def protocol_from_uri(uri: str) -> str | None:
         return scheme
     return None
 
-
 def _decode_vmess_payload(uri: str):
-    """Decode the legacy vmess://Base64(JSON) format used by public feeds."""
     payload = uri.split("://", 1)[1].split("#", 1)[0].strip()
     payload = unquote(payload).strip()
     if not payload:
         return None
-
     padded = payload + "=" * (-len(payload) % 4)
     try:
         decoded = base64.b64decode(padded, altchars=b"-_", validate=False)
@@ -168,48 +130,41 @@ def _decode_vmess_payload(uri: str):
             decoded = base64.urlsafe_b64decode(padded)
         except Exception:
             return None
-
     try:
         obj = json.loads(decoded.decode("utf-8-sig", errors="strict"))
     except Exception:
         return None
     if not isinstance(obj, dict):
         return None
-
     host = str(obj.get("add") or obj.get("address") or "").strip()
     try:
         port = int(obj.get("port"))
     except (TypeError, ValueError):
         port = None
-    if not host or port is None:
+    if not host:
+        VMESS_DIAGNOSTICS["bad_host"] += 1
         return None
-
+    if port is None:
+        VMESS_DIAGNOSTICS["bad_port"] += 1
+        return None
     remark = str(obj.get("ps") or obj.get("remark") or "").strip()
     query = {}
-    for src, dst in (
-        ("id", "uuid"),
-        ("aid", "alterId"),
-        ("net", "type"),
-        ("type", "headerType"),
-        ("host", "host"),
-        ("path", "path"),
-        ("tls", "security"),
-        ("sni", "sni"),
-        ("scy", "encryption"),
-    ):
+    for src, dst in (("id", "uuid"), ("aid", "alterId"), ("net", "type"), ("type", "headerType"), ("host", "host"), ("path", "path"), ("tls", "security"), ("sni", "sni"), ("scy", "encryption")):
         value = obj.get(src)
         if value not in (None, ""):
             query[dst] = [str(value)]
     return host, port, remark, query
 
-
 def endpoint_from_uri(uri: str):
     scheme = uri.split(":", 1)[0].lower()
     try:
         if scheme == "vmess":
+            VMESS_DIAGNOSTICS["seen"] += 1
             decoded = _decode_vmess_payload(uri)
             if decoded:
+                VMESS_DIAGNOSTICS["decode_ok"] += 1
                 return decoded
+            VMESS_DIAGNOSTICS["decode_failed"] += 1
             parsed = urlparse(uri)
             return parsed.hostname, parsed.port, unquote(parsed.fragment or ""), parse_qs(parsed.query)
         if scheme in {"vless", "trojan"}:
@@ -222,7 +177,6 @@ def endpoint_from_uri(uri: str):
         return None, None, "", {}
     return None, None, "", {}
 
-
 def dedup_key(uri: str) -> str:
     host, port, _, query = endpoint_from_uri(uri)
     scheme = protocol_from_uri(uri) or ""
@@ -234,7 +188,6 @@ def dedup_key(uri: str) -> str:
         if value:
             identity.append(f"{key}={value}")
     return "|".join(identity)
-
 
 def parse_lines(text: str, source_name: str, source_hint_country: str | None = None, source_priority: int = 0):
     rows = []
@@ -253,7 +206,6 @@ def parse_lines(text: str, source_name: str, source_hint_country: str | None = N
         host, port, remark, query = endpoint_from_uri(uri)
         if not host or port not in ALLOWED_PORTS:
             continue
-
         country = country_from_text(remark)
         if country is None:
             for key in ("country", "cc", "region", "geo"):
@@ -262,23 +214,9 @@ def parse_lines(text: str, source_name: str, source_hint_country: str | None = N
                     break
         if country is None:
             country = source_hint_country
-
-        priority = source_priority
-        if source_name in LEGACY_SOURCE_PRIORITY:
-            priority = LEGACY_SOURCE_PRIORITY[source_name]
-
-        rows.append({
-            "uri": uri,
-            "protocol": protocol,
-            "host": host,
-            "port": port,
-            "remark": remark,
-            "country": country or "UNKNOWN",
-            "source": source_name,
-            "source_priority": priority,
-        })
+        priority = LEGACY_SOURCE_PRIORITY.get(source_name, source_priority)
+        rows.append({"uri": uri, "protocol": protocol, "host": host, "port": port, "remark": remark, "country": country or "UNKNOWN", "source": source_name, "source_priority": priority})
     return rows
-
 
 def source_hint_from_url(url: str) -> str | None:
     path = url.split("?", 1)[0].rstrip("/")
@@ -290,205 +228,98 @@ def source_hint_from_url(url: str) -> str | None:
             return code
     return country_from_text(name, allow_iso=False)
 
-
 def github_api_json(url: str):
-    response = session.get(url, timeout=(CONNECT_TIMEOUT, READ_TIMEOUT))
-    response.raise_for_status()
-    return response.json()
-
-
+    response = session.get(url, timeout=(CONNECT_TIMEOUT, READ_TIMEOUT)); response.raise_for_status(); return response.json()
 def github_index(url: str):
-    payload = github_api_json(url)
-    return payload if isinstance(payload, list) else []
-
-
+    payload = github_api_json(url); return payload if isinstance(payload, list) else []
 def github_tree_entries(url: str):
-    payload = github_api_json(url)
-    return [entry for entry in payload.get("tree", []) if entry.get("type") == "blob"] if isinstance(payload, dict) else []
-
-
+    payload = github_api_json(url); return [entry for entry in payload.get("tree", []) if entry.get("type") == "blob"] if isinstance(payload, dict) else []
 def collect_github_api_source(item):
     rows = []
     for entry in github_index(item["url"]):
-        if entry.get("type") != "file" or not entry.get("download_url"):
-            continue
-        name = entry.get("name", "")
-        hint = source_hint_from_url(name)
-        try:
-            raw = fetch(entry["download_url"])
-            rows.extend(parse_lines(raw.decode("utf-8", errors="replace"), f"{item['name']}:{name}", hint, item.get("priority", 0)))
-        except Exception as exc:
-            print(f"WARN {item['name']}/{name}: {exc}")
+        if entry.get("type") != "file" or not entry.get("download_url"): continue
+        name = entry.get("name", ""); hint = source_hint_from_url(name)
+        try: rows.extend(parse_lines(fetch(entry["download_url"]).decode("utf-8", errors="replace"), f"{item['name']}:{name}", hint, item.get("priority", 0)))
+        except Exception as exc: print(f"WARN {item['name']}/{name}: {exc}")
     return rows
-
-
 def collect_github_tree_source(item):
     rows = []
     for entry in github_tree_entries(item["url"]):
         path = entry.get("path", "")
-        if item.get("path_regex") and not re.search(item["path_regex"], path, re.I):
-            continue
+        if item.get("path_regex") and not re.search(item["path_regex"], path, re.I): continue
         raw_url = f"https://raw.githubusercontent.com/{item['owner']}/{item['repo']}/{item.get('ref', 'main')}/{path}"
-        try:
-            hint = source_hint_from_url(path)
-            raw = fetch(raw_url)
-            rows.extend(parse_lines(raw.decode("utf-8", errors="replace"), f"{item['name']}:{path}", hint, item.get("priority", 0)))
-        except Exception as exc:
-            print(f"WARN {item['name']}/{path}: {exc}")
+        try: rows.extend(parse_lines(fetch(raw_url).decode("utf-8", errors="replace"), f"{item['name']}:{path}", source_hint_from_url(path), item.get("priority", 0)))
+        except Exception as exc: print(f"WARN {item['name']}/{path}: {exc}")
     return rows
-
-
 def collect_source(item):
-    if item.get("format") == "github_api":
-        return collect_github_api_source(item)
-    if item.get("format") == "github_tree":
-        return collect_github_tree_source(item)
-    if item.get("kind") == "country_template":
-        return []
-    raw = fetch(item["url"])
-    return parse_lines(raw.decode("utf-8", errors="replace"), item["name"], source_hint_from_url(item["url"]), item.get("priority", 0))
-
-
+    if item.get("format") == "github_api": return collect_github_api_source(item)
+    if item.get("format") == "github_tree": return collect_github_tree_source(item)
+    if item.get("kind") == "country_template": return []
+    return parse_lines(fetch(item["url"]).decode("utf-8", errors="replace"), item["name"], source_hint_from_url(item["url"]), item.get("priority", 0))
 def load_previous_snapshot():
-    rows = []
-    countries_dir = OUT / "countries"
-    if not countries_dir.exists():
-        return rows
+    rows = []; countries_dir = OUT / "countries"
+    if not countries_dir.exists(): return rows
     for path in countries_dir.glob("*.txt"):
         code = path.stem.upper()
-        if code != "UNKNOWN" and code not in ISO_CODES:
-            continue
-        try:
-            rows.extend(parse_lines(path.read_text(encoding="utf-8", errors="replace"), f"snapshot:{code}", code if code in ISO_CODES else None, -100))
-        except Exception as exc:
-            print(f"WARN snapshot {path.name}: {exc}")
+        if code != "UNKNOWN" and code not in ISO_CODES: continue
+        try: rows.extend(parse_lines(path.read_text(encoding="utf-8", errors="replace"), f"snapshot:{code}", code if code in ISO_CODES else None, -100))
+        except Exception as exc: print(f"WARN snapshot {path.name}: {exc}")
     return rows
-
-
 def tcp_check(item):
     started = time.perf_counter()
     try:
-        with socket.create_connection((item["host"], item["port"]), timeout=CONNECT_TIMEOUT):
-            return True, round((time.perf_counter() - started) * 1000, 1)
-    except Exception:
-        return False, None
-
-
-def select_health_candidates(rows):
-    return list(rows)
-
-
+        with socket.create_connection((item["host"], item["port"]), timeout=CONNECT_TIMEOUT): return True, round((time.perf_counter() - started) * 1000, 1)
+    except Exception: return False, None
+def select_health_candidates(rows): return list(rows)
 def iso_name(code: str) -> str:
-    if code == "UNKNOWN":
-        return "Unknown"
-    country = pycountry.countries.get(alpha_2=code)
-    return country.name if country else code
-
+    if code == "UNKNOWN": return "Unknown"
+    country = pycountry.countries.get(alpha_2=code); return country.name if country else code
 
 def main():
-    cfg = json.loads((ROOT / "sources/sources.json").read_text(encoding="utf-8"))
-    all_rows = []
-    source_health = []
-    successful_sources = 0
-
+    cfg = json.loads((ROOT / "sources/sources.json").read_text(encoding="utf-8")); all_rows = []; source_health = []; successful_sources = 0
     for item in sorted(cfg["sources"], key=lambda source: -source.get("priority", 0)):
         started = time.perf_counter()
         try:
-            rows = collect_source(item)
-            all_rows.extend(rows)
-            successful_sources += 1
+            rows = collect_source(item); all_rows.extend(rows); successful_sources += 1
             source_health.append({"name": item["name"], "ok": True, "nodes": len(rows), "elapsed_ms": round((time.perf_counter() - started) * 1000, 1)})
             print(f"OK {item['name']}: {len(rows)}")
         except Exception as exc:
-            source_health.append({"name": item["name"], "ok": False, "nodes": 0, "error": str(exc), "elapsed_ms": round((time.perf_counter() - started) * 1000, 1)})
-            print(f"WARN {item['name']}: {exc}")
-
+            source_health.append({"name": item["name"], "ok": False, "nodes": 0, "error": str(exc), "elapsed_ms": round((time.perf_counter() - started) * 1000, 1)}); print(f"WARN {item['name']}: {exc}")
     failed_sources = [source for source in source_health if not source["ok"]]
     if failed_sources:
-        fallback = load_previous_snapshot()
-        all_rows.extend(fallback)
-        print(f"INFO source failures={len(failed_sources)}; loaded snapshot fallback={len(fallback)}")
-
-    if successful_sources == 0 and not all_rows:
-        raise RuntimeError("All upstream sources failed and no previous snapshot exists")
-
+        fallback = load_previous_snapshot(); all_rows.extend(fallback); print(f"INFO source failures={len(failed_sources)}; loaded snapshot fallback={len(fallback)}")
+    if successful_sources == 0 and not all_rows: raise RuntimeError("All upstream sources failed and no previous snapshot exists")
     unique = {}
-    for row in all_rows:
-        unique.setdefault(dedup_key(row["uri"]), row)
+    for row in all_rows: unique.setdefault(dedup_key(row["uri"]), row)
     rows = list(unique.values())
-
     for row in rows:
-        if row["country"] not in ISO_CODES:
-            row["country"] = "UNKNOWN"
-
-    candidates = select_health_candidates(rows)
-    print(f"INFO parsed={len(rows)} health_candidates={len(candidates)} full_pool_health_check=true")
-
+        if row["country"] not in ISO_CODES: row["country"] = "UNKNOWN"
+    candidates = select_health_candidates(rows); print(f"INFO parsed={len(rows)} health_candidates={len(candidates)} full_pool_health_check=true")
+    print(f"INFO vmess_seen={VMESS_DIAGNOSTICS['seen']} vmess_decode_ok={VMESS_DIAGNOSTICS['decode_ok']} vmess_decode_failed={VMESS_DIAGNOSTICS['decode_failed']} vmess_bad_host={VMESS_DIAGNOSTICS['bad_host']} vmess_bad_port={VMESS_DIAGNOSTICS['bad_port']}")
     checked = []
     if candidates:
         with ThreadPoolExecutor(max_workers=HEALTH_WORKERS) as executor:
             futures = {executor.submit(tcp_check, row): row for row in candidates}
             for future in as_completed(futures):
                 row = futures[future]
-                try:
-                    ok, latency = future.result()
-                except Exception:
-                    ok, latency = False, None
-                if ok:
-                    row["latency_ms"] = latency
-                    checked.append(row)
-
-    by_country = defaultdict(list)
-    by_protocol = defaultdict(list)
-    for row in checked:
-        by_country[row["country"]].append(row)
-        by_protocol[row["protocol"]].append(row)
-
-    def rank(row):
-        latency = row.get("latency_ms")
-        if latency is None:
-            latency = 999999
-        return (latency, -row.get("source_priority", 0), row.get("protocol", ""), row.get("host", ""), row.get("uri", ""))
-
-    for country in by_country:
-        by_country[country].sort(key=rank)
-        by_country[country] = by_country[country][:MAX_GENERATED_PER_COUNTRY]
-    for protocol in by_protocol:
-        by_protocol[protocol].sort(key=rank)
-
-    for directory in (OUT / "countries", OUT / "protocols", OUT / "metadata"):
-        directory.mkdir(parents=True, exist_ok=True)
-    for path in (OUT / "countries").glob("*.txt"):
-        path.unlink()
-    for path in (OUT / "protocols").glob("*.txt"):
-        path.unlink()
-
-    for country, items in sorted(by_country.items()):
-        (OUT / "countries" / f"{country}.txt").write_text("\n".join(item["uri"] for item in items) + "\n", encoding="utf-8")
-    for protocol, items in sorted(by_protocol.items()):
-        (OUT / "protocols" / f"{protocol}.txt").write_text("\n".join(item["uri"] for item in items) + "\n", encoding="utf-8")
-
+                try: ok, latency = future.result()
+                except Exception: ok, latency = False, None
+                if ok: row["latency_ms"] = latency; checked.append(row)
+    by_country = defaultdict(list); by_protocol = defaultdict(list)
+    for row in checked: by_country[row["country"]].append(row); by_protocol[row["protocol"]].append(row)
+    def rank(row): return (row.get("latency_ms", 999999), -row.get("source_priority", 0), row.get("protocol", ""), row.get("host", ""), row.get("uri", ""))
+    for country in by_country: by_country[country].sort(key=rank); by_country[country] = by_country[country][:MAX_GENERATED_PER_COUNTRY]
+    for protocol in by_protocol: by_protocol[protocol].sort(key=rank)
+    for directory in (OUT / "countries", OUT / "protocols", OUT / "metadata"): directory.mkdir(parents=True, exist_ok=True)
+    for path in (OUT / "countries").glob("*.txt"): path.unlink()
+    for path in (OUT / "protocols").glob("*.txt"): path.unlink()
+    for country, items in sorted(by_country.items()): (OUT / "countries" / f"{country}.txt").write_text("\n".join(item["uri"] for item in items) + "\n", encoding="utf-8")
+    for protocol, items in sorted(by_protocol.items()): (OUT / "protocols" / f"{protocol}.txt").write_text("\n".join(item["uri"] for item in items) + "\n", encoding="utf-8")
     generated_at = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
-    index = {
-        "schema": 2,
-        "generated_at": generated_at,
-        "total_fetched": len(all_rows),
-        "unique_parsed": len(rows),
-        "health_candidates": len(candidates),
-        "reachable_published": len(checked),
-        "allowed_ports": [80, 443],
-        "protocols": {protocol: len(by_protocol.get(protocol, [])) for protocol in sorted(PROTOCOLS)},
-        "countries": len(by_country),
-        "country_names": {country: iso_name(country) for country in sorted(by_country)},
-        "country_policy": "ISO-3166 alpha-2 only; explicit node metadata wins over feed hint; unresolved nodes go to UNKNOWN",
-        "health_policy": "Every parsed node is TCP-screened on ports 80/443; TCP latency is the primary ranking metric; source priority is a tie-breaker; Android performs authoritative Xray end-to-end Internet verification",
-        "source_failures": len(failed_sources),
-        "files": {"countries": "countries/", "protocols": "protocols/"},
-    }
+    index = {"schema": 2, "generated_at": generated_at, "total_fetched": len(all_rows), "unique_parsed": len(rows), "health_candidates": len(candidates), "reachable_published": len(checked), "allowed_ports": [80, 443], "protocols": {protocol: len(by_protocol.get(protocol, [])) for protocol in sorted(PROTOCOLS)}, "countries": len(by_country), "country_names": {country: iso_name(country) for country in sorted(by_country)}, "country_policy": "ISO-3166 alpha-2 only; explicit node metadata wins over feed hint; unresolved nodes go to UNKNOWN", "health_policy": "Every parsed node is TCP-screened on ports 80/443; TCP latency is the primary ranking metric; source priority is a tie-breaker; Android performs authoritative Xray end-to-end Internet verification", "source_failures": len(failed_sources), "files": {"countries": "countries/", "protocols": "protocols/"}}
     (OUT / "metadata/index.json").write_text(json.dumps(index, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     (OUT / "metadata/countries.json").write_text(json.dumps({"countries": [{"code": c, "name": iso_name(c), "nodes": len(a)} for c, a in sorted(by_country.items())]}, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    (OUT / "metadata/health.json").write_text(json.dumps({"generated_at": generated_at, "sources": source_health, "reachable_published": len(checked), "health_candidates": len(candidates)}, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    (OUT / "metadata/health.json").write_text(json.dumps({"generated_at": generated_at, "sources": source_health, "reachable_published": len(checked), "health_candidates": len(candidates), "vmess": VMESS_DIAGNOSTICS}, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(json.dumps(index, ensure_ascii=False, indent=2))
-
 
 if __name__ == "__main__": main()
