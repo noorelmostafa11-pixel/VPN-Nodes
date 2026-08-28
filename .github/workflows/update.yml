@@ -13,7 +13,7 @@ concurrency:
 jobs:
   update:
     runs-on: ubuntu-latest
-    timeout-minutes: 40
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@v5
         with:
@@ -29,10 +29,39 @@ jobs:
       - name: Run regression tests
         run: python tests/test_country_resolver.py
 
-      - name: Collect and publish node catalog
+      - name: Build full TCP-reachable pool
         env:
           GITHUB_TOKEN: ${{ github.token }}
-        run: python scripts/update_catalog.py
+        run: |
+          # For the health stage, preserve every TCP-reachable node instead of
+          # applying the normal per-country publication cap too early.
+          sed -i 's/^MAX_GENERATED_PER_COUNTRY = 250$/MAX_GENERATED_PER_COUNTRY = 1000000/' scripts/update_catalog.py
+          python scripts/update_catalog.py
+
+      - name: Install Xray core
+        run: |
+          set -euo pipefail
+          mkdir -p /opt/hostedtoolcache/xray
+          curl -fsSL -o /tmp/xray.zip https://github.com/XTLS/Xray-core/releases/download/v26.7.28/Xray-linux-64.zip
+          unzip -oq /tmp/xray.zip xray -d /opt/hostedtoolcache/xray
+          chmod +x /opt/hostedtoolcache/xray/xray
+          /opt/hostedtoolcache/xray/xray version
+
+      - name: Protocol-aware GET health check for every reachable node
+        env:
+          XRAY_BIN: /opt/hostedtoolcache/xray/xray
+          GET_HEALTH_BATCH_SIZE: 256
+          GET_HEALTH_WORKERS: 128
+          GET_HEALTH_TIMEOUT: 6
+          GET_HEALTH_PUBLISH_PER_COUNTRY: 250
+          GET_HEALTH_TEST_HOST: www.gstatic.com
+          GET_HEALTH_TEST_PATH: /generate_204
+        run: python scripts/get_health_fullpool.py
+
+      - name: Restore previous catalog on health failure
+        if: failure()
+        run: |
+          git restore --source=HEAD -- output/countries output/protocols output/metadata/index.json output/metadata/countries.json output/metadata/health.json
 
       - name: Commit generated feeds
         if: success()
@@ -44,7 +73,7 @@ jobs:
             echo "No catalog changes detected"
             exit 0
           fi
-          git commit -m "chore: refresh node catalog"
+          git commit -m "chore: refresh node catalog with protocol-aware GET health"
           git fetch origin main
           git rebase origin/main
           git push origin HEAD:main
