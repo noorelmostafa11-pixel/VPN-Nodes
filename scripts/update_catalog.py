@@ -29,6 +29,29 @@ PROTOCOLS = {"vless", "vmess", "trojan", "shadowsocks"}
 
 ISO_CODES = {c.alpha_2.upper() for c in pycountry.countries}
 
+# Legacy source order preserved from the Android 1.5.1 generation path.
+# Higher numeric priority wins BEFORE latency, so proven source families are
+# not displaced merely because a lower-priority endpoint answered TCP faster.
+LEGACY_SOURCE_PRIORITY = {
+    "au1rxx_countries": 200,
+    "openray_countries": 190,
+    "solispirit_countries": 180,
+    "fastnodes_countries_index": 170,
+    "fastnodes_everything": 160,
+    "radikal_top100": 135,
+    "radikal_verified": 130,
+    "alirewa_main": 125,
+    "baarcuda_vless": 120,
+    "baarcuda_vmess": 120,
+    "baarcuda_trojan": 120,
+    "baarcuda_ss": 120,
+    "zengfr_vless": 115,
+    "zengfr_vmess": 115,
+    "zengfr_trojan": 115,
+    "zengfr_ss": 115,
+    "epodonios_vless": 110,
+}
+
 ALIASES = {
     "uk": "GB", "england": "GB", "greatbritain": "GB", "unitedkingdom": "GB",
     "uae": "AE", "emirates": "AE", "unitedarabemirates": "AE",
@@ -93,10 +116,8 @@ def normalize_country_token(value: str) -> str:
 
 
 def country_from_text(value: str, allow_iso: bool = True) -> str | None:
-    """Resolve only explicit country names/aliases or valid ISO-3166 codes."""
     if not value:
         return None
-
     raw = unquote(value)
     compact = normalize_country_token(raw)
 
@@ -109,7 +130,6 @@ def country_from_text(value: str, allow_iso: bool = True) -> str | None:
             return code
 
     if allow_iso:
-        # Do not mine hostnames, URLs, or transport keywords such as WS.
         for match in re.finditer(
             r"(?<![A-Za-z0-9._/\\])([A-Za-z]{2})(?![A-Za-z0-9._/\\])", raw
         ):
@@ -119,7 +139,6 @@ def country_from_text(value: str, allow_iso: bool = True) -> str | None:
             code = token.upper()
             if code in ISO_CODES:
                 return code
-
     return None
 
 
@@ -170,7 +189,6 @@ def parse_lines(text: str, source_name: str, source_hint_country: str | None = N
         uri = match.group(1) if match else (line if re.match(r"^(?:vless|vmess|trojan|ss)://", line, re.I) else None)
         if not uri:
             continue
-
         protocol = protocol_from_uri(uri)
         if protocol is None:
             continue
@@ -187,6 +205,10 @@ def parse_lines(text: str, source_name: str, source_hint_country: str | None = N
         if country is None:
             country = source_hint_country
 
+        priority = source_priority
+        if source_name in LEGACY_SOURCE_PRIORITY:
+            priority = LEGACY_SOURCE_PRIORITY[source_name]
+
         rows.append({
             "uri": uri,
             "protocol": protocol,
@@ -195,7 +217,7 @@ def parse_lines(text: str, source_name: str, source_hint_country: str | None = N
             "remark": remark,
             "country": country or "UNKNOWN",
             "source": source_name,
-            "source_priority": source_priority,
+            "source_priority": priority,
         })
     return rows
 
@@ -295,6 +317,7 @@ def tcp_check(item):
 
 
 def select_health_candidates(rows):
+    # Full-pool screening: never cap by country/protocol before health check.
     return list(rows)
 
 
@@ -365,10 +388,11 @@ def main():
         by_protocol[row["protocol"]].append(row)
 
     for country in by_country:
+        # Legacy ranking: source quality first, measured TCP latency second.
         by_country[country].sort(key=lambda r: (-r.get("source_priority", 0), r.get("latency_ms", 999999), r["protocol"], r["host"]))
         by_country[country] = by_country[country][:MAX_GENERATED_PER_COUNTRY]
     for protocol in by_protocol:
-        by_protocol[protocol].sort(key=lambda r: (r.get("latency_ms", 999999), -r.get("source_priority", 0), r["host"]))
+        by_protocol[protocol].sort(key=lambda r: (-r.get("source_priority", 0), r.get("latency_ms", 999999), r["host"]))
 
     for directory in (OUT / "countries", OUT / "protocols", OUT / "metadata"):
         directory.mkdir(parents=True, exist_ok=True)
@@ -395,7 +419,7 @@ def main():
         "countries": len(by_country),
         "country_names": {country: iso_name(country) for country in sorted(by_country)},
         "country_policy": "ISO-3166 alpha-2 only; explicit node metadata wins over feed hint; unresolved nodes go to UNKNOWN",
-        "health_policy": "Every parsed node is TCP-screened on ports 80/443; latency is recorded; Android performs authoritative Xray end-to-end Internet verification",
+        "health_policy": "Every parsed node is TCP-screened on ports 80/443; legacy source priority precedes latency; Android performs authoritative Xray end-to-end Internet verification",
         "source_failures": len(failed_sources),
         "files": {"countries": "countries/", "protocols": "protocols/"},
     }
