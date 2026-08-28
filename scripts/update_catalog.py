@@ -25,6 +25,8 @@ FREE_HEALTH_DELAY_MS = 200
 ALLOWED_PORTS = {80, 443}
 PROTOCOLS = {"vless", "vmess", "trojan", "shadowsocks"}
 ISO_CODES = {c.alpha_2.upper() for c in pycountry.countries}
+SOURCE_RETRIES = 3
+SOURCE_RETRY_DELAY_SECONDS = 1.5
 
 LEGACY_SOURCE_PRIORITY = {
     "morpheusadam_best": 210, "au1rxx_countries": 200, "openray_countries": 190,
@@ -278,16 +280,27 @@ def iso_name(code: str) -> str:
 def main():
     cfg = json.loads((ROOT / "sources/sources.json").read_text(encoding="utf-8")); all_rows = []; source_health = []; successful_sources = 0
     for item in sorted(cfg["sources"], key=lambda source: -source.get("priority", 0)):
-        started = time.perf_counter()
-        try:
-            rows = collect_source(item); all_rows.extend(rows); successful_sources += 1
-            source_health.append({"name": item["name"], "ok": True, "nodes": len(rows), "elapsed_ms": round((time.perf_counter() - started) * 1000, 1)})
-            print(f"OK {item['name']}: {len(rows)}")
-        except Exception as exc:
-            source_health.append({"name": item["name"], "ok": False, "nodes": 0, "error": str(exc), "elapsed_ms": round((time.perf_counter() - started) * 1000, 1)}); print(f"WARN {item['name']}: {exc}")
+        started = time.perf_counter(); rows = None; last_error = None
+        for attempt in range(1, SOURCE_RETRIES + 1):
+            try:
+                rows = collect_source(item)
+                break
+            except Exception as exc:
+                last_error = exc
+                if attempt < SOURCE_RETRIES:
+                    print(f"WARN {item['name']}: attempt {attempt}/{SOURCE_RETRIES} failed: {exc}; retrying")
+                    time.sleep(SOURCE_RETRY_DELAY_SECONDS * attempt)
+        if rows is not None:
+            all_rows.extend(rows); successful_sources += 1
+            source_health.append({"name": item["name"], "ok": True, "nodes": len(rows), "attempts": attempt, "elapsed_ms": round((time.perf_counter() - started) * 1000, 1)})
+            print(f"OK {item['name']}: {len(rows)} attempts={attempt}")
+        else:
+            source_health.append({"name": item["name"], "ok": False, "nodes": 0, "attempts": SOURCE_RETRIES, "error": str(last_error), "elapsed_ms": round((time.perf_counter() - started) * 1000, 1)}); print(f"WARN {item['name']}: failed after {SOURCE_RETRIES} attempts: {last_error}")
     failed_sources = [source for source in source_health if not source["ok"]]
-    if failed_sources:
-        fallback = load_previous_snapshot(); all_rows.extend(fallback); print(f"INFO source failures={len(failed_sources)}; loaded snapshot fallback={len(fallback)}")
+    if successful_sources == 0:
+        fallback = load_previous_snapshot(); all_rows.extend(fallback); print(f"INFO all upstream sources failed; loaded snapshot fallback={len(fallback)}")
+    elif failed_sources:
+        print(f"INFO isolated source failures={len(failed_sources)}; no snapshot fallback mixed into healthy sources")
     if successful_sources == 0 and not all_rows: raise RuntimeError("All upstream sources failed and no previous snapshot exists")
     unique = {}
     for row in all_rows: unique.setdefault(dedup_key(row["uri"]), row)
