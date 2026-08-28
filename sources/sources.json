@@ -1,8 +1,14 @@
 {
-  "version": 5,
+  "version": 6,
   "mode": "direct-public-sources",
   "refresh_policy": "external Oracle scheduler continues every 30 minutes",
   "sources": [
+    {"name":"telegram_v2ray_free_conf","url":"https://t.me/s/v2ray_free_conf","kind":"telegram_public","format":"telegram_html","channel":"v2ray_free_conf","max_pages":8,"max_uris":5000,"priority":270},
+    {"name":"telegram_safenet_server","url":"https://t.me/s/SafeNet_Server","kind":"telegram_public","format":"telegram_html","channel":"SafeNet_Server","max_pages":8,"max_uris":5000,"priority":269},
+    {"name":"telegram_configv2rayng","url":"https://t.me/s/ConfigV2RayNG","kind":"telegram_public","format":"telegram_html","channel":"ConfigV2RayNG","max_pages":8,"max_uris":5000,"priority":268},
+    {"name":"telegram_vpnfail_v2ray","url":"https://t.me/s/vpnfail_v2ray","kind":"telegram_public","format":"telegram_html","channel":"vpnfail_v2ray","max_pages":8,"max_uris":5000,"priority":267},
+    {"name":"telegram_viproxys","url":"https://t.me/s/ViProxys","kind":"telegram_public","format":"telegram_html","channel":"ViProxys","max_pages":8,"max_uris":5000,"priority":266},
+    {"name":"telegram_v2ray_config_list","url":"https://t.me/s/V2rayConfigList","kind":"telegram_public","format":"telegram_html","channel":"V2rayConfigList","max_pages":8,"max_uris":3000,"priority":265},
     {"name":"freenode_featured_subscription","url":"https://freenode.biz/api/featured?format=nsubscribe","kind":"global","format":"auto","priority":240},
     {"name":"whitedns_primary_subscription","url":"https://sub.whitedns.one/sub/base64.txt","kind":"global","format":"auto","priority":235},
     {"name":"whitedns_backup_subscription_2","url":"https://sub.iampedi2.live/sub/base64.txt","kind":"global","format":"auto","priority":234},

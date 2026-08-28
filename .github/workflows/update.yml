@@ -29,10 +29,10 @@ jobs:
       - name: Run regression tests
         run: python tests/test_country_resolver.py
 
-      - name: Build TCP-reachable pool
+      - name: Build TCP-reachable pool with direct Telegram sources
         env:
           GITHUB_TOKEN: ${{ github.token }}
-        run: python scripts/build_tcp_pool.py
+        run: python scripts/telegram_build_tcp_pool.py
 
       - name: Restore previous catalog on health failure
         if: failure()
