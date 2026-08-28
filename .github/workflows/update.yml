@@ -45,7 +45,7 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p /opt/hostedtoolcache/xray
-          curl -fsSL -o /tmp/xray.zip https://github.com/XTLS/Xray-core/releases/download/v26.7.31/Xray-linux-64.zip
+          curl -fsSL -o /tmp/xray.zip https://github.com/XTLS/Xray-core/releases/download/v26.7.28/Xray-linux-64.zip
           unzip -oq /tmp/xray.zip xray -d /opt/hostedtoolcache/xray
           chmod +x /opt/hostedtoolcache/xray/xray
           /opt/hostedtoolcache/xray/xray version
