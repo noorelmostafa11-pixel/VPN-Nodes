@@ -1,18 +1,18 @@
 {
   "schema": 2,
-  "generated_at": "2026-08-28T02:27:48Z",
-  "total_fetched": 81509,
-  "unique_parsed": 47866,
-  "health_candidates": 47866,
-  "reachable_published": 31521,
+  "generated_at": "2026-08-28T02:34:55Z",
+  "total_fetched": 81558,
+  "unique_parsed": 47871,
+  "health_candidates": 47871,
+  "reachable_published": 31479,
   "allowed_ports": [
     80,
     443
   ],
   "protocols": {
-    "shadowsocks": 734,
-    "trojan": 3649,
-    "vless": 27134,
+    "shadowsocks": 732,
+    "trojan": 3651,
+    "vless": 27092,
     "vmess": 4
   },
   "countries": 96,
@@ -115,7 +115,7 @@
     "ZA": "South Africa"
   },
   "country_policy": "ISO-3166 alpha-2 only; explicit node metadata wins over feed hint; unresolved nodes go to UNKNOWN",
-  "health_policy": "Every parsed node is TCP-screened on ports 80/443; latency is recorded; Android performs authoritative Xray end-to-end Internet verification",
+  "health_policy": "Every parsed node is TCP-screened on ports 80/443; legacy source priority precedes latency; Android performs authoritative Xray end-to-end Internet verification",
   "source_failures": 0,
   "files": {
     "countries": "countries/",

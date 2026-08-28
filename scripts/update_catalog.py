@@ -317,7 +317,6 @@ def tcp_check(item):
 
 
 def select_health_candidates(rows):
-    # Full-pool screening: never cap by country/protocol before health check.
     return list(rows)
 
 
