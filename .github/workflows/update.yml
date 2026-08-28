@@ -29,33 +29,10 @@ jobs:
       - name: Run regression tests
         run: python tests/test_country_resolver.py
 
-      - name: Collect complete reachable pool
+      - name: Collect and publish node catalog
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: python scripts/update_catalog.py
-
-      - name: Install Xray core
-        run: |
-          set -euo pipefail
-          mkdir -p /opt/hostedtoolcache/xray
-          curl -fsSL -o /tmp/xray.zip https://github.com/XTLS/Xray-core/releases/download/v26.7.28/Xray-linux-64.zip
-          unzip -oq /tmp/xray.zip xray -d /opt/hostedtoolcache/xray
-          chmod +x /opt/hostedtoolcache/xray/xray
-          /opt/hostedtoolcache/xray/xray version
-
-      - name: GET health check from full reachable pool
-        env:
-          XRAY_BIN: /opt/hostedtoolcache/xray/xray
-          GET_HEALTH_CANDIDATES: 10000
-          GET_HEALTH_PUBLISH_PER_COUNTRY: 250
-          REAL_DELAY_WORKERS: 32
-          REAL_DELAY_NODE_TIMEOUT: 6
-        run: python scripts/get_health_fullpool.py
-
-      - name: Restore previous catalog on GET health failure
-        if: failure()
-        run: |
-          git restore --source=HEAD -- output/countries output/protocols output/metadata/index.json output/metadata/countries.json output/metadata/health.json
 
       - name: Commit generated feeds
         if: success()
@@ -67,7 +44,7 @@ jobs:
             echo "No catalog changes detected"
             exit 0
           fi
-          git commit -m "chore: refresh node catalog with GET health"
+          git commit -m "chore: refresh node catalog"
           git fetch origin main
           git rebase origin/main
           git push origin HEAD:main
