@@ -1,19 +1,18 @@
 {
-  "version": 4,
+  "version": 5,
   "mode": "direct-public-sources",
   "refresh_policy": "external Oracle scheduler continues every 30 minutes",
   "sources": [
-    {"name":"telegram_v2ray_free_conf","url":"https://t.me/s/v2ray_free_conf","kind":"web_feed","format":"auto","priority":220},
-    {"name":"telegram_configv2rayng","url":"https://t.me/s/configv2rayng","kind":"web_feed","format":"auto","priority":215},
-    {"name":"telegram_viproxys","url":"https://t.me/s/ViProxys","kind":"web_feed","format":"auto","priority":210},
-    {"name":"abc_configs_public","url":"https://t.me/s/abc_configs","kind":"web_feed","format":"auto","priority":205},
-    {"name":"freenode_featured_subscription","url":"https://freenode.biz/api/featured?format=nsubscribe","kind":"global","format":"auto","priority":200},
-    {"name":"mifa_vless","url":"https://mifa.world/vless","kind":"web_feed","format":"auto","priority":190},
-    {"name":"mifa_vmess","url":"https://mifa.world/vmess","kind":"web_feed","format":"auto","priority":190},
-    {"name":"mifa_trojan","url":"https://mifa.world/trojan","kind":"web_feed","format":"auto","priority":190},
-    {"name":"mifa_ss","url":"https://mifa.world/ss","kind":"web_feed","format":"auto","priority":190},
-    {"name":"vpnfail_v2ray_public","url":"https://vpn.fail/free-proxy/v2ray","kind":"web_feed","format":"auto","priority":180},
-    {"name":"v2cross_daily_candidates","url":"https://v2cross.com/en/free-v2ray-nodes/","kind":"web_feed","format":"auto","priority":170},
-    {"name":"mtproto_cloud_live_feed","url":"https://mtproto.cloud/en/","kind":"web_feed","format":"auto","priority":160}
+    {"name":"freenode_featured_subscription","url":"https://freenode.biz/api/featured?format=nsubscribe","kind":"global","format":"auto","priority":240},
+    {"name":"whitedns_primary_subscription","url":"https://sub.whitedns.one/sub/base64.txt","kind":"global","format":"auto","priority":235},
+    {"name":"whitedns_backup_subscription_2","url":"https://sub.iampedi2.live/sub/base64.txt","kind":"global","format":"auto","priority":234},
+    {"name":"whitedns_backup_subscription_4","url":"https://sub.iampedi4.live/sub/base64.txt","kind":"global","format":"auto","priority":233},
+    {"name":"kaveh_best_internet_iran","url":"https://kaveh.yebekhe.workers.dev/api/fetch?c=Best_internet_iran&pages=20&type=vmess%2Cvless%2Ctrojan%2Css&format=base64","kind":"global","format":"auto","priority":225},
+    {"name":"kaveh_donations","url":"https://kaveh.yebekhe.workers.dev/sub/donations","kind":"global","format":"auto","priority":220},
+    {"name":"mifa_vless","url":"https://mifa.world/vless","kind":"global","format":"auto","priority":210},
+    {"name":"mifa_vmess","url":"https://mifa.world/vmess","kind":"global","format":"auto","priority":210},
+    {"name":"mifa_trojan","url":"https://mifa.world/trojan","kind":"global","format":"auto","priority":210},
+    {"name":"mifa_ss","url":"https://mifa.world/ss","kind":"global","format":"auto","priority":210},
+    {"name":"vpnfail_v2ray_public","url":"https://vpn.fail/free-proxy/v2ray","kind":"global","format":"auto","priority":200}
   ]
 }
