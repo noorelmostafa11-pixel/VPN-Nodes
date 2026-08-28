@@ -46,7 +46,7 @@ jobs:
       - name: GET health check from full reachable pool
         env:
           XRAY_BIN: /opt/hostedtoolcache/xray/xray
-          GET_HEALTH_CANDIDATES: 3200
+          GET_HEALTH_CANDIDATES: 10000
           GET_HEALTH_PUBLISH_PER_COUNTRY: 250
           REAL_DELAY_WORKERS: 32
           REAL_DELAY_NODE_TIMEOUT: 6
