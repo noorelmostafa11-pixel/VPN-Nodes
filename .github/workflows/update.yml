@@ -62,13 +62,13 @@ jobs:
           chmod +x /opt/hostedtoolcache/xray/xray
           /opt/hostedtoolcache/xray/xray version
 
-      - name: Trial Internet health through Xray
+      - name: Real Internet health through Xray - all TCP reachable
         env:
           XRAY_BIN: /opt/hostedtoolcache/xray/xray
-          REAL_DELAY_CANDIDATES: 500
-          REAL_DELAY_WORKERS: 16
+          REAL_DELAY_WORKERS: 256
           REAL_DELAY_NODE_TIMEOUT: 5
-        run: python scripts/real_delay.py
+          REAL_DELAY_SOCKS_BASE: 21000
+        run: python scripts/real_delay_all.py
 
       - name: Restore previous catalog on failure
         if: failure()
