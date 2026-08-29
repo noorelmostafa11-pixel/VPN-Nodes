@@ -79,8 +79,14 @@ def rank(row: dict):
 
 def write_catalog(checked: list[dict], all_rows: list[dict], source_health: list[dict], resolution: dict):
     by_country: dict[str, list[dict]] = defaultdict(list)
+    explicit_anchor_counts: dict[str, int] = defaultdict(int)
+
     for row in checked:
-        by_country[row["country"]].append(row)
+        country = row.get("country") or "UNKNOWN"
+        by_country[country].append(row)
+        if row.get("country_resolution") in {"metadata_explicit", "metadata_remark"} and country != "UNKNOWN":
+            explicit_anchor_counts[country] += 1
+
     for items in by_country.values():
         items.sort(key=rank)
 
@@ -97,9 +103,6 @@ def write_catalog(checked: list[dict], all_rows: list[dict], source_health: list
             published_protocols[item["protocol"]].append(item)
     for items in published_protocols.values():
         items.sort(key=rank)
-
-    print(f"INFO publication reachable={len(checked)} published={sum(map(len, published_by_country.values()))} country_cap_rejected={rejected_total} max_per_country={MAX_PER_COUNTRY}")
-    print(f"INFO global_unknown={len(unknown_items)} global_servers={len(global_servers)} server_size={GLOBAL_SERVER_SIZE}")
 
     for directory in (OUT / "countries", OUT / "protocols", OUT / "global", OUT / "metadata"):
         directory.mkdir(parents=True, exist_ok=True)
@@ -136,6 +139,20 @@ def write_catalog(checked: list[dict], all_rows: list[dict], source_health: list
         "database": resolution.get("database", str(GEOIP_DB)),
         "failure_stats": failure_stats,
     }
+
+    anchor_codes = sorted(explicit_anchor_counts)
+    anchor_payload = {
+        "countries": anchor_codes,
+        "count": len(anchor_codes),
+        "nodes_by_country": {c: explicit_anchor_counts[c] for c in anchor_codes},
+        "rule": "a distribution country must have at least one reachable node with explicit node-owned country metadata",
+    }
+    (OUT / "metadata/confirmed_country_anchors.json").write_text(
+        json.dumps(anchor_payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
+    )
+    print(f"INFO confirmed_country_anchors countries={len(anchor_codes)} nodes={sum(explicit_anchor_counts.values())}")
+    print("INFO confirmed_country_anchor_codes=" + json.dumps(anchor_codes))
+
     index = {
         "schema": 7,
         "generated_at": generated_at,
@@ -154,20 +171,27 @@ def write_catalog(checked: list[dict], all_rows: list[dict], source_health: list
         "protocols": {p: len(published_protocols.get(p, [])) for p in sorted(catalog.PROTOCOLS)},
         "countries": len(published_by_country),
         "country_names": {c: iso_name(c) for c in sorted(published_by_country)},
-        "country_policy": "Dynamic ISO-3166 countries from live nodes; explicit node metadata wins; hostname is resolved to public IP with cached DNS; unresolved addresses use local GeoLite2 Country; GeoLite failures are categorized in metadata; no online geolocation API is used during catalog generation",
+        "country_policy": "Dynamic ISO-3166 countries from live nodes; explicit node metadata wins; hostname is resolved to public IP with cached DNS; unresolved addresses use local GeoLite2 Country; explicit metadata countries are persisted separately as redistribution anchors",
         "health_policy": "Every parsed node is asynchronously TCP-screened on ports 80/443; TCP latency is the primary ranking metric; no Xray/GET health stage",
         "source_failures": sum(1 for s in source_health if not s["ok"]),
         "tcp_workers": TCP_WORKERS,
         "max_per_country": MAX_PER_COUNTRY,
         "global_unknown": {"total": len(unknown_items), "server_size": GLOBAL_SERVER_SIZE, "servers": len(global_servers), "files": "global/server-N.txt"},
         "country_resolution": resolver_stats,
+        "confirmed_country_anchors": anchor_payload,
         "files": {"countries": "countries/", "protocols": "protocols/", "global": "global/"},
     }
 
     (OUT / "metadata/index.json").write_text(json.dumps(index, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     (OUT / "metadata/countries.json").write_text(
         json.dumps(
-            {"countries": [{"code": c, "name": iso_name(c), "nodes": len(v), "reachable": reachable_by_country.get(c, 0), "cap_rejected": rejected.get(c, 0)} for c, v in sorted(published_by_country.items())]},
+            {
+                "countries": [
+                    {"code": c, "name": iso_name(c), "nodes": len(v), "reachable": reachable_by_country.get(c, 0), "cap_rejected": rejected.get(c, 0)}
+                    for c, v in sorted(published_by_country.items())
+                ],
+                "confirmed_country_anchors": anchor_payload,
+            },
             ensure_ascii=False,
             indent=2,
         ) + "\n",
@@ -188,6 +212,7 @@ def write_catalog(checked: list[dict], all_rows: list[dict], source_health: list
                 "health_candidates": len(all_rows),
                 "tcp_workers": TCP_WORKERS,
                 "country_resolution": resolver_stats,
+                "confirmed_country_anchors": anchor_payload,
                 "global_unknown": {"total": len(unknown_items), "server_size": GLOBAL_SERVER_SIZE, "servers": len(global_servers)},
             },
             ensure_ascii=False,
