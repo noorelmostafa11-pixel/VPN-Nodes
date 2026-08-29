@@ -51,10 +51,29 @@ jobs:
       - name: Distribute unresolved nodes into discovered countries
         run: python scripts/distribute_unknown.py
 
+      - name: Install Xray for Internet health trial
+        run: |
+          set -euo pipefail
+          mkdir -p /opt/hostedtoolcache/xray
+          curl --fail --location --silent --show-error \
+            'https://github.com/XTLS/Xray-core/releases/latest/download/Xray-linux-64.zip' \
+            --output /tmp/xray.zip
+          unzip -o /tmp/xray.zip xray -d /opt/hostedtoolcache/xray >/dev/null
+          chmod +x /opt/hostedtoolcache/xray/xray
+          /opt/hostedtoolcache/xray/xray version
+
+      - name: Trial Internet health through Xray
+        env:
+          XRAY_BIN: /opt/hostedtoolcache/xray/xray
+          REAL_DELAY_CANDIDATES: 500
+          REAL_DELAY_WORKERS: 16
+          REAL_DELAY_NODE_TIMEOUT: 5
+        run: python scripts/real_delay.py
+
       - name: Restore previous catalog on failure
         if: failure()
         run: |
-          git restore --source=HEAD -- output/countries output/protocols output/global output/metadata/index.json output/metadata/countries.json output/metadata/health.json
+          git restore --source=HEAD -- output/countries output/protocols output/global output/metadata/index.json output/metadata/countries.json output/metadata/health.json output/metadata/real_delay.json
 
       - name: Commit generated feeds
         if: success()
