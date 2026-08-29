@@ -26,12 +26,18 @@ jobs:
 
       - run: pip install -r requirements.txt
 
-      - name: Verify local GeoLite2 database
+      - name: Prepare local GeoLite2 database
         run: |
-          test -s data/GeoLite2-Country.mmdb || {
-            echo "::error::Missing data/GeoLite2-Country.mmdb. Run the GeoLite2 database workflow first.";
-            exit 1;
-          }
+          set -euo pipefail
+          mkdir -p data
+          if [ ! -s data/GeoLite2-Country.mmdb ]; then
+            echo "GeoLite2 database is not committed yet; bootstrapping one local copy for this run."
+            curl --fail --location --silent --show-error \
+              'https://cdn.jsdelivr.net/npm/geolite2-country/GeoLite2-Country.mmdb.gz' \
+              --output /tmp/GeoLite2-Country.mmdb.gz
+            gzip -dc /tmp/GeoLite2-Country.mmdb.gz > data/GeoLite2-Country.mmdb
+          fi
+          test -s data/GeoLite2-Country.mmdb
           ls -lh data/GeoLite2-Country.mmdb
 
       - name: Run regression tests
