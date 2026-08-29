@@ -63,7 +63,7 @@ jobs:
         env:
           XRAY_BIN: /opt/hostedtoolcache/xray/xray
           REAL_DELAY_WORKERS: 256
-          REAL_DELAY_NODE_TIMEOUT: 5
+          REAL_DELAY_NODE_TIMEOUT: 10
           REAL_DELAY_SOCKS_BASE: 21000
           REAL_DELAY_XRAY_BATCH_SIZE: 2000
         run: python scripts/real_delay_google_batch.py
