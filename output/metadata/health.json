@@ -1,336 +1,328 @@
 {
-  "generated_at": "2026-08-29T02:05:44Z",
+  "generated_at": "2026-08-29T02:15:14Z",
   "sources": [
     {
       "name": "telegram_catalog_direct",
       "ok": true,
-      "nodes": 14414,
-      "elapsed_ms": 24194.5
+      "nodes": 14417,
+      "elapsed_ms": 24242.5
     },
     {
       "name": "telegram_abc_configs",
       "ok": true,
       "nodes": 0,
-      "elapsed_ms": 187.3
+      "elapsed_ms": 181.9
     },
     {
       "name": "telegram_v2hive",
       "ok": true,
       "nodes": 0,
-      "elapsed_ms": 183.8
+      "elapsed_ms": 184.0
     },
     {
       "name": "telegram_v2ray_free_conf",
       "ok": true,
-      "nodes": 80,
-      "elapsed_ms": 2022.1
+      "nodes": 81,
+      "elapsed_ms": 2007.0
     },
     {
       "name": "telegram_safenet_server",
       "ok": true,
       "nodes": 25,
-      "elapsed_ms": 2294.9
+      "elapsed_ms": 2264.8
     },
     {
       "name": "telegram_configv2rayng",
       "ok": true,
       "nodes": 158,
-      "elapsed_ms": 1474.3
+      "elapsed_ms": 1450.1
     },
     {
       "name": "telegram_vpnfail_v2ray",
       "ok": true,
       "nodes": 75,
-      "elapsed_ms": 2057.0
+      "elapsed_ms": 2076.3
     },
     {
       "name": "telegram_viproxys",
       "ok": true,
       "nodes": 0,
-      "elapsed_ms": 132.1
+      "elapsed_ms": 125.9
     },
     {
       "name": "telegram_v2ray_config_list",
       "ok": true,
-      "nodes": 92,
-      "elapsed_ms": 1999.6
+      "nodes": 90,
+      "elapsed_ms": 2053.2
     },
     {
       "name": "freenode_featured_subscription",
       "ok": true,
       "nodes": 25,
-      "elapsed_ms": 677.1
+      "elapsed_ms": 493.7
     },
     {
       "name": "freeproxydb_public_v2ray",
       "ok": true,
       "nodes": 113,
-      "elapsed_ms": 465.6
+      "elapsed_ms": 516.4
     },
     {
       "name": "freenodebiz_secondary_clash_feed",
       "ok": true,
       "nodes": 0,
-      "elapsed_ms": 513.5
+      "elapsed_ms": 444.4
     },
     {
       "name": "singbox_info_daily_nodes",
       "ok": true,
       "nodes": 3,
-      "elapsed_ms": 200.6
+      "elapsed_ms": 171.3
     },
     {
       "name": "whitedns_primary_subscription",
       "ok": true,
       "nodes": 144,
-      "elapsed_ms": 551.0
+      "elapsed_ms": 515.4
     },
     {
       "name": "whitedns_backup_subscription_2",
       "ok": true,
       "nodes": 144,
-      "elapsed_ms": 668.2
+      "elapsed_ms": 520.3
     },
     {
       "name": "whitedns_backup_subscription_4",
       "ok": true,
       "nodes": 144,
-      "elapsed_ms": 525.2
+      "elapsed_ms": 514.1
     },
     {
       "name": "kaveh_best_internet_iran",
       "ok": true,
       "nodes": 12,
-      "elapsed_ms": 3054.8
+      "elapsed_ms": 2762.3
     },
     {
       "name": "kaveh_donations",
       "ok": true,
       "nodes": 492,
-      "elapsed_ms": 4287.9
+      "elapsed_ms": 4251.0
     },
     {
       "name": "v2nodes_global",
       "ok": true,
       "nodes": 0,
-      "elapsed_ms": 490.7
+      "elapsed_ms": 469.2
     },
     {
       "name": "v2nodes_page_1",
       "ok": true,
       "nodes": 0,
-      "elapsed_ms": 311.2
+      "elapsed_ms": 232.0
     },
     {
       "name": "vpnjantit_v2ray",
-      "ok": false,
+      "ok": true,
       "nodes": 0,
-      "error": "HTTPSConnectionPool(host='www.vpnjantit.com', port=443): Read timed out. (read timeout=5.0)",
-      "elapsed_ms": 5124.7
+      "elapsed_ms": 1203.2
     },
     {
       "name": "vpnserverhub_v2ray",
       "ok": false,
       "nodes": 0,
       "error": "HTTPSConnectionPool(host='www.vpnserverhub.com', port=443): Max retries exceeded with url: /v2ray (Caused by SSLError(SSLCertVerificationError(1, \"[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname mismatch, certificate is not valid for 'www.vpnserverhub.com'. (_ssl.c:1010)\")))",
-      "elapsed_ms": 488.0
+      "elapsed_ms": 433.6
     },
     {
       "name": "openproxylist_v2ray",
       "ok": false,
       "nodes": 0,
       "error": "403 Client Error: Forbidden for url: https://openproxylist.com/",
-      "elapsed_ms": 136.3
+      "elapsed_ms": 80.3
     },
     {
       "name": "freevmess",
       "ok": false,
       "nodes": 0,
       "error": "403 Client Error: Forbidden for url: https://www.freevmess.com/",
-      "elapsed_ms": 120.7
+      "elapsed_ms": 126.0
     },
     {
       "name": "vpnkeep",
       "ok": true,
       "nodes": 0,
-      "elapsed_ms": 288.5
+      "elapsed_ms": 366.6
     },
     {
       "name": "mifa_vless",
       "ok": true,
       "nodes": 0,
-      "elapsed_ms": 801.2
+      "elapsed_ms": 640.1
     },
     {
       "name": "mifa_vmess",
       "ok": true,
       "nodes": 0,
-      "elapsed_ms": 220.3
+      "elapsed_ms": 215.7
     },
     {
       "name": "mifa_trojan",
       "ok": true,
       "nodes": 0,
-      "elapsed_ms": 252.4
+      "elapsed_ms": 256.8
     },
     {
       "name": "mifa_ss",
       "ok": true,
       "nodes": 0,
-      "elapsed_ms": 234.1
+      "elapsed_ms": 240.2
     },
     {
       "name": "vpnfail_v2ray_public",
       "ok": true,
       "nodes": 0,
-      "elapsed_ms": 2172.9
+      "elapsed_ms": 1910.6
     },
     {
       "name": "xrayvip_free_v2ray",
       "ok": true,
       "nodes": 33,
-      "elapsed_ms": 279.6
+      "elapsed_ms": 312.2
     }
   ],
-  "reachable_total": 3780,
-  "reachable_published": 3780,
-  "published_total": 3780,
+  "reachable_total": 3838,
+  "reachable_published": 3838,
+  "published_total": 3838,
   "publication_rejected_total": 0,
   "reachable_by_country": {
     "AE": 19,
-    "AI": 1,
     "AL": 2,
     "AM": 2,
-    "AT": 7,
+    "AT": 6,
     "AU": 7,
     "BE": 8,
-    "BG": 7,
+    "BG": 9,
     "BR": 5,
     "BY": 1,
-    "CA": 117,
+    "CA": 114,
     "CF": 4,
-    "CH": 213,
-    "CR": 6,
+    "CH": 19,
+    "CR": 8,
     "CY": 2,
     "CZ": 13,
-    "DE": 260,
+    "DE": 271,
     "DK": 2,
     "EE": 16,
-    "ES": 9,
-    "FI": 37,
-    "FR": 70,
-    "GB": 123,
+    "ES": 11,
+    "FI": 39,
+    "FR": 71,
+    "GB": 125,
     "GE": 2,
-    "HK": 10,
+    "HK": 11,
     "HU": 4,
-    "ID": 14,
+    "ID": 1,
     "IE": 5,
     "IL": 3,
-    "IN": 5,
-    "IR": 99,
-    "IT": 17,
+    "IN": 4,
+    "IR": 94,
+    "IT": 18,
     "JP": 24,
     "KR": 7,
     "KZ": 7,
-    "LT": 13,
+    "LT": 14,
     "LV": 8,
-    "MD": 11,
-    "ME": 63,
+    "MD": 15,
     "MH": 1,
-    "MR": 1,
     "MY": 3,
     "NG": 15,
-    "NL": 154,
+    "NL": 173,
     "NO": 15,
     "NZ": 7,
     "PH": 5,
-    "PL": 33,
+    "PL": 35,
     "RO": 7,
-    "RS": 11,
+    "RS": 13,
     "RU": 76,
-    "SC": 86,
-    "SE": 41,
-    "SG": 29,
-    "SK": 2,
-    "TH": 5,
-    "TM": 3,
+    "SC": 97,
+    "SE": 42,
+    "SG": 32,
+    "SK": 1,
+    "TH": 4,
+    "TM": 1,
     "TR": 28,
     "TW": 2,
     "UA": 2,
     "UM": 1,
-    "US": 2026,
+    "US": 2302,
     "VI": 1,
-    "ZA": 3
+    "ZA": 4
   },
   "published_by_country": {
     "AE": 19,
-    "AI": 1,
     "AL": 2,
     "AM": 2,
-    "AT": 7,
+    "AT": 6,
     "AU": 7,
     "BE": 8,
-    "BG": 7,
+    "BG": 9,
     "BR": 5,
     "BY": 1,
-    "CA": 117,
+    "CA": 114,
     "CF": 4,
-    "CH": 213,
-    "CR": 6,
+    "CH": 19,
+    "CR": 8,
     "CY": 2,
     "CZ": 13,
-    "DE": 260,
+    "DE": 271,
     "DK": 2,
     "EE": 16,
-    "ES": 9,
-    "FI": 37,
-    "FR": 70,
-    "GB": 123,
+    "ES": 11,
+    "FI": 39,
+    "FR": 71,
+    "GB": 125,
     "GE": 2,
-    "HK": 10,
+    "HK": 11,
     "HU": 4,
-    "ID": 14,
+    "ID": 1,
     "IE": 5,
     "IL": 3,
-    "IN": 5,
-    "IR": 99,
-    "IT": 17,
+    "IN": 4,
+    "IR": 94,
+    "IT": 18,
     "JP": 24,
     "KR": 7,
     "KZ": 7,
-    "LT": 13,
+    "LT": 14,
     "LV": 8,
-    "MD": 11,
-    "ME": 63,
+    "MD": 15,
     "MH": 1,
-    "MR": 1,
     "MY": 3,
     "NG": 15,
-    "NL": 154,
+    "NL": 173,
     "NO": 15,
     "NZ": 7,
     "PH": 5,
-    "PL": 33,
+    "PL": 35,
     "RO": 7,
-    "RS": 11,
+    "RS": 13,
     "RU": 76,
-    "SC": 86,
-    "SE": 41,
-    "SG": 29,
-    "SK": 2,
-    "TH": 5,
-    "TM": 3,
+    "SC": 97,
+    "SE": 42,
+    "SG": 32,
+    "SK": 1,
+    "TH": 4,
+    "TM": 1,
     "TR": 28,
     "TW": 2,
     "UA": 2,
     "UM": 1,
-    "US": 2026,
+    "US": 2302,
     "VI": 1,
-    "ZA": 3
+    "ZA": 4
   },
   "country_cap_rejected_by_country": {
     "AE": 0,
-    "AI": 0,
     "AL": 0,
     "AM": 0,
     "AT": 0,
@@ -367,9 +359,7 @@
     "LT": 0,
     "LV": 0,
     "MD": 0,
-    "ME": 0,
     "MH": 0,
-    "MR": 0,
     "MY": 0,
     "NG": 0,
     "NL": 0,
@@ -394,11 +384,11 @@
     "VI": 0,
     "ZA": 0
   },
-  "health_candidates": 6851,
+  "health_candidates": 6856,
   "tcp_workers": 512,
   "country_resolution": {
-    "dns_resolved": 156,
-    "geolite2_local": 2858,
+    "dns_resolved": 219,
+    "geolite2_local": 3208,
     "unknown": 0,
     "database_loaded": true,
     "database": "/home/runner/work/VPN-Nodes/VPN-Nodes/data/GeoLite2-Country.mmdb",
@@ -408,7 +398,7 @@
       "invalid_ip": 0,
       "other": 0,
       "dns_failure": 0,
-      "lookups": 2858
+      "lookups": 3208
     }
   },
   "global_unknown": {
