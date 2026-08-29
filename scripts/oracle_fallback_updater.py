@@ -12,6 +12,11 @@ Required environment:
 Optional environment:
   MAX_STALENESS_MINUTES (default 75)
   REPO_DIR (default: directory containing this script's parent repository)
+
+Safety:
+  Create the tracked .oracle_updates_paused file at the repository root to pause
+  all automatic Oracle fallback refreshes during catalog experiments. Remove the
+  file to re-enable the fallback updater.
 """
 
 from __future__ import annotations
@@ -27,6 +32,7 @@ from pathlib import Path
 MAX_STALENESS_MINUTES = int(os.getenv("MAX_STALENESS_MINUTES", "75"))
 REPO_DIR = Path(os.getenv("REPO_DIR", Path(__file__).resolve().parents[1])).resolve()
 REMOTE = "https://github.com/noorelmostafa11-pixel/VPN-Nodes.git"
+PAUSE_FILE = REPO_DIR / ".oracle_updates_paused"
 
 
 def run(*args: str) -> None:
@@ -54,6 +60,10 @@ def main() -> int:
     run("git", "remote", "set-url", "origin", REMOTE)
     run("git", "fetch", "origin", "main", "--prune")
     run("git", "reset", "--hard", "origin/main")
+
+    if PAUSE_FILE.exists():
+        print("INFO Oracle fallback updates are paused by .oracle_updates_paused")
+        return 0
 
     age = catalog_age_minutes()
     print(f"INFO catalog_age_minutes={age}")
