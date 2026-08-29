@@ -22,6 +22,23 @@ CHANNEL_WORKERS = 16
 URI_RE = re.compile(r"(?:vless|vmess|trojan|ss)://[^\s\"'<>`]+", re.IGNORECASE)
 
 
+# Read every byte from upstream text feeds. The previous 2 MB cap could silently
+# truncate large sources and lose valid nodes before dedup/TCP/Xray evaluation.
+def fetch_full(url: str) -> bytes:
+    response = catalog.session.get(url, timeout=(catalog.CONNECT_TIMEOUT, catalog.READ_TIMEOUT), stream=True)
+    response.raise_for_status()
+    data = bytearray()
+    for chunk in response.iter_content(8192):
+        if chunk:
+            data.extend(chunk)
+    return bytes(data)
+
+
+# All non-Telegram sources collected by build_tcp_pool use catalog.fetch().
+# Replace the capped implementation for this production collection path only.
+catalog.fetch = fetch_full
+
+
 # Country is intentionally untouched here. It is resolved only after Xray marks a node healthy.
 def _telegram_page(channel: str, before: int | None = None) -> str:
     url = f"https://t.me/s/{channel}"
