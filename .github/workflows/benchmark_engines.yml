@@ -4,11 +4,11 @@ on:
   workflow_dispatch:
     inputs:
       limit:
-        description: 'Number of TCP-reachable nodes to benchmark'
+        description: 'Identical sample size for every engine'
         required: false
         default: '500'
       workers:
-        description: 'Parallel HTTP probe workers'
+        description: 'Parallel probe workers'
         required: false
         default: '80'
       timeout:
@@ -42,9 +42,7 @@ jobs:
           set -euo pipefail
           mkdir -p data
           if [ ! -s data/GeoLite2-Country.mmdb ]; then
-            curl --fail --location --silent --show-error \
-              'https://cdn.jsdelivr.net/npm/geolite2-country/GeoLite2-Country.mmdb.gz' \
-              --output /tmp/GeoLite2-Country.mmdb.gz
+            curl --fail --location --silent --show-error 'https://cdn.jsdelivr.net/npm/geolite2-country/GeoLite2-Country.mmdb.gz' --output /tmp/GeoLite2-Country.mmdb.gz
             gzip -dc /tmp/GeoLite2-Country.mmdb.gz > data/GeoLite2-Country.mmdb
           fi
           test -s data/GeoLite2-Country.mmdb
@@ -54,63 +52,40 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: python scripts/telegram_build_tcp_pool.py
-      - name: Install Xray, sing-box and Mihomo
-        env:
-          GH_TOKEN: ${{ github.token }}
+      - name: Install benchmark engines
         run: |
           set -euo pipefail
           python - <<'PY'
-          import gzip, json, pathlib, shutil, subprocess, tarfile, zipfile
+          import gzip, json, pathlib, shutil, tarfile, zipfile
           from urllib.request import Request, urlopen
-          root = pathlib.Path('/opt/hostedtoolcache')
-          root.mkdir(parents=True, exist_ok=True)
+          root=pathlib.Path('/opt/hostedtoolcache'); root.mkdir(parents=True,exist_ok=True)
           def latest(repo):
-              req = Request(f'https://api.github.com/repos/{repo}/releases/latest', headers={'Accept':'application/vnd.github+json','User-Agent':'AhmedVPN-engine-benchmark'})
-              with urlopen(req, timeout=20) as r: return json.load(r)
-          def install(repo, out_dir, exact=(), required=('linux-amd64',)):
-              rel = latest(repo); assets = rel.get('assets', [])
-              chosen = None
-              for name in exact:
-                  chosen = next((a for a in assets if a['name'] == name), None)
-                  if chosen: break
-              if not chosen:
-                  candidates=[a for a in assets if all(k.lower() in a['name'].lower() for k in required)]
-                  candidates=[a for a in candidates if not any(x in a['name'].lower() for x in ('.deb','.rpm','windows','darwin','android','arm64','386','freebsd','openbsd'))]
-                  if not candidates: raise SystemExit(f'No suitable asset for {repo}: {[a["name"] for a in assets]}')
-                  chosen=sorted(candidates,key=lambda a:len(a['name']))[0]
-              data=urlopen(Request(chosen['browser_download_url'],headers={'User-Agent':'AhmedVPN-engine-benchmark'}),timeout=60).read()
-              asset=pathlib.Path('/tmp')/chosen['name']; asset.write_bytes(data); out=pathlib.Path(out_dir); out.mkdir(parents=True,exist_ok=True)
-              if asset.suffix=='.zip':
-                  with zipfile.ZipFile(asset) as z:
-                      member=next((n for n in z.namelist() if pathlib.Path(n).name in ('xray','sing-box','mihomo')), None)
-                      if not member: raise SystemExit(f'No binary inside {asset.name}')
-                      p=out/pathlib.Path(member).name; p.write_bytes(z.read(member)); return p
-              if asset.name.endswith(('.tar.gz','.tgz')):
-                  with tarfile.open(asset,'r:gz') as t:
-                      member=next((m for m in t.getmembers() if pathlib.Path(m.name).name in ('xray','sing-box','mihomo')), None)
-                      if not member: raise SystemExit(f'No binary inside {asset.name}')
-                      p=out/pathlib.Path(member.name).name; src=t.extractfile(member); p.write_bytes(src.read()); return p
-              if asset.suffix=='.gz':
-                  p=out/asset.stem
-                  with gzip.open(asset,'rb') as src, p.open('wb') as dst: shutil.copyfileobj(src,dst)
-                  return p
-              p=out/asset.name; p.write_bytes(asset.read_bytes()); return p
-          x=install('XTLS/Xray-core','/opt/hostedtoolcache/xray',exact=('Xray-linux-64.zip',),required=('Xray-linux-64',))
-          s=install('SagerNet/sing-box','/opt/hostedtoolcache/sing-box')
-          m=install('MetaCubeX/mihomo','/opt/hostedtoolcache/mihomo')
-          for p in (x,s,m):
-              p.chmod(0o755)
-              print(p)
-      - name: Benchmark engines on the same sample
+              with urlopen(Request(f'https://api.github.com/repos/{repo}/releases/latest',headers={'Accept':'application/vnd.github+json','User-Agent':'AhmedVPN-engine-benchmark'}),timeout=20) as r: return json.load(r)
+          def install(repo,out_dir,fixed):
+              rel=latest(repo); assets=rel.get('assets',[]); candidates=[a for a in assets if 'linux-amd64' in a['name'].lower() and not any(x in a['name'].lower() for x in ('.deb','.rpm','windows','darwin','android','arm64','386','freebsd','openbsd'))]
+              if not candidates: raise SystemExit(f'No linux-amd64 asset for {repo}')
+              asset=min(candidates,key=lambda a:len(a['name']))
+              data=urlopen(Request(asset['browser_download_url'],headers={'User-Agent':'AhmedVPN-engine-benchmark'}),timeout=60).read()
+              src=pathlib.Path('/tmp')/asset['name']; src.write_bytes(data); out=pathlib.Path(out_dir); out.mkdir(parents=True,exist_ok=True); target=out/fixed
+              if src.suffix=='.zip':
+                  with zipfile.ZipFile(src) as z: target.write_bytes(z.read(next(n for n in z.namelist() if pathlib.Path(n).name==fixed)))
+              elif src.name.endswith(('.tar.gz','.tgz')):
+                  with tarfile.open(src,'r:gz') as t: target.write_bytes(t.extractfile(next(m for m in t.getmembers() if pathlib.Path(m.name).name==fixed and m.isfile())).read())
+              elif src.suffix=='.gz':
+                  with gzip.open(src,'rb') as f, target.open('wb') as g: shutil.copyfileobj(f,g)
+              else: shutil.copyfile(src,target)
+              target.chmod(0o755); print(target)
+          install('XTLS/Xray-core','/opt/hostedtoolcache/xray','xray')
+          install('SagerNet/sing-box','/opt/hostedtoolcache/sing-box','sing-box')
+          install('MetaCubeX/mihomo','/opt/hostedtoolcache/mihomo','mihomo')
+          PY
+      - name: Run fair benchmark on identical sample
         env:
           XRAY_BIN: /opt/hostedtoolcache/xray/xray
           SING_BOX_BIN: /opt/hostedtoolcache/sing-box/sing-box
           MIHOMO_BIN: /opt/hostedtoolcache/mihomo/mihomo
         run: |
-          python scripts/benchmark_engines.py \
-            --limit '${{ inputs.limit }}' \
-            --workers '${{ inputs.workers }}' \
-            --timeout '${{ inputs.timeout }}'
+          python scripts/benchmark_engines_v2.py --limit '${{ inputs.limit }}' --workers '${{ inputs.workers }}' --timeout '${{ inputs.timeout }}'
       - name: Upload benchmark result
         uses: actions/upload-artifact@v4
         with:
