@@ -59,13 +59,13 @@ jobs:
           chmod +x /opt/hostedtoolcache/xray/xray
           /opt/hostedtoolcache/xray/xray version
 
-      - name: Real Internet health through Xray - every TCP reachable node
+      - name: Real Internet health through Xray - Google TCP gate then HTTP probes
         env:
           XRAY_BIN: /opt/hostedtoolcache/xray/xray
           REAL_DELAY_WORKERS: 256
           REAL_DELAY_NODE_TIMEOUT: 5
           REAL_DELAY_SOCKS_BASE: 21000
-        run: python scripts/real_delay.py
+        run: python scripts/real_delay_google_first.py
 
       - name: Restore previous catalog on failure
         if: failure()
