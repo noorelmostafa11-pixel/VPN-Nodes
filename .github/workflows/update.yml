@@ -48,10 +48,13 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
         run: python scripts/telegram_build_tcp_pool.py
 
+      - name: Distribute unresolved nodes into discovered countries
+        run: python scripts/distribute_unknown.py
+
       - name: Restore previous catalog on failure
         if: failure()
         run: |
-          git restore --source=HEAD -- output/countries output/protocols output/metadata/index.json output/metadata/countries.json output/metadata/health.json
+          git restore --source=HEAD -- output/countries output/protocols output/global output/metadata/index.json output/metadata/countries.json output/metadata/health.json
 
       - name: Commit generated feeds
         if: success()
