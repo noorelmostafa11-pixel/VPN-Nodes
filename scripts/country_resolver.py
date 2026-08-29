@@ -24,12 +24,6 @@ COUNTRY_TOKENS = {
 IP2LOCATION_DAILY_LIMIT = 1000
 IP2LOCATION_TIMEOUT = 8
 GEO_MAX_WORKERS = 24
-KNOWN_ANYCAST_ASNS = {
-    "13335",  # Cloudflare
-}
-KNOWN_CDN_HOST_PATTERNS = (
-    "cloudflare.com", "fastly.net", "akamai.net", "akamaihd.net", "cloudfront.net",
-)
 
 @lru_cache(maxsize=8192)
 def resolve_host(host: str) -> str | None:
@@ -53,7 +47,7 @@ def resolve_host(host: str) -> str | None:
     for label in labels:
         m = re.fullmatch(r"([a-z]{2})(?:\d{1,4}|[-_](?:\d{1,4}))", label)
         if m and m.group(1) in COUNTRY_TOKENS:
-            return COUNTRY_TOKENS[m.group(1)]
+            return m.group(1)
     return None
 
 
@@ -91,7 +85,7 @@ def _geo_batch_ip_api(ips: list[str]) -> dict[str, str]:
         req = urllib.request.Request(
             "http://ip-api.com/batch?fields=status,countryCode,proxy,hosting,query",
             data=payload,
-            headers={"Content-Type": "application/json", "User-Agent": "VPN-Nodes-CountryResolver/4"},
+            headers={"Content-Type": "application/json", "User-Agent": "VPN-Nodes-CountryResolver/3"},
             method="POST",
         )
         try:
@@ -108,11 +102,12 @@ def _geo_batch_ip_api(ips: list[str]) -> dict[str, str]:
 
 
 def _ip2location_lookup(ip: str) -> tuple[str, str] | None:
+    """Keyless IP2Location.io lookup. Their keyless tier is limited to 1,000/day."""
     url = "https://api.ip2location.io/?" + urlencode({"ip": ip, "format": "json"})
     try:
         request = urllib.request.Request(
             url,
-            headers={"User-Agent": "VPN-Nodes-CountryResolver/4 (IP2Location)"},
+            headers={"User-Agent": "VPN-Nodes-CountryResolver/3 (IP2Location)"},
             method="GET",
         )
         with urllib.request.urlopen(request, timeout=IP2LOCATION_TIMEOUT) as response:
@@ -127,6 +122,8 @@ def _ip2location_lookup(ip: str) -> tuple[str, str] | None:
 
 def _geo_ip2location(ips: list[str]) -> dict[str, str]:
     result: dict[str, str] = {}
+    # Prefer the first 1,000 addresses deterministically. Any remainder is intentionally
+    # left eligible for UNKNOWN/global pool rather than being dropped.
     limited = ips[:IP2LOCATION_DAILY_LIMIT]
     if not limited:
         return result
@@ -142,22 +139,14 @@ def _geo_ip2location(ips: list[str]) -> dict[str, str]:
     return result
 
 
-def _hostname_has_cdn_signal(host: str) -> bool:
-    value = str(host or "").lower().rstrip('.')
-    return any(pattern in value for pattern in KNOWN_CDN_HOST_PATTERNS)
-
-
-def _provider_disagreement(ip2: str | None, api: str | None) -> bool:
-    return bool(ip2 and api and ip2 != api)
-
-
 def resolve_rows(rows: list[dict]) -> dict[str, int]:
-    """Resolve country while preserving every parsed/reachable node.
+    """Resolve country without ever rejecting or dropping a parsed/reachable node.
 
-    Strong signals are never overwritten. IP geolocation is only a fallback for rows
-    that remain UNKNOWN. Two independent providers are compared; disagreement leaves
-    UNKNOWN. Known CDN/Anycast IPs are never assigned a country from GeoIP alone because
-    the advertised IP can identify the network edge rather than the VPN endpoint.
+    Strong signals (explicit metadata, remark, source hint, hostname) are never overwritten.
+    For unresolved nodes, IP2Location and ip-api are queried independently and compared.
+    Agreement is a medium-confidence consensus. A single provider result is accepted only
+    as a low-confidence fallback. A provider conflict leaves the node UNKNOWN, which the
+    publisher still keeps in the global/server pool. City/latitude/longitude are never used.
     """
     hostname_resolved = 0
     for row in rows:
@@ -191,33 +180,13 @@ def resolve_rows(rows: list[dict]) -> dict[str, int]:
     ip2location_only = 0
     ip_api_only = 0
     conflicts = 0
-    cdn_anycast_unknown = 0
 
     for row in unresolved:
-        host = str(row.get("host") or "")
-        ip = host_ip.get(host)
+        ip = host_ip.get(str(row.get("host") or ""))
         if not ip:
             continue
         ip2 = ip2location.get(ip)
         api = ip_api.get(ip)
-        is_cdn = _hostname_has_cdn_signal(host)
-        is_known_anycast = False
-        asn = str(row.get("asn") or "").strip()
-        if asn:
-            asn_digits = re.sub(r"^AS", "", asn, flags=re.IGNORECASE)
-            is_known_anycast = asn_digits in KNOWN_ANYCAST_ASNS
-
-        if is_cdn or is_known_anycast:
-            row["country_resolution"] = "cdn_anycast_guard"
-            row["country_resolution_confidence"] = "none"
-            row["geo_conflict"] = {
-                "ip2location": ip2,
-                "ip_api": api,
-                "reason": "cdn_or_anycast_endpoint",
-            }
-            cdn_anycast_unknown += 1
-            continue
-
         if ip2 and api and ip2 == api:
             row["country"] = ip2
             row["country_resolution"] = "geo_consensus"
@@ -233,7 +202,7 @@ def resolve_rows(rows: list[dict]) -> dict[str, int]:
             row["country_resolution"] = "ip_geolocation"
             row["country_resolution_confidence"] = "low"
             ip_api_only += 1
-        elif _provider_disagreement(ip2, api):
+        elif ip2 and api and ip2 != api:
             row["country_resolution"] = "geo_conflict"
             row["country_resolution_confidence"] = "none"
             row["geo_conflict"] = {"ip2location": ip2, "ip_api": api}
@@ -246,6 +215,5 @@ def resolve_rows(rows: list[dict]) -> dict[str, int]:
         "geo_consensus": consensus,
         "ip_geolocation": ip2location_only + consensus + ip_api_only,
         "geo_conflicts": conflicts,
-        "cdn_anycast_unknown": cdn_anycast_unknown,
         "unknown": unknown,
     }
