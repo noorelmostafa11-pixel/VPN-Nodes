@@ -208,16 +208,11 @@ def parse_lines(text: str, source_name: str, source_hint_country: str | None = N
         host, port, remark, query = endpoint_from_uri(uri)
         if not host or port not in ALLOWED_PORTS:
             continue
-        country = country_from_text(remark)
-        if country is None:
-            for key in ("country", "cc", "region", "geo"):
-                country = country_from_text(query.get(key, [""])[0])
-                if country:
-                    break
-        if country is None:
-            country = source_hint_country
+        # Do not assign country from source filename or loose query text here.
+        # Country is resolved later with explicit node metadata first, then GeoLite2.
+        country = "UNKNOWN"
         priority = LEGACY_SOURCE_PRIORITY.get(source_name, source_priority)
-        rows.append({"uri": uri, "protocol": protocol, "host": host, "port": port, "remark": remark, "country": country or "UNKNOWN", "source": source_name, "source_priority": priority})
+        rows.append({"uri": uri, "protocol": protocol, "host": host, "port": port, "remark": remark, "country": country, "source": source_name, "source_priority": priority})
     return rows
 
 def source_hint_from_url(url: str) -> str | None:
@@ -240,7 +235,8 @@ def collect_github_api_source(item):
     rows = []
     for entry in github_index(item["url"]):
         if entry.get("type") != "file" or not entry.get("download_url"): continue
-        name = entry.get("name", ""); hint = source_hint_from_url(name)
+        name = entry.get("name", "")
+        hint = source_hint_from_url(name)
         try: rows.extend(parse_lines(fetch(entry["download_url"]).decode("utf-8", errors="replace"), f"{item['name']}:{name}", hint, item.get("priority", 0)))
         except Exception as exc: print(f"WARN {item['name']}/{name}: {exc}")
     return rows
@@ -257,14 +253,14 @@ def collect_source(item):
     if item.get("format") == "github_api": return collect_github_api_source(item)
     if item.get("format") == "github_tree": return collect_github_tree_source(item)
     if item.get("kind") == "country_template": return []
-    return parse_lines(fetch(item["url"]).decode("utf-8", errors="replace"), item["name"], source_hint_from_url(item["url"]), item.get("priority", 0))
+    return parse_lines(fetch(item["url"]).decode("utf-8", errors="replace"), item["name"], None, item.get("priority", 0))
 def load_previous_snapshot():
     rows = []; countries_dir = OUT / "countries"
     if not countries_dir.exists(): return rows
     for path in countries_dir.glob("*.txt"):
         code = path.stem.upper()
         if code != "UNKNOWN" and code not in ISO_CODES: continue
-        try: rows.extend(parse_lines(path.read_text(encoding="utf-8", errors="replace"), f"snapshot:{code}", code if code in ISO_CODES else None, -100))
+        try: rows.extend(parse_lines(path.read_text(encoding="utf-8", errors="replace"), f"snapshot:{code}", None, -100))
         except Exception as exc: print(f"WARN snapshot {path.name}: {exc}")
     return rows
 def tcp_check(item):
@@ -305,8 +301,57 @@ def main():
     unique = {}
     for row in all_rows: unique.setdefault(dedup_key(row["uri"]), row)
     rows = list(unique.values())
+
+    # Hard reset any inherited/legacy classification before the authoritative resolver.
+    # This prevents source filename hints or stale snapshot countries from dominating.
     for row in rows:
-        if row["country"] not in ISO_CODES: row["country"] = "UNKNOWN"
+        row["country"] = "UNKNOWN"
+        row["country_resolution"] = "pending"
+        row["country_resolution_confidence"] = "none"
+
+    # Explicit node metadata FIRST. Only strong node-label metadata is accepted.
+    metadata_count = 0
+    metadata_conflicts = 0
+    for row in rows:
+        remark = str(row.get("remark") or "")
+        explicit = None
+        # Flag emojis.
+        for i in range(len(remark) - 1):
+            a, b = remark[i], remark[i + 1]
+            if "\U0001F1E6" <= a <= "\U0001F1FF" and "\U0001F1E6" <= b <= "\U0001F1FF":
+                candidate = chr(ord(a) - 0x1F1E6 + ord("A")) + chr(ord(b) - 0x1F1E6 + ord("A"))
+                if candidate in ISO_CODES:
+                    explicit = candidate
+                    break
+        # Bracketed / delimited ISO codes only.
+        if not explicit:
+            for match in re.finditer(r"(?:^|[\s\[\(\{/_|:#\-])([A-Za-z]{2})(?:$|[\s\]\)\}/_|:#\-\d])", remark):
+                candidate = match.group(1).upper()
+                if candidate in ISO_CODES and candidate.lower() not in TECHNICAL_TOKENS:
+                    explicit = candidate
+                    break
+        # Full country names as whole lexical words.
+        if not explicit:
+            words = {re.sub(r"[^a-z0-9]", "", w) for w in re.findall(r"[A-Za-z]+", remark.lower())}
+            for token, candidate in sorted(ALIASES.items(), key=lambda x: len(x[0]), reverse=True):
+                if len(token) > 2 and token in words:
+                    explicit = candidate
+                    break
+        if explicit:
+            row["country"] = explicit
+            row["country_resolution"] = "metadata_explicit"
+            row["country_resolution_confidence"] = "high"
+            metadata_count += 1
+
+    print(f"INFO metadata_first explicit={metadata_count} rows={len(rows)}")
+
+    # GeoLite2 fallback is handled by country_resolver for rows still UNKNOWN.
+    from country_resolver import resolve_rows
+    resolver_stats = resolve_rows(rows)
+    for row in rows:
+        if row.get("country") not in ISO_CODES:
+            row["country"] = "UNKNOWN"
+
     candidates = select_health_candidates(rows); print(f"INFO parsed={len(rows)} health_candidates={len(candidates)} full_pool_health_check=true")
     print(f"INFO vmess_seen={VMESS_DIAGNOSTICS['seen']} vmess_decode_ok={VMESS_DIAGNOSTICS['decode_ok']} vmess_decode_failed={VMESS_DIAGNOSTICS['decode_failed']} vmess_bad_host={VMESS_DIAGNOSTICS['bad_host']} vmess_bad_port={VMESS_DIAGNOSTICS['bad_port']}")
     checked = []
@@ -328,11 +373,26 @@ def main():
     for path in (OUT / "protocols").glob("*.txt"): path.unlink()
     for country, items in sorted(by_country.items()): (OUT / "countries" / f"{country}.txt").write_text("\n".join(item["uri"] for item in items) + "\n", encoding="utf-8")
     for protocol, items in sorted(by_protocol.items()): (OUT / "protocols" / f"{protocol}.txt").write_text("\n".join(item["uri"] for item in items) + "\n", encoding="utf-8")
-    generated_at = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
-    index = {"schema": 2, "generated_at": generated_at, "total_fetched": len(all_rows), "unique_parsed": len(rows), "health_candidates": len(candidates), "reachable_published": len(checked), "allowed_ports": [80, 443], "protocols": {protocol: len(by_protocol.get(protocol, [])) for protocol in sorted(PROTOCOLS)}, "countries": len(by_country), "country_names": {country: iso_name(country) for country in sorted(by_country)}, "country_policy": "ISO-3166 alpha-2 only; explicit node metadata wins over feed hint; unresolved nodes go to UNKNOWN", "health_policy": "Every parsed node is TCP-screened on ports 80/443; TCP latency is the primary ranking metric; source priority is a tie-breaker; Android performs authoritative Xray end-to-end Internet verification", "source_failures": len(failed_sources), "files": {"countries": "countries/", "protocols": "protocols/"}}
-    (OUT / "metadata/index.json").write_text(json.dumps(index, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    (OUT / "metadata/countries.json").write_text(json.dumps({"countries": [{"code": c, "name": iso_name(c), "nodes": len(a)} for c, a in sorted(by_country.items())]}, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    (OUT / "metadata/health.json").write_text(json.dumps({"generated_at": generated_at, "sources": source_health, "reachable_published": len(checked), "health_candidates": len(candidates), "vmess": VMESS_DIAGNOSTICS}, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    print(json.dumps(index, ensure_ascii=False, indent=2))
+    checked_sorted = sorted(checked, key=rank)
+    (OUT / "all_reachable.txt").write_text("\n".join(item["uri"] for item in checked_sorted) + "\n", encoding="utf-8")
+    counts = {country: len(items) for country, items in by_country.items()}
+    metadata = {
+        "schema": 7,
+        "generated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+        "total_fetched": len(all_rows), "unique_parsed": len(rows), "tcp_reachable": len(checked),
+        "tcp_dead": len(rows) - len(checked), "countries": sorted(counts), "published": len(checked),
+        "published_by_country": dict(sorted(counts.items())),
+        "source_failures": len(failed_sources), "max_per_country": MAX_GENERATED_PER_COUNTRY,
+        "country_policy": "Dynamic ISO-3166 countries; explicit node metadata first; local GeoLite2 fallback; source filename hints never assign country.",
+        "health_policy": "Every parsed node asynchronously TCP-screened on ports 80/443; no Xray/GET health stage.",
+        "country_resolver": resolver_stats,
+        "metadata_first": metadata_count,
+    }
+    (OUT / "metadata" / "index.json").write_text(json.dumps(metadata, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    (OUT / "metadata" / "source_health.json").write_text(json.dumps(source_health, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    print(f"INFO tcp_reachable={len(checked)} tcp_dead={len(rows)-len(checked)}")
+    print(f"INFO country_metadata_first={metadata_count} country_geoip={resolver_stats.get('geoip_local', 0)} unknown={sum(1 for row in rows if row.get('country') == 'UNKNOWN')}")
+    print(json.dumps(metadata, ensure_ascii=False, indent=2))
 
-if __name__ == "__main__": main()
+if __name__ == "__main__":
+    main()
