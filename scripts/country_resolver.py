@@ -55,14 +55,11 @@ ALIASES = {
     "ph": "PH", "philippines": "PH", "ge": "GE", "georgia": "GE", "cr": "CR", "costarica": "CR",
     "cy": "CY", "cyprus": "CY", "al": "AL", "albania": "AL", "am": "AM", "armenia": "AM",
     "by": "BY", "belarus": "BY", "bz": "BZ", "belize": "BZ", "cf": "CF", "centralafricanrepublic": "CF",
-    "md": "MD", "moldova": "MD", "ph": "PH", "vi": "VI", "virginislands": "VI",
-    "mh": "MH", "marshallislands": "MH",
+    "md": "MD", "moldova": "MD", "vi": "VI", "virginislands": "VI", "mh": "MH", "marshallislands": "MH",
 }
 ISO_CODES = {c.alpha_2.upper() for c in pycountry.countries}
 TECHNICAL_TOKENS = {"ws", "tls", "tcp", "raw", "grpc", "reality", "http", "https", "udp", "auto", "none", "vless", "vmess", "trojan", "ss"}
 
-# Exact ISO-style metadata patterns only; avoid treating arbitrary two-letter words as countries.
-EXPLICIT_CODE_RE = re.compile(r"(?<![A-Za-z0-9])(?:\[|\(|_|-)?([A-Z]{2})(?:\]|\)|_|-|$)(?![A-Za-z0-9])")
 
 def _reader():
     global _db_reader, _db_error
@@ -105,18 +102,25 @@ def extract_country_from_text(text: str) -> str | None:
     if flag in ISO_CODES:
         return flag
 
-    raw = text.lower()
-    compact = re.sub(r"[^a-z0-9]+", "", raw)
-    # Prefer longer country names before short codes such as 'in' or 'us'.
-    for token, code in sorted(ALIASES.items(), key=lambda item: len(item[0]), reverse=True):
-        if len(token) > 2 and token in compact:
-            return code
-
-    # ISO code only when delimited or surrounded by common node-label punctuation.
-    upper = text.upper()
-    for match in re.finditer(r"(?<![A-Z0-9])([A-Z]{2})(?![A-Z0-9])", upper):
+    raw = text.strip()
+    upper = raw.upper()
+    # Strong code forms: [DE], (TR), #NL, DE-01, DE_01.
+    for match in re.finditer(r"(?:^|[\s\[\(\{/#_|:\-])([A-Z]{2})(?=$|[\s\]\)\}_|:\-\d])", upper):
         code = match.group(1)
         if code in ISO_CODES and code.lower() not in TECHNICAL_TOKENS:
+            return code
+
+    # Full country names / long aliases are matched as complete lexical tokens.
+    words = re.findall(r"[A-Za-z]+", raw.lower())
+    normalized = {re.sub(r"[^a-z0-9]", "", word) for word in words}
+    for token, code in sorted(ALIASES.items(), key=lambda item: len(item[0]), reverse=True):
+        if len(token) > 2 and token in normalized:
+            return code
+
+    # Handle joined labels such as Germany-01 and United_States_1.
+    compact = re.sub(r"[^a-z0-9]+", "", raw.lower())
+    for token, code in sorted(ALIASES.items(), key=lambda item: len(item[0]), reverse=True):
+        if len(token) > 2 and (compact.startswith(token) or compact.endswith(token)):
             return code
     return None
 
@@ -125,7 +129,6 @@ def _clean_host(value: str) -> str:
     text = str(value or "").strip()
     if text.startswith("[") and "]" in text:
         return text[1:text.index("]")]
-    # Only strip host:port for a single-colon endpoint; preserve IPv6 literals.
     if text.count(":") == 1:
         host, maybe_port = text.rsplit(":", 1)
         if maybe_port.isdigit():
@@ -202,19 +205,19 @@ def country_from_ip(ip: str) -> str | None:
 
 
 def resolve_rows(rows: list[dict]) -> dict[str, int | str | bool | dict]:
-    """Resolve UNKNOWN rows with explicit node metadata first, then local GeoLite2.
+    """Resolve every row with explicit node metadata first, then local GeoLite2.
 
-    Metadata from the node's remark/name/ps fields wins because it can describe the
-    intended VPN exit country even when the endpoint IP belongs to a CDN/Anycast edge.
-    GeoLite2 is used only when no explicit country metadata is present. No online
-    geolocation API is used during catalog generation.
+    A country inherited from a source filename/template is not trusted as node-level
+    metadata. Every row is re-evaluated: explicit remark/name/ps metadata wins; all
+    other rows are reset to UNKNOWN and resolved from the endpoint IP through the
+    local GeoLite2 database. This prevents a source hint such as US from masking a
+    real endpoint country behind Cloudflare/Anycast.
     """
     with FAILURE_LOCK:
         for key in FAILURE_STATS:
             FAILURE_STATS[key] = 0
 
-    unresolved = [row for row in rows if row.get("country") == "UNKNOWN"]
-    if not unresolved:
+    if not rows:
         return {
             "hostname": 0,
             "geoip_local": 0,
@@ -226,72 +229,79 @@ def resolve_rows(rows: list[dict]) -> dict[str, int | str | bool | dict]:
         }
 
     reader = _reader()
-
-    # Resolve DNS/IP once for diagnostics and for GeoLite fallback. Metadata is still
-    # evaluated before using the GeoIP answer.
-    hosts_to_resolve: set[str] = set()
-    for row in unresolved:
-        for key in ("host", "server", "address"):
-            value = str(row.get(key) or "").strip()
-            if value:
-                hosts_to_resolve.add(value)
-
     address_to_ip: dict[str, str | None] = {}
-    if hosts_to_resolve:
-        with ThreadPoolExecutor(max_workers=DNS_WORKERS) as pool:
-            futures = {pool.submit(resolve_ip, host): host for host in hosts_to_resolve}
-            for future in as_completed(futures):
-                host = futures[future]
-                try:
-                    address_to_ip[host] = future.result()
-                except Exception:
-                    _inc_failure("other")
-                    address_to_ip[host] = None
+    hosts_to_resolve: set[str] = set()
 
-    resolved_geoip = 0
+    for row in rows:
+        for key in ("host", "server", "address"):
+            raw = _clean_host(str(row.get(key) or "").strip())
+            if raw:
+                hosts_to_resolve.add(raw)
+
+    with ThreadPoolExecutor(max_workers=DNS_WORKERS) as pool:
+        futures = {pool.submit(resolve_ip, host): host for host in hosts_to_resolve}
+        for future in as_completed(futures):
+            host = futures[future]
+            try:
+                address_to_ip[host] = future.result()
+            except Exception:
+                _inc_failure("other")
+                address_to_ip[host] = None
+
     resolved_metadata = 0
+    resolved_geoip = 0
     dns_resolved = 0
+    reclassified_from_existing = 0
 
-    for row in unresolved:
+    for row in rows:
         remark_text = " ".join(
             str(row.get(key) or "") for key in ("remark", "name", "ps", "remarks", "title")
-        )
-        meta_country = extract_country_from_text(remark_text)
+        ).strip()
+        metadata_country = extract_country_from_text(remark_text)
+        previous_country = str(row.get("country") or "UNKNOWN").upper()
 
-        if meta_country:
-            row["country"] = meta_country
-            row["country_resolution"] = "metadata_remark"
+        if metadata_country:
+            if previous_country != metadata_country:
+                reclassified_from_existing += 1
+            row["country"] = metadata_country
+            row["country_resolution"] = "metadata_explicit"
             row["country_resolution_confidence"] = "high"
             resolved_metadata += 1
             for key in ("host", "server", "address"):
-                raw_target = str(row.get(key) or "").strip()
-                ip = address_to_ip.get(raw_target)
+                raw = _clean_host(str(row.get(key) or "").strip())
+                ip = address_to_ip.get(raw)
                 if ip:
-                    if _clean_host(raw_target) != ip:
+                    if raw != ip:
                         dns_resolved += 1
                     row["resolved_ip"] = ip
                     break
             continue
 
+        # Any non-explicit source/template country is deliberately discarded here.
+        if previous_country != "UNKNOWN":
+            reclassified_from_existing += 1
+        row["country"] = "UNKNOWN"
+        row["country_resolution"] = "pending_geoip"
+        row["country_resolution_confidence"] = "none"
+
         if reader is None:
             row["country_resolution"] = "geolite2_unavailable"
-            row["country_resolution_confidence"] = "none"
             continue
 
         country = None
         for key in ("host", "server", "address"):
-            raw_target = str(row.get(key) or "").strip()
-            if not raw_target:
+            raw = _clean_host(str(row.get(key) or "").strip())
+            if not raw:
                 continue
-            ip = address_to_ip.get(raw_target)
+            ip = address_to_ip.get(raw)
             if not ip:
                 continue
-            if _clean_host(raw_target) != ip:
+            if raw != ip:
                 dns_resolved += 1
+                row["resolved_ip"] = ip
             country = country_from_ip(ip)
             if country:
                 row["country"] = country
-                row["resolved_ip"] = ip
                 row["country_resolution"] = "geolite2_local"
                 row["country_resolution_confidence"] = "medium"
                 resolved_geoip += 1
@@ -311,11 +321,17 @@ def resolve_rows(rows: list[dict]) -> dict[str, int | str | bool | dict]:
         f"other:{stats['other']} "
         f"lookups:{stats['lookups']}"
     )
+    print(
+        f"INFO country_metadata_first={resolved_metadata} "
+        f"country_geoip={resolved_geoip} reclassified_existing={reclassified_from_existing}"
+    )
     return {
         "hostname": dns_resolved,
         "geoip_local": resolved_geoip,
         "ip_geolocation": resolved_geoip,
         "metadata_fallback": resolved_metadata,
+        "metadata_first": resolved_metadata,
+        "reclassified_existing": reclassified_from_existing,
         "unknown": unknown,
         "database": str(GEOIP_DB_PATH),
         "database_loaded": reader is not None,
