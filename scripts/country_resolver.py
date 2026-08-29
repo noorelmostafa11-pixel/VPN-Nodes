@@ -1,16 +1,13 @@
 from __future__ import annotations
-import ipaddress,json,re,socket,urllib.request
+import ipaddress,json,re,socket,urllib.request,urllib.parse
 from concurrent.futures import ThreadPoolExecutor,as_completed
 from functools import lru_cache
 
 COUNTRY_TOKENS={"uk":"GB","gb":"GB","england":"GB","greatbritain":"GB","britain":"GB","us":"US","usa":"US","america":"US","unitedstates":"US","ca":"CA","canada":"CA","de":"DE","germany":"DE","fr":"FR","france":"FR","nl":"NL","netherlands":"NL","sg":"SG","singapore":"SG","jp":"JP","japan":"JP","kr":"KR","korea":"KR","southkorea":"KR","au":"AU","australia":"AU","at":"AT","austria":"AT","fi":"FI","finland":"FI","se":"SE","sweden":"SE","dk":"DK","denmark":"DK","pl":"PL","poland":"PL","cz":"CZ","czechia":"CZ","ch":"CH","switzerland":"CH","it":"IT","italy":"IT","es":"ES","spain":"ES","pt":"PT","portugal":"PT","no":"NO","norway":"NO","ru":"RU","russia":"RU","ua":"UA","ukraine":"UA","tr":"TR","turkey":"TR","turkiye":"TR","ir":"IR","iran":"IR","ae":"AE","uae":"AE","sa":"SA","saudiarabia":"SA","in":"IN","india":"IN","id":"ID","indonesia":"ID","my":"MY","malaysia":"MY","th":"TH","thailand":"TH","vn":"VN","vietnam":"VN","br":"BR","brazil":"BR","za":"ZA","southafrica":"ZA","nz":"NZ","newzealand":"NZ","hk":"HK","hongkong":"HK","tw":"TW","taiwan":"TW","az":"AZ","azerbaijan":"AZ","bg":"BG","bulgaria":"BG","ee":"EE","estonia":"EE","lt":"LT","lithuania":"LT","lv":"LV","latvia":"LV","hu":"HU","hungary":"HU","kz":"KZ","kazakhstan":"KZ","si":"SI","slovenia":"SI","sc":"SC","seychelles":"SC","cn":"CN","china":"CN","tm":"TM","turkmenistan":"TM"}
-
-IP2LOCATION_DAILY_LIMIT=1000
-TIMEOUT=8
+IP2LOCATION_DAILY_LIMIT=1000; TIMEOUT=8
 
 def norm(code):
     v=str(code or "").strip().upper(); return v if re.fullmatch(r"[A-Z]{2}",v) else None
-
 @lru_cache(maxsize=8192)
 def resolve_host(host):
     if not host:return None
@@ -114,4 +111,4 @@ def resolve_rows(rows):
         elif len(counts)>1:
             row["country_resolution"]="geo_conflict";row["country_resolution_confidence"]="none";row["geo_conflict"]={"ip2location":ip2.get(ip),"ip_api":api.get(ip),"countries_dev":cd.get(ip)};conflicts+=1
     unknown=sum(1 for r in rows if r.get("country")=="UNKNOWN")
-    return {"hostname":hostname,"ip2location":sum(1 for r in unresolved if r.get("country_resolution")=="geo_single" and host_ip.get(str(r.get("host") or "")) in ip2),"geo_pair_consensus":pair,"geo_triple_consensus":triple,"ip_geolocation":single+pair+triple,"geo_conflicts":conflicts,"unknown":unknown}
+    return {"hostname":hostname,"ip2location":0,"geo_pair_consensus":pair,"geo_triple_consensus":triple,"ip_geolocation":single+pair+triple,"geo_conflicts":conflicts,"unknown":unknown}
