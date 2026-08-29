@@ -3,7 +3,7 @@ name: Update GeoLite2 Country database
 on:
   workflow_dispatch:
   schedule:
-    - cron: '17 4 1 * *'
+    - cron: '17 4 1,15 * *'
 
 permissions:
   contents: write
@@ -21,34 +21,42 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Download latest GeoLite2 Country
-        env:
-          MAXMIND_ACCOUNT_ID: ${{ secrets.MAXMIND_ACCOUNT_ID }}
-          MAXMIND_LICENSE_KEY: ${{ secrets.MAXMIND_LICENSE_KEY }}
+      - name: Download GeoLite2 Country databases
         run: |
           set -euo pipefail
-          test -n "$MAXMIND_ACCOUNT_ID" || { echo "::error::MAXMIND_ACCOUNT_ID secret is required"; exit 1; }
-          test -n "$MAXMIND_LICENSE_KEY" || { echo "::error::MAXMIND_LICENSE_KEY secret is required"; exit 1; }
-          rm -rf /tmp/geolite2 data/GeoLite2-Country.mmdb
+          rm -rf /tmp/geolite2
           mkdir -p /tmp/geolite2 data
           curl --fail --location --silent --show-error \
-            --user "$MAXMIND_ACCOUNT_ID:$MAXMIND_LICENSE_KEY" \
-            'https://download.maxmind.com/geoip/databases/GeoLite2-Country/download?suffix=tar.gz' \
-            --output /tmp/geolite2/geolite2-country.tar.gz
-          tar -xzf /tmp/geolite2/geolite2-country.tar.gz -C /tmp/geolite2
-          db_path="$(find /tmp/geolite2 -type f -name 'GeoLite2-Country.mmdb' -print -quit)"
-          test -n "$db_path" || { echo "::error::GeoLite2-Country.mmdb was not found in the downloaded archive"; exit 1; }
-          cp "$db_path" data/GeoLite2-Country.mmdb
-          ls -lh data/GeoLite2-Country.mmdb
+            'https://cdn.jsdelivr.net/npm/@ip-location-db/geolite2-country-mmdb/geolite2-country-ipv4.mmdb' \
+            --output data/GeoLite2-Country-IPv4.mmdb
+          curl --fail --location --silent --show-error \
+            'https://cdn.jsdelivr.net/npm/@ip-location-db/geolite2-country-mmdb/geolite2-country-ipv6.mmdb' \
+            --output data/GeoLite2-Country-IPv6.mmdb
+          test -s data/GeoLite2-Country-IPv4.mmdb
+          test -s data/GeoLite2-Country-IPv6.mmdb
+          ls -lh data/GeoLite2-Country-*.mmdb
 
-      - name: Show database timestamp
-        run: stat -c '%n %s bytes %y' data/GeoLite2-Country.mmdb
+      - name: Record provenance
+        run: |
+          cat > data/GEOLITE2_SOURCE.md <<'EOF'
+          # GeoLite2 Country database
+
+          The catalog uses local GeoLite2 Country MMDB databases at build time.
+          IPv4 and IPv6 are stored separately because the maintained distribution
+          exposes them as separate MMDB files.
+
+          Source: https://github.com/sapics/ip-location-db
+          CDN: https://cdn.jsdelivr.net/npm/@ip-location-db/geolite2-country-mmdb/
+
+          Data license/EULA: GeoLite2 by MaxMind. See the upstream repository
+          and current MaxMind GeoLite2 license/EULA before redistribution.
+          EOF
 
       - name: Commit database
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/GeoLite2-Country.mmdb
+          git add data/GeoLite2-Country-IPv4.mmdb data/GeoLite2-Country-IPv6.mmdb data/GEOLITE2_SOURCE.md
           if git diff --cached --quiet; then
             echo "GeoLite2 database unchanged"
             exit 0
