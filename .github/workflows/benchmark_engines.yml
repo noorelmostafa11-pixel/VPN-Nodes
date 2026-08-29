@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       limit:
-        description: 'Identical sample size for every engine'
+        description: 'Identical frozen sample size for Xray and Mihomo'
         required: false
         default: '500'
       workers:
@@ -52,7 +52,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: python scripts/telegram_build_tcp_pool.py
-      - name: Install benchmark engines
+      - name: Install Xray and Mihomo
         run: |
           set -euo pipefail
           python - <<'PY'
@@ -84,22 +84,21 @@ jobs:
               else: shutil.copyfile(src,target)
               target.chmod(0o755); print(target)
           install('XTLS/Xray-core','/opt/hostedtoolcache/xray','xray','xray')
-          install('SagerNet/sing-box','/opt/hostedtoolcache/sing-box','sing-box','sing-box')
           install('MetaCubeX/mihomo','/opt/hostedtoolcache/mihomo','mihomo','mihomo')
           PY
-      - name: Run fair benchmark on one frozen identical sample
+      - name: Benchmark Xray vs Mihomo with resource metrics
         env:
           XRAY_BIN: /opt/hostedtoolcache/xray/xray
-          SING_BOX_BIN: /opt/hostedtoolcache/sing-box/sing-box
           MIHOMO_BIN: /opt/hostedtoolcache/mihomo/mihomo
         run: |
-          python scripts/benchmark_engines_v3.py --limit '${{ inputs.limit }}' --workers '${{ inputs.workers }}' --timeout '${{ inputs.timeout }}'
+          pip install psutil
+          python scripts/benchmark_xray_mihomo_resources.py --limit '${{ inputs.limit }}' --workers '${{ inputs.workers }}' --timeout '${{ inputs.timeout }}'
       - name: Upload benchmark result
         uses: actions/upload-artifact@v4
         with:
-          name: engine-benchmark
+          name: engine-benchmark-xray-mihomo
           path: |
-            output/metadata/engine_benchmark.json
+            output/metadata/engine_benchmark_xray_mihomo.json
             output/metadata/benchmark_sample.txt
           if-no-files-found: error
       - name: Commit benchmark result
@@ -107,9 +106,9 @@ jobs:
           set -euo pipefail
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add output/metadata/engine_benchmark.json output/metadata/benchmark_sample.txt
+          git add output/metadata/engine_benchmark_xray_mihomo.json output/metadata/benchmark_sample.txt
           if git diff --cached --quiet; then echo 'No benchmark result changes detected'; exit 0; fi
-          git commit -m 'chore: record engine benchmark'
+          git commit -m 'chore: record xray mihomo resource benchmark'
           result_commit=$(git rev-parse HEAD)
           git fetch origin main
           git reset --hard origin/main
