@@ -1,13 +1,21 @@
 import importlib.util
 from pathlib import Path
 
-spec = importlib.util.spec_from_file_location(
-    "collector",
-    Path(__file__).parents[1] / "scripts/update_catalog.py",
-)
-mod = importlib.util.module_from_spec(spec)
-spec.loader.exec_module(mod)
+ROOT = Path(__file__).parents[1]
 
+
+def load_module(name: str, path: Path):
+    spec = importlib.util.spec_from_file_location(name, path)
+    assert spec and spec.loader, path
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
+
+
+resolver = load_module("country_resolver", ROOT / "scripts/country_resolver.py")
+collector = load_module("collector", ROOT / "scripts/update_catalog.py")
+
+# Explicit node metadata is resolved by the dedicated resolver.
 cases = [
     ("#Germany-01", "DE"),
     ("#Singapore-02", "SG"),
@@ -17,29 +25,28 @@ cases = [
 ]
 
 for value, expected in cases:
-    got = mod.country_from_text(value)
+    got = resolver.extract_country_from_text(value)
     assert got == expected, (value, got, expected)
 
 # Never infer a country from arbitrary two-letter text or transport tokens.
-assert mod.country_from_text("ws tls tcp") is None
-assert mod.country_from_text("some-host.us.example") is None
-assert mod.country_from_text("ZZ") is None
+assert resolver.extract_country_from_text("ws tls tcp") is None
+assert resolver.extract_country_from_text("some-host.us.example") is None
+assert resolver.extract_country_from_text("ZZ") is None
 
-# Explicit country metadata still works.
-assert mod.country_from_text("DE") == "DE"
-assert mod.country_from_text("Canada.txt", allow_iso=False) == "CA"
+# Explicit country metadata still works when presented as a bare ISO code.
+assert resolver.extract_country_from_text("DE") == "DE"
+assert resolver.extract_country_from_text("Canada.txt") == "CA"
 
-assert mod.protocol_from_uri("vless://x@y:443") == "vless"
-assert mod.protocol_from_uri("ss://x@y:443") == "shadowsocks"
+# Collector parsing/endpoint behavior remains covered independently.
+assert collector.protocol_from_uri("vless://x@y:443") == "vless"
+assert collector.protocol_from_uri("ss://x@y:443") == "shadowsocks"
 assert (
-    mod.endpoint_from_uri(
+    collector.endpoint_from_uri(
         "vless://00000000-0000-0000-0000-000000000000@example.com:443?type=ws#Germany"
     )[1]
     == 443
 )
 
-assert mod.source_hint_from_url("https://example.invalid/CA.txt") == "CA"
-# WS is a valid ISO-3166 code (Samoa) when it appears as an explicit filename.
-assert mod.source_hint_from_url("https://example.invalid/ws.txt") == "WS"
-
-print("country/protocol/source tests: PASS")
+# Source filename hints are intentionally not part of final country resolution:
+# country is assigned only after successful Xray health checks and resolution.
+print("country/protocol/endpoint tests: PASS")
