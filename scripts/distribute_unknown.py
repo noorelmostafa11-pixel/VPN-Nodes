@@ -1,10 +1,13 @@
 #!/usr/bin/env python3
-"""Preserve unresolved/Cloudflare nodes and distribute them across known countries.
+"""Preserve confirmed nodes and evenly distribute unresolved nodes.
 
-Country files are kept in two logical tiers: nodes with explicit country metadata
-remain exactly where discovered and stay first; confirmed Cloudflare endpoints that
-lack explicit node metadata are quarantined as unresolved; unresolved nodes are then
-round-robin appended across already-discovered country feeds. No new country is made.
+Each country feed is treated as two logical tiers:
+1) nodes already assigned to the country by trusted metadata or GeoLite2 remain
+   first and keep their existing order;
+2) unresolved/Cloudflare nodes are appended after the confirmed tier.
+
+The unresolved pool is divided as evenly as possible across countries that still
+contain confirmed nodes after quarantine. No new country is created.
 """
 from __future__ import annotations
 
@@ -56,7 +59,7 @@ def _protocol_of(uri: str) -> str | None:
 
 
 def _explicit_metadata(uri: str) -> str | None:
-    """Use only the URI remark/fragment as node-owned explicit metadata."""
+    """Use only node-owned URI fragment metadata."""
     try:
         parsed = urlparse(uri)
         fragment = unquote(parsed.fragment or "")
@@ -85,7 +88,7 @@ def _is_confirmed_cloudflare(uri: str) -> bool:
     return cloudflare_detector.is_confirmed_cloudflare(host, resolved_ip)
 
 
-def _collect_existing_unknown() -> list[str]:
+def _collect_global_unknown() -> list[str]:
     nodes: list[str] = []
     seen: set[str] = set()
     for path in sorted(GLOBAL_DIR.glob("server-*.txt")):
@@ -97,11 +100,7 @@ def _collect_existing_unknown() -> list[str]:
 
 
 def _quarantine_confirmed_cloudflare() -> tuple[list[str], int]:
-    """Move CF endpoints without explicit metadata out of country buckets.
-
-    Nodes with explicit country metadata in their URI remark are protected. Nodes
-    with no explicit metadata and a confirmed Cloudflare hostname/IP become UNKNOWN.
-    """
+    """Remove confirmed Cloudflare endpoints without node metadata from country feeds."""
     unknown: list[str] = []
     seen: set[str] = set()
     quarantined = 0
@@ -130,36 +129,54 @@ def _quarantine_confirmed_cloudflare() -> tuple[list[str], int]:
     return unknown, quarantined
 
 
-def _append_unique(path: Path, uri: str) -> bool:
-    existing = _read_lines(path)
-    if uri in set(existing):
-        return False
-    existing.append(uri)
-    _write_lines(path, existing)
-    return True
+def _discovered_country_files() -> dict[str, Path]:
+    """Countries that still have confirmed nodes after CF quarantine."""
+    return {
+        path.stem.upper(): path
+        for path in COUNTRIES_DIR.glob("*.txt")
+        if path.stem.upper() in ISO_CODES and _read_lines(path)
+    }
 
 
-def _redistribute(unknown: list[str], countries: list[str]) -> dict[str, int]:
-    added_by_country = {country: 0 for country in countries}
+def _redistribute_equal(unknown: list[str], country_files: dict[str, Path]) -> dict[str, int]:
+    """Split the complete unresolved pool equally, then append after confirmed nodes."""
+    countries = sorted(country_files)
+    added = {country: 0 for country in countries}
     if not unknown or not countries:
-        return added_by_country
+        return added
 
-    for index, uri in enumerate(unknown):
-        country = countries[index % len(countries)]
-        path = COUNTRIES_DIR / f"{country}.txt"
-        if _append_unique(path, uri):
-            added_by_country[country] += 1
+    total = len(unknown)
+    base, remainder = divmod(total, len(countries))
+    cursor = 0
 
-    return added_by_country
+    for index, country in enumerate(countries):
+        take = base + (1 if index < remainder else 0)
+        if take <= 0:
+            continue
+        path = country_files[country]
+        existing = _read_lines(path)
+        existing_set = set(existing)
+        batch = [uri for uri in unknown[cursor:cursor + take] if uri not in existing_set]
+        if batch:
+            existing.extend(batch)
+            _write_lines(path, existing)
+            added[country] += len(batch)
+        cursor += take
+
+    return added
 
 
-def _refresh_protocols(unknown: list[str]) -> None:
-    for uri in unknown:
+def _refresh_protocols(nodes: list[str]) -> None:
+    """Keep protocol feeds synchronized with every redistributed node."""
+    for uri in nodes:
         protocol = _protocol_of(uri)
         if not protocol:
             continue
         path = PROTOCOLS_DIR / f"{protocol}.txt"
-        _append_unique(path, uri)
+        existing = _read_lines(path)
+        if uri not in set(existing):
+            existing.append(uri)
+            _write_lines(path, existing)
 
 
 def _delete_global_shards() -> None:
@@ -182,7 +199,7 @@ def _refresh_metadata(
         "remaining_unknown": remaining_unknown,
         "countries_used": countries,
         "by_country": added_by_country,
-        "strategy": "round_robin_equal_append_after_discovered_nodes",
+        "strategy": "equal_quotient_remainder_append_after_confirmed_nodes",
         "new_countries_created": [],
     }
 
@@ -193,9 +210,9 @@ def _refresh_metadata(
         for field in ("published_by_country", "reachable_by_country"):
             values = data.get(field)
             if isinstance(values, dict):
-                for country, added in added_by_country.items():
-                    if added:
-                        values[country] = int(values.get(country, 0)) + added
+                for country, add_count in added_by_country.items():
+                    if add_count:
+                        values[country] = int(values.get(country, 0)) + add_count
         data["redistribution"] = redistribution
         data["global_unknown"] = {
             "total": remaining_unknown,
@@ -211,55 +228,61 @@ def _refresh_metadata(
         for item in data.get("countries", []):
             country = item.get("code")
             if country in added_by_country and added_by_country[country]:
-                added = added_by_country[country]
-                item["nodes"] = int(item.get("nodes", 0)) + added
-                item["reachable"] = int(item.get("reachable", 0)) + added
+                add_count = added_by_country[country]
+                item["nodes"] = int(item.get("nodes", 0)) + add_count
+                item["reachable"] = int(item.get("reachable", 0)) + add_count
         data["redistribution"] = redistribution
         countries_path.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
 
 def main() -> None:
-    existing_unknown = _collect_existing_unknown()
-    seen = set(existing_unknown)
+    unknown = _collect_global_unknown()
+    seen = set(unknown)
 
     quarantined_unknown, quarantined_cloudflare = _quarantine_confirmed_cloudflare()
     for uri in quarantined_unknown:
         if uri not in seen:
-            existing_unknown.append(uri)
+            unknown.append(uri)
             seen.add(uri)
 
-    country_files = {
-        path.stem.upper(): path
-        for path in COUNTRIES_DIR.glob("*.txt")
-        if path.stem.upper() in ISO_CODES and path.is_file()
-    }
+    country_files = _discovered_country_files()
     countries = sorted(country_files)
 
-    added_by_country = _redistribute(existing_unknown, countries)
+    # IMPORTANT: confirmed nodes remain exactly as they are; unresolved nodes are
+    # appended only after them. The entire unknown pool is divided across countries.
+    added_by_country = _redistribute_equal(unknown, country_files)
     redistributed_total = sum(added_by_country.values())
-    remaining_unknown = len(existing_unknown) - redistributed_total
+    remaining_unknown = len(unknown) - redistributed_total
 
-    _refresh_protocols(existing_unknown[:redistributed_total] if redistributed_total else [])
+    _refresh_protocols(unknown)
     if remaining_unknown == 0:
         _delete_global_shards()
 
     _refresh_metadata(
         countries,
         added_by_country,
-        len(existing_unknown),
+        len(unknown),
         quarantined_cloudflare,
         remaining_unknown,
     )
 
+    # Explicit observability for the exact policy being applied.
+    confirmed_total = sum(len(_read_lines(path)) for path in country_files.values()) - redistributed_total
     print(
-        f"INFO unknown_redistribution eligible={len(existing_unknown)} "
+        f"INFO unknown_redistribution eligible={len(unknown)} "
         f"cloudflare_quarantined={quarantined_cloudflare} "
         f"redistributed={redistributed_total} remaining={remaining_unknown} "
-        f"countries={len(countries)}"
+        f"countries={len(countries)} confirmed_kept_first={confirmed_total}"
     )
     print(
         "INFO unknown_redistribution_by_country="
         + json.dumps(added_by_country, sort_keys=True)
+    )
+    print(
+        "INFO unknown_distribution_rule="
+        f"total={len(unknown)} countries={len(countries)} "
+        f"base={len(unknown) // len(countries) if countries else 0} "
+        f"remainder={len(unknown) % len(countries) if countries else 0}"
     )
 
 
