@@ -126,15 +126,42 @@ def trojan_outbound(uri: str):
     if stream["security"] == "tls": stream["tlsSettings"] = {"serverName": first(q, "sni", default=p.hostname)}
     return {"protocol": "trojan", "settings": {"servers": [{"address": p.hostname, "port": p.port, "password": unquote(p.username or "")} ]}, "streamSettings": stream}
 
+def _decode_ss_userinfo(value: str) -> str:
+    value = unquote(value)
+    if ":" in value:
+        return value
+    try:
+        decoded = b64d(value).decode("utf-8")
+    except Exception:
+        return value
+    return decoded
+
 def ss_outbound(uri: str):
-    raw = uri.split("ss://", 1)[1].split("#", 1)[0]
+    """Parse standard and common SIP002 Shadowsocks URI variants without aborting the batch."""
+    raw = uri.split("ss://", 1)[1].split("#", 1)[0].split("?", 1)[0]
     if "@" in raw:
-        userinfo, hostpart = raw.rsplit("@", 1)
-        try: decoded = b64d(userinfo).decode()
-        except Exception: decoded = unquote(userinfo)
+        userinfo_raw, hostpart = raw.rsplit("@", 1)
+        userinfo = _decode_ss_userinfo(userinfo_raw)
     else:
-        decoded = b64d(raw).decode(); userinfo, hostpart = decoded.rsplit("@", 1)
-    method, password = userinfo.split(":", 1); host, port = hostpart.rsplit(":", 1)
+        decoded = _decode_ss_userinfo(raw)
+        if "@" not in decoded:
+            raise ValueError("invalid shadowsocks URI: missing @")
+        userinfo, hostpart = decoded.rsplit("@", 1)
+    userinfo = unquote(userinfo)
+    if ":" not in userinfo:
+        raise ValueError("invalid shadowsocks URI: missing method/password separator")
+    method, password = userinfo.split(":", 1)
+    parsed = urlparse("//" + hostpart)
+    host = parsed.hostname or ""
+    port = parsed.port
+    if not host or port is None:
+        if hostpart.startswith("[") and "]" in hostpart:
+            end = hostpart.rfind("]")
+            host = hostpart[1:end]
+            port = int(hostpart[end + 2:])
+        else:
+            host, port_text = hostpart.rsplit(":", 1)
+            port = int(port_text)
     return {"protocol": "shadowsocks", "settings": {"servers": [{"address": host, "port": int(port), "method": method, "password": password}]}}
 
 def outbound_for(uri: str):
