@@ -87,25 +87,27 @@ jobs:
           install('SagerNet/sing-box','/opt/hostedtoolcache/sing-box','sing-box','sing-box')
           install('MetaCubeX/mihomo','/opt/hostedtoolcache/mihomo','mihomo','mihomo')
           PY
-      - name: Run fair benchmark on identical sample
+      - name: Run fair benchmark on one frozen identical sample
         env:
           XRAY_BIN: /opt/hostedtoolcache/xray/xray
           SING_BOX_BIN: /opt/hostedtoolcache/sing-box/sing-box
           MIHOMO_BIN: /opt/hostedtoolcache/mihomo/mihomo
         run: |
-          python scripts/benchmark_engines_v2.py --limit '${{ inputs.limit }}' --workers '${{ inputs.workers }}' --timeout '${{ inputs.timeout }}'
+          python scripts/benchmark_engines_v3.py --limit '${{ inputs.limit }}' --workers '${{ inputs.workers }}' --timeout '${{ inputs.timeout }}'
       - name: Upload benchmark result
         uses: actions/upload-artifact@v4
         with:
           name: engine-benchmark
-          path: output/metadata/engine_benchmark.json
+          path: |
+            output/metadata/engine_benchmark.json
+            output/metadata/benchmark_sample.txt
           if-no-files-found: error
       - name: Commit benchmark result
         run: |
           set -euo pipefail
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add output/metadata/engine_benchmark.json
+          git add output/metadata/engine_benchmark.json output/metadata/benchmark_sample.txt
           if git diff --cached --quiet; then echo 'No benchmark result changes detected'; exit 0; fi
           git commit -m 'chore: record engine benchmark'
           result_commit=$(git rev-parse HEAD)
