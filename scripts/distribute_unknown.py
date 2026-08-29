@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-"""Preserve confirmed nodes and evenly distribute unresolved nodes.
+"""Preserve live country nodes and evenly distribute unresolved nodes.
 
-Country files remain two-tier feeds: confirmed nodes first, redistributed unknown
-nodes second. Redistribution targets are the explicit country anchors recorded by
-this run, not every ISO file produced by GeoIP.
+Country files remain two-tier feeds: current classified/live nodes first,
+redistributed unknown nodes second. Every country with at least one real
+reachable node after Cloudflare quarantine is a distribution target, whether
+its country came from explicit node metadata or local GeoLite2.
 """
 from __future__ import annotations
 
@@ -23,7 +24,6 @@ COUNTRIES_DIR = OUT / "countries"
 PROTOCOLS_DIR = OUT / "protocols"
 GLOBAL_DIR = OUT / "global"
 META_DIR = OUT / "metadata"
-ANCHORS_FILE = META_DIR / "confirmed_country_anchors.json"
 
 ISO_CODES = {c.alpha_2.upper() for c in pycountry.countries}
 SCHEME_TO_PROTOCOL = {"vless": "vless", "vmess": "vmess", "trojan": "trojan", "ss": "shadowsocks"}
@@ -92,7 +92,6 @@ def _quarantine_confirmed_cloudflare() -> tuple[list[str], int]:
             continue
         kept: list[str] = []
         for uri in _read_lines(path):
-            # Explicit node metadata always protects the node from CF quarantine.
             if _explicit_metadata(uri):
                 kept.append(uri)
                 continue
@@ -107,29 +106,23 @@ def _quarantine_confirmed_cloudflare() -> tuple[list[str], int]:
     return unknown, quarantined
 
 
-def _load_anchor_countries() -> dict[str, Path]:
-    """Load only countries that had >=1 reachable explicit-metadata anchor this run."""
-    if not ANCHORS_FILE.is_file():
-        raise RuntimeError("Missing confirmed country anchors produced by build_tcp_pool")
-    data = json.loads(ANCHORS_FILE.read_text(encoding="utf-8"))
-    codes = data.get("countries", [])
-    if not isinstance(codes, list):
-        raise RuntimeError("Invalid confirmed_country_anchors.json")
+def _nonempty_country_files() -> dict[str, Path]:
+    """Return every ISO country with at least one real live node after quarantine.
 
-    anchors: dict[str, Path] = {}
-    for raw in codes:
-        code = str(raw).upper()
-        if code not in ISO_CODES or code == "UNKNOWN":
-            continue
-        path = COUNTRIES_DIR / f"{code}.txt"
-        # Anchor must still contain at least one confirmed node after CF quarantine.
-        if _read_lines(path):
-            anchors[code] = path
-    return anchors
+    This is the complete distribution target set. A country is eligible because
+    it has an actual reachable node in the current catalog, regardless of whether
+    GeoLite2 or explicit node metadata produced the country classification.
+    """
+    files: dict[str, Path] = {}
+    for path in sorted(COUNTRIES_DIR.glob("*.txt")):
+        code = path.stem.upper()
+        if code in ISO_CODES and _read_lines(path):
+            files[code] = path
+    return files
 
 
 def _redistribute_equal(unknown: list[str], country_files: dict[str, Path]) -> dict[str, int]:
-    """Split the complete unresolved pool equally across explicit country anchors."""
+    """Split the complete unresolved pool equally across every live country."""
     countries = sorted(country_files)
     added = {code: 0 for code in countries}
     if not unknown or not countries:
@@ -147,7 +140,7 @@ def _redistribute_equal(unknown: list[str], country_files: dict[str, Path]) -> d
         batch = unknown[cursor:cursor + take]
         fresh = [uri for uri in batch if uri not in existing_set]
         if fresh:
-            # Existing confirmed nodes stay first; redistributed nodes are appended.
+            # Keep every existing live/classified node first; append redistributed unknowns.
             existing.extend(fresh)
             _write_lines(path, existing)
             added[code] = len(fresh)
@@ -195,7 +188,7 @@ def _rebuild_metadata(
     eligible_unknown: int,
     quarantined: int,
     remaining_unknown: int,
-    anchor_countries: list[str],
+    distribution_countries: list[str],
 ) -> None:
     counts = _actual_counts()
     countries = sorted(counts)
@@ -207,11 +200,12 @@ def _rebuild_metadata(
         "cloudflare_quarantined": quarantined,
         "redistributed_total": sum(added_by_country.values()),
         "remaining_unknown": remaining_unknown,
-        "countries_used": anchor_countries,
-        "by_country": {code: added_by_country.get(code, 0) for code in anchor_countries},
-        "strategy": "equal_quotient_remainder_append_after_confirmed_nodes",
+        "countries_used": distribution_countries,
+        "by_country": {code: added_by_country.get(code, 0) for code in distribution_countries},
+        "strategy": "equal_quotient_remainder_append_after_all_live_nodes",
         "new_countries_created": [],
         "confirmed_kept_first": True,
+        "all_nonempty_live_countries_targeted": True,
     }
 
     for path in (META_DIR / "index.json", META_DIR / "health.json"):
@@ -234,10 +228,6 @@ def _rebuild_metadata(
         data["reachable_published"] = total
         data["publication_rejected_total"] = 0
         data["publication_rejection_reasons"] = {"country_cap": 0}
-        data["confirmed_country_anchors"] = {
-            "countries": anchor_countries,
-            "count": len(anchor_countries),
-        }
         path.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
     countries_path = META_DIR / "countries.json"
@@ -256,7 +246,6 @@ def _rebuild_metadata(
             })
         old["countries"] = rebuilt
         old["redistribution"] = redistribution
-        old["confirmed_country_anchors"] = {"countries": anchor_countries, "count": len(anchor_countries)}
         countries_path.write_text(json.dumps(old, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
     print(f"INFO catalog_reconciled countries={len(countries)} nodes={total} empty_files_removed=true")
@@ -264,7 +253,6 @@ def _rebuild_metadata(
 
 
 def main() -> None:
-    # The generated global pool is the unresolved pool from the current build.
     unknown = _collect_global_unknown()
     seen = set(unknown)
 
@@ -274,8 +262,11 @@ def main() -> None:
             seen.add(uri)
             unknown.append(uri)
 
-    country_files = _load_anchor_countries()
-    anchor_countries = sorted(country_files)
+    # Every country with a real reachable node is a distribution target.
+    # GeoLite2-derived countries are valid targets too.
+    country_files = _nonempty_country_files()
+    distribution_countries = sorted(country_files)
+
     added_by_country = _redistribute_equal(unknown, country_files)
     redistributed_total = sum(added_by_country.values())
     remaining_unknown = len(unknown) - redistributed_total
@@ -289,14 +280,14 @@ def main() -> None:
         len(unknown),
         quarantined,
         remaining_unknown,
-        anchor_countries,
+        distribution_countries,
     )
 
+    base, remainder = divmod(len(unknown), len(distribution_countries)) if distribution_countries else (0, 0)
     print(
-        f"INFO unknown_distribution_rule total={len(unknown)} countries={len(anchor_countries)} "
-        f"base={len(unknown) // len(anchor_countries) if anchor_countries else 0} "
-        f"remainder={len(unknown) % len(anchor_countries) if anchor_countries else 0} "
-        f"redistributed={redistributed_total} confirmed_kept_first=true explicit_anchor_only=true"
+        f"INFO unknown_distribution_rule total={len(unknown)} countries={len(distribution_countries)} "
+        f"base={base} remainder={remainder} redistributed={redistributed_total} "
+        f"confirmed_kept_first=true all_nonempty_live_countries=true"
     )
     print("INFO unknown_distribution_by_country=" + json.dumps(added_by_country, sort_keys=True))
 
