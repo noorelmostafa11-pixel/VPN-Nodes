@@ -10,7 +10,6 @@ permissions:
 
 jobs:
   apply:
-    if: github.actor == 'noorelmostafa11-pixel'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
@@ -39,5 +38,9 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add sources/sources.json scripts/update_catalog.py scripts/telegram_build_tcp_pool.py scripts/build_tcp_pool.py scripts/real_delay.py scripts/apply_final_design.py scripts/distribute_unknown.py .github/workflows/update.yml .github/workflows/final-design-migration.yml .github/workflows/apply-final-design.yml README.md
+          if git diff --cached --quiet; then
+            echo 'No changes to commit'
+            exit 0
+          fi
           git commit -m "refactor: finalize xray health publication flow"
           git push origin HEAD:main
