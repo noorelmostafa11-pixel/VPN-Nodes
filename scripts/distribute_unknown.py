@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Preserve confirmed nodes and evenly distribute unresolved nodes.
 
-Each country feed has two tiers: confirmed nodes first, redistributed unresolved
-nodes second. Empty country files are never distribution targets, and metadata is
-rebuilt from the final files so counters cannot drift from actual content.
+Country files remain two-tier feeds: confirmed nodes first, redistributed unknown
+nodes second. Redistribution targets are the explicit country anchors recorded by
+this run, not every ISO file produced by GeoIP.
 """
 from __future__ import annotations
 
@@ -23,6 +23,7 @@ COUNTRIES_DIR = OUT / "countries"
 PROTOCOLS_DIR = OUT / "protocols"
 GLOBAL_DIR = OUT / "global"
 META_DIR = OUT / "metadata"
+ANCHORS_FILE = META_DIR / "confirmed_country_anchors.json"
 
 ISO_CODES = {c.alpha_2.upper() for c in pycountry.countries}
 SCHEME_TO_PROTOCOL = {"vless": "vless", "vmess": "vmess", "trojan": "trojan", "ss": "shadowsocks"}
@@ -91,6 +92,7 @@ def _quarantine_confirmed_cloudflare() -> tuple[list[str], int]:
             continue
         kept: list[str] = []
         for uri in _read_lines(path):
+            # Explicit node metadata always protects the node from CF quarantine.
             if _explicit_metadata(uri):
                 kept.append(uri)
                 continue
@@ -105,34 +107,50 @@ def _quarantine_confirmed_cloudflare() -> tuple[list[str], int]:
     return unknown, quarantined
 
 
-def _nonempty_country_files() -> dict[str, Path]:
-    files: dict[str, Path] = {}
-    for path in sorted(COUNTRIES_DIR.glob("*.txt")):
-        code = path.stem.upper()
-        if code in ISO_CODES and _read_lines(path):
-            files[code] = path
-    return files
+def _load_anchor_countries() -> dict[str, Path]:
+    """Load only countries that had >=1 reachable explicit-metadata anchor this run."""
+    if not ANCHORS_FILE.is_file():
+        raise RuntimeError("Missing confirmed country anchors produced by build_tcp_pool")
+    data = json.loads(ANCHORS_FILE.read_text(encoding="utf-8"))
+    codes = data.get("countries", [])
+    if not isinstance(codes, list):
+        raise RuntimeError("Invalid confirmed_country_anchors.json")
+
+    anchors: dict[str, Path] = {}
+    for raw in codes:
+        code = str(raw).upper()
+        if code not in ISO_CODES or code == "UNKNOWN":
+            continue
+        path = COUNTRIES_DIR / f"{code}.txt"
+        # Anchor must still contain at least one confirmed node after CF quarantine.
+        if _read_lines(path):
+            anchors[code] = path
+    return anchors
 
 
 def _redistribute_equal(unknown: list[str], country_files: dict[str, Path]) -> dict[str, int]:
+    """Split the complete unresolved pool equally across explicit country anchors."""
     countries = sorted(country_files)
     added = {code: 0 for code in countries}
     if not unknown or not countries:
         return added
+
     base, remainder = divmod(len(unknown), len(countries))
     cursor = 0
     for index, code in enumerate(countries):
         take = base + (1 if index < remainder else 0)
+        if take <= 0:
+            continue
+        path = country_files[code]
+        existing = _read_lines(path)
+        existing_set = set(existing)
         batch = unknown[cursor:cursor + take]
-        if batch:
-            path = country_files[code]
-            existing = _read_lines(path)
-            existing_set = set(existing)
-            fresh = [uri for uri in batch if uri not in existing_set]
-            if fresh:
-                existing.extend(fresh)
-                _write_lines(path, existing)
-                added[code] = len(fresh)
+        fresh = [uri for uri in batch if uri not in existing_set]
+        if fresh:
+            # Existing confirmed nodes stay first; redistributed nodes are appended.
+            existing.extend(fresh)
+            _write_lines(path, existing)
+            added[code] = len(fresh)
         cursor += take
     return added
 
@@ -172,7 +190,13 @@ def _actual_counts() -> dict[str, int]:
     return counts
 
 
-def _rebuild_metadata(added_by_country: dict[str, int], eligible_unknown: int, quarantined: int, remaining_unknown: int) -> None:
+def _rebuild_metadata(
+    added_by_country: dict[str, int],
+    eligible_unknown: int,
+    quarantined: int,
+    remaining_unknown: int,
+    anchor_countries: list[str],
+) -> None:
     counts = _actual_counts()
     countries = sorted(counts)
     total = sum(counts.values())
@@ -183,16 +207,14 @@ def _rebuild_metadata(added_by_country: dict[str, int], eligible_unknown: int, q
         "cloudflare_quarantined": quarantined,
         "redistributed_total": sum(added_by_country.values()),
         "remaining_unknown": remaining_unknown,
-        "countries_used": countries,
-        "by_country": {code: added_by_country.get(code, 0) for code in countries},
+        "countries_used": anchor_countries,
+        "by_country": {code: added_by_country.get(code, 0) for code in anchor_countries},
         "strategy": "equal_quotient_remainder_append_after_confirmed_nodes",
         "new_countries_created": [],
         "confirmed_kept_first": True,
     }
 
-    index_path = META_DIR / "index.json"
-    health_path = META_DIR / "health.json"
-    for path in (index_path, health_path):
+    for path in (META_DIR / "index.json", META_DIR / "health.json"):
         if not path.is_file():
             continue
         data = json.loads(path.read_text(encoding="utf-8"))
@@ -212,6 +234,10 @@ def _rebuild_metadata(added_by_country: dict[str, int], eligible_unknown: int, q
         data["reachable_published"] = total
         data["publication_rejected_total"] = 0
         data["publication_rejection_reasons"] = {"country_cap": 0}
+        data["confirmed_country_anchors"] = {
+            "countries": anchor_countries,
+            "count": len(anchor_countries),
+        }
         path.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
     countries_path = META_DIR / "countries.json"
@@ -230,38 +256,49 @@ def _rebuild_metadata(added_by_country: dict[str, int], eligible_unknown: int, q
             })
         old["countries"] = rebuilt
         old["redistribution"] = redistribution
+        old["confirmed_country_anchors"] = {"countries": anchor_countries, "count": len(anchor_countries)}
         countries_path.write_text(json.dumps(old, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
-    if sum(_actual_counts().values()) != total:
-        raise RuntimeError("catalog metadata reconciliation failed")
     print(f"INFO catalog_reconciled countries={len(countries)} nodes={total} empty_files_removed=true")
     print("INFO catalog_reconciled_counts=" + json.dumps(counts, sort_keys=True))
 
 
 def main() -> None:
+    # The generated global pool is the unresolved pool from the current build.
     unknown = _collect_global_unknown()
     seen = set(unknown)
+
     quarantined_unknown, quarantined = _quarantine_confirmed_cloudflare()
     for uri in quarantined_unknown:
         if uri not in seen:
             seen.add(uri)
             unknown.append(uri)
 
-    country_files = _nonempty_country_files()
+    country_files = _load_anchor_countries()
+    anchor_countries = sorted(country_files)
     added_by_country = _redistribute_equal(unknown, country_files)
     redistributed_total = sum(added_by_country.values())
     remaining_unknown = len(unknown) - redistributed_total
+
     _refresh_protocols(unknown)
     if remaining_unknown == 0:
         _delete_global_shards()
 
-    _rebuild_metadata(added_by_country, len(unknown), quarantined, remaining_unknown)
-    print(
-        f"INFO unknown_distribution_rule total={len(unknown)} countries={len(country_files)} "
-        f"base={len(unknown) // len(country_files) if country_files else 0} "
-        f"remainder={len(unknown) % len(country_files) if country_files else 0} "
-        f"redistributed={redistributed_total} confirmed_kept_first=true"
+    _rebuild_metadata(
+        added_by_country,
+        len(unknown),
+        quarantined,
+        remaining_unknown,
+        anchor_countries,
     )
+
+    print(
+        f"INFO unknown_distribution_rule total={len(unknown)} countries={len(anchor_countries)} "
+        f"base={len(unknown) // len(anchor_countries) if anchor_countries else 0} "
+        f"remainder={len(unknown) % len(anchor_countries) if anchor_countries else 0} "
+        f"redistributed={redistributed_total} confirmed_kept_first=true explicit_anchor_only=true"
+    )
+    print("INFO unknown_distribution_by_country=" + json.dumps(added_by_country, sort_keys=True))
 
 
 if __name__ == "__main__":
