@@ -45,8 +45,8 @@
     {
       "code": "BG",
       "name": "Bulgaria",
-      "nodes": 13,
-      "reachable": 13,
+      "nodes": 9,
+      "reachable": 9,
       "cap_rejected": 0
     },
     {
@@ -108,8 +108,8 @@
     {
       "code": "DE",
       "name": "Germany",
-      "nodes": 277,
-      "reachable": 277,
+      "nodes": 266,
+      "reachable": 266,
       "cap_rejected": 0
     },
     {
@@ -150,8 +150,8 @@
     {
       "code": "GB",
       "name": "United Kingdom",
-      "nodes": 124,
-      "reachable": 124,
+      "nodes": 121,
+      "reachable": 121,
       "cap_rejected": 0
     },
     {
@@ -206,22 +206,22 @@
     {
       "code": "IR",
       "name": "Iran, Islamic Republic of",
-      "nodes": 91,
-      "reachable": 91,
+      "nodes": 90,
+      "reachable": 90,
       "cap_rejected": 0
     },
     {
       "code": "IT",
       "name": "Italy",
-      "nodes": 16,
-      "reachable": 16,
+      "nodes": 18,
+      "reachable": 18,
       "cap_rejected": 0
     },
     {
       "code": "JP",
       "name": "Japan",
-      "nodes": 26,
-      "reachable": 26,
+      "nodes": 25,
+      "reachable": 25,
       "cap_rejected": 0
     },
     {
@@ -283,8 +283,8 @@
     {
       "code": "NL",
       "name": "Netherlands",
-      "nodes": 170,
-      "reachable": 170,
+      "nodes": 171,
+      "reachable": 171,
       "cap_rejected": 0
     },
     {
@@ -332,8 +332,8 @@
     {
       "code": "RU",
       "name": "Russian Federation",
-      "nodes": 75,
-      "reachable": 75,
+      "nodes": 77,
+      "reachable": 77,
       "cap_rejected": 0
     },
     {
@@ -346,8 +346,8 @@
     {
       "code": "SE",
       "name": "Sweden",
-      "nodes": 43,
-      "reachable": 43,
+      "nodes": 41,
+      "reachable": 41,
       "cap_rejected": 0
     },
     {
@@ -374,8 +374,8 @@
     {
       "code": "TR",
       "name": "Türkiye",
-      "nodes": 29,
-      "reachable": 29,
+      "nodes": 28,
+      "reachable": 28,
       "cap_rejected": 0
     },
     {
@@ -402,8 +402,8 @@
     {
       "code": "US",
       "name": "United States",
-      "nodes": 2238,
-      "reachable": 2238,
+      "nodes": 2240,
+      "reachable": 2240,
       "cap_rejected": 0
     },
     {
@@ -420,5 +420,72 @@
       "reachable": 4,
       "cap_rejected": 0
     }
-  ]
+  ],
+  "redistribution": {
+    "redistributed_total": 0,
+    "remaining_unknown": 0,
+    "by_country": {
+      "AE": 0,
+      "AL": 0,
+      "AM": 0,
+      "AT": 0,
+      "AU": 0,
+      "BE": 0,
+      "BG": 0,
+      "BR": 0,
+      "BY": 0,
+      "CA": 0,
+      "CF": 0,
+      "CH": 0,
+      "CR": 0,
+      "CY": 0,
+      "CZ": 0,
+      "DE": 0,
+      "DK": 0,
+      "EE": 0,
+      "ES": 0,
+      "FI": 0,
+      "FR": 0,
+      "GB": 0,
+      "GE": 0,
+      "HK": 0,
+      "HU": 0,
+      "ID": 0,
+      "IE": 0,
+      "IL": 0,
+      "IN": 0,
+      "IR": 0,
+      "IT": 0,
+      "JP": 0,
+      "KR": 0,
+      "KZ": 0,
+      "LT": 0,
+      "LV": 0,
+      "MD": 0,
+      "MH": 0,
+      "MY": 0,
+      "NG": 0,
+      "NL": 0,
+      "NO": 0,
+      "NZ": 0,
+      "PH": 0,
+      "PL": 0,
+      "RO": 0,
+      "RS": 0,
+      "RU": 0,
+      "SC": 0,
+      "SE": 0,
+      "SG": 0,
+      "TH": 0,
+      "TM": 0,
+      "TR": 0,
+      "TW": 0,
+      "UA": 0,
+      "UM": 0,
+      "US": 0,
+      "VI": 0,
+      "ZA": 0
+    },
+    "new_countries_created": []
+  }
 }
