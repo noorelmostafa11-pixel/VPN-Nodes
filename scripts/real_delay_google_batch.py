@@ -49,7 +49,7 @@ def google_tcp_probe(item: dict, timeout: float) -> dict:
             if len(reply) != 4:
                 detail = "short-socks-reply"
             elif reply[0] != 5:
-                detail = "invalid-socks-version"
+                detail = f"invalid-socks-version={reply[0]}"
             elif reply[1] != 0:
                 detail = f"socks-connect-failed-{reply[1]}"
             else:
@@ -83,9 +83,18 @@ def google_tcp_probe(item: dict, timeout: float) -> dict:
                             tls_sock = context.wrap_socket(sock, server_hostname=GOOGLE_HOST, do_handshake_on_connect=True)
                             sock = None
                             ok = True
+                            stage = "complete"
                             detail = "TCP+TLS handshake succeeded"
     except ssl.SSLError as exc:
         detail = f"tls: {exc}"[:180]
+    except socket.timeout:
+        detail = "timeout"
+    except ConnectionResetError as exc:
+        detail = f"connection-reset: {exc}"
+    except ConnectionRefusedError as exc:
+        detail = f"connection-refused: {exc}"
+    except EOFError:
+        detail = "eof"
     except Exception as exc:
         detail = str(exc)[:180]
     finally:
@@ -213,7 +222,7 @@ def scan_batch(root: Path, batch: list[dict], batch_no: int, total_batches: int,
                             "msft_ok": False,
                             "google_204_ok": False,
                             "firefox_ok": False,
-                            "details": {"exception": str(exc)[:180]},
+                            "details": {"stage": "probe_exception", "exception": str(exc)[:180]},
                         }
                     results.append(result)
                     done += 1
@@ -244,14 +253,19 @@ def main() -> None:
 
     with tempfile.TemporaryDirectory(prefix="google-delay-") as td:
         root = Path(td)
+        global_index = 0
         for offset in range(0, len(pool), BATCH_SIZE):
             batch_no = offset // BATCH_SIZE + 1
-            scan_batch(root, pool[offset:offset + BATCH_SIZE], batch_no, total_batches, results, failures)
+            batch = []
+            for row in pool[offset:offset + BATCH_SIZE]:
+                batch.append({**row, "index": global_index})
+                global_index += 1
+            scan_batch(root, batch, batch_no, total_batches, results, failures)
 
     by_index = {r["index"]: r for r in results}
     healthy = []
-    for item in pool:
-        result = by_index.get(item["index"])
+    for index, item in enumerate(pool):
+        result = by_index.get(index)
         if result and result.get("google_tcp_ok"):
             healthy.append({**item, "result": result})
 
