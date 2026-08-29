@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build the TCP-reachable node catalog with bounded exit-country verification."""
+"""Build the TCP-reachable node catalog without protocol/Xray health checks."""
 from __future__ import annotations
 
 import asyncio
@@ -12,11 +12,11 @@ import pycountry
 
 import update_catalog as catalog
 import country_resolver
-import verify_exit_country
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "output"
 SOURCES = ROOT / "sources" / "sources.json"
+GEOIP_DB = ROOT / "data" / "GeoLite2-Country.mmdb"
 TCP_TIMEOUT = float(catalog.CONNECT_TIMEOUT)
 TCP_WORKERS = 512
 MAX_PER_COUNTRY = 10**9
@@ -34,9 +34,8 @@ async def tcp_probe(item: dict, semaphore: asyncio.Semaphore) -> tuple[dict, flo
     started = time.perf_counter()
     async with semaphore:
         try:
-            reader, writer = await asyncio.wait_for(
-                asyncio.open_connection(item["host"], item["port"]),
-                timeout=TCP_TIMEOUT,
+            _, writer = await asyncio.wait_for(
+                asyncio.open_connection(item["host"], item["port"]), timeout=TCP_TIMEOUT
             )
             writer.close()
             try:
@@ -78,7 +77,7 @@ def rank(row: dict):
     )
 
 
-def write_catalog(checked: list[dict], all_rows: list[dict], source_health: list[dict], exit_stats: dict):
+def write_catalog(checked: list[dict], all_rows: list[dict], source_health: list[dict], resolution: dict):
     by_country: dict[str, list[dict]] = defaultdict(list)
     for row in checked:
         by_country[row["country"]].append(row)
@@ -91,6 +90,7 @@ def write_catalog(checked: list[dict], all_rows: list[dict], source_health: list
     rejected_total = sum(rejected.values())
     unknown_items = list(published_by_country.get("UNKNOWN", []))
     global_servers = [unknown_items[i:i + GLOBAL_SERVER_SIZE] for i in range(0, len(unknown_items), GLOBAL_SERVER_SIZE)]
+
     published_protocols: dict[str, list[dict]] = defaultdict(list)
     for items in published_by_country.values():
         for item in items:
@@ -98,7 +98,10 @@ def write_catalog(checked: list[dict], all_rows: list[dict], source_health: list
     for items in published_protocols.values():
         items.sort(key=rank)
 
-    print(f"INFO publication reachable={len(checked)} published={sum(map(len, published_by_country.values()))} country_cap_rejected={rejected_total} max_per_country={MAX_PER_COUNTRY}")
+    print(
+        f"INFO publication reachable={len(checked)} published={sum(map(len, published_by_country.values()))} "
+        f"country_cap_rejected={rejected_total} max_per_country={MAX_PER_COUNTRY}"
+    )
     print(f"INFO global_unknown={len(unknown_items)} global_servers={len(global_servers)} server_size={GLOBAL_SERVER_SIZE}")
 
     for directory in (OUT / "countries", OUT / "protocols", OUT / "global", OUT / "metadata"):
@@ -115,10 +118,12 @@ def write_catalog(checked: list[dict], all_rows: list[dict], source_health: list
         if text:
             text += "\n"
         (OUT / "countries" / f"{country}.txt").write_text(text, encoding="utf-8")
+
     for protocol, items in published_protocols.items():
         (OUT / "protocols" / f"{protocol}.txt").write_text(
             "\n".join(item["uri"] for item in items) + "\n", encoding="utf-8"
         )
+
     for number, items in enumerate(global_servers, 1):
         (OUT / "global" / f"server-{number}.txt").write_text(
             "\n".join(item["uri"] for item in items) + "\n", encoding="utf-8"
@@ -126,11 +131,11 @@ def write_catalog(checked: list[dict], all_rows: list[dict], source_health: list
 
     generated_at = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
     resolver_stats = {
-        "hostname": sum(1 for r in checked if r.get("country_resolution") == "hostname"),
-        "ip_geolocation": sum(1 for r in checked if r.get("country_resolution") == "ip_geolocation"),
-        "geo_consensus": sum(1 for r in checked if r.get("country_resolution") == "geo_consensus"),
-        "exit_verification": sum(1 for r in checked if r.get("country_resolution") == "exit_verification"),
+        "dns_resolved": resolution.get("hostname", 0),
+        "geolite2_local": resolution.get("geoip_local", 0),
         "unknown": sum(1 for r in checked if r.get("country") == "UNKNOWN"),
+        "database_loaded": bool(resolution.get("database_loaded")),
+        "database": resolution.get("database", str(GEOIP_DB)),
     }
     index = {
         "schema": 6,
@@ -150,38 +155,45 @@ def write_catalog(checked: list[dict], all_rows: list[dict], source_health: list
         "protocols": {p: len(published_protocols.get(p, [])) for p in sorted(catalog.PROTOCOLS)},
         "countries": len(published_by_country),
         "country_names": {c: iso_name(c) for c in sorted(published_by_country)},
-        "country_policy": "Dynamic ISO-3166 countries from live nodes; explicit metadata wins; hostname and GeoIP are candidates; ambiguous nodes may be verified through the node's actual Xray exit IP; unresolved nodes remain UNKNOWN and are published in global Server tabs",
-        "health_policy": "Every parsed node is asynchronously TCP-screened on ports 80/443; TCP latency is the primary ranking metric; bounded exit-country verification is applied only to ambiguous nodes; no node is rejected for country resolution",
+        "country_policy": "Dynamic ISO-3166 countries from live nodes; explicit node metadata wins; hostname is resolved to IP with cached DNS; unresolved nodes use local GeoLite2 Country; no online geolocation API is used during catalog generation",
+        "health_policy": "Every parsed node is asynchronously TCP-screened on ports 80/443; TCP latency is the primary ranking metric; no Xray/GET health stage",
         "source_failures": sum(1 for s in source_health if not s["ok"]),
         "tcp_workers": TCP_WORKERS,
         "max_per_country": MAX_PER_COUNTRY,
         "global_unknown": {"total": len(unknown_items), "server_size": GLOBAL_SERVER_SIZE, "servers": len(global_servers), "files": "global/server-N.txt"},
         "country_resolution": resolver_stats,
-        "exit_country_verification": exit_stats,
         "files": {"countries": "countries/", "protocols": "protocols/", "global": "global/"},
     }
+
     (OUT / "metadata/index.json").write_text(json.dumps(index, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     (OUT / "metadata/countries.json").write_text(
-        json.dumps({"countries": [{"code": c, "name": iso_name(c), "nodes": len(v), "reachable": reachable_by_country.get(c, 0), "cap_rejected": rejected.get(c, 0)} for c, v in sorted(published_by_country.items())]}, ensure_ascii=False, indent=2) + "\n",
+        json.dumps(
+            {"countries": [{"code": c, "name": iso_name(c), "nodes": len(v), "reachable": reachable_by_country.get(c, 0), "cap_rejected": rejected.get(c, 0)} for c, v in sorted(published_by_country.items())]},
+            ensure_ascii=False,
+            indent=2,
+        ) + "\n",
         encoding="utf-8",
     )
     (OUT / "metadata/health.json").write_text(
-        json.dumps({
-            "generated_at": generated_at,
-            "sources": source_health,
-            "reachable_total": len(checked),
-            "reachable_published": len(checked),
-            "published_total": sum(map(len, published_by_country.values())),
-            "publication_rejected_total": rejected_total,
-            "reachable_by_country": reachable_by_country,
-            "published_by_country": {c: len(v) for c, v in published_by_country.items()},
-            "country_cap_rejected_by_country": rejected,
-            "health_candidates": len(all_rows),
-            "tcp_workers": TCP_WORKERS,
-            "country_resolution": resolver_stats,
-            "exit_country_verification": exit_stats,
-            "global_unknown": {"total": len(unknown_items), "server_size": GLOBAL_SERVER_SIZE, "servers": len(global_servers)},
-        }, ensure_ascii=False, indent=2) + "\n",
+        json.dumps(
+            {
+                "generated_at": generated_at,
+                "sources": source_health,
+                "reachable_total": len(checked),
+                "reachable_published": len(checked),
+                "published_total": sum(map(len, published_by_country.values())),
+                "publication_rejected_total": rejected_total,
+                "reachable_by_country": reachable_by_country,
+                "published_by_country": {c: len(v) for c, v in published_by_country.items()},
+                "country_cap_rejected_by_country": rejected,
+                "health_candidates": len(all_rows),
+                "tcp_workers": TCP_WORKERS,
+                "country_resolution": resolver_stats,
+                "global_unknown": {"total": len(unknown_items), "server_size": GLOBAL_SERVER_SIZE, "servers": len(global_servers)},
+            },
+            ensure_ascii=False,
+            indent=2,
+        ) + "\n",
         encoding="utf-8",
     )
     print(json.dumps(index, ensure_ascii=False, indent=2))
@@ -189,6 +201,11 @@ def write_catalog(checked: list[dict], all_rows: list[dict], source_health: list
 
 
 def main():
+    if not GEOIP_DB.is_file() or GEOIP_DB.stat().st_size == 0:
+        raise RuntimeError(
+            f"Missing local GeoLite2 database: {GEOIP_DB}. Run the GeoLite2 database workflow first."
+        )
+
     cfg = json.loads(SOURCES.read_text(encoding="utf-8"))
     all_rows: list[dict] = []
     source_health: list[dict] = []
@@ -222,16 +239,18 @@ def main():
         if row["country"] not in catalog.ISO_CODES:
             row["country"] = "UNKNOWN"
 
-    resolution = country_resolver.resolve_rows(rows)
-    print(f"INFO country_hostname_resolved={resolution['hostname']} ip_geolocation_resolved={resolution['ip_geolocation']} unknown_remaining={resolution['unknown']}")
     print(f"INFO parsed={len(rows)} tcp_candidates={len(rows)} async_tcp=true workers={TCP_WORKERS}")
     checked = asyncio.run(run_tcp_checks(rows))
     print(f"INFO tcp_reachable={len(checked)} tcp_dead={len(rows) - len(checked)}")
 
-    exit_stats = verify_exit_country.verify_ambiguous(checked)
-    print(f"INFO exit_country_candidates={exit_stats['candidates']} verified={exit_stats['verified']} failed={exit_stats['failed']}")
+    resolution = country_resolver.resolve_rows(checked)
+    print(
+        f"INFO country_dns_resolved={resolution['hostname']} "
+        f"geolite2_local={resolution['geoip_local']} unknown_remaining={resolution['unknown']} "
+        f"database_loaded={resolution['database_loaded']}"
+    )
 
-    write_catalog(checked, rows, source_health, exit_stats)
+    write_catalog(checked, rows, source_health, resolution)
 
 
 if __name__ == "__main__":
