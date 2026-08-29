@@ -125,6 +125,8 @@ jobs:
           git add output/metadata/engine_benchmark.json
           if git diff --cached --quiet; then echo 'No benchmark result changes detected'; exit 0; fi
           git commit -m 'chore: record engine benchmark'
+          result_commit=$(git rev-parse HEAD)
           git fetch origin main
-          git rebase origin/main
+          git reset --hard origin/main
+          git cherry-pick "$result_commit"
           git push origin HEAD:main
