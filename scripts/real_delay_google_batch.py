@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 import os
 import socket
+import ssl
 import subprocess
 import tempfile
 import time
@@ -26,17 +27,22 @@ GOOGLE_PORT = 443
 
 
 def google_tcp_probe(item: dict, timeout: float) -> dict:
+    """Perform a real SOCKS5 CONNECT and then a real TLS handshake to Google."""
     started = time.perf_counter()
     sock = None
+    tls_sock = None
     ok = False
     detail = "unknown"
+    stage = "socket"
     try:
         sock = socket.create_connection(("127.0.0.1", item["port"]), timeout=timeout)
         sock.settimeout(timeout)
+        stage = "socks_handshake"
         sock.sendall(b"\x05\x01\x00")
         if sock.recv(2) != b"\x05\x00":
             detail = "socks-auth"
         else:
+            stage = "socks_connect"
             hb = GOOGLE_HOST.encode("idna")
             sock.sendall(b"\x05\x01\x00\x03" + bytes([len(hb)]) + hb + GOOGLE_PORT.to_bytes(2, "big"))
             reply = sock.recv(4)
@@ -68,19 +74,27 @@ def google_tcp_probe(item: dict, timeout: float) -> dict:
                             break
                         remaining -= len(chunk)
                     else:
-                        if len(sock.recv(2)) == 2:
-                            ok = True
-                            detail = "TCP CONNECT succeeded"
-                        else:
+                        port_bytes = sock.recv(2)
+                        if len(port_bytes) != 2:
                             detail = "short-socks-port"
+                        else:
+                            stage = "tls_handshake"
+                            context = ssl.create_default_context()
+                            tls_sock = context.wrap_socket(sock, server_hostname=GOOGLE_HOST, do_handshake_on_connect=True)
+                            sock = None
+                            ok = True
+                            detail = "TCP+TLS handshake succeeded"
+    except ssl.SSLError as exc:
+        detail = f"tls: {exc}"[:180]
     except Exception as exc:
         detail = str(exc)[:180]
     finally:
-        if sock is not None:
-            try:
-                sock.close()
-            except Exception:
-                pass
+        for candidate in (tls_sock, sock):
+            if candidate is not None:
+                try:
+                    candidate.close()
+                except Exception:
+                    pass
 
     latency = round((time.perf_counter() - started) * 1000, 1) if ok else -1
     return {
@@ -97,6 +111,7 @@ def google_tcp_probe(item: dict, timeout: float) -> dict:
                 "ok": ok,
                 "latency_ms": latency,
                 "detail": detail,
+                "stage": stage,
                 "host": GOOGLE_HOST,
                 "port": GOOGLE_PORT,
             }
@@ -216,16 +231,12 @@ def main() -> None:
     if not XRAY.exists():
         raise SystemExit(f"Xray binary not found: {XRAY}")
 
-    raw_pool = real_delay.load_pool()
-    if not raw_pool:
+    pool = real_delay.load_pool()
+    if not pool:
         raise SystemExit("No TCP-reachable nodes available")
 
-    # Assign a stable global index once. real_delay.write_cfg expects it for
-    # deterministic inbound/outbound tags, while each batch reuses local ports.
-    pool = [{**item, "index": idx} for idx, item in enumerate(raw_pool)]
-
     total_batches = (len(pool) + BATCH_SIZE - 1) // BATCH_SIZE
-    print(f"INFO google_scan_pool={len(pool)} workers={WORKERS} batch_size={BATCH_SIZE} batches={total_batches} target={GOOGLE_HOST}:{GOOGLE_PORT} mode=google_tcp_only")
+    print(f"INFO google_scan_pool={len(pool)} workers={WORKERS} batch_size={BATCH_SIZE} batches={total_batches} target={GOOGLE_HOST}:{GOOGLE_PORT} mode=google_tcp_tls_only")
 
     started = time.perf_counter()
     results: list[dict] = []
@@ -275,9 +286,9 @@ def main() -> None:
     report = {
         "generated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
         **stats,
-        "health_policy": "Google TCP CONNECT only: real SOCKS5 CONNECT through Xray to www.google.com:443",
-        "health_gate": {"url": "tcp://www.google.com:443", "type": "SOCKS5 CONNECT through Xray", "required": True},
-        "probes": {"google_tcp": {"url": "tcp://www.google.com:443", "type": "SOCKS5 CONNECT", "required": True}},
+        "health_policy": "Google TCP CONNECT only: real SOCKS5 CONNECT through Xray to www.google.com:443, followed by TLS handshake",
+        "health_gate": {"url": "tcp://www.google.com:443", "type": "SOCKS5 CONNECT + TLS handshake through Xray", "required": True},
+        "probes": {"google_tcp": {"url": "tcp://www.google.com:443", "type": "SOCKS5 CONNECT + TLS handshake", "required": True}},
         "nodes": [{**{k: v for k, v in item.items() if k != "node"}, "result": item["result"]} for item in healthy],
         "config_failures": failures,
     }
