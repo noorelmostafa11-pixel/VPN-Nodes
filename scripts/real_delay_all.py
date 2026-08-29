@@ -11,7 +11,6 @@ import tempfile
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
-from urllib.parse import quote
 
 import benchmark_engines_v2 as base
 from real_delay import protocol, node_country
@@ -185,10 +184,10 @@ def main() -> None:
             with ThreadPoolExecutor(max_workers=WORKERS) as executor:
                 futures = {executor.submit(probe_one, item["index"], item["port"]): item for item in included}
                 for n, future in enumerate(as_completed(futures), 1):
+                    item = futures[future]
                     try:
                         result = future.result()
                     except Exception as exc:
-                        item = futures[future]
                         result = {"index": item["index"], "msft_ok": False, "google_204_ok": False, "internet_healthy": False, "delay_ms": -1, "details": {"exception": str(exc)[:180]}}
                     results.append(result)
                     if n % 250 == 0 or n == len(included):
@@ -204,10 +203,15 @@ def main() -> None:
 
     by_index = {r["index"]: r for r in results}
     final_results = []
-    for item in pool:
-        idx = item["index"] if "index" in item else None
-        if idx is not None and idx in by_index:
-            final_results.append({**item, **by_index[idx]})
+    for idx, item in enumerate(pool):
+        r = by_index.get(idx)
+        if r is not None:
+            final_results.append({**item, **r})
+        else:
+            failure = next((x for x in failed_conversion if x["index"] == idx), None)
+            if failure is not None:
+                final_results.append({**item, "index": idx, "msft_ok": False, "google_204_ok": False, "internet_healthy": False, "delay_ms": -1, "details": {"config_conversion_failed": failure["reason"]}})
+
     final_results.sort(key=lambda r: (
         r["country"],
         0 if r["internet_healthy"] else 1,
