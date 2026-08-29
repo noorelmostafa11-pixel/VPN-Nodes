@@ -1,34 +1,19 @@
 #!/usr/bin/env python3
-"""Build the TCP-reachable node catalog with local GeoLite2 diagnostics."""
+"""Build the TCP-reachable candidate pool; country resolution happens after Xray health."""
 from __future__ import annotations
 
 import asyncio
 import json
 import time
-from collections import defaultdict
 from pathlib import Path
 
-import pycountry
-
 import update_catalog as catalog
-import country_resolver
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "output"
 SOURCES = ROOT / "sources" / "sources.json"
-GEOIP_DB = ROOT / "data" / "GeoLite2-Country.mmdb"
 TCP_TIMEOUT = float(catalog.CONNECT_TIMEOUT)
 TCP_WORKERS = 512
-MAX_PER_COUNTRY = 10**9
-GLOBAL_SERVER_SIZE = 500
-
-
-def iso_name(code: str) -> str:
-    if code == "UNKNOWN":
-        return "Unknown"
-    country = pycountry.countries.get(alpha_2=code)
-    return country.name if country else code
-
 
 async def tcp_probe(item: dict, semaphore: asyncio.Semaphore) -> tuple[dict, float | None]:
     started = time.perf_counter()
@@ -46,7 +31,6 @@ async def tcp_probe(item: dict, semaphore: asyncio.Semaphore) -> tuple[dict, flo
         except Exception:
             return item, None
 
-
 async def run_tcp_checks(rows: list[dict]) -> list[dict]:
     semaphore = asyncio.Semaphore(TCP_WORKERS)
     results: list[dict] = []
@@ -58,182 +42,20 @@ async def run_tcp_checks(rows: list[dict]) -> list[dict]:
         row, latency = await tcp_probe(item, semaphore)
         completed += 1
         if latency is not None:
-            row["latency_ms"] = latency
-            results.append(row)
+            results.append({**row, "latency_ms": latency, "country": "UNKNOWN", "country_resolution": "pending_xray"})
         if completed % 1000 == 0 or completed == total:
             print(f"INFO tcp_progress={completed}/{total} reachable={len(results)}")
 
     await asyncio.gather(*(one(item) for item in rows))
     return results
 
-
-def rank(row: dict):
-    return (
-        row.get("latency_ms", 10**9),
-        -row.get("source_priority", 0),
-        row.get("protocol", ""),
-        row.get("host", ""),
-        row.get("uri", ""),
-    )
-
-
-def write_catalog(checked: list[dict], all_rows: list[dict], source_health: list[dict], resolution: dict):
-    by_country: dict[str, list[dict]] = defaultdict(list)
-    explicit_anchor_counts: dict[str, int] = defaultdict(int)
-
-    for row in checked:
-        country = row.get("country") or "UNKNOWN"
-        by_country[country].append(row)
-        if row.get("country_resolution") in {"metadata_explicit", "metadata_remark"} and country != "UNKNOWN":
-            explicit_anchor_counts[country] += 1
-
-    for items in by_country.values():
-        items.sort(key=rank)
-
-    reachable_by_country = {c: len(v) for c, v in sorted(by_country.items())}
-    published_by_country = {c: v[:MAX_PER_COUNTRY] for c, v in sorted(by_country.items())}
-    rejected = {c: max(0, len(by_country[c]) - len(published_by_country[c])) for c in sorted(by_country)}
-    rejected_total = sum(rejected.values())
-    unknown_items = list(published_by_country.get("UNKNOWN", []))
-    global_servers = [unknown_items[i:i + GLOBAL_SERVER_SIZE] for i in range(0, len(unknown_items), GLOBAL_SERVER_SIZE)]
-
-    published_protocols: dict[str, list[dict]] = defaultdict(list)
-    for items in published_by_country.values():
-        for item in items:
-            published_protocols[item["protocol"]].append(item)
-    for items in published_protocols.values():
-        items.sort(key=rank)
-
-    for directory in (OUT / "countries", OUT / "protocols", OUT / "global", OUT / "metadata"):
-        directory.mkdir(parents=True, exist_ok=True)
-    for path in (OUT / "countries").glob("*.txt"):
-        path.unlink()
-    for path in (OUT / "protocols").glob("*.txt"):
-        path.unlink()
-    for path in (OUT / "global").glob("server-*.txt"):
-        path.unlink()
-
-    for country, items in published_by_country.items():
-        text = "\n".join(item["uri"] for item in items)
-        if text:
-            text += "\n"
-        (OUT / "countries" / f"{country}.txt").write_text(text, encoding="utf-8")
-
-    for protocol, items in published_protocols.items():
-        (OUT / "protocols" / f"{protocol}.txt").write_text(
-            "\n".join(item["uri"] for item in items) + "\n", encoding="utf-8"
-        )
-
-    for number, items in enumerate(global_servers, 1):
-        (OUT / "global" / f"server-{number}.txt").write_text(
-            "\n".join(item["uri"] for item in items) + "\n", encoding="utf-8"
-        )
-
-    generated_at = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
-    failure_stats = resolution.get("failure_stats", {})
-    resolver_stats = {
-        "dns_resolved": resolution.get("hostname", 0),
-        "geolite2_local": resolution.get("geoip_local", 0),
-        "unknown": sum(1 for r in checked if r.get("country") == "UNKNOWN"),
-        "database_loaded": bool(resolution.get("database_loaded")),
-        "database": resolution.get("database", str(GEOIP_DB)),
-        "failure_stats": failure_stats,
-    }
-
-    anchor_codes = sorted(explicit_anchor_counts)
-    anchor_payload = {
-        "countries": anchor_codes,
-        "count": len(anchor_codes),
-        "nodes_by_country": {c: explicit_anchor_counts[c] for c in anchor_codes},
-        "rule": "a distribution country must have at least one reachable node with explicit node-owned country metadata",
-    }
-    (OUT / "metadata/confirmed_country_anchors.json").write_text(
-        json.dumps(anchor_payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
-    )
-    print(f"INFO confirmed_country_anchors countries={len(anchor_codes)} nodes={sum(explicit_anchor_counts.values())}")
-    print("INFO confirmed_country_anchor_codes=" + json.dumps(anchor_codes))
-
-    index = {
-        "schema": 7,
-        "generated_at": generated_at,
-        "total_fetched": len(all_rows),
-        "unique_parsed": len(all_rows),
-        "health_candidates": len(all_rows),
-        "reachable_total": len(checked),
-        "reachable_published": len(checked),
-        "published_total": sum(map(len, published_by_country.values())),
-        "publication_rejected_total": rejected_total,
-        "publication_rejection_reasons": {"country_cap": rejected_total},
-        "reachable_by_country": reachable_by_country,
-        "published_by_country": {c: len(v) for c, v in published_by_country.items()},
-        "country_cap_rejected_by_country": rejected,
-        "allowed_ports": [80, 443],
-        "protocols": {p: len(published_protocols.get(p, [])) for p in sorted(catalog.PROTOCOLS)},
-        "countries": len(published_by_country),
-        "country_names": {c: iso_name(c) for c in sorted(published_by_country)},
-        "country_policy": "Dynamic ISO-3166 countries from live nodes; explicit node metadata wins; hostname is resolved to public IP with cached DNS; unresolved addresses use local GeoLite2 Country; explicit metadata countries are persisted separately as redistribution anchors",
-        "health_policy": "Every parsed node is asynchronously TCP-screened on ports 80/443; TCP latency is the primary ranking metric; no Xray/GET health stage",
-        "source_failures": sum(1 for s in source_health if not s["ok"]),
-        "tcp_workers": TCP_WORKERS,
-        "max_per_country": MAX_PER_COUNTRY,
-        "global_unknown": {"total": len(unknown_items), "server_size": GLOBAL_SERVER_SIZE, "servers": len(global_servers), "files": "global/server-N.txt"},
-        "country_resolution": resolver_stats,
-        "confirmed_country_anchors": anchor_payload,
-        "files": {"countries": "countries/", "protocols": "protocols/", "global": "global/"},
-    }
-
-    (OUT / "metadata/index.json").write_text(json.dumps(index, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    (OUT / "metadata/countries.json").write_text(
-        json.dumps(
-            {
-                "countries": [
-                    {"code": c, "name": iso_name(c), "nodes": len(v), "reachable": reachable_by_country.get(c, 0), "cap_rejected": rejected.get(c, 0)}
-                    for c, v in sorted(published_by_country.items())
-                ],
-                "confirmed_country_anchors": anchor_payload,
-            },
-            ensure_ascii=False,
-            indent=2,
-        ) + "\n",
-        encoding="utf-8",
-    )
-    (OUT / "metadata/health.json").write_text(
-        json.dumps(
-            {
-                "generated_at": generated_at,
-                "sources": source_health,
-                "reachable_total": len(checked),
-                "reachable_published": len(checked),
-                "published_total": sum(map(len, published_by_country.values())),
-                "publication_rejected_total": rejected_total,
-                "reachable_by_country": reachable_by_country,
-                "published_by_country": {c: len(v) for c, v in published_by_country.items()},
-                "country_cap_rejected_by_country": rejected,
-                "health_candidates": len(all_rows),
-                "tcp_workers": TCP_WORKERS,
-                "country_resolution": resolver_stats,
-                "confirmed_country_anchors": anchor_payload,
-                "global_unknown": {"total": len(unknown_items), "server_size": GLOBAL_SERVER_SIZE, "servers": len(global_servers)},
-            },
-            ensure_ascii=False,
-            indent=2,
-        ) + "\n",
-        encoding="utf-8",
-    )
-    print(json.dumps(index, ensure_ascii=False, indent=2))
-    return index
-
-
-def main():
-    if not GEOIP_DB.is_file() or GEOIP_DB.stat().st_size == 0:
-        raise RuntimeError(f"Missing local GeoLite2 database: {GEOIP_DB}. Run the GeoLite2 database workflow first.")
-
+def main() -> None:
     cfg = json.loads(SOURCES.read_text(encoding="utf-8"))
     all_rows: list[dict] = []
     source_health: list[dict] = []
     successful_sources = 0
 
-    for item in sorted(cfg["sources"], key=lambda source: -source.get("priority", 0)):
+    for item in cfg["sources"]:
         started = time.perf_counter()
         try:
             rows = catalog.collect_source(item)
@@ -245,38 +67,34 @@ def main():
             source_health.append({"name": item["name"], "ok": False, "nodes": 0, "error": str(exc), "elapsed_ms": round((time.perf_counter() - started) * 1000, 1)})
             print(f"WARN {item['name']}: {exc}")
 
-    failed = [s for s in source_health if not s["ok"]]
-    if failed:
-        fallback = catalog.load_previous_snapshot()
-        all_rows.extend(fallback)
-        print(f"INFO source_failures={len(failed)} snapshot_fallback={len(fallback)}")
     if successful_sources == 0 and not all_rows:
-        raise RuntimeError("All upstream sources failed and no previous snapshot exists")
+        raise RuntimeError("All upstream sources failed")
 
     unique: dict[str, dict] = {}
     for row in all_rows:
         unique.setdefault(catalog.dedup_key(row["uri"]), row)
     rows = list(unique.values())
     for row in rows:
-        if row["country"] not in catalog.ISO_CODES:
-            row["country"] = "UNKNOWN"
+        row["country"] = "UNKNOWN"
+        row["country_resolution"] = "pending_xray"
 
     print(f"INFO parsed={len(rows)} tcp_candidates={len(rows)} async_tcp=true workers={TCP_WORKERS}")
     checked = asyncio.run(run_tcp_checks(rows))
     print(f"INFO tcp_reachable={len(checked)} tcp_dead={len(rows) - len(checked)}")
-    resolution = country_resolver.resolve_rows(checked)
-    stats = resolution.get("failure_stats", {})
-    print(f"INFO country_dns_resolved={resolution.get('hostname', 0)} geolite2_local={resolution.get('geoip_local', 0)} unknown_remaining={resolution.get('unknown', 0)} database_loaded={resolution.get('database_loaded', False)}")
-    print(
-        "INFO country_resolution_failures="
-        f"address_not_found:{stats.get('address_not_found', 0)} "
-        f"dns_failure:{stats.get('dns_failure', 0)} "
-        f"invalid_ip:{stats.get('invalid_ip', 0)} "
-        f"other:{stats.get('other', 0)} "
-        f"lookups:{stats.get('lookups', 0)}"
-    )
-    write_catalog(checked, rows, source_health, resolution)
 
+    meta = OUT / "metadata"
+    meta.mkdir(parents=True, exist_ok=True)
+    payload = {
+        "generated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+        "total_parsed": len(rows),
+        "tcp_reachable": len(checked),
+        "tcp_workers": TCP_WORKERS,
+        "allowed_ports": [80, 443],
+        "source_failures": sum(1 for s in source_health if not s["ok"]),
+        "sources": source_health,
+        "nodes": [{k: v for k, v in item.items() if k != "node"} for item in checked],
+    }
+    (meta / "tcp_reachable.json").write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    print(f"INFO tcp_pool_saved={len(checked)} path=output/metadata/tcp_reachable.json")
 
-if __name__ == "__main__":
-    main()
+if __name__ == "__main__": main()
