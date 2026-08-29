@@ -267,10 +267,10 @@ def main() -> None:
     for index, item in enumerate(pool):
         result = by_index.get(index)
         if result and result.get("google_tcp_ok"):
-            healthy.append({**item, "result": result})
+            healthy.append({**item, "result": result, "index": index})
 
     healthy.sort(key=lambda x: (x["result"].get("delay_ms", 10**9), x["index"]))
-    rows = [{k: v for k, v in item.items() if k not in {"node", "result"}} for item in healthy]
+    rows = [{k: v for k, v in item.items() if k not in {"node", "result", "index"}} for item in healthy]
     if rows:
         resolution = country_resolver.resolve_rows(rows)
         for item, row in zip(healthy, rows):
