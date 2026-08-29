@@ -1,5 +1,5 @@
 {
-  "version": 24,
+  "version": 25,
   "mode": "direct-public-sources",
   "sources": [
     {
@@ -129,6 +129,12 @@
     {
       "name": "teknovpnhub",
       "url": "https://raw.githubusercontent.com/teknovpnhub/v2ray-subscription/main/servers.txt"
+    },
+    {
+      "name": "Telegram-Channels",
+      "format": "telegram_catalog",
+      "max_pages": 4,
+      "max_uris": 2000
     }
   ]
 }
