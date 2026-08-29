@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build the TCP-reachable node catalog without protocol/Xray health checks."""
+"""Build the TCP-reachable node catalog with local GeoLite2 diagnostics."""
 from __future__ import annotations
 
 import asyncio
@@ -98,10 +98,7 @@ def write_catalog(checked: list[dict], all_rows: list[dict], source_health: list
     for items in published_protocols.values():
         items.sort(key=rank)
 
-    print(
-        f"INFO publication reachable={len(checked)} published={sum(map(len, published_by_country.values()))} "
-        f"country_cap_rejected={rejected_total} max_per_country={MAX_PER_COUNTRY}"
-    )
+    print(f"INFO publication reachable={len(checked)} published={sum(map(len, published_by_country.values()))} country_cap_rejected={rejected_total} max_per_country={MAX_PER_COUNTRY}")
     print(f"INFO global_unknown={len(unknown_items)} global_servers={len(global_servers)} server_size={GLOBAL_SERVER_SIZE}")
 
     for directory in (OUT / "countries", OUT / "protocols", OUT / "global", OUT / "metadata"):
@@ -130,15 +127,17 @@ def write_catalog(checked: list[dict], all_rows: list[dict], source_health: list
         )
 
     generated_at = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+    failure_stats = resolution.get("failure_stats", {})
     resolver_stats = {
         "dns_resolved": resolution.get("hostname", 0),
         "geolite2_local": resolution.get("geoip_local", 0),
         "unknown": sum(1 for r in checked if r.get("country") == "UNKNOWN"),
         "database_loaded": bool(resolution.get("database_loaded")),
         "database": resolution.get("database", str(GEOIP_DB)),
+        "failure_stats": failure_stats,
     }
     index = {
-        "schema": 6,
+        "schema": 7,
         "generated_at": generated_at,
         "total_fetched": len(all_rows),
         "unique_parsed": len(all_rows),
@@ -155,7 +154,7 @@ def write_catalog(checked: list[dict], all_rows: list[dict], source_health: list
         "protocols": {p: len(published_protocols.get(p, [])) for p in sorted(catalog.PROTOCOLS)},
         "countries": len(published_by_country),
         "country_names": {c: iso_name(c) for c in sorted(published_by_country)},
-        "country_policy": "Dynamic ISO-3166 countries from live nodes; explicit node metadata wins; hostname is resolved to IP with cached DNS; unresolved nodes use local GeoLite2 Country; no online geolocation API is used during catalog generation",
+        "country_policy": "Dynamic ISO-3166 countries from live nodes; explicit node metadata wins; hostname is resolved to public IP with cached DNS; unresolved addresses use local GeoLite2 Country; GeoLite failures are categorized in metadata; no online geolocation API is used during catalog generation",
         "health_policy": "Every parsed node is asynchronously TCP-screened on ports 80/443; TCP latency is the primary ranking metric; no Xray/GET health stage",
         "source_failures": sum(1 for s in source_health if not s["ok"]),
         "tcp_workers": TCP_WORKERS,
@@ -202,9 +201,7 @@ def write_catalog(checked: list[dict], all_rows: list[dict], source_health: list
 
 def main():
     if not GEOIP_DB.is_file() or GEOIP_DB.stat().st_size == 0:
-        raise RuntimeError(
-            f"Missing local GeoLite2 database: {GEOIP_DB}. Run the GeoLite2 database workflow first."
-        )
+        raise RuntimeError(f"Missing local GeoLite2 database: {GEOIP_DB}. Run the GeoLite2 database workflow first.")
 
     cfg = json.loads(SOURCES.read_text(encoding="utf-8"))
     all_rows: list[dict] = []
@@ -242,14 +239,17 @@ def main():
     print(f"INFO parsed={len(rows)} tcp_candidates={len(rows)} async_tcp=true workers={TCP_WORKERS}")
     checked = asyncio.run(run_tcp_checks(rows))
     print(f"INFO tcp_reachable={len(checked)} tcp_dead={len(rows) - len(checked)}")
-
     resolution = country_resolver.resolve_rows(checked)
+    stats = resolution.get("failure_stats", {})
+    print(f"INFO country_dns_resolved={resolution.get('hostname', 0)} geolite2_local={resolution.get('geoip_local', 0)} unknown_remaining={resolution.get('unknown', 0)} database_loaded={resolution.get('database_loaded', False)}")
     print(
-        f"INFO country_dns_resolved={resolution['hostname']} "
-        f"geolite2_local={resolution['geoip_local']} unknown_remaining={resolution['unknown']} "
-        f"database_loaded={resolution['database_loaded']}"
+        "INFO country_resolution_failures="
+        f"address_not_found:{stats.get('address_not_found', 0)} "
+        f"dns_failure:{stats.get('dns_failure', 0)} "
+        f"invalid_ip:{stats.get('invalid_ip', 0)} "
+        f"other:{stats.get('other', 0)} "
+        f"lookups:{stats.get('lookups', 0)}"
     )
-
     write_catalog(checked, rows, source_health, resolution)
 
 
