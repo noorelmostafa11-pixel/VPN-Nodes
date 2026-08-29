@@ -1,11 +1,5 @@
 #!/usr/bin/env python3
-"""Google TCP-only health scan with bounded Xray batches.
-
-A single Xray config cannot safely expose tens of thousands of local SOCKS
-inbounds: the old implementation also assigned BASE_PORT + global_index,
-which eventually exceeded TCP port 65535.  This runner keeps all source nodes,
-but starts Xray in bounded batches and reuses a small local-port range.
-"""
+"""Google TCP-only health scan with bounded Xray batches."""
 from __future__ import annotations
 
 import json
@@ -222,11 +216,16 @@ def main() -> None:
     if not XRAY.exists():
         raise SystemExit(f"Xray binary not found: {XRAY}")
 
-    pool = real_delay.load_pool()
-    if not pool:
+    raw_pool = real_delay.load_pool()
+    if not raw_pool:
         raise SystemExit("No TCP-reachable nodes available")
 
-    print(f"INFO google_scan_pool={len(pool)} workers={WORKERS} batch_size={BATCH_SIZE} batches={(len(pool)+BATCH_SIZE-1)//BATCH_SIZE} target={GOOGLE_HOST}:{GOOGLE_PORT} mode=google_tcp_only")
+    # Assign a stable global index once. real_delay.write_cfg expects it for
+    # deterministic inbound/outbound tags, while each batch reuses local ports.
+    pool = [{**item, "index": idx} for idx, item in enumerate(raw_pool)]
+
+    total_batches = (len(pool) + BATCH_SIZE - 1) // BATCH_SIZE
+    print(f"INFO google_scan_pool={len(pool)} workers={WORKERS} batch_size={BATCH_SIZE} batches={total_batches} target={GOOGLE_HOST}:{GOOGLE_PORT} mode=google_tcp_only")
 
     started = time.perf_counter()
     results: list[dict] = []
@@ -234,7 +233,6 @@ def main() -> None:
 
     with tempfile.TemporaryDirectory(prefix="google-delay-") as td:
         root = Path(td)
-        total_batches = (len(pool) + BATCH_SIZE - 1) // BATCH_SIZE
         for offset in range(0, len(pool), BATCH_SIZE):
             batch_no = offset // BATCH_SIZE + 1
             scan_batch(root, pool[offset:offset + BATCH_SIZE], batch_no, total_batches, results, failures)
