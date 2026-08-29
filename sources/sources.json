@@ -1,5 +1,5 @@
 {
-  "version": 12,
+  "version": 13,
   "mode": "direct-public-sources",
   "refresh_policy": "external Oracle scheduler continues every 30 minutes",
   "source_policy": "Prefer externally hosted public feeds and active Telegram channels; GitHub raw feeds are not primary node inputs.",
@@ -34,6 +34,15 @@
     {"name":"vpnserverhub_v2ray","url":"https://www.vpnserverhub.com/v2ray","kind":"external_web","format":"auto","priority":217},
     {"name":"openproxylist_v2ray","url":"https://openproxylist.com/","kind":"external_web","format":"auto","priority":216},
     {"name":"freevmess","url":"https://www.freevmess.com/","kind":"external_web","format":"auto","priority":215},
-    {"name":"vpnkeep","url":"https://www.vpnkeep.com/","kind":"external_web","format":"auto","priority":214}
+    {"name":"vpnkeep","url":"https://www.vpnkeep.com/","kind":"external_web","format":"auto","priority":214},
+
+    {"name":"github_epodonios_all_configs","url":"https://raw.githubusercontent.com/Epodonios/v2ray-configs/main/All_Configs_Sub.txt","kind":"github_public","format":"auto","priority":206},
+    {"name":"github_ebrasha_v2ray_configs","url":"https://raw.githubusercontent.com/ebrasha/free-v2ray-public-list/main/V2Ray-Config-By-EbraSha.txt","kind":"github_public","format":"auto","priority":205},
+    {"name":"github_solispirit_countries","url":"https://api.github.com/repos/SoliSpirit/v2ray-configs/git/trees/main?recursive=1","owner":"SoliSpirit","repo":"v2ray-configs","ref":"main","path_regex":"^Countries/.*$","kind":"github_public","format":"github_tree","priority":204},
+    {"name":"github_solispirit_protocols","url":"https://api.github.com/repos/SoliSpirit/v2ray-configs/git/trees/main?recursive=1","owner":"SoliSpirit","repo":"v2ray-configs","ref":"main","path_regex":"^Protocols/.*$","kind":"github_public","format":"github_tree","priority":203},
+    {"name":"github_aliilapro_server","url":"https://raw.githubusercontent.com/ALIILAPRO/v2rayNG-Config/main/server.txt","kind":"github_public","format":"auto","priority":202},
+    {"name":"github_aliilapro_subscription","url":"https://raw.githubusercontent.com/ALIILAPRO/v2rayNG-Config/main/sub.txt","kind":"github_public","format":"auto","priority":201},
+    {"name":"github_v2rayroot_config","url":"https://api.github.com/repos/V2RayRoot/V2RayConfig/git/trees/main?recursive=1","owner":"V2RayRoot","repo":"V2RayConfig","ref":"main","path_regex":"^Config/.*$","kind":"github_public","format":"github_tree","priority":200},
+    {"name":"github_matinghanbari_subscriptions","url":"https://api.github.com/repos/MatinGhanbari/v2ray-configs/git/trees/main?recursive=1","owner":"MatinGhanbari","repo":"v2ray-configs","ref":"main","path_regex":"^subscriptions/.*$","kind":"github_public","format":"github_tree","priority":199}
   ]
 }
