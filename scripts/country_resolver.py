@@ -57,40 +57,80 @@ def _resolve_ip(host: str) -> str | None:
 
 
 def _geo_batch(ips: list[str]) -> dict[str, str]:
+    """Use IP geolocation only as a weak fallback, never as a reason to discard a node."""
     result: dict[str, str] = {}
     for start in range(0, len(ips), 100):
         batch = ips[start:start + 100]
         payload = json.dumps([{"query": ip} for ip in batch]).encode("utf-8")
-        req = urllib.request.Request("http://ip-api.com/batch?fields=status,countryCode,query", data=payload, headers={"Content-Type":"application/json", "User-Agent":"VPN-Nodes-CountryResolver/1"}, method="POST")
+        req = urllib.request.Request(
+            "http://ip-api.com/batch?fields=status,countryCode,proxy,hosting,query",
+            data=payload,
+            headers={"Content-Type":"application/json", "User-Agent":"VPN-Nodes-CountryResolver/2"},
+            method="POST",
+        )
         try:
-            with urllib.request.urlopen(req, timeout=20) as response: data = json.loads(response.read().decode("utf-8"))
+            with urllib.request.urlopen(req, timeout=20) as response:
+                data = json.loads(response.read().decode("utf-8"))
             for item in data if isinstance(data, list) else []:
                 code = str(item.get("countryCode", ""))
-                if item.get("status") == "success" and re.fullmatch(r"[A-Z]{2}", code): result[str(item.get("query"))] = code
-        except Exception: continue
+                if item.get("status") == "success" and re.fullmatch(r"[A-Z]{2}", code):
+                    result[str(item.get("query"))] = code
+        except Exception:
+            continue
     return result
 
 
 def resolve_rows(rows: list[dict]) -> dict[str, int]:
+    """Resolve country without ever rejecting or dropping a parsed/reachable node.
+
+    Strong signals (explicit metadata, remark, source hint, hostname) are left untouched.
+    GeoIP is deliberately used only for rows that have no stronger signal.  If GeoIP is
+    unavailable or ambiguous, the node remains UNKNOWN and is still published into the
+    global/server pool.  This prevents a bad GeoIP result from moving a known country or
+    deleting a node.  City/latitude/longitude are intentionally never used for country.
+    """
     hostname_resolved = 0
     for row in rows:
-        if row.get("country") != "UNKNOWN": continue
+        if row.get("country") != "UNKNOWN":
+            continue
         code = resolve_host(str(row.get("host") or ""))
         if code:
-            row["country"] = code; row["country_resolution"] = "hostname"; hostname_resolved += 1
+            row["country"] = code
+            row["country_resolution"] = "hostname"
+            hostname_resolved += 1
+
     unresolved = [r for r in rows if r.get("country") == "UNKNOWN"]
     host_ip: dict[str, str] = {}
     with ThreadPoolExecutor(max_workers=64) as pool:
         futures = {pool.submit(_resolve_ip, str(r.get("host") or "")): r for r in unresolved}
         for future in as_completed(futures):
             row = futures[future]
-            try: ip = future.result()
-            except Exception: ip = None
-            if ip: host_ip[str(row.get("host") or "")] = ip
+            try:
+                ip = future.result()
+            except Exception:
+                ip = None
+            if ip:
+                host_ip[str(row.get("host") or "")] = ip
+
     geo = _geo_batch(sorted(set(host_ip.values())))
     ip_resolved = 0
+    geo_conflicts = 0
     for row in unresolved:
-        ip = host_ip.get(str(row.get("host") or "")); code = geo.get(ip or "")
-        if code:
-            row["country"] = code; row["country_resolution"] = "ip_geolocation"; ip_resolved += 1
-    return {"hostname": hostname_resolved, "ip_geolocation": ip_resolved, "unknown": sum(1 for r in rows if r.get("country") == "UNKNOWN")}
+        ip = host_ip.get(str(row.get("host") or ""))
+        code = geo.get(ip or "")
+        if not code:
+            continue
+        # GeoIP is weak evidence. It may classify a hosting/exit IP by the network's
+        # registered location rather than the physical endpoint. Never overwrite a
+        # stronger country signal; unresolved rows can safely accept it as a fallback.
+        row["country"] = code
+        row["country_resolution"] = "ip_geolocation_weak_fallback"
+        row["country_resolution_confidence"] = "low"
+        ip_resolved += 1
+
+    return {
+        "hostname": hostname_resolved,
+        "ip_geolocation": ip_resolved,
+        "geo_conflicts": geo_conflicts,
+        "unknown": sum(1 for r in rows if r.get("country") == "UNKNOWN"),
+    }
