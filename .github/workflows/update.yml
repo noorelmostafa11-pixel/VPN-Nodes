@@ -26,15 +26,23 @@ jobs:
 
       - run: pip install -r requirements.txt
 
+      - name: Verify local GeoLite2 database
+        run: |
+          test -s data/GeoLite2-Country.mmdb || {
+            echo "::error::Missing data/GeoLite2-Country.mmdb. Run the GeoLite2 database workflow first.";
+            exit 1;
+          }
+          ls -lh data/GeoLite2-Country.mmdb
+
       - name: Run regression tests
         run: python tests/test_country_resolver.py
 
-      - name: Build TCP-reachable pool with direct Telegram sources
+      - name: Build TCP-reachable pool
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: python scripts/telegram_build_tcp_pool.py
 
-      - name: Restore previous catalog on health failure
+      - name: Restore previous catalog on failure
         if: failure()
         run: |
           git restore --source=HEAD -- output/countries output/protocols output/metadata/index.json output/metadata/countries.json output/metadata/health.json
