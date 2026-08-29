@@ -1,155 +1,200 @@
 {
-  "generated_at": "2026-08-28T23:41:05Z",
+  "generated_at": "2026-08-29T00:12:28Z",
   "sources": [
     {
       "name": "telegram_catalog_direct",
       "ok": true,
-      "nodes": 14387,
-      "elapsed_ms": 28325.5
+      "nodes": 14405,
+      "elapsed_ms": 29004.0
     },
     {
       "name": "telegram_abc_configs",
       "ok": true,
       "nodes": 0,
-      "elapsed_ms": 274.9
+      "elapsed_ms": 312.1
     },
     {
       "name": "telegram_v2hive",
       "ok": true,
       "nodes": 0,
-      "elapsed_ms": 278.6
+      "elapsed_ms": 313.9
     },
     {
       "name": "telegram_v2ray_free_conf",
       "ok": true,
       "nodes": 85,
-      "elapsed_ms": 2504.7
+      "elapsed_ms": 2616.0
     },
     {
       "name": "telegram_safenet_server",
       "ok": true,
       "nodes": 25,
-      "elapsed_ms": 2804.2
+      "elapsed_ms": 2881.9
     },
     {
       "name": "telegram_configv2rayng",
       "ok": true,
       "nodes": 166,
-      "elapsed_ms": 1914.8
+      "elapsed_ms": 1892.2
     },
     {
       "name": "telegram_vpnfail_v2ray",
       "ok": true,
       "nodes": 77,
-      "elapsed_ms": 2576.1
+      "elapsed_ms": 2625.9
     },
     {
       "name": "telegram_viproxys",
       "ok": true,
       "nodes": 0,
-      "elapsed_ms": 186.1
+      "elapsed_ms": 197.0
     },
     {
       "name": "telegram_v2ray_config_list",
       "ok": true,
-      "nodes": 98,
-      "elapsed_ms": 2599.4
+      "nodes": 96,
+      "elapsed_ms": 2607.5
     },
     {
       "name": "freenode_featured_subscription",
       "ok": true,
       "nodes": 25,
-      "elapsed_ms": 707.4
+      "elapsed_ms": 473.3
     },
     {
       "name": "freeproxydb_public_v2ray",
       "ok": true,
       "nodes": 113,
-      "elapsed_ms": 757.4
+      "elapsed_ms": 755.3
     },
     {
       "name": "freenodebiz_secondary_clash_feed",
       "ok": true,
       "nodes": 0,
-      "elapsed_ms": 430.3
+      "elapsed_ms": 485.2
     },
     {
       "name": "singbox_info_daily_nodes",
       "ok": true,
       "nodes": 3,
-      "elapsed_ms": 282.0
+      "elapsed_ms": 139.3
     },
     {
       "name": "whitedns_primary_subscription",
       "ok": true,
       "nodes": 144,
-      "elapsed_ms": 720.0
+      "elapsed_ms": 792.7
     },
     {
       "name": "whitedns_backup_subscription_2",
       "ok": true,
       "nodes": 144,
-      "elapsed_ms": 797.5
+      "elapsed_ms": 928.8
     },
     {
       "name": "whitedns_backup_subscription_4",
       "ok": true,
       "nodes": 144,
-      "elapsed_ms": 853.0
+      "elapsed_ms": 794.6
     },
     {
       "name": "kaveh_best_internet_iran",
       "ok": false,
       "nodes": 0,
       "error": "HTTPSConnectionPool(host='kaveh.yebekhe.workers.dev', port=443): Read timed out. (read timeout=5.0)",
-      "elapsed_ms": 5153.6
+      "elapsed_ms": 5053.6
     },
     {
       "name": "kaveh_donations",
       "ok": true,
-      "nodes": 410,
-      "elapsed_ms": 4878.6
+      "nodes": 442,
+      "elapsed_ms": 4879.4
+    },
+    {
+      "name": "v2nodes_global",
+      "ok": true,
+      "nodes": 0,
+      "elapsed_ms": 668.2
+    },
+    {
+      "name": "v2nodes_page_1",
+      "ok": true,
+      "nodes": 0,
+      "elapsed_ms": 367.8
+    },
+    {
+      "name": "vpnjantit_v2ray",
+      "ok": true,
+      "nodes": 0,
+      "elapsed_ms": 1377.7
+    },
+    {
+      "name": "vpnserverhub_v2ray",
+      "ok": false,
+      "nodes": 0,
+      "error": "HTTPSConnectionPool(host='www.vpnserverhub.com', port=443): Max retries exceeded with url: /v2ray (Caused by SSLError(SSLCertVerificationError(1, \"[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname mismatch, certificate is not valid for 'www.vpnserverhub.com'. (_ssl.c:1010)\")))",
+      "elapsed_ms": 550.5
+    },
+    {
+      "name": "openproxylist_v2ray",
+      "ok": false,
+      "nodes": 0,
+      "error": "403 Client Error: Forbidden for url: https://openproxylist.com/",
+      "elapsed_ms": 115.3
+    },
+    {
+      "name": "freevmess",
+      "ok": false,
+      "nodes": 0,
+      "error": "403 Client Error: Forbidden for url: https://www.freevmess.com/",
+      "elapsed_ms": 112.0
+    },
+    {
+      "name": "vpnkeep",
+      "ok": true,
+      "nodes": 0,
+      "elapsed_ms": 205.4
     },
     {
       "name": "mifa_vless",
       "ok": true,
       "nodes": 0,
-      "elapsed_ms": 838.4
+      "elapsed_ms": 775.1
     },
     {
       "name": "mifa_vmess",
       "ok": true,
       "nodes": 0,
-      "elapsed_ms": 284.0
+      "elapsed_ms": 276.2
     },
     {
       "name": "mifa_trojan",
       "ok": true,
       "nodes": 0,
-      "elapsed_ms": 263.2
+      "elapsed_ms": 275.9
     },
     {
       "name": "mifa_ss",
       "ok": true,
       "nodes": 0,
-      "elapsed_ms": 263.5
+      "elapsed_ms": 284.7
     },
     {
       "name": "vpnfail_v2ray_public",
       "ok": true,
       "nodes": 0,
-      "elapsed_ms": 2534.6
+      "elapsed_ms": 2198.0
     },
     {
       "name": "xrayvip_free_v2ray",
       "ok": true,
       "nodes": 33,
-      "elapsed_ms": 309.5
+      "elapsed_ms": 159.7
     }
   ],
-  "reachable_total": 3619,
-  "reachable_published": 3619,
-  "published_total": 3619,
+  "reachable_total": 3660,
+  "reachable_published": 3660,
+  "published_total": 3660,
   "publication_rejected_total": 0,
   "reachable_by_country": {
     "AE": 3,
@@ -159,58 +204,59 @@
     "AU": 7,
     "AZ": 2,
     "BE": 7,
-    "BG": 7,
+    "BG": 9,
     "BR": 2,
     "BY": 1,
     "BZ": 4,
-    "CA": 1465,
+    "CA": 1526,
     "CF": 4,
-    "CH": 132,
-    "CN": 2,
+    "CH": 133,
+    "CN": 3,
     "CR": 5,
-    "CY": 2,
+    "CY": 3,
     "CZ": 7,
-    "DE": 184,
+    "DE": 198,
     "DK": 4,
-    "EE": 14,
+    "EE": 15,
     "ES": 12,
-    "FI": 33,
-    "FR": 81,
-    "GB": 88,
+    "FI": 35,
+    "FR": 88,
+    "GB": 98,
     "GE": 1,
-    "HK": 15,
+    "HK": 16,
     "HU": 13,
-    "ID": 27,
+    "ID": 24,
     "IE": 6,
+    "IL": 1,
     "IN": 5,
-    "IR": 100,
-    "IT": 13,
+    "IR": 102,
+    "IT": 15,
     "JP": 25,
-    "KR": 14,
+    "KR": 11,
     "KZ": 4,
-    "LT": 3,
+    "LT": 9,
     "LU": 1,
-    "LV": 10,
-    "MD": 6,
+    "LV": 12,
+    "MD": 7,
     "MY": 3,
-    "NL": 133,
+    "NL": 156,
     "NO": 14,
     "NZ": 7,
-    "PH": 4,
-    "PL": 21,
-    "RO": 2,
-    "RS": 6,
-    "RU": 55,
+    "PH": 5,
+    "PL": 35,
+    "RO": 3,
+    "RS": 9,
+    "RU": 67,
     "SC": 40,
-    "SE": 32,
-    "SG": 30,
+    "SE": 36,
+    "SG": 29,
     "TH": 8,
     "TM": 6,
-    "TR": 6,
+    "TR": 8,
     "TW": 2,
-    "UA": 3,
-    "UNKNOWN": 269,
-    "US": 658,
+    "UA": 5,
+    "UNKNOWN": 122,
+    "US": 676,
     "VI": 1,
     "ZA": 2
   },
@@ -222,58 +268,59 @@
     "AU": 7,
     "AZ": 2,
     "BE": 7,
-    "BG": 7,
+    "BG": 9,
     "BR": 2,
     "BY": 1,
     "BZ": 4,
-    "CA": 1465,
+    "CA": 1526,
     "CF": 4,
-    "CH": 132,
-    "CN": 2,
+    "CH": 133,
+    "CN": 3,
     "CR": 5,
-    "CY": 2,
+    "CY": 3,
     "CZ": 7,
-    "DE": 184,
+    "DE": 198,
     "DK": 4,
-    "EE": 14,
+    "EE": 15,
     "ES": 12,
-    "FI": 33,
-    "FR": 81,
-    "GB": 88,
+    "FI": 35,
+    "FR": 88,
+    "GB": 98,
     "GE": 1,
-    "HK": 15,
+    "HK": 16,
     "HU": 13,
-    "ID": 27,
+    "ID": 24,
     "IE": 6,
+    "IL": 1,
     "IN": 5,
-    "IR": 100,
-    "IT": 13,
+    "IR": 102,
+    "IT": 15,
     "JP": 25,
-    "KR": 14,
+    "KR": 11,
     "KZ": 4,
-    "LT": 3,
+    "LT": 9,
     "LU": 1,
-    "LV": 10,
-    "MD": 6,
+    "LV": 12,
+    "MD": 7,
     "MY": 3,
-    "NL": 133,
+    "NL": 156,
     "NO": 14,
     "NZ": 7,
-    "PH": 4,
-    "PL": 21,
-    "RO": 2,
-    "RS": 6,
-    "RU": 55,
+    "PH": 5,
+    "PL": 35,
+    "RO": 3,
+    "RS": 9,
+    "RU": 67,
     "SC": 40,
-    "SE": 32,
-    "SG": 30,
+    "SE": 36,
+    "SG": 29,
     "TH": 8,
     "TM": 6,
-    "TR": 6,
+    "TR": 8,
     "TW": 2,
-    "UA": 3,
-    "UNKNOWN": 269,
-    "US": 658,
+    "UA": 5,
+    "UNKNOWN": 122,
+    "US": 676,
     "VI": 1,
     "ZA": 2
   },
@@ -308,6 +355,7 @@
     "HU": 0,
     "ID": 0,
     "IE": 0,
+    "IL": 0,
     "IN": 0,
     "IR": 0,
     "IT": 0,
@@ -340,15 +388,15 @@
     "VI": 0,
     "ZA": 0
   },
-  "health_candidates": 6708,
+  "health_candidates": 6768,
   "tcp_workers": 512,
   "country_resolution": {
-    "hostname": 38,
-    "ip_geolocation": 2813,
-    "unknown": 269
+    "hostname": 35,
+    "ip_geolocation": 3013,
+    "unknown": 122
   },
   "global_unknown": {
-    "total": 269,
+    "total": 122,
     "server_size": 500,
     "servers": 1
   }
