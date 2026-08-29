@@ -21,42 +21,38 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Download GeoLite2 Country databases
+      - name: Download latest GeoLite2 Country MMDB
         run: |
           set -euo pipefail
-          rm -rf /tmp/geolite2
-          mkdir -p /tmp/geolite2 data
+          mkdir -p data
+          rm -f data/GeoLite2-Country.mmdb
           curl --fail --location --silent --show-error \
-            'https://cdn.jsdelivr.net/npm/@ip-location-db/geolite2-country-mmdb/geolite2-country-ipv4.mmdb' \
-            --output data/GeoLite2-Country-IPv4.mmdb
-          curl --fail --location --silent --show-error \
-            'https://cdn.jsdelivr.net/npm/@ip-location-db/geolite2-country-mmdb/geolite2-country-ipv6.mmdb' \
-            --output data/GeoLite2-Country-IPv6.mmdb
-          test -s data/GeoLite2-Country-IPv4.mmdb
-          test -s data/GeoLite2-Country-IPv6.mmdb
-          ls -lh data/GeoLite2-Country-*.mmdb
+            'https://cdn.jsdelivr.net/npm/geolite2-country/GeoLite2-Country.mmdb.gz' \
+            --output /tmp/GeoLite2-Country.mmdb.gz
+          gzip -dc /tmp/GeoLite2-Country.mmdb.gz > data/GeoLite2-Country.mmdb
+          test -s data/GeoLite2-Country.mmdb
+          ls -lh data/GeoLite2-Country.mmdb
 
       - name: Record provenance
         run: |
           cat > data/GEOLITE2_SOURCE.md <<'EOF'
           # GeoLite2 Country database
 
-          The catalog uses local GeoLite2 Country MMDB databases at build time.
-          IPv4 and IPv6 are stored separately because the maintained distribution
-          exposes them as separate MMDB files.
+          Local MMDB used by the catalog's offline country classifier.
 
-          Source: https://github.com/sapics/ip-location-db
-          CDN: https://cdn.jsdelivr.net/npm/@ip-location-db/geolite2-country-mmdb/
+          Source distribution: https://github.com/wp-statistics/GeoLite2-Country
+          CDN: https://cdn.jsdelivr.net/npm/geolite2-country/GeoLite2-Country.mmdb.gz
 
-          Data license/EULA: GeoLite2 by MaxMind. See the upstream repository
-          and current MaxMind GeoLite2 license/EULA before redistribution.
+          The distribution states that this is a GeoLite2 Country database derived from
+          MaxMind data. Review the current MaxMind GeoLite2 license/EULA and the
+          distributor's terms before redistribution.
           EOF
 
       - name: Commit database
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/GeoLite2-Country-IPv4.mmdb data/GeoLite2-Country-IPv6.mmdb data/GEOLITE2_SOURCE.md
+          git add data/GeoLite2-Country.mmdb data/GEOLITE2_SOURCE.md
           if git diff --cached --quiet; then
             echo "GeoLite2 database unchanged"
             exit 0
