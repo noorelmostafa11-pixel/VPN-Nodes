@@ -73,7 +73,7 @@ jobs:
       - name: Restore previous catalog on failure
         if: failure()
         run: |
-          git restore --source=HEAD -- output/countries output/protocols output/global output/metadata/index.json output/metadata/countries.json output/metadata/health.json output/metadata/real_delay.json
+          git checkout HEAD -- output/ || true
 
       - name: Commit generated feeds
         if: success()
