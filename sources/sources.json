@@ -1,5 +1,5 @@
 {
-  "version": 11,
+  "version": 12,
   "mode": "direct-public-sources",
   "refresh_policy": "external Oracle scheduler continues every 30 minutes",
   "source_policy": "Prefer externally hosted public feeds and active Telegram channels; GitHub raw feeds are not primary node inputs.",
@@ -27,6 +27,13 @@
     {"name":"mifa_trojan","url":"https://mifa.world/trojan","kind":"global","format":"auto","priority":210},
     {"name":"mifa_ss","url":"https://mifa.world/ss","kind":"global","format":"auto","priority":210},
     {"name":"vpnfail_v2ray_public","url":"https://vpn.fail/free-proxy/v2ray","kind":"global","format":"auto","priority":205},
-    {"name":"xrayvip_free_v2ray","url":"https://www.xrayvip.com/free.txt","kind":"global","format":"auto","priority":205}
+    {"name":"xrayvip_free_v2ray","url":"https://www.xrayvip.com/free.txt","kind":"global","format":"auto","priority":205},
+    {"name":"v2nodes_global","url":"https://www.v2nodes.com/","kind":"external_web","format":"auto","priority":220},
+    {"name":"v2nodes_page_1","url":"https://www.v2nodes.com/?page=1","kind":"external_web","format":"auto","priority":219},
+    {"name":"vpnjantit_v2ray","url":"https://www.vpnjantit.com/","kind":"external_web","format":"auto","priority":218},
+    {"name":"vpnserverhub_v2ray","url":"https://www.vpnserverhub.com/v2ray","kind":"external_web","format":"auto","priority":217},
+    {"name":"openproxylist_v2ray","url":"https://openproxylist.com/","kind":"external_web","format":"auto","priority":216},
+    {"name":"freevmess","url":"https://www.freevmess.com/","kind":"external_web","format":"auto","priority":215},
+    {"name":"vpnkeep","url":"https://www.vpnkeep.com/","kind":"external_web","format":"auto","priority":214}
   ]
 }
