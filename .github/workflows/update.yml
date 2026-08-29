@@ -48,9 +48,6 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
         run: python scripts/telegram_build_tcp_pool.py
 
-      - name: Distribute unresolved nodes into discovered countries
-        run: python scripts/distribute_unknown.py
-
       - name: Install Xray
         run: |
           set -euo pipefail
