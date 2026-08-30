@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import asyncio
 import json
+import shutil
 import time
 from pathlib import Path
 
@@ -92,6 +93,17 @@ def publish_app_pool(rows: list[dict], source_health: list[dict]) -> dict:
     for name in ("countries", "active", "backup", "protocols"):
         for path in out_dirs[name].glob("*.txt"):
             path.unlink()
+
+    # Remove stale artifacts from the former deep-Xray/OpenVPN verification stages.
+    openvpn_dir = OUT / "openvpn"
+    if openvpn_dir.exists():
+        shutil.rmtree(openvpn_dir, ignore_errors=True)
+    for stale in (
+        OUT / "metadata" / "openvpn_health.json",
+        OUT / "metadata" / "core_driven_health.json",
+        OUT / "metadata" / "openvpn_candidates.json",
+    ):
+        stale.unlink(missing_ok=True)
 
     # Keep only nodes for which the country resolver produced a usable country.
     # UNKNOWN remains in metadata/tcp_reachable.json but is not exposed as a
@@ -214,8 +226,8 @@ def main() -> None:
     if successful_sources == 0 and not all_rows:
         raise RuntimeError("All upstream sources failed")
 
-    # OpenVPN candidates stay protocol-separated. They may be collected into their
-    # dedicated metadata file, but they never enter the Xray/app TCP feed.
+    # OpenVPN candidates stay protocol-separated. They never enter the Xray/app
+    # TCP feed. The Android app currently consumes Xray protocol URIs only.
     xray_rows = [
         row for row in all_rows
         if str(row.get("protocol") or "").lower() != "openvpn"
