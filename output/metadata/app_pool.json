@@ -1,0 +1,229 @@
+{
+  "schema": 20,
+  "generated_at": "2026-08-30T05:14:31Z",
+  "mode": "tcp_liveness_only_android_final_xray_check",
+  "liveness_test": "TCP connect to advertised endpoint",
+  "final_runtime_test": "Android Xray + local HTTP health-check",
+  "allowed_ports": [
+    80,
+    443
+  ],
+  "tcp_workers": 512,
+  "per_country_cap": null,
+  "active_per_country": null,
+  "backup_per_country": null,
+  "selection_policy": "all_tcp_alive_nodes_with_resolved_country",
+  "alive_with_country": 51744,
+  "alive_unknown_country": 0,
+  "published_active": 51744,
+  "published_backup": 0,
+  "published_total": 51744,
+  "country_resolution": {
+    "hostname": 2020,
+    "geoip_local": 28397,
+    "ip_geolocation": 28397,
+    "metadata_fallback": 23347,
+    "metadata_first": 23347,
+    "reclassified_existing": 23347,
+    "unknown": 0,
+    "database": "/home/runner/work/VPN-Nodes/VPN-Nodes/data/GeoLite2-Country.mmdb",
+    "database_loaded": true,
+    "failure_stats": {
+      "address_not_found": 0,
+      "invalid_database": 0,
+      "invalid_ip": 0,
+      "other": 0,
+      "dns_failure": 0,
+      "lookups": 28397
+    }
+  },
+  "source_failures": 0,
+  "sources": [
+    {
+      "name": "roosterkid-V2RAY",
+      "ok": true,
+      "nodes": 47,
+      "elapsed_ms": 202.3
+    },
+    {
+      "name": "roosterkid-V2RAY_BASE64",
+      "ok": true,
+      "nodes": 47,
+      "elapsed_ms": 148.8
+    },
+    {
+      "name": "roosterkid-V2RAY_RAW",
+      "ok": true,
+      "nodes": 47,
+      "elapsed_ms": 140.0
+    },
+    {
+      "name": "MatinGhanbari-ss",
+      "ok": true,
+      "nodes": 115,
+      "elapsed_ms": 174.3
+    },
+    {
+      "name": "funcra-VPNGate",
+      "ok": true,
+      "nodes": 12,
+      "elapsed_ms": 282.6
+    },
+    {
+      "name": "MatinGhanbari-trojan",
+      "ok": true,
+      "nodes": 306,
+      "elapsed_ms": 155.7
+    },
+    {
+      "name": "MatinGhanbari-vless",
+      "ok": true,
+      "nodes": 143,
+      "elapsed_ms": 140.7
+    },
+    {
+      "name": "MatinGhanbari-vmess",
+      "ok": true,
+      "nodes": 985,
+      "elapsed_ms": 212.4
+    },
+    {
+      "name": "mahdibland-sub_merge",
+      "ok": true,
+      "nodes": 1446,
+      "elapsed_ms": 278.9
+    },
+    {
+      "name": "hamedcode-port_443",
+      "ok": true,
+      "nodes": 5819,
+      "elapsed_ms": 526.4
+    },
+    {
+      "name": "hamedcode-port_80",
+      "ok": true,
+      "nodes": 675,
+      "elapsed_ms": 160.3
+    },
+    {
+      "name": "F0rc3Run-Telegram",
+      "ok": true,
+      "nodes": 238,
+      "elapsed_ms": 156.6
+    },
+    {
+      "name": "Baarcuda-top100-vless",
+      "ok": true,
+      "nodes": 55,
+      "elapsed_ms": 136.3
+    },
+    {
+      "name": "Baarcuda-top100",
+      "ok": true,
+      "nodes": 18,
+      "elapsed_ms": 149.1
+    },
+    {
+      "name": "Alirewa-V2ray-Configs",
+      "ok": true,
+      "nodes": 957,
+      "elapsed_ms": 188.7
+    },
+    {
+      "name": "Epodonios-All_Configs_Sub",
+      "ok": true,
+      "nodes": 3968,
+      "elapsed_ms": 376.3
+    },
+    {
+      "name": "sakha1370-all_valid_proxies",
+      "ok": true,
+      "nodes": 5191,
+      "elapsed_ms": 885.7
+    },
+    {
+      "name": "Au1rxx-v2ray-base64",
+      "ok": true,
+      "nodes": 463,
+      "elapsed_ms": 270.4
+    },
+    {
+      "name": "Epodonios-All_Configs_base64_Sub",
+      "ok": true,
+      "nodes": 3968,
+      "elapsed_ms": 572.8
+    },
+    {
+      "name": "0xRadikal-configs_base64",
+      "ok": true,
+      "nodes": 5256,
+      "elapsed_ms": 674.6
+    },
+    {
+      "name": "SoliSpirit-all_configs",
+      "ok": true,
+      "nodes": 4064,
+      "elapsed_ms": 424.1
+    },
+    {
+      "name": "Danialsamadi-AllConfigsSub",
+      "ok": true,
+      "nodes": 556,
+      "elapsed_ms": 218.8
+    },
+    {
+      "name": "ebrasha-all_extracted_configs",
+      "ok": true,
+      "nodes": 17066,
+      "elapsed_ms": 1276.8
+    },
+    {
+      "name": "Delta-Kronecker-all_configs",
+      "ok": true,
+      "nodes": 3031,
+      "elapsed_ms": 316.4
+    },
+    {
+      "name": "mfuu-v2ray",
+      "ok": true,
+      "nodes": 280,
+      "elapsed_ms": 145.3
+    },
+    {
+      "name": "mheidari98-.proxy",
+      "ok": true,
+      "nodes": 8815,
+      "elapsed_ms": 1023.5
+    },
+    {
+      "name": "rasool083-v2ray-sub",
+      "ok": true,
+      "nodes": 9371,
+      "elapsed_ms": 1378.5
+    },
+    {
+      "name": "teknovpnhub-servers",
+      "ok": true,
+      "nodes": 43,
+      "elapsed_ms": 143.6
+    },
+    {
+      "name": "rtwo2-everything",
+      "ok": true,
+      "nodes": 94773,
+      "elapsed_ms": 11045.5
+    },
+    {
+      "name": "Pawdroid-Free-servers",
+      "ok": true,
+      "nodes": 16,
+      "elapsed_ms": 122.3
+    },
+    {
+      "name": "Telegram-Channels",
+      "ok": true,
+      "nodes": 13991,
+      "elapsed_ms": 18519.9
+    }
+  ]
+}
