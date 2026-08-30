@@ -26,6 +26,14 @@ jobs:
 
       - run: pip install -r requirements.txt
 
+      - name: Prepare OpenVPN test dependencies
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq openvpn curl
+          openvpn --version | head -n 1
+          curl --version | head -n 1
+
       - name: Prepare local GeoLite2 database
         run: |
           set -euo pipefail
@@ -59,7 +67,7 @@ jobs:
           chmod +x /opt/hostedtoolcache/xray/xray
           /opt/hostedtoolcache/xray/xray version
 
-      - name: Core-driven real-traffic verification
+      - name: Xray exact-laptop-path verification
         env:
           XRAY_BIN: /opt/hostedtoolcache/xray/xray
           REAL_DELAY_WORKERS: 250
@@ -67,6 +75,12 @@ jobs:
           REAL_DELAY_SOCKS_BASE: 21000
           REAL_DELAY_XRAY_BATCH_SIZE: 500
         run: python scripts/core_driven_real_traffic.py
+
+      - name: OpenVPN VPN Gate real-tunnel verification
+        env:
+          OPENVPN_WORKERS: 4
+          OPENVPN_NODE_TIMEOUT: 25
+        run: python scripts/vpngate_openvpn.py
 
       - name: Restore previous catalog on failure
         if: failure()
