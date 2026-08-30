@@ -59,7 +59,7 @@ jobs:
           chmod +x /opt/hostedtoolcache/xray/xray
           /opt/hostedtoolcache/xray/xray version
 
-      - name: Real Internet health through Xray - Google TCP only
+      - name: Core-driven real traffic health - Active/Backup
         env:
           XRAY_BIN: /opt/hostedtoolcache/xray/xray
           REAL_DELAY_WORKERS: 256
