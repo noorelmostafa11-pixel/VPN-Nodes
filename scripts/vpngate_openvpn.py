@@ -9,6 +9,7 @@ performs a real HTTPS request through the tunnel.
 from __future__ import annotations
 
 import argparse
+import base64
 import json
 import os
 import re
@@ -17,14 +18,12 @@ import socket
 import subprocess
 import tempfile
 import time
-from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "output"
 CANDIDATES = OUT / "metadata" / "openvpn_candidates.json"
 DEFAULT_TIMEOUT = float(os.environ.get("OPENVPN_NODE_TIMEOUT", "25"))
-DEFAULT_WORKERS = int(os.environ.get("OPENVPN_WORKERS", "4"))
 TEST_HOST = "www.gstatic.com"
 TEST_PATH = "/generate_204"
 
@@ -84,7 +83,6 @@ def test_candidate(item: dict, index: int, timeout: float, test_ip: str) -> dict
         "latency_ms": -1.0,
         "detail": "",
     }
-
     config_b64 = str(item.get("config_b64") or "").strip()
     if not config_b64:
         result["detail"] = "missing OpenVPN config"
@@ -96,9 +94,7 @@ def test_candidate(item: dict, index: int, timeout: float, test_ip: str) -> dict
     log_path = work / "openvpn.log"
     pid_path = work / "openvpn.pid"
     process = None
-
     try:
-        import base64
         raw = base64.b64decode(config_b64 + "=" * (-len(config_b64) % 4))
         config = raw.decode("utf-8", errors="replace")
         remotes = re.findall(r"^\s*remote\s+(\S+)\s+(\d+)\b", config, flags=re.MULTILINE)
@@ -109,8 +105,6 @@ def test_candidate(item: dict, index: int, timeout: float, test_ip: str) -> dict
             result["detail"] = "OpenVPN remote port is not 80/443"
             return result
 
-        # VPN Gate public profiles normally authenticate with vpn/vpn. Supplying
-        # the credential file also overrides a bare auth-user-pass directive.
         cred_path.write_text("vpn\nvpn\n", encoding="utf-8")
         extra = [
             "auth-user-pass", str(cred_path),
@@ -124,7 +118,6 @@ def test_candidate(item: dict, index: int, timeout: float, test_ip: str) -> dict
             "writepid", str(pid_path),
         ]
         config_path.write_text(config.rstrip() + "\n" + "\n".join(extra) + "\n", encoding="utf-8")
-
         process = subprocess.Popen(
             ["sudo", "-n", "openvpn", "--config", str(config_path), "--log", str(log_path)],
             stdout=subprocess.DEVNULL,
@@ -141,8 +134,7 @@ def test_candidate(item: dict, index: int, timeout: float, test_ip: str) -> dict
 
         curl = subprocess.run(
             [
-                "curl", "--fail", "--silent", "--show-error",
-                "--noproxy", "*",
+                "curl", "--fail", "--silent", "--show-error", "--noproxy", "*",
                 "--connect-timeout", "8", "--max-time", "12",
                 "--resolve", f"{TEST_HOST}:443:{test_ip}",
                 "-o", "/dev/null", "-w", "%{http_code}",
@@ -171,49 +163,35 @@ def test_candidate(item: dict, index: int, timeout: float, test_ip: str) -> dict
 
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--workers", type=int, default=DEFAULT_WORKERS)
     parser.add_argument("--timeout", type=float, default=DEFAULT_TIMEOUT)
     args = parser.parse_args()
-
     if not shutil.which("openvpn"):
         raise SystemExit("openvpn is not installed")
     if not CANDIDATES.is_file():
         print("INFO vpngate_candidates=0 (no candidate file)")
         return 0
-
     payload = json.loads(CANDIDATES.read_text(encoding="utf-8"))
     candidates = [x for x in payload.get("nodes", []) if int(x.get("port", 0)) in {80, 443}]
     if not candidates:
         print("INFO vpngate_candidates=0")
         return 0
 
-    workers = max(1, min(args.workers, 8))
     test_ip = public_test_ip()
-    print(f"INFO openvpn_candidates={len(candidates)} workers={workers} timeout_s={args.timeout} test={TEST_HOST} test_ip={test_ip}")
-
+    print(f"INFO openvpn_candidates={len(candidates)} workers=1 timeout_s={args.timeout} test={TEST_HOST} test_ip={test_ip}")
     results = []
-    with ThreadPoolExecutor(max_workers=workers) as executor:
-        futures = {
-            executor.submit(test_candidate, item, index, max(5.0, args.timeout), test_ip): item
-            for index, item in enumerate(candidates, start=1)
-        }
-        for n, future in enumerate(as_completed(futures), start=1):
-            result = future.result()
-            results.append(result)
-            print(f"[{n}/{len(candidates)}] OpenVPN {result['server']}:{result['port']} {result['status']} {result['latency_ms']} ms | {result['detail']}", flush=True)
+    for index, item in enumerate(candidates, start=1):
+        result = test_candidate(item, index, max(5.0, args.timeout), test_ip)
+        results.append(result)
+        print(f"[{index}/{len(candidates)}] OpenVPN {result['server']}:{result['port']} {result['status']} {result['latency_ms']} ms | {result['detail']}", flush=True)
 
     passed = [r for r in results if r["status"] == "PASS"]
     results.sort(key=lambda r: (r.get("latency_ms", 10**9) if r.get("latency_ms", -1) >= 0 else 10**9, r.get("index", 10**9)))
-
     verified_dir = OUT / "openvpn"
     meta_dir = OUT / "metadata"
     verified_dir.mkdir(parents=True, exist_ok=True)
     meta_dir.mkdir(parents=True, exist_ok=True)
     (verified_dir / "verified.json").write_text(json.dumps(results, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    (verified_dir / "verified.txt").write_text(
-        "\n".join(f"{r['server']}:{r['port']} # {r['country_short']}" for r in passed) + ("\n" if passed else ""),
-        encoding="utf-8",
-    )
+    (verified_dir / "verified.txt").write_text("\n".join(f"{r['server']}:{r['port']} # {r['country_short']}" for r in passed) + ("\n" if passed else ""), encoding="utf-8")
     summary = {
         "schema": 1,
         "generated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
@@ -221,7 +199,7 @@ def main() -> int:
         "candidates": len(candidates),
         "pass": len(passed),
         "failed": len(results) - len(passed),
-        "workers": workers,
+        "workers": 1,
         "timeout_s": args.timeout,
         "allowed_ports": [80, 443],
         "health_path": "VPNGate CSV -> OpenVPN client -> tunnel initialization -> routed HTTPS /generate_204 -> HTTP 204",
@@ -231,7 +209,6 @@ def main() -> int:
     (meta_dir / "openvpn_health.json").write_text(json.dumps(summary, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(f"INFO OPENVPN FINAL PASS={len(passed)} FAILED={len(results)-len(passed)} TOTAL={len(results)}")
     return 0
-
 
 if __name__ == "__main__":
     raise SystemExit(main())
