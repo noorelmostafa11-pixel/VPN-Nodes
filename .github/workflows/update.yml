@@ -12,23 +12,41 @@ concurrency:
 
 jobs:
   update:
-    runs-on: ubuntu-24.04
-    timeout-minutes: 50
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
     steps:
-      - name: Checkout
-        uses: actions/checkout@v5
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
-      - name: Setup Python
-        uses: actions/setup-python@v6
+      - uses: actions/setup-python@v6
         with:
           python-version: '3.12'
+          cache: 'pip'
 
-      - name: Setup .NET 9
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: 9.x
+      - run: pip install -r requirements.txt
+
+      - name: Prepare local GeoLite2 database
+        run: |
+          set -euo pipefail
+          mkdir -p data
+          if [ ! -s data/GeoLite2-Country.mmdb ]; then
+            echo "GeoLite2 database is not committed yet; bootstrapping one local copy for this run."
+            curl --fail --location --silent --show-error \
+              'https://cdn.jsdelivr.net/npm/geolite2-country/GeoLite2-Country.mmdb.gz' \
+              --output /tmp/GeoLite2-Country.mmdb.gz
+            gzip -dc /tmp/GeoLite2-Country.mmdb.gz > data/GeoLite2-Country.mmdb
+          fi
+          test -s data/GeoLite2-Country.mmdb
+          ls -lh data/GeoLite2-Country.mmdb
+
+      - name: Run regression tests
+        run: python tests/test_country_resolver.py
+
+      - name: Build TCP-reachable pool
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python scripts/telegram_build_tcp_pool.py
 
       - name: Install Xray
         run: |
@@ -41,29 +59,34 @@ jobs:
           chmod +x /opt/hostedtoolcache/xray/xray
           /opt/hostedtoolcache/xray/xray version
 
-      - name: Run full FastNodes pipeline
+      - name: FastNodes-style staged verification - TLS + bounded Xray
         env:
           XRAY_BIN: /opt/hostedtoolcache/xray/xray
-          WORKER_URL: ${{ secrets.WORKER_URL }}
-          WORKER_AUTH: ${{ secrets.WORKER_AUTH }}
-        run: python scripts/run_fastnodes_full.py
+          REAL_DELAY_TLS_WORKERS: 512
+          REAL_DELAY_TLS_TIMEOUT: 4
+          REAL_DELAY_WORKERS: 256
+          REAL_DELAY_NODE_TIMEOUT: 10
+          REAL_DELAY_SOCKS_BASE: 21000
+          REAL_DELAY_XRAY_BATCH_SIZE: 2000
+          REAL_DELAY_DEEP_CHECK_BUDGET: 2621
+        run: python scripts/fastnodes_staged_scan.py
 
-      - name: Restore generated feeds on failure
+      - name: Restore previous catalog on failure
         if: failure()
         run: |
-          git checkout HEAD -- output/ state/ || true
+          git checkout HEAD -- output/ || true
 
-      - name: Commit generated feeds and stability state
+      - name: Commit generated feeds
         if: success()
         run: |
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add output state
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add output
           if git diff --cached --quiet; then
-            echo 'No catalog changes detected'
+            echo "No catalog changes detected"
             exit 0
           fi
-          git commit -m 'chore: refresh node catalog with FastNodes'
+          git commit -m "chore: refresh node catalog"
           git fetch origin main
           git rebase origin/main
           git push origin HEAD:main
