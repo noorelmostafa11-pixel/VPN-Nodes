@@ -1,0 +1,41 @@
+{
+  "schema": 18,
+  "generated_at": "2026-08-30T04:56:33Z",
+  "mode": "exact_local_node_debug_batch_v2",
+  "tcp_candidates": 50685,
+  "deep_checked": 50685,
+  "pass": 756,
+  "works_but_cert_invalid": 94,
+  "real_traffic_failed": 46253,
+  "other_failed": 0,
+  "verified_publishable": 850,
+  "published_total": 850,
+  "workers": 250,
+  "allowed_ports": [
+    80,
+    443
+  ],
+  "health_path": "parse->dns->tcp->xray_config_validation->xray_start->local_socks5->real_xray_tunnel->strict_https->diagnostic_https",
+  "publish_policy": "PASS -> active; WORKS_BUT_CERT_INVALID -> backup; REAL_TRAFFIC_FAILED and OTHER_FAILED are excluded",
+  "country_policy": "Automatic country resolution only for publishable verified nodes; no fixed country allowlist.",
+  "country_resolution": {
+    "hostname": 34,
+    "geoip_local": 364,
+    "ip_geolocation": 364,
+    "metadata_fallback": 486,
+    "metadata_first": 486,
+    "reclassified_existing": 486,
+    "unknown": 0,
+    "database": "/home/runner/work/VPN-Nodes/VPN-Nodes/data/GeoLite2-Country.mmdb",
+    "database_loaded": true,
+    "failure_stats": {
+      "address_not_found": 0,
+      "invalid_database": 0,
+      "invalid_ip": 0,
+      "other": 0,
+      "dns_failure": 0,
+      "lookups": 364
+    }
+  },
+  "exact_tester_sha256": "5bfe0545333ff904b1d6d35b2d728061fb934e2c0d392b048f14abcecc3ac4d2"
+}
