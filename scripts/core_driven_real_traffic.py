@@ -71,6 +71,7 @@ def resolve_country(items):
 
 
 def publish(items):
+    """Publish only nodes that actually passed the real-traffic health path."""
     out = ROOT / "output"
     dirs = {k: out / k for k in ("countries", "active", "backup", "protocols", "metadata")}
     for d in dirs.values():
@@ -79,30 +80,53 @@ def publish(items):
         for p in dirs[k].glob("*.txt"):
             p.unlink()
 
+    # Only verified results are publishable:
+    # PASS -> active
+    # WORKS_BUT_CERT_INVALID -> backup
+    # REAL_TRAFFIC_FAILED / OTHER_FAILED -> never publish
+    verified = [
+        item for item in items
+        if item["result"].get("status") in {"PASS", "WORKS_BUT_CERT_INVALID"}
+    ]
+
     groups = {"active": {}, "backup": {}}
-    for item in items:
-        kind = "active" if item["result"].get("status") == "PASS" else "backup"
+    for item in verified:
+        status = item["result"].get("status")
+        kind = "active" if status == "PASS" else "backup"
         country = str(item.get("country") or "UNKNOWN").upper()
         groups[kind].setdefault(country, []).append(item)
 
     for kind in groups:
         for country, rows in groups[kind].items():
-            rows.sort(key=lambda x: (x["result"].get("diagnostic_latency_ms", 10**9), x["result"].get("tcp_ms", 10**9), x["result"].get("index", 10**9)))
-            (dirs[kind] / f"{country}.txt").write_text("\n".join(x["uri"] for x in rows) + "\n", encoding="utf-8")
+            rows.sort(key=lambda x: (
+                x["result"].get("diagnostic_latency_ms", 10**9),
+                x["result"].get("tcp_ms", 10**9),
+                x["result"].get("index", 10**9),
+            ))
+            (dirs[kind] / f"{country}.txt").write_text(
+                "\n".join(x["uri"] for x in rows) + "\n",
+                encoding="utf-8",
+            )
 
     for country in sorted(set(groups["active"]) | set(groups["backup"])):
         rows = groups["active"].get(country, []) + groups["backup"].get(country, [])
-        (dirs["countries"] / f"{country}.txt").write_text("\n".join(x["uri"] for x in rows) + "\n", encoding="utf-8")
+        (dirs["countries"] / f"{country}.txt").write_text(
+            "\n".join(x["uri"] for x in rows) + "\n",
+            encoding="utf-8",
+        )
 
     protocols = {}
-    for item in items:
+    for item in verified:
         try:
             proto = item["tester"].parse_node(item["uri"])["protocol"]
             protocols.setdefault(proto, []).append(item["uri"])
         except Exception:
             pass
     for proto, lines in protocols.items():
-        (dirs["protocols"] / f"{proto}.txt").write_text("\n".join(lines) + "\n", encoding="utf-8")
+        (dirs["protocols"] / f"{proto}.txt").write_text(
+            "\n".join(lines) + "\n",
+            encoding="utf-8",
+        )
 
 
 def main() -> int:
@@ -134,26 +158,58 @@ def main() -> int:
     results = []
     counters = {"PASS": 0, "WORKS_BUT_CERT_INVALID": 0, "REAL_TRAFFIC_FAILED": 0, "OTHER_FAILED": 0}
     with ThreadPoolExecutor(max_workers=WORKERS) as executor:
-        futures = {executor.submit(tester.test_one, i, uri, xray, SOCKS_BASE + i - 1): (i, uri) for i, uri in enumerate(uris, 1)}
+        futures = {
+            executor.submit(
+                tester.test_one,
+                i,
+                uri,
+                xray,
+                SOCKS_BASE + i - 1,
+            ): (i, uri)
+            for i, uri in enumerate(uris, 1)
+        }
         finished = 0
         for future in as_completed(futures):
             idx, uri = futures[future]
             try:
                 result = future.result()
             except Exception as exc:
-                result = {"index": idx, "protocol": "", "address": "", "port": None, "tcp_ms": -1.0, "status": "OTHER_FAILED", "reason": f"worker exception: {exc}", "strict_ok": False, "diagnostic_ok": False, "diagnostic_latency_ms": -1.0}
+                result = {
+                    "index": idx,
+                    "protocol": "",
+                    "address": "",
+                    "port": None,
+                    "tcp_ms": -1.0,
+                    "status": "OTHER_FAILED",
+                    "reason": f"worker exception: {exc}",
+                    "strict_ok": False,
+                    "diagnostic_ok": False,
+                    "diagnostic_latency_ms": -1.0,
+                }
             result["uri"] = uri
             results.append({"uri": uri, "result": result, "tester": tester})
             status = result.get("status", "OTHER_FAILED")
             counters[status] = counters.get(status, 0) + 1
             finished += 1
             if finished % 100 == 0 or finished == len(uris):
-                print(f"INFO real_progress={finished}/{len(uris)} PASS={counters['PASS']} CERT={counters['WORKS_BUT_CERT_INVALID']} FAIL={counters['REAL_TRAFFIC_FAILED']} OTHER={counters['OTHER_FAILED']}")
+                print(
+                    f"INFO real_progress={finished}/{len(uris)} "
+                    f"PASS={counters['PASS']} "
+                    f"CERT={counters['WORKS_BUT_CERT_INVALID']} "
+                    f"FAIL={counters['REAL_TRAFFIC_FAILED']} "
+                    f"OTHER={counters['OTHER_FAILED']}"
+                )
 
-    resolution = resolve_country(results)
-    publish(results)
+    # Resolve country ONLY for verified nodes that are actually publishable.
+    verified_results = [
+        item for item in results
+        if item["result"].get("status") in {"PASS", "WORKS_BUT_CERT_INVALID"}
+    ]
+    resolution = resolve_country(verified_results)
+    publish(verified_results)
+
     metadata = {
-        "schema": 17,
+        "schema": 18,
         "generated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
         "mode": "exact_local_node_debug_batch_v2",
         "tcp_candidates": len(uris),
@@ -162,17 +218,30 @@ def main() -> int:
         "works_but_cert_invalid": counters["WORKS_BUT_CERT_INVALID"],
         "real_traffic_failed": counters["REAL_TRAFFIC_FAILED"],
         "other_failed": counters["OTHER_FAILED"],
+        "verified_publishable": len(verified_results),
         "published_total": counters["PASS"] + counters["WORKS_BUT_CERT_INVALID"],
         "workers": WORKERS,
         "allowed_ports": [80, 443],
         "health_path": "parse->dns->tcp->xray_config_validation->xray_start->local_socks5->real_xray_tunnel->strict_https->diagnostic_https",
-        "country_policy": "Automatic country resolution from successful nodes only; no fixed country allowlist.",
+        "publish_policy": "PASS -> active; WORKS_BUT_CERT_INVALID -> backup; REAL_TRAFFIC_FAILED and OTHER_FAILED are excluded",
+        "country_policy": "Automatic country resolution only for publishable verified nodes; no fixed country allowlist.",
         "country_resolution": resolution,
         "exact_tester_sha256": EXPECTED_SHA256,
     }
-    (ROOT / "output" / "metadata" / "core_driven_health.json").write_text(json.dumps(metadata, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    print(f"INFO FINAL PASS={counters['PASS']} CERT={counters['WORKS_BUT_CERT_INVALID']} FAILED={counters['REAL_TRAFFIC_FAILED']} OTHER={counters['OTHER_FAILED']} TOTAL={len(results)} PUBLISHED={metadata['published_total']}")
+    (ROOT / "output" / "metadata" / "core_driven_health.json").write_text(
+        json.dumps(metadata, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
+    print(
+        f"INFO FINAL PASS={counters['PASS']} "
+        f"CERT={counters['WORKS_BUT_CERT_INVALID']} "
+        f"FAILED={counters['REAL_TRAFFIC_FAILED']} "
+        f"OTHER={counters['OTHER_FAILED']} "
+        f"TOTAL={len(results)} "
+        f"PUBLISHED={metadata['published_total']}"
+    )
     return 0
+
 
 if __name__ == "__main__":
     raise SystemExit(main())
