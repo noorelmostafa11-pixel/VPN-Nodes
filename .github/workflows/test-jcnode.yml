@@ -9,7 +9,7 @@ permissions:
 jobs:
   test:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 10
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -19,16 +19,6 @@ jobs:
         with:
           python-version: '3.12'
           cache: 'pip'
-
-      - name: Install system tools
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y ffmpeg
-
-      - name: Install JCNode test dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install yt-dlp faster-whisper
 
       - name: Enable isolated JCNode test
         run: |
@@ -41,9 +31,9 @@ jobs:
           p.write_text(json.dumps(data, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
           PY
 
-      - name: Run recognition-only test
+      - name: Run transcript recognition-only test
         run: python scripts/test_jcnode_code.py
 
       - name: Show test status
         if: always()
-        run: echo "JCNode recognition test completed; no source files were modified or published."
+        run: echo "JCNode transcript recognition test completed; no source files were modified or published."
