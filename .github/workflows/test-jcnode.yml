@@ -9,7 +9,7 @@ permissions:
 jobs:
   test:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 25
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -25,10 +25,17 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y ffmpeg
 
+      - name: Install Deno runtime
+        uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+
       - name: Install JCNode ASR dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install yt-dlp faster-whisper
+          pip install -U --pre yt-dlp faster-whisper
+          yt-dlp --version
+          deno --version
 
       - name: Enable isolated JCNode test
         run: |
@@ -42,6 +49,8 @@ jobs:
           PY
 
       - name: Run transcript then ASR recognition test
+        env:
+          YTDLP_EXTRACTOR_ARGS: "youtube:player_client=web_safari,default"
         run: python scripts/test_jcnode_code.py
 
       - name: Show test status
