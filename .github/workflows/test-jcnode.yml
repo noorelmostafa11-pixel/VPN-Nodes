@@ -2,6 +2,11 @@ name: Test JCNode Code Recognition
 
 on:
   workflow_dispatch:
+  pull_request:
+    paths:
+      - 'scripts/test_jcnode_code.py'
+      - 'sources/jcnode_test.json'
+      - '.github/workflows/test-jcnode.yml'
 
 permissions:
   contents: read
