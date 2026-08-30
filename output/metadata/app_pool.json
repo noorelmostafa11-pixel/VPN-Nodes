@@ -1,6 +1,6 @@
 {
   "schema": 21,
-  "generated_at": "2026-08-30T08:03:05Z",
+  "generated_at": "2026-08-30T09:04:00Z",
   "mode": "tcp_liveness_only_android_final_xray_check",
   "liveness_test": "TCP connect to advertised endpoint",
   "final_runtime_test": "Android Xray + local HTTP health-check",
@@ -14,18 +14,18 @@
   "backup_per_country": null,
   "selection_policy": "all_tcp_alive_nodes_with_resolved_country; explicit_country_metadata_first_then_geoip_then_latency",
   "country_order_policy": "explicit_country_metadata_first; geoip_second; latency_ascending_within_tier",
-  "alive_with_country": 51836,
+  "alive_with_country": 52297,
   "alive_unknown_country": 0,
-  "published_active": 51836,
+  "published_active": 52297,
   "published_backup": 0,
-  "published_total": 51836,
+  "published_total": 52297,
   "country_resolution": {
-    "hostname": 1936,
-    "geoip_local": 29345,
-    "ip_geolocation": 29345,
-    "metadata_fallback": 22491,
-    "metadata_first": 22491,
-    "reclassified_existing": 22491,
+    "hostname": 2246,
+    "geoip_local": 29211,
+    "ip_geolocation": 29211,
+    "metadata_fallback": 23086,
+    "metadata_first": 23086,
+    "reclassified_existing": 23086,
     "unknown": 0,
     "database": "/home/runner/work/VPN-Nodes/VPN-Nodes/data/GeoLite2-Country.mmdb",
     "database_loaded": true,
@@ -35,7 +35,7 @@
       "invalid_ip": 0,
       "other": 0,
       "dns_failure": 0,
-      "lookups": 29345
+      "lookups": 29211
     }
   },
   "source_failures": 0,
@@ -44,187 +44,187 @@
       "name": "roosterkid-V2RAY",
       "ok": true,
       "nodes": 70,
-      "elapsed_ms": 228.6
+      "elapsed_ms": 143.9
     },
     {
       "name": "roosterkid-V2RAY_BASE64",
       "ok": true,
       "nodes": 70,
-      "elapsed_ms": 180.8
+      "elapsed_ms": 89.7
     },
     {
       "name": "roosterkid-V2RAY_RAW",
       "ok": true,
       "nodes": 70,
-      "elapsed_ms": 144.4
+      "elapsed_ms": 65.2
     },
     {
       "name": "MatinGhanbari-ss",
       "ok": true,
       "nodes": 115,
-      "elapsed_ms": 164.9
+      "elapsed_ms": 91.0
     },
     {
       "name": "funcra-VPNGate",
       "ok": true,
       "nodes": 12,
-      "elapsed_ms": 219.4
+      "elapsed_ms": 199.3
     },
     {
       "name": "MatinGhanbari-trojan",
       "ok": true,
       "nodes": 306,
-      "elapsed_ms": 126.6
+      "elapsed_ms": 89.6
     },
     {
       "name": "MatinGhanbari-vless",
       "ok": true,
       "nodes": 143,
-      "elapsed_ms": 123.7
+      "elapsed_ms": 79.7
     },
     {
       "name": "MatinGhanbari-vmess",
       "ok": true,
       "nodes": 985,
-      "elapsed_ms": 355.1
+      "elapsed_ms": 178.9
     },
     {
       "name": "mahdibland-sub_merge",
       "ok": true,
       "nodes": 1411,
-      "elapsed_ms": 229.6
+      "elapsed_ms": 176.7
     },
     {
       "name": "hamedcode-port_443",
       "ok": true,
       "nodes": 9013,
-      "elapsed_ms": 585.4
+      "elapsed_ms": 541.0
     },
     {
       "name": "hamedcode-port_80",
       "ok": true,
       "nodes": 808,
-      "elapsed_ms": 352.8
+      "elapsed_ms": 108.1
     },
     {
       "name": "F0rc3Run-Telegram",
       "ok": true,
       "nodes": 238,
-      "elapsed_ms": 271.6
+      "elapsed_ms": 83.6
     },
     {
       "name": "Baarcuda-top100-vless",
       "ok": true,
       "nodes": 56,
-      "elapsed_ms": 151.5
+      "elapsed_ms": 80.5
     },
     {
       "name": "Baarcuda-top100",
       "ok": true,
       "nodes": 21,
-      "elapsed_ms": 137.5
+      "elapsed_ms": 84.1
     },
     {
       "name": "Alirewa-V2ray-Configs",
       "ok": true,
       "nodes": 970,
-      "elapsed_ms": 379.4
+      "elapsed_ms": 404.7
     },
     {
       "name": "Epodonios-All_Configs_Sub",
       "ok": true,
       "nodes": 3981,
-      "elapsed_ms": 293.6
+      "elapsed_ms": 264.1
     },
     {
       "name": "sakha1370-all_valid_proxies",
       "ok": true,
-      "nodes": 5191,
-      "elapsed_ms": 659.7
+      "nodes": 5150,
+      "elapsed_ms": 704.8
     },
     {
       "name": "Au1rxx-v2ray-base64",
       "ok": true,
-      "nodes": 438,
-      "elapsed_ms": 200.8
+      "nodes": 455,
+      "elapsed_ms": 141.6
     },
     {
       "name": "Epodonios-All_Configs_base64_Sub",
       "ok": true,
       "nodes": 3981,
-      "elapsed_ms": 258.8
+      "elapsed_ms": 367.8
     },
     {
       "name": "0xRadikal-configs_base64",
       "ok": true,
-      "nodes": 5288,
-      "elapsed_ms": 594.6
+      "nodes": 5676,
+      "elapsed_ms": 506.9
     },
     {
       "name": "SoliSpirit-all_configs",
       "ok": true,
-      "nodes": 4250,
-      "elapsed_ms": 323.3
+      "nodes": 4129,
+      "elapsed_ms": 387.1
     },
     {
       "name": "Danialsamadi-AllConfigsSub",
       "ok": true,
-      "nodes": 556,
-      "elapsed_ms": 311.1
+      "nodes": 421,
+      "elapsed_ms": 105.5
     },
     {
       "name": "ebrasha-all_extracted_configs",
       "ok": true,
-      "nodes": 17293,
-      "elapsed_ms": 982.6
+      "nodes": 17322,
+      "elapsed_ms": 1220.4
     },
     {
       "name": "Delta-Kronecker-all_configs",
       "ok": true,
-      "nodes": 3031,
-      "elapsed_ms": 296.3
+      "nodes": 3542,
+      "elapsed_ms": 258.2
     },
     {
       "name": "mfuu-v2ray",
       "ok": true,
       "nodes": 280,
-      "elapsed_ms": 192.2
+      "elapsed_ms": 105.6
     },
     {
       "name": "mheidari98-.proxy",
       "ok": true,
-      "nodes": 8815,
-      "elapsed_ms": 803.6
+      "nodes": 6715,
+      "elapsed_ms": 634.1
     },
     {
       "name": "rasool083-v2ray-sub",
       "ok": true,
       "nodes": 9205,
-      "elapsed_ms": 1053.9
+      "elapsed_ms": 1138.8
     },
     {
       "name": "teknovpnhub-servers",
       "ok": true,
       "nodes": 43,
-      "elapsed_ms": 137.1
+      "elapsed_ms": 84.9
     },
     {
       "name": "rtwo2-everything",
       "ok": true,
       "nodes": 95043,
-      "elapsed_ms": 6485.7
+      "elapsed_ms": 9519.1
     },
     {
       "name": "Pawdroid-Free-servers",
       "ok": true,
       "nodes": 16,
-      "elapsed_ms": 149.7
+      "elapsed_ms": 80.8
     },
     {
       "name": "Telegram-Channels",
       "ok": true,
-      "nodes": 14011,
-      "elapsed_ms": 16125.1
+      "nodes": 13962,
+      "elapsed_ms": 15191.8
     }
   ]
 }
