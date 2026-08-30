@@ -17,7 +17,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 POOL_FILE = ROOT / "output" / "metadata" / "tcp_reachable.json"
 SOURCE_DIR = ROOT / "scripts" / "_exact_core_source"
-EXPECTED_SHA256 = "69d0fc121e3ba583b81a1cc1c4e7d6b05ce4ad1609dfbce3828c14fd95e13e41"
+EXPECTED_SHA256 = "5bfe0545333ff904b1d6d35b2d728061fb934e2c0d392b048f14abcecc3ac4d2"
 WORKERS = max(1, min(int(os.environ.get("REAL_DELAY_WORKERS", "250")), 250))
 SOCKS_BASE = int(os.environ.get("REAL_DELAY_SOCKS_BASE", "21080"))
 TCP_TIMEOUT = float(os.environ.get("REAL_DELAY_TCP_TIMEOUT", "8"))
@@ -26,6 +26,9 @@ TRAFFIC_TIMEOUT = float(os.environ.get("REAL_DELAY_NODE_TIMEOUT", "10"))
 
 def load_exact_tester():
     chunks = [SOURCE_DIR / f"{i:02d}" for i in range(1, 6)]
+    missing = [str(path) for path in chunks if not path.is_file()]
+    if missing:
+        raise SystemExit("Exact tester source chunk(s) missing: " + ", ".join(missing))
     encoded = "".join(path.read_text(encoding="utf-8").strip() for path in chunks)
     source = zlib.decompress(base64.b64decode(encoded)).decode("utf-8")
     digest = hashlib.sha256(source.encode("utf-8")).hexdigest()
@@ -150,7 +153,7 @@ def main() -> int:
     resolution = resolve_country(results)
     publish(results)
     metadata = {
-        "schema": 16,
+        "schema": 17,
         "generated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
         "mode": "exact_local_node_debug_batch_v2",
         "tcp_candidates": len(uris),
@@ -165,6 +168,7 @@ def main() -> int:
         "health_path": "parse->dns->tcp->xray_config_validation->xray_start->local_socks5->real_xray_tunnel->strict_https->diagnostic_https",
         "country_policy": "Automatic country resolution from successful nodes only; no fixed country allowlist.",
         "country_resolution": resolution,
+        "exact_tester_sha256": EXPECTED_SHA256,
     }
     (ROOT / "output" / "metadata" / "core_driven_health.json").write_text(json.dumps(metadata, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(f"INFO FINAL PASS={counters['PASS']} CERT={counters['WORKS_BUT_CERT_INVALID']} FAILED={counters['REAL_TRAFFIC_FAILED']} OTHER={counters['OTHER_FAILED']} TOTAL={len(results)} PUBLISHED={metadata['published_total']}")
