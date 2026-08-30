@@ -13,7 +13,7 @@ concurrency:
 jobs:
   update:
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v5
         with:
@@ -25,14 +25,6 @@ jobs:
           cache: 'pip'
 
       - run: pip install -r requirements.txt
-
-      - name: Prepare OpenVPN test dependencies
-        run: |
-          set -euo pipefail
-          sudo apt-get update -qq
-          sudo apt-get install -y -qq openvpn curl
-          openvpn --version | head -n 1
-          curl --version | head -n 1
 
       - name: Prepare local GeoLite2 database
         run: |
@@ -51,35 +43,31 @@ jobs:
       - name: Run regression tests
         run: python tests/test_country_resolver.py
 
-      - name: Build TCP-reachable pool
+      - name: Build lightweight live-node pool
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: python scripts/telegram_build_tcp_pool.py
 
-      - name: Install Xray
+      - name: Verify generated app catalog
         run: |
           set -euo pipefail
-          mkdir -p /opt/hostedtoolcache/xray
-          curl --fail --location --silent --show-error \
-            'https://github.com/XTLS/Xray-core/releases/latest/download/Xray-linux-64.zip' \
-            --output /tmp/xray.zip
-          unzip -o /tmp/xray.zip xray -d /opt/hostedtoolcache/xray >/dev/null
-          chmod +x /opt/hostedtoolcache/xray/xray
-          /opt/hostedtoolcache/xray/xray version
-
-      - name: Xray exact-laptop-path verification
-        env:
-          XRAY_BIN: /opt/hostedtoolcache/xray/xray
-          REAL_DELAY_WORKERS: 250
-          REAL_DELAY_NODE_TIMEOUT: 10
-          REAL_DELAY_SOCKS_BASE: 21000
-          REAL_DELAY_XRAY_BATCH_SIZE: 500
-        run: python scripts/core_driven_real_traffic.py
-
-      - name: OpenVPN VPN Gate real-tunnel verification
-        env:
-          OPENVPN_NODE_TIMEOUT: 25
-        run: python scripts/vpngate_openvpn.py
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p = Path('output/metadata/app_pool.json')
+          if not p.is_file():
+              raise SystemExit('app_pool.json was not generated')
+          data = json.loads(p.read_text(encoding='utf-8'))
+          if data.get('mode') != 'tcp_liveness_only_android_final_xray_check':
+              raise SystemExit(f"unexpected app pool mode: {data.get('mode')}")
+          if data.get('final_runtime_test') != 'Android Xray + local HTTP health-check':
+              raise SystemExit('unexpected final runtime test marker')
+          print(
+              f"OK app_pool published={data.get('published_total', 0)} "
+              f"active={data.get('published_active', 0)} "
+              f"backup={data.get('published_backup', 0)}"
+          )
+          PY
 
       - name: Restore previous catalog on failure
         if: failure()
