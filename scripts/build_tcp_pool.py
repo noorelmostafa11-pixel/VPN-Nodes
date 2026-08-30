@@ -71,6 +71,10 @@ def publish_app_pool(rows: list[dict], source_health: list[dict]) -> dict:
     The workflow does not run Xray. It only establishes endpoint liveness via TCP.
     Protocol and country metadata remain attached. The Android app performs the
     final Xray + Internet health-check and is free to select/rank nodes.
+
+    Within each country feed, explicit country metadata (country code/name/flag in
+    the node remark) is always emitted first. GeoIP-resolved nodes follow it. Within
+    each tier, TCP latency is ascending.
     """
     import country_resolver
 
@@ -107,7 +111,10 @@ def publish_app_pool(rows: list[dict], source_health: list[dict]) -> dict:
 
     published_total = 0
     for country, country_rows in sorted(grouped.items()):
+        # Explicit country labels/flags outrank GeoIP. Then use measured TCP
+        # latency as the primary ordering signal, followed by stable tie-breakers.
         country_rows.sort(key=lambda item: (
+            0 if str(item.get("country_resolution") or "").lower() == "metadata_explicit" else 1,
             float(item.get("latency_ms", 10**9)),
             str(item.get("protocol", "")),
             str(item.get("source", "")),
@@ -118,7 +125,7 @@ def publish_app_pool(rows: list[dict], source_health: list[dict]) -> dict:
             "\n".join(uris) + "\n",
             encoding="utf-8",
         )
-        # Existing app API keeps active/backup paths. Both represent the full
+        # Existing app API keeps active/backup paths. Both now represent the full
         # TCP-alive country pool; no 5+5 restriction is imposed by the workflow.
         (out_dirs["active"] / f"{country}.txt").write_text(
             "\n".join(uris) + "\n",
@@ -139,7 +146,7 @@ def publish_app_pool(rows: list[dict], source_health: list[dict]) -> dict:
         )
 
     app_meta = {
-        "schema": 20,
+        "schema": 21,
         "generated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
         "mode": "tcp_liveness_only_android_final_xray_check",
         "liveness_test": "TCP connect to advertised endpoint",
@@ -149,7 +156,8 @@ def publish_app_pool(rows: list[dict], source_health: list[dict]) -> dict:
         "per_country_cap": None,
         "active_per_country": None,
         "backup_per_country": None,
-        "selection_policy": "all_tcp_alive_nodes_with_resolved_country",
+        "selection_policy": "all_tcp_alive_nodes_with_resolved_country; explicit_country_metadata_first_then_geoip_then_latency",
+        "country_order_policy": "explicit_country_metadata_first; geoip_second; latency_ascending_within_tier",
         "alive_with_country": sum(len(v) for v in grouped.values()),
         "alive_unknown_country": len(unknown_rows),
         "published_active": published_total,
@@ -167,7 +175,7 @@ def publish_app_pool(rows: list[dict], source_health: list[dict]) -> dict:
     print(
         f"INFO APP_POOL alive_with_country={app_meta['alive_with_country']} "
         f"active={published_total} backup=0 published={published_total} "
-        f"per_country_cap=None"
+        f"per_country_cap=None explicit_metadata_first=true"
     )
     return app_meta
 
@@ -240,11 +248,9 @@ def main() -> None:
         "source_failures": sum(1 for s in source_health if not s["ok"]),
         "sources": source_health,
         "nodes": checked,
+        "country_order_policy": "explicit_country_metadata_first; geoip_second; latency_ascending_within_tier",
     }
-    (meta / "tcp_reachable.json").write_text(
-        json.dumps(payload, ensure_ascii=False, indent=2) + "\n",
-        encoding="utf-8",
-    )
+    (meta / "tcp_reachable.json").write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     publish_app_pool(checked, source_health)
     print(f"INFO tcp_pool_saved={len(checked)} path=output/metadata/tcp_reachable.json")
 
