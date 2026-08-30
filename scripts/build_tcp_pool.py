@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build the TCP-reachable candidate pool; country resolution happens after Xray health."""
+"""Build the TCP-reachable Xray candidate pool; OpenVPN is handled separately."""
 from __future__ import annotations
 
 import asyncio
@@ -70,23 +70,28 @@ def main() -> None:
     if successful_sources == 0 and not all_rows:
         raise RuntimeError("All upstream sources failed")
 
+    # OpenVPN candidates have their own protocol-specific path. Never send them
+    # through the Xray TCP pool, deduplication, or Xray health stage.
+    xray_rows = [row for row in all_rows if str(row.get("protocol") or "").lower() != "openvpn"]
+
     unique: dict[str, dict] = {}
-    for row in all_rows:
+    for row in xray_rows:
         unique.setdefault(catalog.dedup_key(row["uri"]), row)
     rows = list(unique.values())
     for row in rows:
         row["country"] = "UNKNOWN"
         row["country_resolution"] = "pending_xray"
 
-    print(f"INFO parsed={len(rows)} tcp_candidates={len(rows)} async_tcp=true workers={TCP_WORKERS}")
+    print(f"INFO parsed={len(all_rows)} xray_candidates={len(rows)} async_tcp=true workers={TCP_WORKERS}")
     checked = asyncio.run(run_tcp_checks(rows))
-    print(f"INFO tcp_reachable={len(checked)} tcp_dead={len(rows) - len(checked)}")
+    print(f"INFO tcp_reachable={len(checked)} tcp_dead={len(rows) - len(checked)} openvpn_separate=true")
 
     meta = OUT / "metadata"
     meta.mkdir(parents=True, exist_ok=True)
     payload = {
         "generated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
-        "total_parsed": len(rows),
+        "total_parsed": len(all_rows),
+        "xray_candidates": len(rows),
         "tcp_reachable": len(checked),
         "tcp_workers": TCP_WORKERS,
         "allowed_ports": [80, 443],
