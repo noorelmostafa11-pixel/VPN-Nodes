@@ -1,57 +1,222 @@
 {
-  "schema": 8,
-  "generated_at": "2026-08-30T00:12:06Z",
-  "tcp_reachable_total": 50771,
-  "xray_included": 50496,
-  "config_conversion_failed": 275,
-  "alive": 1218,
-  "healthy": 1218,
-  "healthy_published_total": 1218,
+  "schema": 9,
+  "generated_at": "2026-08-30T00:49:39Z",
+  "tcp_reachable_total": 52261,
+  "xray_included": 51987,
+  "config_conversion_failed": 274,
+  "active": 639,
+  "backup": 108,
+  "failed_after_core": 51514,
+  "healthy": 639,
+  "published_total": 747,
+  "countries": 41,
   "published_by_country": {
-    "AD": 1,
-    "AE": 8,
-    "AT": 3,
-    "BF": 1,
-    "BG": 7,
-    "BZ": 2,
-    "CA": 380,
-    "CH": 3,
-    "DE": 36,
-    "EE": 9,
-    "ES": 1,
-    "FI": 1,
-    "FR": 56,
-    "GB": 110,
-    "HK": 39,
-    "HU": 1,
-    "IE": 1,
-    "IN": 2,
-    "IR": 8,
-    "IT": 10,
-    "JP": 9,
-    "KR": 2,
-    "KZ": 1,
-    "LT": 5,
-    "LU": 2,
-    "LV": 1,
-    "MD": 1,
-    "NL": 39,
-    "PH": 1,
-    "PL": 9,
-    "RO": 3,
-    "RS": 1,
-    "RU": 4,
-    "SC": 11,
-    "SE": 1,
-    "SG": 8,
-    "SI": 1,
-    "TH": 1,
-    "TR": 2,
-    "TW": 4,
-    "UM": 1,
-    "US": 432
+    "AD": {
+      "active": 1,
+      "backup": 0,
+      "total": 1
+    },
+    "AE": {
+      "active": 8,
+      "backup": 0,
+      "total": 8
+    },
+    "AT": {
+      "active": 3,
+      "backup": 0,
+      "total": 3
+    },
+    "BF": {
+      "active": 1,
+      "backup": 0,
+      "total": 1
+    },
+    "BG": {
+      "active": 5,
+      "backup": 1,
+      "total": 6
+    },
+    "BZ": {
+      "active": 1,
+      "backup": 1,
+      "total": 2
+    },
+    "CA": {
+      "active": 112,
+      "backup": 1,
+      "total": 113
+    },
+    "CH": {
+      "active": 1,
+      "backup": 0,
+      "total": 1
+    },
+    "DE": {
+      "active": 31,
+      "backup": 8,
+      "total": 39
+    },
+    "EE": {
+      "active": 7,
+      "backup": 1,
+      "total": 8
+    },
+    "ES": {
+      "active": 1,
+      "backup": 0,
+      "total": 1
+    },
+    "FI": {
+      "active": 0,
+      "backup": 1,
+      "total": 1
+    },
+    "FR": {
+      "active": 46,
+      "backup": 7,
+      "total": 53
+    },
+    "GB": {
+      "active": 126,
+      "backup": 3,
+      "total": 129
+    },
+    "HK": {
+      "active": 20,
+      "backup": 2,
+      "total": 22
+    },
+    "HU": {
+      "active": 1,
+      "backup": 0,
+      "total": 1
+    },
+    "IE": {
+      "active": 1,
+      "backup": 0,
+      "total": 1
+    },
+    "IN": {
+      "active": 1,
+      "backup": 1,
+      "total": 2
+    },
+    "IR": {
+      "active": 4,
+      "backup": 0,
+      "total": 4
+    },
+    "IT": {
+      "active": 9,
+      "backup": 1,
+      "total": 10
+    },
+    "JP": {
+      "active": 8,
+      "backup": 0,
+      "total": 8
+    },
+    "KR": {
+      "active": 3,
+      "backup": 0,
+      "total": 3
+    },
+    "KZ": {
+      "active": 3,
+      "backup": 1,
+      "total": 4
+    },
+    "LT": {
+      "active": 5,
+      "backup": 0,
+      "total": 5
+    },
+    "LV": {
+      "active": 1,
+      "backup": 0,
+      "total": 1
+    },
+    "MD": {
+      "active": 1,
+      "backup": 1,
+      "total": 2
+    },
+    "MH": {
+      "active": 3,
+      "backup": 0,
+      "total": 3
+    },
+    "NL": {
+      "active": 31,
+      "backup": 9,
+      "total": 40
+    },
+    "NZ": {
+      "active": 1,
+      "backup": 0,
+      "total": 1
+    },
+    "PH": {
+      "active": 3,
+      "backup": 0,
+      "total": 3
+    },
+    "PL": {
+      "active": 10,
+      "backup": 2,
+      "total": 12
+    },
+    "RO": {
+      "active": 2,
+      "backup": 1,
+      "total": 3
+    },
+    "RS": {
+      "active": 0,
+      "backup": 1,
+      "total": 1
+    },
+    "RU": {
+      "active": 11,
+      "backup": 1,
+      "total": 12
+    },
+    "SC": {
+      "active": 8,
+      "backup": 4,
+      "total": 12
+    },
+    "SE": {
+      "active": 3,
+      "backup": 0,
+      "total": 3
+    },
+    "SG": {
+      "active": 3,
+      "backup": 1,
+      "total": 4
+    },
+    "TH": {
+      "active": 0,
+      "backup": 2,
+      "total": 2
+    },
+    "TR": {
+      "active": 3,
+      "backup": 0,
+      "total": 3
+    },
+    "TW": {
+      "active": 4,
+      "backup": 0,
+      "total": 4
+    },
+    "US": {
+      "active": 157,
+      "backup": 58,
+      "total": 215
+    }
   },
-  "countries": 42,
   "country_names": {
     "AD": "Andorra",
     "AE": "United Arab Emirates",
@@ -77,10 +242,11 @@
     "KR": "Korea, Republic of",
     "KZ": "Kazakhstan",
     "LT": "Lithuania",
-    "LU": "Luxembourg",
     "LV": "Latvia",
     "MD": "Moldova, Republic of",
+    "MH": "Marshall Islands",
     "NL": "Netherlands",
+    "NZ": "New Zealand",
     "PH": "Philippines",
     "PL": "Poland",
     "RO": "Romania",
@@ -89,27 +255,25 @@
     "SC": "Seychelles",
     "SE": "Sweden",
     "SG": "Singapore",
-    "SI": "Slovenia",
     "TH": "Thailand",
     "TR": "Türkiye",
     "TW": "Taiwan, Province of China",
-    "UM": "United States Minor Outlying Islands",
     "US": "United States"
   },
   "allowed_ports": [
     80,
     443
   ],
-  "health_policy": "Google TCP CONNECT only: real SOCKS5 CONNECT through Xray to www.google.com:443, followed by TLS handshake",
-  "ranking_policy": "healthy only; fastest delay first; country files preserve the same order with detected-country nodes before distributed verified-UNKNOWN nodes",
-  "country_policy": "resolve only successful nodes; explicit node metadata then DNS/GeoLite2; verified UNKNOWN nodes are distributed equally after detected-country nodes",
+  "health_policy": "Core-driven real traffic: Xray SOCKS5 plus three HTTP probes (Microsoft 200, Google 204, Firefox 200). 3/3=ACTIVE, 1-2/3=BACKUP, 0/3=FAILED.",
+  "ranking_policy": "ACTIVE first by measured delay, then BACKUP by measured delay; country files preserve that order.",
+  "country_policy": "Automatic country resolution from successful nodes only; no fixed country allowlist.",
   "country_resolution": {
-    "hostname": 47,
-    "geoip_local": 437,
-    "ip_geolocation": 437,
-    "metadata_fallback": 781,
-    "metadata_first": 781,
-    "reclassified_existing": 781,
+    "hostname": 19,
+    "geoip_local": 269,
+    "ip_geolocation": 269,
+    "metadata_fallback": 478,
+    "metadata_first": 478,
+    "reclassified_existing": 478,
     "unknown": 0,
     "database": "/home/runner/work/VPN-Nodes/VPN-Nodes/data/GeoLite2-Country.mmdb",
     "database_loaded": true,
@@ -119,12 +283,7 @@
       "invalid_ip": 0,
       "other": 0,
       "dns_failure": 0,
-      "lookups": 437
+      "lookups": 269
     }
-  },
-  "health_gate": {
-    "url": "tcp://www.google.com:443",
-    "type": "SOCKS5 CONNECT + TLS handshake through Xray",
-    "required": true
   }
 }
