@@ -10,6 +10,7 @@ import os
 import tempfile
 import time
 import urllib.parse
+import zlib
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
@@ -115,13 +116,13 @@ def main() -> int:
         uri = str(row.get("uri") or "").strip()
         if not uri or uri in seen:
             continue
+        seen.add(uri)
         try:
             node = tester.parse_node(uri)
         except Exception:
             continue
         if int(node.get("port", 0)) not in (80, 443):
             continue
-        seen.add(uri)
         uris.append(uri)
 
     print(f"INFO tcp_candidates={len(uris)} workers={WORKERS}")
@@ -138,6 +139,7 @@ def main() -> int:
                 result = future.result()
             except Exception as exc:
                 result = {"index": idx, "protocol": "", "address": "", "port": None, "tcp_ms": -1.0, "status": "OTHER_FAILED", "reason": f"worker exception: {exc}", "strict_ok": False, "diagnostic_ok": False, "diagnostic_latency_ms": -1.0}
+            result["uri"] = uri
             results.append({"uri": uri, "result": result, "tester": tester})
             status = result.get("status", "OTHER_FAILED")
             counters[status] = counters.get(status, 0) + 1
