@@ -1,15 +1,29 @@
 {
   "countries": [
     {
+      "code": "AD",
+      "name": "Andorra",
+      "nodes": 1,
+      "reachable": 1,
+      "cap_rejected": 0
+    },
+    {
       "code": "AE",
       "name": "United Arab Emirates",
-      "nodes": 10,
-      "reachable": 10,
+      "nodes": 8,
+      "reachable": 8,
       "cap_rejected": 0
     },
     {
       "code": "AT",
       "name": "Austria",
+      "nodes": 3,
+      "reachable": 3,
+      "cap_rejected": 0
+    },
+    {
+      "code": "BF",
+      "name": "Burkina Faso",
       "nodes": 1,
       "reachable": 1,
       "cap_rejected": 0
@@ -17,29 +31,50 @@
     {
       "code": "BG",
       "name": "Bulgaria",
-      "nodes": 3,
-      "reachable": 3,
+      "nodes": 7,
+      "reachable": 7,
+      "cap_rejected": 0
+    },
+    {
+      "code": "BZ",
+      "name": "Belize",
+      "nodes": 2,
+      "reachable": 2,
       "cap_rejected": 0
     },
     {
       "code": "CA",
       "name": "Canada",
-      "nodes": 53,
-      "reachable": 53,
+      "nodes": 380,
+      "reachable": 380,
+      "cap_rejected": 0
+    },
+    {
+      "code": "CH",
+      "name": "Switzerland",
+      "nodes": 3,
+      "reachable": 3,
       "cap_rejected": 0
     },
     {
       "code": "DE",
       "name": "Germany",
-      "nodes": 26,
-      "reachable": 26,
+      "nodes": 36,
+      "reachable": 36,
       "cap_rejected": 0
     },
     {
       "code": "EE",
       "name": "Estonia",
-      "nodes": 7,
-      "reachable": 7,
+      "nodes": 9,
+      "reachable": 9,
+      "cap_rejected": 0
+    },
+    {
+      "code": "ES",
+      "name": "Spain",
+      "nodes": 1,
+      "reachable": 1,
       "cap_rejected": 0
     },
     {
@@ -52,22 +87,22 @@
     {
       "code": "FR",
       "name": "France",
-      "nodes": 38,
-      "reachable": 38,
+      "nodes": 56,
+      "reachable": 56,
       "cap_rejected": 0
     },
     {
       "code": "GB",
       "name": "United Kingdom",
-      "nodes": 45,
-      "reachable": 45,
+      "nodes": 110,
+      "reachable": 110,
       "cap_rejected": 0
     },
     {
       "code": "HK",
       "name": "Hong Kong",
-      "nodes": 10,
-      "reachable": 10,
+      "nodes": 39,
+      "reachable": 39,
       "cap_rejected": 0
     },
     {
@@ -87,15 +122,15 @@
     {
       "code": "IN",
       "name": "India",
-      "nodes": 3,
-      "reachable": 3,
+      "nodes": 2,
+      "reachable": 2,
       "cap_rejected": 0
     },
     {
       "code": "IR",
       "name": "Iran, Islamic Republic of",
-      "nodes": 7,
-      "reachable": 7,
+      "nodes": 8,
+      "reachable": 8,
       "cap_rejected": 0
     },
     {
@@ -108,8 +143,8 @@
     {
       "code": "JP",
       "name": "Japan",
-      "nodes": 12,
-      "reachable": 12,
+      "nodes": 9,
+      "reachable": 9,
       "cap_rejected": 0
     },
     {
@@ -122,57 +157,64 @@
     {
       "code": "KZ",
       "name": "Kazakhstan",
-      "nodes": 4,
-      "reachable": 4,
+      "nodes": 1,
+      "reachable": 1,
       "cap_rejected": 0
     },
     {
       "code": "LT",
       "name": "Lithuania",
-      "nodes": 1,
-      "reachable": 1,
+      "nodes": 5,
+      "reachable": 5,
+      "cap_rejected": 0
+    },
+    {
+      "code": "LU",
+      "name": "Luxembourg",
+      "nodes": 2,
+      "reachable": 2,
       "cap_rejected": 0
     },
     {
       "code": "LV",
       "name": "Latvia",
-      "nodes": 2,
-      "reachable": 2,
+      "nodes": 1,
+      "reachable": 1,
       "cap_rejected": 0
     },
     {
       "code": "MD",
       "name": "Moldova, Republic of",
-      "nodes": 2,
-      "reachable": 2,
+      "nodes": 1,
+      "reachable": 1,
       "cap_rejected": 0
     },
     {
       "code": "NL",
       "name": "Netherlands",
-      "nodes": 29,
-      "reachable": 29,
+      "nodes": 39,
+      "reachable": 39,
       "cap_rejected": 0
     },
     {
       "code": "PH",
       "name": "Philippines",
-      "nodes": 2,
-      "reachable": 2,
+      "nodes": 1,
+      "reachable": 1,
       "cap_rejected": 0
     },
     {
       "code": "PL",
       "name": "Poland",
-      "nodes": 7,
-      "reachable": 7,
+      "nodes": 9,
+      "reachable": 9,
       "cap_rejected": 0
     },
     {
       "code": "RO",
       "name": "Romania",
-      "nodes": 1,
-      "reachable": 1,
+      "nodes": 3,
+      "reachable": 3,
       "cap_rejected": 0
     },
     {
@@ -185,36 +227,50 @@
     {
       "code": "RU",
       "name": "Russian Federation",
-      "nodes": 2,
-      "reachable": 2,
+      "nodes": 4,
+      "reachable": 4,
       "cap_rejected": 0
     },
     {
       "code": "SC",
       "name": "Seychelles",
-      "nodes": 4,
-      "reachable": 4,
+      "nodes": 11,
+      "reachable": 11,
+      "cap_rejected": 0
+    },
+    {
+      "code": "SE",
+      "name": "Sweden",
+      "nodes": 1,
+      "reachable": 1,
       "cap_rejected": 0
     },
     {
       "code": "SG",
       "name": "Singapore",
-      "nodes": 4,
-      "reachable": 4,
+      "nodes": 8,
+      "reachable": 8,
+      "cap_rejected": 0
+    },
+    {
+      "code": "SI",
+      "name": "Slovenia",
+      "nodes": 1,
+      "reachable": 1,
       "cap_rejected": 0
     },
     {
       "code": "TH",
       "name": "Thailand",
-      "nodes": 2,
-      "reachable": 2,
+      "nodes": 1,
+      "reachable": 1,
       "cap_rejected": 0
     },
     {
       "code": "TR",
       "name": "Türkiye",
-      "nodes": 1,
-      "reachable": 1,
+      "nodes": 2,
+      "reachable": 2,
       "cap_rejected": 0
     },
     {
@@ -225,10 +281,17 @@
       "cap_rejected": 0
     },
     {
+      "code": "UM",
+      "name": "United States Minor Outlying Islands",
+      "nodes": 1,
+      "reachable": 1,
+      "cap_rejected": 0
+    },
+    {
       "code": "US",
       "name": "United States",
-      "nodes": 94,
-      "reachable": 94,
+      "nodes": 432,
+      "reachable": 432,
       "cap_rejected": 0
     }
   ]
