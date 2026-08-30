@@ -10,7 +10,6 @@ from __future__ import annotations
 
 import asyncio
 import json
-import shutil
 import time
 from pathlib import Path
 
@@ -21,9 +20,6 @@ OUT = ROOT / "output"
 SOURCES = ROOT / "sources" / "sources.json"
 TCP_TIMEOUT = float(catalog.CONNECT_TIMEOUT)
 TCP_WORKERS = 512
-ACTIVE_PER_COUNTRY = 5
-BACKUP_PER_COUNTRY = 5
-MAX_POOL_PER_COUNTRY = ACTIVE_PER_COUNTRY + BACKUP_PER_COUNTRY
 
 
 async def tcp_probe(item: dict, semaphore: asyncio.Semaphore) -> tuple[dict, float | None]:
@@ -70,10 +66,11 @@ async def run_tcp_checks(rows: list[dict]) -> list[dict]:
 
 
 def publish_app_pool(rows: list[dict], source_health: list[dict]) -> dict:
-    """Resolve country and publish only TCP-ALIVE nodes for Android consumption.
+    """Publish every TCP-ALIVE node with resolved country; no per-country cap.
 
-    No Xray test is performed here. The app receives these live endpoints and then
-    runs its own Xray + Internet health-check.
+    The workflow does not run Xray. It only establishes endpoint liveness via TCP.
+    Protocol and country metadata remain attached. The Android app performs the
+    final Xray + Internet health-check and is free to select/rank nodes.
     """
     import country_resolver
 
@@ -94,31 +91,21 @@ def publish_app_pool(rows: list[dict], source_health: list[dict]) -> dict:
         for path in out_dirs[name].glob("*.txt"):
             path.unlink()
 
-    # Remove stale artifacts from the former deep-Xray/OpenVPN verification stages.
-    openvpn_dir = OUT / "openvpn"
-    if openvpn_dir.exists():
-        shutil.rmtree(openvpn_dir, ignore_errors=True)
-    for stale in (
-        OUT / "metadata" / "openvpn_health.json",
-        OUT / "metadata" / "core_driven_health.json",
-        OUT / "metadata" / "openvpn_candidates.json",
-    ):
-        stale.unlink(missing_ok=True)
-
-    # Keep only nodes for which the country resolver produced a usable country.
-    # UNKNOWN remains in metadata/tcp_reachable.json but is not exposed as a
-    # country feed because the Android app selects by country.
     grouped: dict[str, list[dict]] = {}
+    protocol_rows: dict[str, list[str]] = {}
+    unknown_rows: list[str] = []
+
     for row in rows:
         country = str(row.get("country") or "UNKNOWN").upper()
         if country == "UNKNOWN":
+            unknown_rows.append(row["uri"])
             continue
         grouped.setdefault(country, []).append(row)
+        protocol = str(row.get("protocol") or "").lower()
+        if protocol:
+            protocol_rows.setdefault(protocol, []).append(row["uri"])
 
-    active_total = 0
-    backup_total = 0
-    protocol_rows: dict[str, list[str]] = {}
-
+    published_total = 0
     for country, country_rows in sorted(grouped.items()):
         country_rows.sort(key=lambda item: (
             float(item.get("latency_ms", 10**9)),
@@ -126,35 +113,18 @@ def publish_app_pool(rows: list[dict], source_health: list[dict]) -> dict:
             str(item.get("source", "")),
             str(item.get("uri", "")),
         ))
-        selected = country_rows[:MAX_POOL_PER_COUNTRY]
-        active = selected[:ACTIVE_PER_COUNTRY]
-        backup = selected[ACTIVE_PER_COUNTRY:MAX_POOL_PER_COUNTRY]
-
-        if active:
-            (out_dirs["active"] / f"{country}.txt").write_text(
-                "\n".join(row["uri"] for row in active) + "\n",
-                encoding="utf-8",
-            )
-            active_total += len(active)
-
-        if backup:
-            (out_dirs["backup"] / f"{country}.txt").write_text(
-                "\n".join(row["uri"] for row in backup) + "\n",
-                encoding="utf-8",
-            )
-            backup_total += len(backup)
-
-        combined = active + backup
-        if combined:
-            (out_dirs["countries"] / f"{country}.txt").write_text(
-                "\n".join(row["uri"] for row in combined) + "\n",
-                encoding="utf-8",
-            )
-
-        for row in combined:
-            protocol = str(row.get("protocol") or "").lower()
-            if protocol:
-                protocol_rows.setdefault(protocol, []).append(row["uri"])
+        uris = [row["uri"] for row in country_rows]
+        (out_dirs["countries"] / f"{country}.txt").write_text(
+            "\n".join(uris) + "\n",
+            encoding="utf-8",
+        )
+        # Existing app API keeps active/backup paths. Both represent the full
+        # TCP-alive country pool; no 5+5 restriction is imposed by the workflow.
+        (out_dirs["active"] / f"{country}.txt").write_text(
+            "\n".join(uris) + "\n",
+            encoding="utf-8",
+        )
+        published_total += len(uris)
 
     for protocol, uris in protocol_rows.items():
         (out_dirs["protocols"] / f"{protocol}.txt").write_text(
@@ -162,21 +132,29 @@ def publish_app_pool(rows: list[dict], source_health: list[dict]) -> dict:
             encoding="utf-8",
         )
 
+    if unknown_rows:
+        (out_dirs["metadata"] / "tcp_alive_unknown_country.txt").write_text(
+            "\n".join(unknown_rows) + "\n",
+            encoding="utf-8",
+        )
+
     app_meta = {
-        "schema": 19,
+        "schema": 20,
         "generated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
         "mode": "tcp_liveness_only_android_final_xray_check",
         "liveness_test": "TCP connect to advertised endpoint",
         "final_runtime_test": "Android Xray + local HTTP health-check",
         "allowed_ports": [80, 443],
         "tcp_workers": TCP_WORKERS,
-        "active_per_country": ACTIVE_PER_COUNTRY,
-        "backup_per_country": BACKUP_PER_COUNTRY,
-        "max_pool_per_country": MAX_POOL_PER_COUNTRY,
+        "per_country_cap": None,
+        "active_per_country": None,
+        "backup_per_country": None,
+        "selection_policy": "all_tcp_alive_nodes_with_resolved_country",
         "alive_with_country": sum(len(v) for v in grouped.values()),
-        "published_active": active_total,
-        "published_backup": backup_total,
-        "published_total": active_total + backup_total,
+        "alive_unknown_country": len(unknown_rows),
+        "published_active": published_total,
+        "published_backup": 0,
+        "published_total": published_total,
         "country_resolution": country_result,
         "source_failures": sum(1 for source in source_health if not source["ok"]),
         "sources": source_health,
@@ -188,8 +166,8 @@ def publish_app_pool(rows: list[dict], source_health: list[dict]) -> dict:
 
     print(
         f"INFO APP_POOL alive_with_country={app_meta['alive_with_country']} "
-        f"active={active_total} backup={backup_total} "
-        f"published={active_total + backup_total}"
+        f"active={published_total} backup=0 published={published_total} "
+        f"per_country_cap=None"
     )
     return app_meta
 
@@ -226,8 +204,8 @@ def main() -> None:
     if successful_sources == 0 and not all_rows:
         raise RuntimeError("All upstream sources failed")
 
-    # OpenVPN candidates stay protocol-separated. They never enter the Xray/app
-    # TCP feed. The Android app currently consumes Xray protocol URIs only.
+    # OpenVPN candidates stay protocol-separated and are not sent to the Android
+    # Xray TCP feed. The current Android app consumes Xray protocol URIs only.
     xray_rows = [
         row for row in all_rows
         if str(row.get("protocol") or "").lower() != "openvpn"
