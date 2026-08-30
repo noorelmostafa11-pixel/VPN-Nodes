@@ -1,175 +1,320 @@
 {
   "schema": 9,
-  "generated_at": "2026-08-30T00:49:39Z",
-  "tcp_reachable_total": 52261,
-  "xray_included": 51987,
-  "config_conversion_failed": 274,
-  "active": 639,
-  "backup": 108,
-  "failed_after_core": 51514,
-  "healthy": 639,
-  "published_total": 747,
-  "countries": 41,
+  "generated_at": "2026-08-30T01:24:53Z",
+  "tcp_reachable_total": 50325,
+  "xray_included": 2616,
+  "config_conversion_failed": 5,
+  "active": 0,
+  "backup": 12926,
+  "failed_after_core": 0,
+  "healthy": 0,
+  "published_total": 12926,
+  "countries": 76,
   "published_by_country": {
     "AD": {
-      "active": 1,
-      "backup": 0,
-      "total": 1
-    },
-    "AE": {
-      "active": 8,
-      "backup": 0,
-      "total": 8
-    },
-    "AT": {
-      "active": 3,
-      "backup": 0,
-      "total": 3
-    },
-    "BF": {
-      "active": 1,
-      "backup": 0,
-      "total": 1
-    },
-    "BG": {
-      "active": 5,
-      "backup": 1,
-      "total": 6
-    },
-    "BZ": {
-      "active": 1,
-      "backup": 1,
-      "total": 2
-    },
-    "CA": {
-      "active": 112,
-      "backup": 1,
-      "total": 113
-    },
-    "CH": {
-      "active": 1,
-      "backup": 0,
-      "total": 1
-    },
-    "DE": {
-      "active": 31,
-      "backup": 8,
-      "total": 39
-    },
-    "EE": {
-      "active": 7,
-      "backup": 1,
-      "total": 8
-    },
-    "ES": {
-      "active": 1,
-      "backup": 0,
-      "total": 1
-    },
-    "FI": {
       "active": 0,
       "backup": 1,
       "total": 1
     },
-    "FR": {
-      "active": 46,
-      "backup": 7,
-      "total": 53
+    "AE": {
+      "active": 0,
+      "backup": 46,
+      "total": 46
     },
-    "GB": {
-      "active": 126,
-      "backup": 3,
-      "total": 129
-    },
-    "HK": {
-      "active": 20,
+    "AF": {
+      "active": 0,
       "backup": 2,
-      "total": 22
-    },
-    "HU": {
-      "active": 1,
-      "backup": 0,
-      "total": 1
-    },
-    "IE": {
-      "active": 1,
-      "backup": 0,
-      "total": 1
-    },
-    "IN": {
-      "active": 1,
-      "backup": 1,
       "total": 2
     },
-    "IR": {
-      "active": 4,
-      "backup": 0,
-      "total": 4
-    },
-    "IT": {
-      "active": 9,
-      "backup": 1,
-      "total": 10
-    },
-    "JP": {
-      "active": 8,
-      "backup": 0,
-      "total": 8
-    },
-    "KR": {
-      "active": 3,
-      "backup": 0,
-      "total": 3
-    },
-    "KZ": {
-      "active": 3,
-      "backup": 1,
-      "total": 4
-    },
-    "LT": {
-      "active": 5,
-      "backup": 0,
+    "AL": {
+      "active": 0,
+      "backup": 5,
       "total": 5
     },
-    "LV": {
-      "active": 1,
-      "backup": 0,
+    "AM": {
+      "active": 0,
+      "backup": 9,
+      "total": 9
+    },
+    "AT": {
+      "active": 0,
+      "backup": 19,
+      "total": 19
+    },
+    "AU": {
+      "active": 0,
+      "backup": 68,
+      "total": 68
+    },
+    "AZ": {
+      "active": 0,
+      "backup": 2,
+      "total": 2
+    },
+    "BE": {
+      "active": 0,
+      "backup": 16,
+      "total": 16
+    },
+    "BF": {
+      "active": 0,
+      "backup": 1,
       "total": 1
     },
-    "MD": {
-      "active": 1,
+    "BG": {
+      "active": 0,
+      "backup": 21,
+      "total": 21
+    },
+    "BR": {
+      "active": 0,
+      "backup": 9,
+      "total": 9
+    },
+    "BY": {
+      "active": 0,
+      "backup": 3,
+      "total": 3
+    },
+    "BZ": {
+      "active": 0,
+      "backup": 2,
+      "total": 2
+    },
+    "CA": {
+      "active": 0,
+      "backup": 320,
+      "total": 320
+    },
+    "CF": {
+      "active": 0,
       "backup": 1,
+      "total": 1
+    },
+    "CH": {
+      "active": 0,
+      "backup": 14,
+      "total": 14
+    },
+    "CM": {
+      "active": 0,
+      "backup": 2,
+      "total": 2
+    },
+    "CN": {
+      "active": 0,
+      "backup": 8,
+      "total": 8
+    },
+    "CR": {
+      "active": 0,
+      "backup": 107,
+      "total": 107
+    },
+    "CY": {
+      "active": 0,
+      "backup": 5,
+      "total": 5
+    },
+    "CZ": {
+      "active": 0,
+      "backup": 17,
+      "total": 17
+    },
+    "DE": {
+      "active": 0,
+      "backup": 230,
+      "total": 230
+    },
+    "DK": {
+      "active": 0,
+      "backup": 8,
+      "total": 8
+    },
+    "DO": {
+      "active": 0,
+      "backup": 1,
+      "total": 1
+    },
+    "EE": {
+      "active": 0,
+      "backup": 51,
+      "total": 51
+    },
+    "ES": {
+      "active": 0,
+      "backup": 4,
+      "total": 4
+    },
+    "FI": {
+      "active": 0,
+      "backup": 28,
+      "total": 28
+    },
+    "FR": {
+      "active": 0,
+      "backup": 136,
+      "total": 136
+    },
+    "GB": {
+      "active": 0,
+      "backup": 258,
+      "total": 258
+    },
+    "GR": {
+      "active": 0,
+      "backup": 1,
+      "total": 1
+    },
+    "HK": {
+      "active": 0,
+      "backup": 183,
+      "total": 183
+    },
+    "HR": {
+      "active": 0,
+      "backup": 5,
+      "total": 5
+    },
+    "HU": {
+      "active": 0,
+      "backup": 4,
+      "total": 4
+    },
+    "IE": {
+      "active": 0,
+      "backup": 3,
+      "total": 3
+    },
+    "IL": {
+      "active": 0,
+      "backup": 6,
+      "total": 6
+    },
+    "IM": {
+      "active": 0,
+      "backup": 2,
+      "total": 2
+    },
+    "IN": {
+      "active": 0,
+      "backup": 6,
+      "total": 6
+    },
+    "IQ": {
+      "active": 0,
+      "backup": 1,
+      "total": 1
+    },
+    "IR": {
+      "active": 0,
+      "backup": 501,
+      "total": 501
+    },
+    "IT": {
+      "active": 0,
+      "backup": 8,
+      "total": 8
+    },
+    "JO": {
+      "active": 0,
+      "backup": 3,
+      "total": 3
+    },
+    "JP": {
+      "active": 0,
+      "backup": 183,
+      "total": 183
+    },
+    "KR": {
+      "active": 0,
+      "backup": 62,
+      "total": 62
+    },
+    "KZ": {
+      "active": 0,
+      "backup": 35,
+      "total": 35
+    },
+    "LT": {
+      "active": 0,
+      "backup": 26,
+      "total": 26
+    },
+    "LU": {
+      "active": 0,
+      "backup": 3,
+      "total": 3
+    },
+    "LV": {
+      "active": 0,
+      "backup": 7,
+      "total": 7
+    },
+    "MD": {
+      "active": 0,
+      "backup": 2,
+      "total": 2
+    },
+    "ME": {
+      "active": 0,
+      "backup": 2,
       "total": 2
     },
     "MH": {
-      "active": 3,
-      "backup": 0,
-      "total": 3
+      "active": 0,
+      "backup": 2,
+      "total": 2
     },
-    "NL": {
-      "active": 31,
-      "backup": 9,
-      "total": 40
-    },
-    "NZ": {
-      "active": 1,
-      "backup": 0,
+    "MT": {
+      "active": 0,
+      "backup": 1,
       "total": 1
     },
+    "MX": {
+      "active": 0,
+      "backup": 1,
+      "total": 1
+    },
+    "MY": {
+      "active": 0,
+      "backup": 5,
+      "total": 5
+    },
+    "NG": {
+      "active": 0,
+      "backup": 2,
+      "total": 2
+    },
+    "NL": {
+      "active": 0,
+      "backup": 219,
+      "total": 219
+    },
+    "NO": {
+      "active": 0,
+      "backup": 5,
+      "total": 5
+    },
+    "NZ": {
+      "active": 0,
+      "backup": 17,
+      "total": 17
+    },
     "PH": {
-      "active": 3,
-      "backup": 0,
-      "total": 3
+      "active": 0,
+      "backup": 2,
+      "total": 2
     },
     "PL": {
-      "active": 10,
-      "backup": 2,
-      "total": 12
+      "active": 0,
+      "backup": 72,
+      "total": 72
     },
     "RO": {
-      "active": 2,
-      "backup": 1,
-      "total": 3
+      "active": 0,
+      "backup": 36,
+      "total": 36
     },
     "RS": {
       "active": 0,
@@ -177,75 +322,134 @@
       "total": 1
     },
     "RU": {
-      "active": 11,
-      "backup": 1,
-      "total": 12
+      "active": 0,
+      "backup": 202,
+      "total": 202
     },
     "SC": {
-      "active": 8,
-      "backup": 4,
-      "total": 12
+      "active": 0,
+      "backup": 181,
+      "total": 181
     },
     "SE": {
-      "active": 3,
-      "backup": 0,
-      "total": 3
+      "active": 0,
+      "backup": 64,
+      "total": 64
     },
     "SG": {
-      "active": 3,
+      "active": 0,
+      "backup": 208,
+      "total": 208
+    },
+    "SI": {
+      "active": 0,
+      "backup": 13,
+      "total": 13
+    },
+    "SK": {
+      "active": 0,
       "backup": 1,
-      "total": 4
+      "total": 1
+    },
+    "TG": {
+      "active": 0,
+      "backup": 6,
+      "total": 6
     },
     "TH": {
       "active": 0,
-      "backup": 2,
-      "total": 2
-    },
-    "TR": {
-      "active": 3,
-      "backup": 0,
-      "total": 3
-    },
-    "TW": {
-      "active": 4,
-      "backup": 0,
+      "backup": 4,
       "total": 4
     },
+    "TR": {
+      "active": 0,
+      "backup": 13,
+      "total": 13
+    },
+    "TW": {
+      "active": 0,
+      "backup": 4,
+      "total": 4
+    },
+    "UA": {
+      "active": 0,
+      "backup": 15,
+      "total": 15
+    },
     "US": {
-      "active": 157,
-      "backup": 58,
-      "total": 215
+      "active": 0,
+      "backup": 9404,
+      "total": 9404
+    },
+    "VN": {
+      "active": 0,
+      "backup": 1,
+      "total": 1
+    },
+    "ZA": {
+      "active": 0,
+      "backup": 10,
+      "total": 10
     }
   },
   "country_names": {
     "AD": "Andorra",
     "AE": "United Arab Emirates",
+    "AF": "Afghanistan",
+    "AL": "Albania",
+    "AM": "Armenia",
     "AT": "Austria",
+    "AU": "Australia",
+    "AZ": "Azerbaijan",
+    "BE": "Belgium",
     "BF": "Burkina Faso",
     "BG": "Bulgaria",
+    "BR": "Brazil",
+    "BY": "Belarus",
     "BZ": "Belize",
     "CA": "Canada",
+    "CF": "Central African Republic",
     "CH": "Switzerland",
+    "CM": "Cameroon",
+    "CN": "China",
+    "CR": "Costa Rica",
+    "CY": "Cyprus",
+    "CZ": "Czechia",
     "DE": "Germany",
+    "DK": "Denmark",
+    "DO": "Dominican Republic",
     "EE": "Estonia",
     "ES": "Spain",
     "FI": "Finland",
     "FR": "France",
     "GB": "United Kingdom",
+    "GR": "Greece",
     "HK": "Hong Kong",
+    "HR": "Croatia",
     "HU": "Hungary",
     "IE": "Ireland",
+    "IL": "Israel",
+    "IM": "Isle of Man",
     "IN": "India",
+    "IQ": "Iraq",
     "IR": "Iran, Islamic Republic of",
     "IT": "Italy",
+    "JO": "Jordan",
     "JP": "Japan",
     "KR": "Korea, Republic of",
     "KZ": "Kazakhstan",
     "LT": "Lithuania",
+    "LU": "Luxembourg",
     "LV": "Latvia",
     "MD": "Moldova, Republic of",
+    "ME": "Montenegro",
     "MH": "Marshall Islands",
+    "MT": "Malta",
+    "MX": "Mexico",
+    "MY": "Malaysia",
+    "NG": "Nigeria",
     "NL": "Netherlands",
+    "NO": "Norway",
     "NZ": "New Zealand",
     "PH": "Philippines",
     "PL": "Poland",
@@ -255,10 +459,16 @@
     "SC": "Seychelles",
     "SE": "Sweden",
     "SG": "Singapore",
+    "SI": "Slovenia",
+    "SK": "Slovakia",
+    "TG": "Togo",
     "TH": "Thailand",
     "TR": "Türkiye",
     "TW": "Taiwan, Province of China",
-    "US": "United States"
+    "UA": "Ukraine",
+    "US": "United States",
+    "VN": "Viet Nam",
+    "ZA": "South Africa"
   },
   "allowed_ports": [
     80,
@@ -268,12 +478,12 @@
   "ranking_policy": "ACTIVE first by measured delay, then BACKUP by measured delay; country files preserve that order.",
   "country_policy": "Automatic country resolution from successful nodes only; no fixed country allowlist.",
   "country_resolution": {
-    "hostname": 19,
-    "geoip_local": 269,
-    "ip_geolocation": 269,
-    "metadata_fallback": 478,
-    "metadata_first": 478,
-    "reclassified_existing": 478,
+    "hostname": 839,
+    "geoip_local": 8253,
+    "ip_geolocation": 8253,
+    "metadata_fallback": 4673,
+    "metadata_first": 4673,
+    "reclassified_existing": 4673,
     "unknown": 0,
     "database": "/home/runner/work/VPN-Nodes/VPN-Nodes/data/GeoLite2-Country.mmdb",
     "database_loaded": true,
@@ -283,7 +493,7 @@
       "invalid_ip": 0,
       "other": 0,
       "dns_failure": 0,
-      "lookups": 269
+      "lookups": 8253
     }
   }
 }

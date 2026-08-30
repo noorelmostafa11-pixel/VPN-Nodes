@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "generated_at": "2026-08-30T01:24:53Z",
+  "mode": "fastnodes_style_staged",
+  "pool_total": 50325,
+  "tls_applicable": 30599,
+  "tls_verified": 15547,
+  "deep_selected": 2621,
+  "deep_checked": 2616,
+  "active": 0,
+  "backup": 12926,
+  "published_total": 12926,
+  "failed_deep": 0,
+  "config_conversion_failed": 5,
+  "tls_timeout_s": 4.0,
+  "deep_timeout_s": 10.0,
+  "deep_budget": 2621,
+  "policy": "TLS is promotion-only; bounded Xray deep checks; TLS-verified non-deep nodes retained as BACKUP; no fixed country allowlist.",
+  "country_resolution": {
+    "hostname": 839,
+    "geoip_local": 8253,
+    "ip_geolocation": 8253,
+    "metadata_fallback": 4673,
+    "metadata_first": 4673,
+    "reclassified_existing": 4673,
+    "unknown": 0,
+    "database": "/home/runner/work/VPN-Nodes/VPN-Nodes/data/GeoLite2-Country.mmdb",
+    "database_loaded": true,
+    "failure_stats": {
+      "address_not_found": 0,
+      "invalid_database": 0,
+      "invalid_ip": 0,
+      "other": 0,
+      "dns_failure": 0,
+      "lookups": 8253
+    }
+  }
+}
