@@ -59,16 +59,13 @@ jobs:
           chmod +x /opt/hostedtoolcache/xray/xray
           /opt/hostedtoolcache/xray/xray version
 
-      - name: FastNodes-method staged verification - TLS + bounded Xray
+      - name: Core-driven real-traffic verification
         env:
           XRAY_BIN: /opt/hostedtoolcache/xray/xray
-          REAL_DELAY_TLS_WORKERS: 512
-          REAL_DELAY_TLS_TIMEOUT: 4
-          REAL_DELAY_WORKERS: 256
+          REAL_DELAY_WORKERS: 16
           REAL_DELAY_NODE_TIMEOUT: 10
           REAL_DELAY_SOCKS_BASE: 21000
-          REAL_DELAY_XRAY_BATCH_SIZE: 2000
-          REAL_DELAY_DEEP_CHECK_BUDGET: 2621
+          REAL_DELAY_XRAY_BATCH_SIZE: 500
         run: python scripts/fastnodes_staged_scan.py
 
       - name: Restore previous catalog on failure
