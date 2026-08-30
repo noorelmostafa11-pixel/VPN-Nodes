@@ -1,16 +1,12 @@
 #!/usr/bin/env python3
-"""Recognition-only JCNode test with transcript -> audio/ASR fallback.
-
-Uses a public transcript when available. If no captions are available, it
-falls back to downloading audio with yt-dlp and transcribing it with
-faster-whisper. It never submits codes or fetches a protected subscription.
-"""
+"""Recognition-only JCNode test using an external YouTube-to-MP3 service."""
 from __future__ import annotations
 
 import json
 import re
 import subprocess
 import urllib.error
+import urllib.parse
 import urllib.request
 from pathlib import Path
 from urllib.parse import parse_qs, urlparse
@@ -18,14 +14,13 @@ from urllib.parse import parse_qs, urlparse
 ROOT = Path(__file__).resolve().parents[1]
 CFG = ROOT / "sources" / "jcnode_test.json"
 WORK = ROOT / ".jcnode-test"
-TRANSCRIPT_ENDPOINT = "https://youtube-transcript.ai/transcript/{video_id}.txt"
+CONVERTER_ENDPOINT = "https://ytmp3.ge/api/convert"
 
 DIGIT_WORDS = {
-    "zero":"0", "one":"1", "two":"2", "three":"3", "four":"4",
-    "five":"5", "six":"6", "seven":"7", "eight":"8", "nine":"9", "oh":"0",
+    "zero":"0", "one":"1", "two":"2", "three":"3", "four":"4", "five":"5",
+    "six":"6", "seven":"7", "eight":"8", "nine":"9", "oh":"0",
     "صفر":"0", "واحد":"1", "اثنان":"2", "اثنين":"2", "ثلاثة":"3", "ثلاث":"3",
     "اربعة":"4", "أربعة":"4", "خمسة":"5", "ستة":"6", "سبعة":"7", "ثمانية":"8", "تسعة":"9",
-    "零":"0", "一":"1", "二":"2", "两":"2", "三":"3", "四":"4", "五":"5", "六":"6", "七":"7", "八":"8", "九":"9",
 }
 
 
@@ -40,35 +35,34 @@ def video_id_from_url(value: str) -> str:
     return candidate
 
 
-def fetch_transcript(video_id: str, language: str | None = None) -> str | None:
-    endpoint = TRANSCRIPT_ENDPOINT.format(video_id=video_id)
-    if language and language != "auto":
-        endpoint += f"?lang={language}"
-    request = urllib.request.Request(endpoint, headers={"User-Agent": "VPN-Nodes-JCNode-Test/1.0"})
-    try:
-        with urllib.request.urlopen(request, timeout=30) as response:
-            text = response.read().decode("utf-8").strip()
-            if not text or "No captions available" in text:
-                return None
-            return text
-    except (urllib.error.HTTPError, urllib.error.URLError):
-        return None
-
-
-def transcribe_audio(url: str, asr: dict) -> str:
+def convert_to_mp3(video_url: str, quality: str = "192") -> Path:
     WORK.mkdir(exist_ok=True)
-    for old in WORK.glob("source.*"):
-        old.unlink()
-    audio = WORK / "audio.wav"
-    subprocess.run([
-        "yt-dlp", "--no-playlist", "-x", "--audio-format", "wav",
-        "-o", str(WORK / "source.%(ext)s"), url,
-    ], check=True)
-    candidates = list(WORK.glob("source.*"))
-    if not candidates:
-        raise RuntimeError("YouTube download produced no media file")
-    source = candidates[0]
-    subprocess.run(["ffmpeg", "-y", "-i", str(source), "-ar", "16000", "-ac", "1", str(audio)], check=True)
+    audio = WORK / "jcnode.mp3"
+    form = urllib.parse.urlencode({"youtube_url": video_url, "quality": quality}).encode()
+    request = urllib.request.Request(
+        CONVERTER_ENDPOINT,
+        data=form,
+        method="POST",
+        headers={"Content-Type": "application/x-www-form-urlencoded", "User-Agent": "VPN-Nodes-JCNode-Test/1.0"},
+    )
+    try:
+        with urllib.request.urlopen(request, timeout=300) as response:
+            payload = json.loads(response.read().decode("utf-8"))
+    except (urllib.error.URLError, urllib.error.HTTPError, json.JSONDecodeError) as exc:
+        raise RuntimeError(f"Audio conversion request failed: {exc}") from exc
+    if not payload.get("success") or not payload.get("downloadUrl"):
+        raise RuntimeError(f"Audio conversion failed: {payload}")
+    download = urllib.request.Request(payload["downloadUrl"], headers={"User-Agent": "VPN-Nodes-JCNode-Test/1.0"})
+    with urllib.request.urlopen(download, timeout=300) as response, audio.open("wb") as out:
+        while chunk := response.read(1024 * 1024):
+            out.write(chunk)
+    if audio.stat().st_size == 0:
+        raise RuntimeError("Converter returned an empty audio file")
+    print(f"Audio downloaded: {audio.stat().st_size} bytes")
+    return audio
+
+
+def transcribe_audio(audio: Path, asr: dict) -> str:
     from faster_whisper import WhisperModel
     model = WhisperModel(asr.get("model", "small"), device="cpu", compute_type="int8")
     segments, info = model.transcribe(
@@ -90,9 +84,8 @@ def normalize_digits(text: str) -> str:
 
 def extract_candidates(text: str, max_candidates: int) -> list[str]:
     normalized = normalize_digits(text)
-    seen: set[str] = set()
     result: list[str] = []
-    # Only inspect transcript/ASR text. Never inspect title, URL, metadata, or video ID.
+    seen: set[str] = set()
     for candidate in re.findall(r"(?<!\d)\d{4}(?!\d)", normalized):
         if candidate not in seen:
             seen.add(candidate)
@@ -110,23 +103,19 @@ def main() -> None:
     video_url = cfg["youtube_url"]
     video_id = video_id_from_url(video_url)
     asr = cfg.get("asr", {})
-    transcript = fetch_transcript(video_id, asr.get("language"))
-    source = "transcript"
-    if transcript is None:
-        print("No captions available; falling back to audio ASR with faster-whisper.")
-        transcript = transcribe_audio(video_url, asr)
-        source = "faster-whisper ASR"
+    quality = str(cfg.get("external_audio", {}).get("quality", "192"))
     print(f"Video ID: {video_id}")
-    print(f"Recognition source: {source}")
-    print("Transcript/ASR text:")
-    print(transcript)
-    candidates = extract_candidates(transcript, int(cfg.get("code_detection", {}).get("max_candidates", 10)))
+    print("Audio source: external YouTube-to-MP3 converter")
+    audio = convert_to_mp3(video_url, quality)
+    text = transcribe_audio(audio, asr)
+    print("ASR text:")
+    print(text)
+    candidates = extract_candidates(text, int(cfg.get("code_detection", {}).get("max_candidates", 10)))
     print("Four-digit candidates:")
-    if not candidates:
-        print("NONE")
+    if candidates:
+        print("\n".join(candidates))
     else:
-        for candidate in candidates:
-            print(candidate)
+        print("NONE")
 
 
 if __name__ == "__main__":
