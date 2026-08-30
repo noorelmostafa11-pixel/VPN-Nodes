@@ -78,7 +78,6 @@ jobs:
 
       - name: OpenVPN VPN Gate real-tunnel verification
         env:
-          OPENVPN_WORKERS: 4
           OPENVPN_NODE_TIMEOUT: 25
         run: python scripts/vpngate_openvpn.py
 
