@@ -1,6 +1,6 @@
 {
   "schema": 21,
-  "generated_at": "2026-08-30T16:08:13Z",
+  "generated_at": "2026-08-30T17:09:16Z",
   "mode": "tcp_liveness_only_android_final_xray_check",
   "liveness_test": "TCP connect to advertised endpoint",
   "final_runtime_test": "Android Xray + local HTTP health-check",
@@ -14,18 +14,18 @@
   "backup_per_country": null,
   "selection_policy": "all_tcp_alive_nodes_with_resolved_country; explicit_country_metadata_first_then_geoip_then_latency",
   "country_order_policy": "explicit_country_metadata_first; geoip_second; latency_ascending_within_tier",
-  "alive_with_country": 52663,
+  "alive_with_country": 52902,
   "alive_unknown_country": 0,
-  "published_active": 52663,
+  "published_active": 52902,
   "published_backup": 0,
-  "published_total": 52663,
+  "published_total": 52902,
   "country_resolution": {
-    "hostname": 1972,
-    "geoip_local": 28629,
-    "ip_geolocation": 28629,
-    "metadata_fallback": 24034,
-    "metadata_first": 24034,
-    "reclassified_existing": 24034,
+    "hostname": 2200,
+    "geoip_local": 28757,
+    "ip_geolocation": 28757,
+    "metadata_fallback": 24145,
+    "metadata_first": 24145,
+    "reclassified_existing": 24145,
     "unknown": 0,
     "database": "/home/runner/work/VPN-Nodes/VPN-Nodes/data/GeoLite2-Country.mmdb",
     "database_loaded": true,
@@ -35,7 +35,7 @@
       "invalid_ip": 0,
       "other": 0,
       "dns_failure": 0,
-      "lookups": 28629
+      "lookups": 28757
     }
   },
   "source_failures": 2,
@@ -44,297 +44,297 @@
       "name": "roosterkid-V2RAY",
       "ok": true,
       "nodes": 55,
-      "elapsed_ms": 128.0
+      "elapsed_ms": 141.5
     },
     {
       "name": "roosterkid-V2RAY_BASE64",
       "ok": true,
       "nodes": 55,
-      "elapsed_ms": 79.0
+      "elapsed_ms": 85.4
     },
     {
       "name": "roosterkid-V2RAY_RAW",
       "ok": true,
       "nodes": 55,
-      "elapsed_ms": 110.5
+      "elapsed_ms": 86.0
     },
     {
       "name": "MatinGhanbari-ss",
       "ok": true,
       "nodes": 112,
-      "elapsed_ms": 102.0
+      "elapsed_ms": 91.5
     },
     {
       "name": "funcra-VPNGate",
       "ok": true,
       "nodes": 18,
-      "elapsed_ms": 159.9
+      "elapsed_ms": 202.1
     },
     {
       "name": "MatinGhanbari-trojan",
       "ok": true,
       "nodes": 340,
-      "elapsed_ms": 88.3
+      "elapsed_ms": 89.1
     },
     {
       "name": "MatinGhanbari-vless",
       "ok": true,
       "nodes": 164,
-      "elapsed_ms": 82.3
+      "elapsed_ms": 77.2
     },
     {
       "name": "MatinGhanbari-vmess",
       "ok": true,
       "nodes": 995,
-      "elapsed_ms": 193.6
+      "elapsed_ms": 183.9
     },
     {
       "name": "mahdibland-sub_merge",
       "ok": true,
-      "nodes": 1411,
-      "elapsed_ms": 165.8
+      "nodes": 1483,
+      "elapsed_ms": 188.1
     },
     {
       "name": "hamedcode-port_443",
       "ok": true,
       "nodes": 7033,
-      "elapsed_ms": 647.4
+      "elapsed_ms": 419.2
     },
     {
       "name": "hamedcode-port_80",
       "ok": true,
       "nodes": 743,
-      "elapsed_ms": 288.1
+      "elapsed_ms": 103.8
     },
     {
       "name": "F0rc3Run-Telegram",
       "ok": true,
       "nodes": 238,
-      "elapsed_ms": 87.5
+      "elapsed_ms": 85.9
     },
     {
       "name": "Baarcuda-top100-vless",
       "ok": true,
       "nodes": 54,
-      "elapsed_ms": 125.4
+      "elapsed_ms": 82.6
     },
     {
       "name": "Baarcuda-top100",
       "ok": true,
       "nodes": 19,
-      "elapsed_ms": 104.8
+      "elapsed_ms": 111.4
     },
     {
       "name": "Alirewa-V2ray-Configs",
       "ok": true,
-      "nodes": 966,
-      "elapsed_ms": 117.9
+      "nodes": 967,
+      "elapsed_ms": 123.7
     },
     {
       "name": "Epodonios-All_Configs_Sub",
       "ok": true,
       "nodes": 4001,
-      "elapsed_ms": 275.2
+      "elapsed_ms": 251.8
     },
     {
       "name": "sakha1370-all_valid_proxies",
       "ok": true,
       "nodes": 5172,
-      "elapsed_ms": 627.8
+      "elapsed_ms": 710.2
     },
     {
       "name": "Au1rxx-v2ray-base64",
       "ok": true,
       "nodes": 454,
-      "elapsed_ms": 122.9
+      "elapsed_ms": 344.6
     },
     {
       "name": "Epodonios-All_Configs_base64_Sub",
       "ok": true,
       "nodes": 4001,
-      "elapsed_ms": 341.1
+      "elapsed_ms": 359.0
     },
     {
       "name": "0xRadikal-configs_base64",
       "ok": true,
-      "nodes": 5595,
-      "elapsed_ms": 513.9
+      "nodes": 5588,
+      "elapsed_ms": 516.2
     },
     {
       "name": "SoliSpirit-all_configs",
       "ok": true,
-      "nodes": 4075,
-      "elapsed_ms": 327.8
+      "nodes": 4116,
+      "elapsed_ms": 413.9
     },
     {
       "name": "Danialsamadi-AllConfigsSub",
       "ok": true,
       "nodes": 379,
-      "elapsed_ms": 105.2
+      "elapsed_ms": 96.6
     },
     {
       "name": "ebrasha-all_extracted_configs",
       "ok": true,
-      "nodes": 16531,
-      "elapsed_ms": 1016.3
+      "nodes": 16592,
+      "elapsed_ms": 1191.3
     },
     {
       "name": "Delta-Kronecker-all_configs",
       "ok": true,
       "nodes": 3542,
-      "elapsed_ms": 239.8
+      "elapsed_ms": 255.0
     },
     {
       "name": "mfuu-v2ray",
       "ok": true,
-      "nodes": 19,
-      "elapsed_ms": 68.4
+      "nodes": 18,
+      "elapsed_ms": 81.6
     },
     {
       "name": "mheidari98-.proxy",
       "ok": true,
       "nodes": 6608,
-      "elapsed_ms": 580.8
+      "elapsed_ms": 643.8
     },
     {
       "name": "rasool083-v2ray-sub",
       "ok": true,
       "nodes": 9200,
-      "elapsed_ms": 1060.6
+      "elapsed_ms": 1189.5
     },
     {
       "name": "teknovpnhub-servers",
       "ok": true,
       "nodes": 43,
-      "elapsed_ms": 79.7
+      "elapsed_ms": 77.8
     },
     {
       "name": "rtwo2-everything",
       "ok": true,
       "nodes": 95235,
-      "elapsed_ms": 8605.2
+      "elapsed_ms": 10040.3
     },
     {
       "name": "Pawdroid-Free-servers",
       "ok": true,
-      "nodes": 17,
-      "elapsed_ms": 76.5
+      "nodes": 18,
+      "elapsed_ms": 86.0
     },
     {
       "name": "alexantSWE-All_Configs_Sub",
       "ok": true,
-      "nodes": 2480,
-      "elapsed_ms": 298.7
+      "nodes": 2494,
+      "elapsed_ms": 391.2
     },
     {
       "name": "alexantSWE-vless",
       "ok": true,
       "nodes": 2934,
-      "elapsed_ms": 268.1
+      "elapsed_ms": 329.0
     },
     {
       "name": "alexantSWE-vmess",
       "ok": true,
       "nodes": 90,
-      "elapsed_ms": 101.9
+      "elapsed_ms": 133.1
     },
     {
       "name": "alexantSWE-trojan",
       "ok": true,
       "nodes": 644,
-      "elapsed_ms": 99.7
+      "elapsed_ms": 126.9
     },
     {
       "name": "alexantSWE-ss",
       "ok": true,
       "nodes": 153,
-      "elapsed_ms": 97.7
+      "elapsed_ms": 122.9
     },
     {
       "name": "morpheusadam-best",
       "ok": true,
       "nodes": 1386,
-      "elapsed_ms": 147.7
+      "elapsed_ms": 138.6
     },
     {
       "name": "morpheusadam-vless",
       "ok": true,
       "nodes": 15287,
-      "elapsed_ms": 1471.1
+      "elapsed_ms": 1617.2
     },
     {
       "name": "morpheusadam-reality",
       "ok": true,
       "nodes": 5876,
-      "elapsed_ms": 651.5
+      "elapsed_ms": 706.3
     },
     {
       "name": "morpheusadam-iran",
       "ok": true,
       "nodes": 1779,
-      "elapsed_ms": 317.3
+      "elapsed_ms": 263.2
     },
     {
       "name": "Simorgh",
       "ok": false,
       "nodes": 0,
       "error": "404 Client Error: Not Found for url: https://raw.githubusercontent.com/itsyebekhe/Simorgh/main/Config/merged.txt",
-      "elapsed_ms": 83.5
+      "elapsed_ms": 60.4
     },
     {
       "name": "V2RayRoot-vless",
       "ok": true,
       "nodes": 170,
-      "elapsed_ms": 140.7
+      "elapsed_ms": 148.8
     },
     {
       "name": "V2RayRoot-vmess",
       "ok": true,
       "nodes": 11,
-      "elapsed_ms": 65.0
+      "elapsed_ms": 71.9
     },
     {
       "name": "V2RayRoot-trojan",
       "ok": true,
       "nodes": 27,
-      "elapsed_ms": 69.3
+      "elapsed_ms": 70.0
     },
     {
       "name": "V2RayRoot-shadowsocks",
       "ok": true,
       "nodes": 179,
-      "elapsed_ms": 89.9
+      "elapsed_ms": 74.2
     },
     {
       "name": "barry-far-All_Configs_Sub",
       "ok": true,
       "nodes": 4001,
-      "elapsed_ms": 322.3
+      "elapsed_ms": 322.0
     },
     {
       "name": "MohammadBahemmat-all_servers",
       "ok": true,
-      "nodes": 413,
-      "elapsed_ms": 179.4
+      "nodes": 484,
+      "elapsed_ms": 101.7
     },
     {
       "name": "ConfigJo-main",
       "ok": true,
       "nodes": 78,
-      "elapsed_ms": 93.1
+      "elapsed_ms": 85.4
     },
     {
       "name": "ABC-Configs",
       "ok": false,
       "nodes": 0,
       "error": "404 Client Error: Not Found for url: https://raw.githubusercontent.com/FreeFolksOn/abc-configs-free-vpn-proxy-list/main/README.md",
-      "elapsed_ms": 23.4
+      "elapsed_ms": 22.2
     },
     {
       "name": "Telegram-Channels",
       "ok": true,
-      "nodes": 13922,
-      "elapsed_ms": 15773.5
+      "nodes": 13853,
+      "elapsed_ms": 15719.3
     }
   ]
 }
