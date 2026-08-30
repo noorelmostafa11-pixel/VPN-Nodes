@@ -62,7 +62,7 @@ jobs:
       - name: Core-driven real-traffic verification
         env:
           XRAY_BIN: /opt/hostedtoolcache/xray/xray
-          REAL_DELAY_WORKERS: 16
+          REAL_DELAY_WORKERS: 250
           REAL_DELAY_NODE_TIMEOUT: 10
           REAL_DELAY_SOCKS_BASE: 21000
           REAL_DELAY_XRAY_BATCH_SIZE: 500
