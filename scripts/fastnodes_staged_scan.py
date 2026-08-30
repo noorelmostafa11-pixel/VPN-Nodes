@@ -45,6 +45,7 @@ def tls_probe(item: dict) -> dict:
     host = str(node.get("server") or "").strip()
     port = int(node.get("port") or 443)
     sni = str(node.get("sni") or host).strip()
+    sock = None
     try:
         sock = socket.create_connection((host, port), timeout=TLS_TIMEOUT)
         sock.settimeout(TLS_TIMEOUT)
@@ -54,10 +55,11 @@ def tls_probe(item: dict) -> dict:
     except Exception as exc:
         return {"ok": False, "latency_ms": -1, "detail": str(exc)[:180], "sni": sni}
     finally:
-        try:
-            sock.close()
-        except Exception:
-            pass
+        if sock is not None:
+            try:
+                sock.close()
+            except Exception:
+                pass
 
 
 def validate_batch(root: Path, items: list[dict]) -> tuple[list[dict], list[dict]]:
