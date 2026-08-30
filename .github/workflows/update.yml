@@ -59,7 +59,7 @@ jobs:
           chmod +x /opt/hostedtoolcache/xray/xray
           /opt/hostedtoolcache/xray/xray version
 
-      - name: FastNodes-style staged verification - TLS + bounded Xray
+      - name: FastNodes-method staged verification - TLS + bounded Xray
         env:
           XRAY_BIN: /opt/hostedtoolcache/xray/xray
           REAL_DELAY_TLS_WORKERS: 512
