@@ -1,0 +1,23 @@
+{
+  "enabled": false,
+  "mode": "test-only",
+  "description": "JCNode daily-code extraction test. Does not publish or replace any existing source.",
+  "youtube_url": "https://youtu.be/_2nsoI7ekF4",
+  "telegram_channel": "jcnode",
+  "asr": {
+    "engine": "faster-whisper",
+    "model": "small",
+    "language": "auto",
+    "beam_size": 5,
+    "vad_filter": true
+  },
+  "code_detection": {
+    "length": 4,
+    "max_candidates": 10,
+    "require_four_digits": true
+  },
+  "validation": {
+    "enabled": false,
+    "note": "Recognition-only test; no automatic code submission or subscription retrieval."
+  }
+}
