@@ -111,8 +111,6 @@ def publish_app_pool(rows: list[dict], source_health: list[dict]) -> dict:
 
     published_total = 0
     for country, country_rows in sorted(grouped.items()):
-        # Explicit country labels/flags outrank GeoIP. Then use measured TCP
-        # latency as the primary ordering signal, followed by stable tie-breakers.
         country_rows.sort(key=lambda item: (
             0 if str(item.get("country_resolution") or "").lower() == "metadata_explicit" else 1,
             float(item.get("latency_ms", 10**9)),
@@ -122,27 +120,21 @@ def publish_app_pool(rows: list[dict], source_health: list[dict]) -> dict:
         ))
         uris = [row["uri"] for row in country_rows]
         (out_dirs["countries"] / f"{country}.txt").write_text(
-            "\n".join(uris) + "\n",
-            encoding="utf-8",
+            "\n".join(uris) + "\n", encoding="utf-8"
         )
-        # Existing app API keeps active/backup paths. Both now represent the full
-        # TCP-alive country pool; no 5+5 restriction is imposed by the workflow.
         (out_dirs["active"] / f"{country}.txt").write_text(
-            "\n".join(uris) + "\n",
-            encoding="utf-8",
+            "\n".join(uris) + "\n", encoding="utf-8"
         )
         published_total += len(uris)
 
     for protocol, uris in protocol_rows.items():
         (out_dirs["protocols"] / f"{protocol}.txt").write_text(
-            "\n".join(uris) + "\n",
-            encoding="utf-8",
+            "\n".join(uris) + "\n", encoding="utf-8"
         )
 
     if unknown_rows:
         (out_dirs["metadata"] / "tcp_alive_unknown_country.txt").write_text(
-            "\n".join(unknown_rows) + "\n",
-            encoding="utf-8",
+            "\n".join(unknown_rows) + "\n", encoding="utf-8"
         )
 
     app_meta = {
@@ -168,8 +160,7 @@ def publish_app_pool(rows: list[dict], source_health: list[dict]) -> dict:
         "sources": source_health,
     }
     (out_dirs["metadata"] / "app_pool.json").write_text(
-        json.dumps(app_meta, ensure_ascii=False, indent=2) + "\n",
-        encoding="utf-8",
+        json.dumps(app_meta, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
     )
 
     print(
@@ -189,7 +180,15 @@ def main() -> None:
     for item in cfg["sources"]:
         started = time.perf_counter()
         try:
-            rows = catalog.collect_source(item)
+            if item.get("format") == "v2nodes":
+                from v2nodes_adapter import collect as collect_v2nodes
+                raw_uris = collect_v2nodes(
+                    item.get("url", "https://www.v2nodes.com/"),
+                    int(item.get("max_pages", 5000)),
+                )
+                rows = catalog.parse_lines("\n".join(raw_uris), item["name"])
+            else:
+                rows = catalog.collect_source(item)
             all_rows.extend(rows)
             successful_sources += 1
             source_health.append({
@@ -212,8 +211,6 @@ def main() -> None:
     if successful_sources == 0 and not all_rows:
         raise RuntimeError("All upstream sources failed")
 
-    # OpenVPN candidates stay protocol-separated and are not sent to the Android
-    # Xray TCP feed. The current Android app consumes Xray protocol URIs only.
     xray_rows = [
         row for row in all_rows
         if str(row.get("protocol") or "").lower() != "openvpn"
@@ -250,7 +247,9 @@ def main() -> None:
         "nodes": checked,
         "country_order_policy": "explicit_country_metadata_first; geoip_second; latency_ascending_within_tier",
     }
-    (meta / "tcp_reachable.json").write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    (meta / "tcp_reachable.json").write_text(
+        json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
+    )
     publish_app_pool(checked, source_health)
     print(f"INFO tcp_pool_saved={len(checked)} path=output/metadata/tcp_reachable.json")
 
