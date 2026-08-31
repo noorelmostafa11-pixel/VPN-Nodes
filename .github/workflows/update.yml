@@ -2,8 +2,6 @@ name: Update node catalog
 
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
 
 permissions:
   contents: write
@@ -45,10 +43,23 @@ jobs:
       - name: Run regression tests
         run: python tests/test_country_resolver.py
 
-      - name: Build lightweight live-node pool
+      - name: Build candidates from sources.json
         env:
           GITHUB_TOKEN: ${{ github.token }}
-        run: python scripts/telegram_build_tcp_pool.py
+        run: python scripts/build_sources_candidates.py
+
+      - name: Build candidates from telegram_channels.json
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python scripts/build_telegram_candidates.py
+
+      - name: Build candidates from v2nodes.com
+        run: python scripts/build_v2nodes_candidates.py
+
+      - name: Merge candidates and run common TCP pool
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python scripts/merge_and_build_tcp_pool.py
 
       - name: Verify generated app catalog
         run: |
