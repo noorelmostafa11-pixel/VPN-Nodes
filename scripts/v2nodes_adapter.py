@@ -151,21 +151,10 @@ def process_page(url: str) -> tuple[str, list[str], str | None]:
         return url, [], str(exc)
 
 
-def main() -> int:
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--max-pages", type=int, default=5000)
-    parser.add_argument("--output", default="v2nodes_nodes.txt")
-    args = parser.parse_args()
-
-    print(f"[+] Fetching {BASE}")
-    try:
-        start_html = fetch(BASE)
-    except Exception as exc:
-        print(f"[!] Start page failed: {exc}", file=sys.stderr)
-        return 1
-
-    pages = discover_server_urls(start_html, args.max_pages, BASE)
-    print(f"[+] Discovered {len(pages)} server pages")
+def collect(start_url: str = BASE, max_pages: int = 5000) -> list[str]:
+    """Collect proxy URIs using the same discovery/fetch logic as the laptop scraper."""
+    start_html = fetch(start_url)
+    pages = discover_server_urls(start_html, max_pages, start_url)
 
     nodes: list[str] = []
     seen: set[str] = set()
@@ -188,6 +177,22 @@ def main() -> int:
                     new += 1
 
             print(f"[{completed}/{len(pages)}] {new} new node(s) <- {url}")
+
+    return nodes
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--max-pages", type=int, default=5000)
+    parser.add_argument("--output", default="v2nodes_nodes.txt")
+    args = parser.parse_args()
+
+    print(f"[+] Fetching {BASE}")
+    try:
+        nodes = collect(start_url=BASE, max_pages=args.max_pages)
+    except Exception as exc:
+        print(f"[!] Start page failed: {exc}", file=sys.stderr)
+        return 1
 
     output = Path(args.output)
     output.write_text(
