@@ -1,12 +1,7 @@
 #!/usr/bin/env python3
-"""Collect v2nodes.com server pages for the repository's common node pool.
-
-This adapter owns discovery/extraction only. Port filtering, deduplication,
-liveness, worker limits, country resolution and publishing remain centralized in
-the common pipeline.
-"""
 from __future__ import annotations
 
+import os
 import re
 import threading
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -17,7 +12,12 @@ from bs4 import BeautifulSoup
 
 BASE = "https://www.v2nodes.com/"
 UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/151 Safari/537.36"
-URI_RE = re.compile(r'(?P<uri>(?:vless|vmess|trojan|ss)://[^\s<>"\'`]+)', re.IGNORECASE)
+
+URI_RE = re.compile(
+    r'(?P<uri>(?:vless|vmess|trojan|ss|ssconf)://[^\s<>"\'`]+)',
+    re.IGNORECASE,
+)
+
 thread_local = threading.local()
 
 
@@ -25,8 +25,15 @@ def get_session() -> requests.Session:
     session = getattr(thread_local, "session", None)
     if session is None:
         session = requests.Session()
-        session.headers.update({"User-Agent": UA, "Accept": "text/html,application/xhtml+xml"})
-        adapter = requests.adapters.HTTPAdapter(pool_connections=8, pool_maxsize=8, max_retries=1)
+        session.headers.update({
+            "User-Agent": UA,
+            "Accept": "text/html,application/xhtml+xml",
+        })
+        adapter = requests.adapters.HTTPAdapter(
+            pool_connections=8,
+            pool_maxsize=8,
+            max_retries=1,
+        )
         session.mount("http://", adapter)
         session.mount("https://", adapter)
         thread_local.session = session
@@ -37,7 +44,11 @@ def fetch(url: str, timeout: int = 20, attempts: int = 3) -> str:
     last_error = None
     for attempt in range(1, attempts + 1):
         try:
-            r = get_session().get(url, timeout=timeout, headers={"Referer": BASE})
+            r = get_session().get(
+                url,
+                timeout=timeout,
+                headers={"Referer": BASE},
+            )
             r.raise_for_status()
             return r.text
         except Exception as exc:
@@ -49,6 +60,7 @@ def fetch(url: str, timeout: int = 20, attempts: int = 3) -> str:
 
 
 def discover_server_urls(html: str, limit: int, start_url: str) -> list[str]:
+    """Collect every /servers/ URL visible in the site's crawled listing pages."""
     seen_servers: set[str] = set()
     servers: list[str] = []
     listings: list[str] = [start_url]
@@ -60,37 +72,59 @@ def discover_server_urls(html: str, limit: int, start_url: str) -> list[str]:
             seen_servers.add(url)
             servers.append(url)
 
-    def add_listing(href: str, base_url: str) -> None:
-        url = urljoin(base_url, href)
+    def add_listing(href: str) -> None:
+        url = urljoin(BASE, href)
         if url.startswith(BASE) and "/servers/" not in url and url not in seen_listings:
             seen_listings.add(url)
             listings.append(url)
 
-    def scan(page_html: str, listing_url: str) -> None:
-        soup = BeautifulSoup(page_html, "html.parser")
-        for a in soup.select("a[href]"):
-            href = a.get("href")
-            if not href:
-                continue
-            if "/servers/" in href:
-                add_server(href)
-            else:
-                add_listing(href, listing_url)
-            if len(servers) >= limit:
-                break
+    # Start page: collect server links and same-site listing links.
+    soup = BeautifulSoup(html, "html.parser")
+    for a in soup.select("a[href]"):
+        href = a.get("href")
+        if not href:
+            continue
+        if "/servers/" in href:
+            add_server(href)
+        else:
+            # Keep broad same-site discovery, but do not chase arbitrary external links.
+            url = urljoin(start_url, href)
+            if url.startswith(BASE):
+                add_listing(href)
+        if len(servers) >= limit:
+            return servers[:limit]
 
-    scan(html, start_url)
+    # Follow same-site listing pages until there are no new ones or we hit the safety limit.
     index = 0
     while index < len(listings) and len(servers) < limit:
         listing_url = listings[index]
         index += 1
         if listing_url == start_url:
-            continue
-        try:
-            page_html = fetch(listing_url)
-        except Exception:
-            continue
-        scan(page_html, listing_url)
+            page_html = html
+        else:
+            try:
+                page_html = fetch(listing_url)
+            except Exception:
+                continue
+
+        page_soup = BeautifulSoup(page_html, "html.parser")
+        for a in page_soup.select('a[href*="/servers/"]'):
+            href = a.get("href")
+            if href:
+                add_server(href)
+                if len(servers) >= limit:
+                    break
+
+        for a in page_soup.select("a[href]"):
+            href = a.get("href")
+            if not href:
+                continue
+            if "/servers/" in href:
+                continue
+            url = urljoin(listing_url, href)
+            if url.startswith(BASE):
+                add_listing(href)
+
     return servers[:limit]
 
 
@@ -98,38 +132,55 @@ def extract_uris(html: str) -> list[str]:
     soup = BeautifulSoup(html, "html.parser")
     chunks = [html, soup.get_text(" ", strip=True)]
     chunks.extend(tag.get_text(" ", strip=False) for tag in soup.find_all("script"))
+
     seen: set[str] = set()
     result: list[str] = []
+
     for chunk in chunks:
-        for match in URI_RE.finditer(chunk):
-            uri = match.group("uri").rstrip("),.;]}>'\"")
+        for m in URI_RE.finditer(chunk):
+            uri = m.group("uri").rstrip("),.;]}>'\"")
             if uri not in seen:
                 seen.add(uri)
                 result.append(uri)
+
     return result
 
 
+def process_page(url: str) -> tuple[str, list[str], str | None]:
+    try:
+        return url, extract_uris(fetch(url)), None
+    except Exception as exc:
+        return url, [], str(exc)
+
+
 def collect(start_url: str = BASE, max_pages: int = 5000) -> list[str]:
-    """Return raw proxy URIs; common pipeline applies all global constraints."""
     start_html = fetch(start_url)
     pages = discover_server_urls(start_html, max_pages, start_url)
+
+    workers = int(os.environ.get("V2NODES_WORKERS", "100"))
+    workers = max(1, workers)
+
     nodes: list[str] = []
     seen: set[str] = set()
 
-    # Match the standalone collector's concurrent page-fetch phase while keeping
-    # workers out of the public CLI/config surface. The common pool still owns
-    # node validation policy and ports.
-    with ThreadPoolExecutor(max_workers=250) as executor:
-        futures = {executor.submit(fetch, url): url for url in pages}
-        for future in as_completed(futures):
-            url = futures[future]
-            try:
-                found = extract_uris(future.result())
-            except Exception as exc:
-                print(f"WARN v2nodes {url}: {exc}")
+    with ThreadPoolExecutor(max_workers=workers) as pool:
+        futures = [pool.submit(process_page, url) for url in pages]
+
+        for completed, future in enumerate(as_completed(futures), 1):
+            url, found, error = future.result()
+            if error:
+                print(f"[{completed}/{len(pages)}] ERROR {url}: {error}")
                 continue
+
+            new = 0
             for uri in found:
                 if uri not in seen:
                     seen.add(uri)
                     nodes.append(uri)
+                    new += 1
+
+            print(f"[{completed}/{len(pages)}] {new} new node(s) <- {url}")
+
+    print(f"[+] Discovered {len(pages)} server pages")
+    print(f"[+] Unique nodes: {len(nodes)}")
     return nodes
