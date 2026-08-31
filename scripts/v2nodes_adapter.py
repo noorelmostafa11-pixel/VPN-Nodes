@@ -8,6 +8,8 @@ the common pipeline.
 from __future__ import annotations
 
 import re
+import threading
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from urllib.parse import urljoin
 
 import requests
@@ -15,14 +17,27 @@ from bs4 import BeautifulSoup
 
 BASE = "https://www.v2nodes.com/"
 UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/151 Safari/537.36"
-URI_RE = re.compile(r'(?P<uri>(?:vless|vmess|trojan|ss|ssconf)://[^\s<>"\'`]+)', re.IGNORECASE)
+URI_RE = re.compile(r'(?P<uri>(?:vless|vmess|trojan|ss)://[^\s<>"\'`]+)', re.IGNORECASE)
+thread_local = threading.local()
 
 
-def fetch(url: str, session: requests.Session, timeout: int = 20, attempts: int = 3) -> str:
+def get_session() -> requests.Session:
+    session = getattr(thread_local, "session", None)
+    if session is None:
+        session = requests.Session()
+        session.headers.update({"User-Agent": UA, "Accept": "text/html,application/xhtml+xml"})
+        adapter = requests.adapters.HTTPAdapter(pool_connections=8, pool_maxsize=8, max_retries=1)
+        session.mount("http://", adapter)
+        session.mount("https://", adapter)
+        thread_local.session = session
+    return session
+
+
+def fetch(url: str, timeout: int = 20, attempts: int = 3) -> str:
     last_error = None
     for attempt in range(1, attempts + 1):
         try:
-            r = session.get(url, timeout=timeout, headers={"Referer": BASE})
+            r = get_session().get(url, timeout=timeout, headers={"Referer": BASE})
             r.raise_for_status()
             return r.text
         except Exception as exc:
@@ -33,7 +48,7 @@ def fetch(url: str, session: requests.Session, timeout: int = 20, attempts: int 
     raise last_error
 
 
-def discover_server_urls(html: str, limit: int, start_url: str, session: requests.Session) -> list[str]:
+def discover_server_urls(html: str, limit: int, start_url: str) -> list[str]:
     seen_servers: set[str] = set()
     servers: list[str] = []
     listings: list[str] = [start_url]
@@ -72,7 +87,7 @@ def discover_server_urls(html: str, limit: int, start_url: str, session: request
         if listing_url == start_url:
             continue
         try:
-            page_html = fetch(listing_url, session)
+            page_html = fetch(listing_url)
         except Exception:
             continue
         scan(page_html, listing_url)
@@ -96,20 +111,24 @@ def extract_uris(html: str) -> list[str]:
 
 def collect(start_url: str = BASE, max_pages: int = 5000) -> list[str]:
     """Return raw proxy URIs; common pipeline applies all global constraints."""
-    session = requests.Session()
-    session.headers.update({"User-Agent": UA, "Accept": "text/html,application/xhtml+xml"})
-    start_html = fetch(start_url, session)
-    pages = discover_server_urls(start_html, max_pages, start_url, session)
+    start_html = fetch(start_url)
+    pages = discover_server_urls(start_html, max_pages, start_url)
     nodes: list[str] = []
     seen: set[str] = set()
-    for url in pages:
-        try:
-            found = extract_uris(fetch(url, session))
-        except Exception as exc:
-            print(f"WARN v2nodes {url}: {exc}")
-            continue
-        for uri in found:
-            if uri not in seen:
-                seen.add(uri)
-                nodes.append(uri)
+
+    # Do not define a v2nodes worker policy. Python chooses the executor default;
+    # the repository's common node-testing pool remains the owner of test workers.
+    with ThreadPoolExecutor() as executor:
+        futures = {executor.submit(fetch, url): url for url in pages}
+        for future in as_completed(futures):
+            url = futures[future]
+            try:
+                found = extract_uris(future.result())
+            except Exception as exc:
+                print(f"WARN v2nodes {url}: {exc}")
+                continue
+            for uri in found:
+                if uri not in seen:
+                    seen.add(uri)
+                    nodes.append(uri)
     return nodes
