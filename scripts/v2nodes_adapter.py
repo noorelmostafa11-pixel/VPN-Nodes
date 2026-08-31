@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
-import os
+import argparse
 import re
+import sys
 import threading
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from pathlib import Path
 from urllib.parse import urljoin
 
 import requests
@@ -108,22 +110,18 @@ def discover_server_urls(html: str, limit: int, start_url: str) -> list[str]:
                 continue
 
         page_soup = BeautifulSoup(page_html, "html.parser")
-        for a in page_soup.select('a[href*="/servers/"]'):
-            href = a.get("href")
-            if href:
-                add_server(href)
-                if len(servers) >= limit:
-                    break
-
         for a in page_soup.select("a[href]"):
             href = a.get("href")
             if not href:
                 continue
             if "/servers/" in href:
-                continue
-            url = urljoin(listing_url, href)
-            if url.startswith(BASE):
-                add_listing(href)
+                add_server(href)
+                if len(servers) >= limit:
+                    break
+            else:
+                url = urljoin(listing_url, href)
+                if url.startswith(BASE):
+                    add_listing(href)
 
     return servers[:limit]
 
@@ -153,21 +151,31 @@ def process_page(url: str) -> tuple[str, list[str], str | None]:
         return url, [], str(exc)
 
 
-def collect(start_url: str = BASE, max_pages: int = 5000) -> list[str]:
-    start_html = fetch(start_url)
-    pages = discover_server_urls(start_html, max_pages, start_url)
+def main() -> int:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--max-pages", type=int, default=5000)
+    parser.add_argument("--output", default="v2nodes_nodes.txt")
+    args = parser.parse_args()
 
-    workers = int(os.environ.get("V2NODES_WORKERS", "100"))
-    workers = max(1, workers)
+    print(f"[+] Fetching {BASE}")
+    try:
+        start_html = fetch(BASE)
+    except Exception as exc:
+        print(f"[!] Start page failed: {exc}", file=sys.stderr)
+        return 1
+
+    pages = discover_server_urls(start_html, args.max_pages, BASE)
+    print(f"[+] Discovered {len(pages)} server pages")
 
     nodes: list[str] = []
     seen: set[str] = set()
 
-    with ThreadPoolExecutor(max_workers=workers) as pool:
+    with ThreadPoolExecutor() as pool:
         futures = [pool.submit(process_page, url) for url in pages]
 
         for completed, future in enumerate(as_completed(futures), 1):
             url, found, error = future.result()
+
             if error:
                 print(f"[{completed}/{len(pages)}] ERROR {url}: {error}")
                 continue
@@ -181,6 +189,21 @@ def collect(start_url: str = BASE, max_pages: int = 5000) -> list[str]:
 
             print(f"[{completed}/{len(pages)}] {new} new node(s) <- {url}")
 
-    print(f"[+] Discovered {len(pages)} server pages")
-    print(f"[+] Unique nodes: {len(nodes)}")
-    return nodes
+    output = Path(args.output)
+    output.write_text(
+        "\n".join(nodes) + ("\n" if nodes else ""),
+        encoding="utf-8",
+    )
+
+    print(f"\n[+] Unique nodes: {len(nodes)}")
+    print(f"[+] Saved to: {output.resolve()}")
+
+    if not nodes:
+        print("[!] No proxy URI found in the pages.")
+        return 2
+
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
