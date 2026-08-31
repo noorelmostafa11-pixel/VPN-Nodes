@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Collect Telegram sources, then hand every node to the common TCP stage."""
+"""Collect special web/Telegram sources, then hand every node to common stages."""
 from __future__ import annotations
 
 import html
@@ -11,6 +11,7 @@ from pathlib import Path
 
 import build_tcp_pool as pool
 import update_catalog as catalog
+import v2nodes_adapter
 
 ROOT = Path(__file__).resolve().parents[1]
 TELEGRAM_CATALOG = ROOT / "sources" / "telegram_channels.json"
@@ -22,8 +23,6 @@ CHANNEL_WORKERS = 16
 URI_RE = re.compile(r"(?:vless|vmess|trojan|ss)://[^\s\"'<>`]+", re.IGNORECASE)
 
 
-# Read every byte from upstream text feeds. The previous 2 MB cap could silently
-# truncate large sources and lose valid nodes before dedup/TCP/Xray evaluation.
 def fetch_full(url: str) -> bytes:
     response = catalog.session.get(url, timeout=(catalog.CONNECT_TIMEOUT, catalog.READ_TIMEOUT), stream=True)
     response.raise_for_status()
@@ -34,12 +33,9 @@ def fetch_full(url: str) -> bytes:
     return bytes(data)
 
 
-# All non-Telegram sources collected by build_tcp_pool use catalog.fetch().
-# Replace the capped implementation for this production collection path only.
 catalog.fetch = fetch_full
 
 
-# Country is intentionally untouched here. It is resolved only after Xray marks a node healthy.
 def _telegram_page(channel: str, before: int | None = None) -> str:
     url = f"https://t.me/s/{channel}"
     if before:
@@ -138,10 +134,25 @@ def collect_telegram_catalog(item: dict) -> list[dict]:
     return rows
 
 
+def collect_v2nodes(item: dict) -> list[dict]:
+    """Collect v2nodes raw URIs, then normalize through the common parser."""
+    start_url = str(item.get("url") or v2nodes_adapter.BASE)
+    max_pages = max(1, min(int(item.get("max_pages", 5000)), 5000))
+    uris = v2nodes_adapter.collect(start_url=start_url, max_pages=max_pages)
+    if not uris:
+        raise RuntimeError("v2nodes returned no proxy URIs")
+    rows = catalog.parse_lines("\n".join(uris), str(item.get("name") or "v2nodes"))
+    print(f"INFO v2nodes pages_limit={max_pages} raw_uris={len(uris)} parsed={len(rows)}")
+    return rows
+
+
 _original_collect_source = catalog.collect_source
 
 
 def collect_source(item: dict) -> list[dict]:
+    # sources.json is the public-source catalog; Telegram keeps its own catalog.
+    if item.get("format") == "v2nodes":
+        return collect_v2nodes(item)
     if item.get("format") == "telegram_html":
         return collect_telegram(item)
     if item.get("format") == "telegram_catalog":
