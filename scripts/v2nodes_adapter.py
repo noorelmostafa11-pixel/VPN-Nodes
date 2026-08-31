@@ -116,9 +116,10 @@ def collect(start_url: str = BASE, max_pages: int = 5000) -> list[str]:
     nodes: list[str] = []
     seen: set[str] = set()
 
-    # Do not define a v2nodes worker policy. Python chooses the executor default;
-    # the repository's common node-testing pool remains the owner of test workers.
-    with ThreadPoolExecutor() as executor:
+    # Match the standalone collector's concurrent page-fetch phase while keeping
+    # workers out of the public CLI/config surface. The common pool still owns
+    # node validation policy and ports.
+    with ThreadPoolExecutor(max_workers=250) as executor:
         futures = {executor.submit(fetch, url): url for url in pages}
         for future in as_completed(futures):
             url = futures[future]
