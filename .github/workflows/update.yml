@@ -54,6 +54,8 @@ jobs:
         run: python scripts/build_telegram_candidates.py
 
       - name: Build candidates from v2nodes.com
+        env:
+          V2NODES_WORKERS: 250
         run: python scripts/build_v2nodes_candidates.py
 
       - name: Merge candidates and run common TCP pool
