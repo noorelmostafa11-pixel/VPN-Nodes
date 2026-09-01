@@ -1,4 +1,4 @@
-ه#!/usr/bin/env python3
+#!/usr/bin/env python3
 from __future__ import annotations
 
 import argparse
@@ -80,7 +80,6 @@ def discover_server_urls(html: str, limit: int, start_url: str) -> list[str]:
             seen_listings.add(url)
             listings.append(url)
 
-    # Start page: collect server links and same-site listing links.
     soup = BeautifulSoup(html, "html.parser")
     for a in soup.select("a[href]"):
         href = a.get("href")
@@ -89,14 +88,12 @@ def discover_server_urls(html: str, limit: int, start_url: str) -> list[str]:
         if "/servers/" in href:
             add_server(href)
         else:
-            # Keep broad same-site discovery, but do not chase arbitrary external links.
             url = urljoin(start_url, href)
             if url.startswith(BASE):
                 add_listing(href)
         if len(servers) >= limit:
             return servers[:limit]
 
-    # Follow same-site listing pages until there are no new ones or we hit the safety limit.
     index = 0
     while index < len(listings) and len(servers) < limit:
         listing_url = listings[index]
