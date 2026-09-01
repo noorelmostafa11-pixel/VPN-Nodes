@@ -5,6 +5,7 @@ import argparse
 import re
 import sys
 import threading
+import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 from urllib.parse import urljoin
@@ -32,9 +33,9 @@ def get_session() -> requests.Session:
             "Accept": "text/html,application/xhtml+xml",
         })
         adapter = requests.adapters.HTTPAdapter(
-            pool_connections=8,
-            pool_maxsize=8,
-            max_retries=1,
+            pool_connections=32,
+            pool_maxsize=32,
+            max_retries=0,
         )
         session.mount("http://", adapter)
         session.mount("https://", adapter)
@@ -42,22 +43,26 @@ def get_session() -> requests.Session:
     return session
 
 
-def fetch(url: str, timeout: int = 20, attempts: int = 3) -> str:
+def fetch(url: str, attempts: int = 3) -> str:
     last_error = None
+
     for attempt in range(1, attempts + 1):
         try:
             r = get_session().get(
                 url,
-                timeout=timeout,
+                timeout=(3, 10),
                 headers={"Referer": BASE},
             )
             r.raise_for_status()
             return r.text
-        except Exception as exc:
+        except requests.exceptions.Timeout as exc:
             last_error = exc
-            if attempt < attempts:
-                import time
-                time.sleep(0.5 * attempt)
+        except requests.exceptions.RequestException as exc:
+            last_error = exc
+
+        if attempt < attempts:
+            time.sleep(0.3 * attempt)
+
     raise last_error
 
 
