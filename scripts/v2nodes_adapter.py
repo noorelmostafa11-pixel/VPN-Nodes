@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+ه#!/usr/bin/env python3
 from __future__ import annotations
 
 import argparse
@@ -159,7 +159,7 @@ def collect(start_url: str = BASE, max_pages: int = 5000) -> list[str]:
     nodes: list[str] = []
     seen: set[str] = set()
 
-    with ThreadPoolExecutor(max_workers=200) as pool:
+    with ThreadPoolExecutor(max_workers=150) as pool:
         futures = [pool.submit(process_page, url) for url in pages]
 
         for completed, future in enumerate(as_completed(futures), 1):
