@@ -46,7 +46,7 @@ jobs:
           python tests/test_country_resolver.py
           python tests/test_transport_handshake.py
           python tests/test_node_identity.py
-          python -m py_compile scripts/node_identity.py scripts/verify_country_feeds.py scripts/transport_handshake.py scripts/build_tcp_pool.py scripts/merge_and_build_tcp_pool.py scripts/sign_catalog.py
+          python -m py_compile scripts/node_identity.py scripts/verify_country_feeds.py scripts/transport_handshake.py scripts/build_tcp_pool.py scripts/merge_and_build_tcp_pool.py scripts/build_country_shards.py scripts/sign_catalog.py
 
       - name: Build candidates from sources.json
         env:
@@ -135,6 +135,11 @@ jobs:
 
       - name: Reject duplicate nodes in country feeds
         run: python scripts/verify_country_feeds.py
+
+      - name: Build on-demand country shards
+        env:
+          COUNTRY_SHARD_SIZE: 25
+        run: python scripts/build_country_shards.py
 
       - name: Build and sign catalog manifest
         env:
