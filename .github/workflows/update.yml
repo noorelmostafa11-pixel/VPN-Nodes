@@ -77,9 +77,11 @@ jobs:
               raise SystemExit(f"unexpected app pool mode: {data.get('mode')}")
           if data.get('final_runtime_test') != 'Android Xray + local HTTP health-check':
               raise SystemExit('unexpected final runtime test marker')
+          if data.get('active_directory_generated') is not False:
+              raise SystemExit('legacy output/active generation is unexpectedly enabled')
           print(
               f"OK app_pool published={data.get('published_total', 0)} "
-              f"active={data.get('published_active', 0)} "
+              f"countries={data.get('published_country_nodes', 0)} "
               f"backup={data.get('published_backup', 0)}"
           )
           PY
@@ -94,7 +96,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add output
+          git add -A output
           if git diff --cached --quiet; then
             echo "No catalog changes detected"
             exit 0
