@@ -15,7 +15,6 @@ import update_catalog as catalog
 ROOT = Path(__file__).resolve().parents[1]
 SOURCES = ROOT / "sources" / "sources.json"
 OUT = ROOT / "output" / "metadata" / "sources_candidates.json"
-OPENVPN_CANDIDATES = ROOT / "output" / "metadata" / "openvpn_candidates.json"
 SPECIAL_FORMATS = {"telegram_catalog", "telegram_html", "v2nodes"}
 
 
@@ -24,10 +23,6 @@ def main() -> int:
     rows: list[dict] = []
     health: list[dict] = []
     started_all = time.perf_counter()
-
-    # Never let a failed VPNGate fetch leave stale OpenVPN candidates from a
-    # previous checkout. parse_vpngate_csv() recreates this file on success.
-    OPENVPN_CANDIDATES.unlink(missing_ok=True)
 
     for item in cfg.get("sources", []):
         if item.get("format") in SPECIAL_FORMATS:
