@@ -70,12 +70,13 @@ def stop_openvpn(proc: subprocess.Popen, pidfile: Path | None) -> None:
 
 def test_candidate(item: dict, index: int, timeout: float, test_ip: str) -> dict:
     started = time.perf_counter()
+    country = str(item.get("country") or "UNKNOWN").strip().upper() or "UNKNOWN"
     result = {
         "index": index,
         "server": item.get("server", ""),
         "port": item.get("port"),
-        "country": item.get("country", "UNKNOWN"),
-        "country_short": item.get("country_short", "UNKNOWN"),
+        "country": country,
+        "country_short": str(item.get("country_short") or country).strip().upper() or country,
         "score": item.get("score"),
         "ping": item.get("ping"),
         "speed": item.get("speed"),
@@ -161,20 +162,59 @@ def test_candidate(item: dict, index: int, timeout: float, test_ip: str) -> dict
         shutil.rmtree(work, ignore_errors=True)
 
 
+def publish_results(results: list[dict], candidates_count: int, timeout: float) -> tuple[int, int]:
+    results.sort(key=lambda r: (r.get("latency_ms", 10**9) if r.get("latency_ms", -1) >= 0 else 10**9, r.get("index", 10**9)))
+    passed = [r for r in results if r["status"] == "PASS"]
+    failed = len(results) - len(passed)
+
+    verified_dir = OUT / "openvpn"
+    meta_dir = OUT / "metadata"
+    verified_dir.mkdir(parents=True, exist_ok=True)
+    meta_dir.mkdir(parents=True, exist_ok=True)
+    (verified_dir / "verified.json").write_text(json.dumps(results, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    (verified_dir / "verified.txt").write_text(
+        "\n".join(f"{r['server']}:{r['port']} # {r['country_short']}" for r in passed) + ("\n" if passed else ""),
+        encoding="utf-8",
+    )
+    summary = {
+        "schema": 1,
+        "generated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+        "protocol": "openvpn",
+        "candidates": candidates_count,
+        "pass": len(passed),
+        "failed": failed,
+        "workers": 1,
+        "timeout_s": timeout,
+        "allowed_ports": [80, 443],
+        "health_path": "VPNGate CSV -> OpenVPN client -> tunnel initialization -> routed HTTPS /generate_204 -> HTTP 204",
+        "test_host": TEST_HOST,
+        "results": results,
+    }
+    (meta_dir / "openvpn_health.json").write_text(json.dumps(summary, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    return len(passed), failed
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--timeout", type=float, default=DEFAULT_TIMEOUT)
     args = parser.parse_args()
+
+    payload = {"nodes": []}
+    if CANDIDATES.is_file():
+        payload = json.loads(CANDIDATES.read_text(encoding="utf-8"))
+    candidates = [x for x in payload.get("nodes", []) if int(x.get("port", 0)) in {80, 443}]
+
+    # Always refresh output/openvpn and openvpn_health.json. This prevents a
+    # run with zero/failing fresh candidates from leaving a multi-day stale
+    # verification snapshot in the repository.
+    if not candidates:
+        passed, failed = publish_results([], 0, args.timeout)
+        print("INFO vpngate_candidates=0")
+        print(f"INFO OPENVPN FINAL PASS={passed} FAILED={failed} TOTAL=0")
+        return 0
+
     if not shutil.which("openvpn"):
         raise SystemExit("openvpn is not installed")
-    if not CANDIDATES.is_file():
-        print("INFO vpngate_candidates=0 (no candidate file)")
-        return 0
-    payload = json.loads(CANDIDATES.read_text(encoding="utf-8"))
-    candidates = [x for x in payload.get("nodes", []) if int(x.get("port", 0)) in {80, 443}]
-    if not candidates:
-        print("INFO vpngate_candidates=0")
-        return 0
 
     test_ip = public_test_ip()
     print(f"INFO openvpn_candidates={len(candidates)} workers=1 timeout_s={args.timeout} test={TEST_HOST} test_ip={test_ip}")
@@ -184,31 +224,10 @@ def main() -> int:
         results.append(result)
         print(f"[{index}/{len(candidates)}] OpenVPN {result['server']}:{result['port']} {result['status']} {result['latency_ms']} ms | {result['detail']}", flush=True)
 
-    passed = [r for r in results if r["status"] == "PASS"]
-    results.sort(key=lambda r: (r.get("latency_ms", 10**9) if r.get("latency_ms", -1) >= 0 else 10**9, r.get("index", 10**9)))
-    verified_dir = OUT / "openvpn"
-    meta_dir = OUT / "metadata"
-    verified_dir.mkdir(parents=True, exist_ok=True)
-    meta_dir.mkdir(parents=True, exist_ok=True)
-    (verified_dir / "verified.json").write_text(json.dumps(results, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    (verified_dir / "verified.txt").write_text("\n".join(f"{r['server']}:{r['port']} # {r['country_short']}" for r in passed) + ("\n" if passed else ""), encoding="utf-8")
-    summary = {
-        "schema": 1,
-        "generated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
-        "protocol": "openvpn",
-        "candidates": len(candidates),
-        "pass": len(passed),
-        "failed": len(results) - len(passed),
-        "workers": 1,
-        "timeout_s": args.timeout,
-        "allowed_ports": [80, 443],
-        "health_path": "VPNGate CSV -> OpenVPN client -> tunnel initialization -> routed HTTPS /generate_204 -> HTTP 204",
-        "test_host": TEST_HOST,
-        "results": results,
-    }
-    (meta_dir / "openvpn_health.json").write_text(json.dumps(summary, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    print(f"INFO OPENVPN FINAL PASS={len(passed)} FAILED={len(results)-len(passed)} TOTAL={len(results)}")
+    passed, failed = publish_results(results, len(candidates), args.timeout)
+    print(f"INFO OPENVPN FINAL PASS={passed} FAILED={failed} TOTAL={len(results)}")
     return 0
+
 
 if __name__ == "__main__":
     raise SystemExit(main())
