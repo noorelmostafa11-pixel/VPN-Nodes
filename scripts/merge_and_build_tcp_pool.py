@@ -81,7 +81,7 @@ def main() -> int:
         "source_failures": sum(1 for source in source_health if not source.get("ok")),
         "sources": source_health,
         "nodes": tcp_checked,
-        "country_order_policy": "explicit_country_metadata_first; geoip_second; latency_ascending_within_tier",
+        "country_order_policy": "latency_ascending_only",
     }
     (META / "tcp_reachable.json").write_text(
         json.dumps(tcp_payload, ensure_ascii=False, indent=2) + "\n",
@@ -108,7 +108,7 @@ def main() -> int:
     )
     print(
         f"INFO published_tcp_only={meta.get('published_total', 0)} "
-        f"order=tcp_latency_ascending android_final_xray=true"
+        f"order=latency_ascending_only android_final_xray=true"
     )
     return 0
 
