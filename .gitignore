@@ -1,3 +1,14 @@
 __pycache__/
 *.pyc
 .venv/
+
+# Runtime-only catalog intermediates. These are generated and consumed inside the
+# same workflow job; they should not inflate Git history.
+output/metadata/sources_candidates.json
+output/metadata/telegram_candidates.json
+output/metadata/v2nodes_candidates.json
+output/metadata/tcp_reachable.json
+output/metadata/merged_pool.json
+
+# Legacy duplicate of output/countries; no longer published.
+output/active/
