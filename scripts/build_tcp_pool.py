@@ -65,12 +65,15 @@ async def run_tcp_checks(rows: list[dict]) -> list[dict]:
 
 
 def publish_app_pool(rows: list[dict], source_health: list[dict]) -> dict:
-    """Publish every TCP-alive node, ordered by measured TCP latency.
+    """Publish every TCP-alive node, globally ordered by TCP latency per country.
 
-    Explicit country metadata stays ahead of GeoIP/fallback resolution as in the
-    known fast catalog. Inside each country-resolution tier, latency_ms is strictly
-    ascending. No TLS, WebSocket, HTTP/2 or protocol handshake is performed here;
-    Xray on Android is the final compatibility and Internet-health authority.
+    Country/source discovery method never affects ranking. Once a node is assigned
+    to a country, every node in that country's feed competes in one common list
+    sorted by latency_ms ascending. Protocol/source/URI are deterministic tie-breaks
+    only when two measured TCP latencies are equal.
+
+    No TLS, WebSocket, HTTP/2 or protocol handshake is performed here; Xray on
+    Android is the final compatibility and Internet-health authority.
     """
     import country_resolver
     import pycountry
@@ -113,8 +116,9 @@ def publish_app_pool(rows: list[dict], source_health: list[dict]) -> dict:
     published_total = 0
     countries_meta: list[dict] = []
     for country, country_rows in sorted(grouped.items()):
+        # Source and country-resolution method MUST NOT influence ranking.
+        # Every node assigned to this country is ordered only by measured TCP ms.
         country_rows.sort(key=lambda item: (
-            0 if str(item.get("country_resolution") or "").lower() == "metadata_explicit" else 1,
             float(item.get("latency_ms", 10**9)),
             str(item.get("protocol", "")),
             str(item.get("source", "")),
@@ -164,8 +168,8 @@ def publish_app_pool(rows: list[dict], source_health: list[dict]) -> dict:
         "per_country_cap": None,
         "active_per_country": None,
         "backup_per_country": None,
-        "selection_policy": "all_tcp_alive_nodes_with_resolved_country; explicit_country_metadata_first_then_geoip_then_latency",
-        "country_order_policy": "explicit_country_metadata_first; geoip_second; latency_ascending_within_tier",
+        "selection_policy": "all_tcp_alive_nodes_with_resolved_country; latency_ascending_only",
+        "country_order_policy": "latency_ascending_only",
         "country_feed_directory": "output/countries",
         "active_directory_generated": False,
         "alive_with_country": sum(len(v) for v in grouped.values()),
@@ -185,7 +189,7 @@ def publish_app_pool(rows: list[dict], source_health: list[dict]) -> dict:
     print(
         f"INFO APP_POOL tcp_only=true alive_with_country={app_meta['alive_with_country']} "
         f"countries={len(countries_meta)} nodes={published_total} "
-        f"order=tcp_latency_ascending"
+        f"order=latency_ascending_only"
     )
     return app_meta
 
@@ -264,7 +268,7 @@ def main() -> None:
         "source_failures": sum(1 for s in source_health if not s.get("ok")),
         "sources": source_health,
         "nodes": tcp_checked,
-        "country_order_policy": "explicit_country_metadata_first; geoip_second; latency_ascending_within_tier",
+        "country_order_policy": "latency_ascending_only",
     }
     (meta / "tcp_reachable.json").write_text(
         json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
