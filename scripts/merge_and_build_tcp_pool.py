@@ -45,6 +45,27 @@ def main() -> int:
     checked = asyncio.run(common.run_tcp_checks(rows))
     print(f"INFO tcp_reachable={len(checked)} tcp_dead={len(rows) - len(checked)}")
 
+    # Runtime-only handoff for the owned-Xray pilot. This file is intentionally
+    # gitignored and does not alter the existing publication policy.
+    META.mkdir(parents=True, exist_ok=True)
+    tcp_payload = {
+        "schema": 1,
+        "generated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+        "total_parsed": len(all_rows),
+        "xray_candidates": len(rows),
+        "tcp_reachable": len(checked),
+        "tcp_workers": common.TCP_WORKERS,
+        "allowed_ports": sorted(catalog.ALLOWED_PORTS),
+        "source_failures": sum(1 for source in source_health if not source.get("ok")),
+        "sources": source_health,
+        "nodes": checked,
+    }
+    (META / "tcp_reachable.json").write_text(
+        json.dumps(tcp_payload, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
+    print(f"INFO runtime_tcp_pool={len(checked)} path=output/metadata/tcp_reachable.json")
+
     meta = common.publish_app_pool(checked, source_health)
     merged_payload = {
         "schema": 1,
