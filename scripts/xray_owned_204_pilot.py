@@ -392,6 +392,7 @@ def main() -> int:
         for local_index, item in enumerate(source_batch):
             candidate = {
                 **item,
+                "index": local_index,
                 "port": BASE_PORT + local_index,
             }
             try:
