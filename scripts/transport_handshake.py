@@ -1,15 +1,22 @@
 #!/usr/bin/env python3
 """Fast full-pool transport validation without launching a proxy core.
 
-Every TCP-reachable node is classified and syntax-validated.  When the advertised
+Every TCP-reachable node is classified and syntax-validated. When the advertised
 transport can be tested independently of protocol credentials, this module performs
 that handshake directly against the server:
 
 * TLS: real TLS ClientHello/SNI handshake (certificate verification intentionally off).
-* WebSocket / HTTPUpgrade: real HTTP Upgrade request; HTTP 101 is required.
+* WebSocket: Xray-like HTTP/1.1 WebSocket upgrade request.
+* HTTPUpgrade: Xray-like fake WebSocket upgrade request, without WebSocket-only headers.
 * gRPC / HTTP/2: TLS+ALPN h2 (when TLS is advertised) plus HTTP/2 preface/SETTINGS.
 * REALITY, Shadowsocks and plain raw TCP cannot be authenticated without a protocol
   core, so they retain the already-proven TCP liveness after strict URI validation.
+
+WebSocket and HTTPUpgrade failures are intentionally non-destructive. A generic
+Python/OpenSSL probe cannot reproduce Xray's uTLS/browser fingerprint exactly and
+CDNs/WAFs can reject the probe while Xray still works. HTTP 101 upgrades are marked
+verified and ranked first; failed WS/HTTPUpgrade probes remain publishable at a lower
+health score for the Android app's final Xray/runtime check.
 
 A failed active handshake is retried once to reduce transient false negatives.
 """
@@ -17,12 +24,13 @@ from __future__ import annotations
 
 import asyncio
 import base64
+import html
 import json
 import os
 import ssl
 import time
 import urllib.parse
-from collections import Counter, defaultdict
+from collections import Counter
 from typing import Any
 
 HANDSHAKE_WORKERS = int(os.environ.get("TRANSPORT_HANDSHAKE_WORKERS", "256"))
@@ -30,6 +38,22 @@ HANDSHAKE_TIMEOUT = float(os.environ.get("TRANSPORT_HANDSHAKE_TIMEOUT", "2.5"))
 HANDSHAKE_ROUNDS = 2
 
 ACTIVE_MODES = {"tls", "websocket", "httpupgrade", "http2"}
+SOFT_FAIL_MODES = {"websocket", "httpupgrade"}
+
+# Xray currently applies browser-like headers to WS/HTTPUpgrade requests. We mirror
+# the stable semantics that matter to CDNs; the TLS ClientHello itself still cannot
+# reproduce Xray/uTLS exactly, which is why WS/HTTPUpgrade failure is non-gating.
+_XRAY_WS_HEADERS = (
+    ("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+                   "(KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"),
+    ("Accept", "*/*"),
+    ("Accept-Language", "en-US,en;q=0.9"),
+    ("Cache-Control", "no-cache"),
+    ("Pragma", "no-cache"),
+    ("Sec-Fetch-Dest", "empty"),
+    ("Sec-Fetch-Mode", "websocket"),
+    ("Sec-Fetch-Site", "same-origin"),
+)
 
 
 def _b64d(value: str) -> bytes:
@@ -49,8 +73,40 @@ def _split_host(value: str) -> str:
     return (value or "").split(",", 1)[0].strip()
 
 
+def _clean_uri(uri: str) -> str:
+    # Telegram/web scrapers sometimes preserve HTML entities inside query strings.
+    # "&amp;security=tls" must become "&security=tls" before parse_qs().
+    return html.unescape(str(uri or "").strip())
+
+
+def _truthy(value: str) -> bool:
+    return str(value or "").strip().lower() in {"1", "true", "yes", "on", "ws", "websocket"}
+
+
+def _normal_network(value: str) -> str:
+    value = str(value or "").strip().lower()
+    return {
+        "": "tcp",
+        "raw": "tcp",
+        "websocket": "ws",
+        "http-upgrade": "httpupgrade",
+    }.get(value, value)
+
+
+def _normal_security(value: str, scheme: str, port: int) -> str:
+    value = str(value or "").strip().lower()
+    if value in {"1", "true"}:
+        value = "tls"
+    if scheme == "trojan" and value in {"", "none", "false", "0"}:
+        return "tls"
+    if value in {"", "none", "false", "0"}:
+        return "none"
+    return value
+
+
 def parse_transport(uri: str) -> dict[str, Any]:
     """Parse only the fields needed for independent transport validation."""
+    uri = _clean_uri(uri)
     scheme = urllib.parse.urlsplit(uri).scheme.lower()
 
     if scheme == "vmess":
@@ -61,7 +117,7 @@ def parse_transport(uri: str) -> dict[str, Any]:
         uuid = str(obj.get("id") or "").strip()
         if not server or port <= 0 or len(uuid) < 10:
             raise ValueError("invalid-vmess-identity")
-        network = str(obj.get("net") or "tcp").strip().lower()
+        network = _normal_network(str(obj.get("net") or obj.get("type") or "tcp"))
         tls_enabled = str(obj.get("tls") or "").strip().lower() not in ("", "none", "false", "0")
         host = _split_host(str(obj.get("host") or ""))
         sni = str(obj.get("sni") or host or server).strip()
@@ -77,41 +133,30 @@ def parse_transport(uri: str) -> dict[str, Any]:
             "service_name": str(obj.get("serviceName") or obj.get("service_name") or ""),
         }
 
-    parsed = urllib.parse.urlsplit(uri)
-    query = urllib.parse.parse_qs(parsed.query, keep_blank_values=True)
-    server = parsed.hostname or ""
-    port = parsed.port or (443 if scheme in {"vless", "trojan"} else 0)
-    if not server or port <= 0:
-        raise ValueError("invalid-endpoint")
-
-    if scheme == "vless":
-        identity = urllib.parse.unquote(parsed.username or "").strip()
-        if len(identity) < 10:
-            raise ValueError("invalid-vless-uuid")
-        security = _first(query, "security", default="none").lower()
-        if security == "reality":
-            pbk = _first(query, "pbk", "publicKey")
-            if len(pbk.strip()) < 20:
-                raise ValueError("invalid-reality-public-key")
-    elif scheme == "trojan":
-        if not urllib.parse.unquote(parsed.username or "").strip():
-            raise ValueError("invalid-trojan-password")
-        security = _first(query, "security", default="tls").lower()
-        if security in ("", "none"):
-            # Trojan normally requires TLS. Respect explicit REALITY/TLS, otherwise
-            # keep the conservative protocol default used by the Android core.
-            security = "tls"
-    elif scheme == "ss":
+    if scheme == "ss":
         raw = uri.split("ss://", 1)[1].split("#", 1)[0]
-        if "@" in raw:
-            userinfo = raw.rsplit("@", 1)[0]
+        raw_no_query = raw.split("?", 1)[0]
+        if "@" in raw_no_query:
+            userinfo, hp = raw_no_query.rsplit("@", 1)
             try:
-                userinfo = _b64d(userinfo).decode("utf-8")
+                decoded_user = _b64d(userinfo).decode("utf-8")
+                if ":" in decoded_user:
+                    userinfo = decoded_user
+                else:
+                    userinfo = urllib.parse.unquote(userinfo)
             except Exception:
                 userinfo = urllib.parse.unquote(userinfo)
         else:
-            decoded = _b64d(raw).decode("utf-8")
-            userinfo = decoded.rsplit("@", 1)[0]
+            decoded = _b64d(raw_no_query).decode("utf-8")
+            if "@" not in decoded:
+                raise ValueError("invalid-shadowsocks-endpoint")
+            userinfo, hp = decoded.rsplit("@", 1)
+
+        hp_parsed = urllib.parse.urlsplit("//" + hp)
+        server = hp_parsed.hostname or ""
+        port = hp_parsed.port or 0
+        if not server or port <= 0:
+            raise ValueError("invalid-shadowsocks-endpoint")
         if ":" not in userinfo:
             raise ValueError("invalid-shadowsocks-credentials")
         method, password = userinfo.split(":", 1)
@@ -128,26 +173,61 @@ def parse_transport(uri: str) -> dict[str, Any]:
             "path": "/",
             "service_name": "",
         }
+
+    parsed = urllib.parse.urlsplit(uri)
+    query = urllib.parse.parse_qs(parsed.query, keep_blank_values=True)
+    server = parsed.hostname or ""
+    port = parsed.port or (443 if scheme in {"vless", "trojan"} else 0)
+    if not server or port <= 0:
+        raise ValueError("invalid-endpoint")
+
+    security_value = _first(query, "security", "tls", default="")
+    security = _normal_security(security_value, scheme, port)
+
+    if scheme == "vless":
+        identity = urllib.parse.unquote(parsed.username or "").strip()
+        if len(identity) < 10:
+            raise ValueError("invalid-vless-uuid")
+        pbk = _first(query, "pbk", "publicKey")
+        # Public-key/short-id fields are Reality-specific. Some public share links
+        # incorrectly label them as security=tls; infer Reality rather than running
+        # a destructive generic TLS probe against a Reality endpoint.
+        if pbk:
+            if len(pbk.strip()) < 20:
+                raise ValueError("invalid-reality-public-key")
+            security = "reality"
+        elif security == "reality":
+            raise ValueError("invalid-reality-public-key")
+    elif scheme == "trojan":
+        if not urllib.parse.unquote(parsed.username or "").strip():
+            raise ValueError("invalid-trojan-password")
     else:
         raise ValueError("unsupported-protocol")
 
-    host = _split_host(_first(query, "host"))
-    sni = _first(query, "sni", "serverName", default=host or server).strip()
+    host = _split_host(_first(query, "host", "wsHost", "ws-host"))
+    sni = _first(query, "sni", "serverName", "servername", default=host or server).strip()
+
+    network = _normal_network(_first(query, "type", "net", default="tcp"))
+    legacy_ws = _truthy(_first(query, "ws")) or bool(_first(query, "wspath"))
+    if network == "tcp" and legacy_ws:
+        network = "ws"
+
+    path = _first(query, "path", "wspath", default="/") or "/"
     return {
         "scheme": scheme,
         "server": server,
         "port": port,
-        "network": _first(query, "type", default="tcp").lower(),
+        "network": network,
         "security": security,
         "sni": sni or server,
         "host": host,
-        "path": _first(query, "path", default="/") or "/",
-        "service_name": _first(query, "serviceName"),
+        "path": path,
+        "service_name": _first(query, "serviceName", "service_name"),
     }
 
 
 def classify_mode(node: dict[str, Any]) -> str:
-    network = str(node.get("network") or "tcp").lower()
+    network = _normal_network(str(node.get("network") or "tcp"))
     security = str(node.get("security") or "none").lower()
     scheme = str(node.get("scheme") or "").lower()
 
@@ -155,11 +235,11 @@ def classify_mode(node: dict[str, Any]) -> str:
         return "reality-tcp"
     if scheme == "ss":
         return "shadowsocks-tcp"
-    if network in {"ws", "websocket"}:
+    if network == "ws":
         return "websocket"
     if network in {"grpc", "http", "h2"}:
         return "http2"
-    if network in {"httpupgrade", "http-upgrade"}:
+    if network == "httpupgrade":
         return "httpupgrade"
     if security == "tls" or scheme == "trojan":
         return "tls"
@@ -203,33 +283,60 @@ async def _probe_tls(node: dict[str, Any]) -> tuple[bool, str]:
     return True, "tls-ok"
 
 
+def _request_target(path: str) -> str:
+    path = str(path or "/").strip() or "/"
+    if not path.startswith("/"):
+        path = "/" + path
+    # The path may contain Xray early-data query parameters (e.g. ?ed=2560).
+    # Preserve '%' to avoid double-encoding already escaped source paths.
+    return urllib.parse.quote(path, safe="/?&=:%+,-._~!$'()*;@%")
+
+
+def _upgrade_request(node: dict[str, Any], mode: str) -> bytes:
+    host = _split_host(str(node.get("host") or "")) or str(node.get("sni") or node["server"])
+    target = _request_target(str(node.get("path") or "/"))
+    lines = [
+        f"GET {target} HTTP/1.1",
+        f"Host: {host}",
+    ]
+    lines.extend(f"{key}: {value}" for key, value in _XRAY_WS_HEADERS)
+    lines.extend(("Connection: Upgrade", "Upgrade: websocket"))
+
+    if mode == "websocket":
+        # Standard WS requires these. Xray's HTTPUpgrade deliberately does not.
+        key = base64.b64encode(os.urandom(16)).decode("ascii")
+        lines.extend(("Sec-WebSocket-Version: 13", f"Sec-WebSocket-Key: {key}"))
+
+    return ("\r\n".join(lines) + "\r\n\r\n").encode("ascii", errors="ignore")
+
+
+def _parse_http_head(header: bytes) -> tuple[int, dict[str, str]]:
+    lines = header.decode("latin-1", errors="replace").split("\r\n")
+    parts = lines[0].split()
+    status = int(parts[1]) if len(parts) >= 2 and parts[1].isdigit() else 0
+    fields: dict[str, str] = {}
+    for line in lines[1:]:
+        if ":" not in line:
+            continue
+        key, value = line.split(":", 1)
+        fields[key.strip().lower()] = value.strip()
+    return status, fields
+
+
 async def _probe_upgrade(node: dict[str, Any], mode: str) -> tuple[bool, str]:
     use_tls = str(node.get("security") or "none").lower() == "tls" or node.get("scheme") == "trojan"
     reader, writer = await _open(node, use_tls, ["http/1.1"] if use_tls else None)
     try:
-        path = str(node.get("path") or "/")
-        if not path.startswith("/"):
-            path = "/" + path
-        host = _split_host(str(node.get("host") or "")) or str(node.get("sni") or node["server"])
-        key = base64.b64encode(os.urandom(16)).decode("ascii")
-        upgrade = "websocket"
-        request = (
-            f"GET {path} HTTP/1.1\r\n"
-            f"Host: {host}\r\n"
-            f"Connection: Upgrade\r\n"
-            f"Upgrade: {upgrade}\r\n"
-            f"Sec-WebSocket-Version: 13\r\n"
-            f"Sec-WebSocket-Key: {key}\r\n"
-            f"User-Agent: Mozilla/5.0\r\n\r\n"
-        ).encode("ascii", errors="ignore")
-        writer.write(request)
+        writer.write(_upgrade_request(node, mode))
         await writer.drain()
         header = await asyncio.wait_for(reader.readuntil(b"\r\n\r\n"), timeout=HANDSHAKE_TIMEOUT)
-        status_line = header.split(b"\r\n", 1)[0]
-        parts = status_line.split()
-        status = int(parts[1]) if len(parts) >= 2 and parts[1].isdigit() else 0
+        status, fields = _parse_http_head(header)
         if status == 101:
-            return True, f"{mode}-101"
+            connection = fields.get("connection", "").lower()
+            upgrade = fields.get("upgrade", "").lower()
+            if "upgrade" in connection and upgrade == "websocket":
+                return True, f"{mode}-101"
+            return False, f"{mode}-invalid-101"
         return False, f"{mode}-status-{status or 'none'}"
     finally:
         await _close(writer)
@@ -309,6 +416,7 @@ async def run_transport_checks(rows: list[dict]) -> tuple[list[dict], dict]:
     parse_failed = Counter()
     mode_counts = Counter()
     protocol_counts = Counter()
+    syntax_only_count = 0
 
     for index, row in enumerate(rows):
         uri = str(row.get("uri") or "").strip()
@@ -323,6 +431,7 @@ async def run_transport_checks(rows: list[dict]) -> tuple[list[dict], dict]:
         protocol_counts[protocol] += 1
         mode_counts[mode] += 1
         if mode not in ACTIVE_MODES:
+            syntax_only_count += 1
             accepted.append({
                 **row,
                 "handshake_mode": mode,
@@ -340,9 +449,13 @@ async def run_transport_checks(rows: list[dict]) -> tuple[list[dict], dict]:
     failures = Counter()
     passed_by_mode = Counter()
     failed_by_mode = Counter()
+    soft_failed_by_mode = Counter()
+    hard_failed_by_mode = Counter()
     passed_by_protocol = Counter()
     failed_by_protocol = Counter()
+    soft_publishable_by_protocol = Counter()
     retry_passed = 0
+    soft_publishable = 0
 
     for entry in active:
         index = entry["index"]
@@ -352,6 +465,7 @@ async def run_transport_checks(rows: list[dict]) -> tuple[list[dict], dict]:
             final = second_round.get(index, first)
             if final[0]:
                 retry_passed += 1
+
         ok, reason, latency = final
         if ok:
             passed_by_mode[entry["mode"]] += 1
@@ -363,42 +477,72 @@ async def run_transport_checks(rows: list[dict]) -> tuple[list[dict], dict]:
                 "handshake_latency_ms": latency,
                 "health_score": 100,
             })
+            continue
+
+        failures[reason] += 1
+        failed_by_mode[entry["mode"]] += 1
+        failed_by_protocol[entry["protocol"]] += 1
+
+        if entry["mode"] in SOFT_FAIL_MODES:
+            # Preserve TCP-live, syntax-valid WS/HTTPUpgrade nodes. Generic OpenSSL
+            # probes can be rejected by CDN/WAF/uTLS fingerprint policy even when
+            # the same config succeeds through Xray on Android.
+            soft_publishable += 1
+            soft_failed_by_mode[entry["mode"]] += 1
+            soft_publishable_by_protocol[entry["protocol"]] += 1
+            accepted.append({
+                **entry["row"],
+                "handshake_mode": entry["mode"],
+                "handshake_status": f"unverified-{reason}",
+                "handshake_latency_ms": latency,
+                "health_score": 50,
+            })
         else:
-            failures[reason] += 1
-            failed_by_mode[entry["mode"]] += 1
-            failed_by_protocol[entry["protocol"]] += 1
+            hard_failed_by_mode[entry["mode"]] += 1
 
     accepted.sort(key=lambda item: str(item.get("uri") or ""))
+    active_passed = sum(passed_by_mode.values())
+    active_failed = sum(failed_by_mode.values())
+    hard_rejected = len(rows) - len(accepted)
+
     stats = {
-        "schema": 1,
+        "schema": 2,
         "generated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
         "input_tcp_reachable": len(rows),
         "checked_total": len(rows),
         "active_handshake_checked": len(active),
-        "tcp_syntax_only": len(accepted) - sum(passed_by_mode.values()),
+        "tcp_syntax_only": syntax_only_count,
+        "active_handshake_verified": active_passed,
+        "active_handshake_failed": active_failed,
+        "soft_failed_publishable": soft_publishable,
+        "hard_rejected": hard_rejected,
         "passed_total": len(accepted),
-        "rejected_total": len(rows) - len(accepted),
+        "rejected_total": hard_rejected,
         "parse_rejected": sum(parse_failed.values()),
-        "active_handshake_passed": sum(passed_by_mode.values()),
-        "active_handshake_failed": sum(failed_by_mode.values()),
+        "active_handshake_passed": active_passed,
         "retry_passed": retry_passed,
         "workers": HANDSHAKE_WORKERS,
         "timeout_seconds": HANDSHAKE_TIMEOUT,
         "rounds": HANDSHAKE_ROUNDS,
+        "soft_fail_modes": sorted(SOFT_FAIL_MODES),
         "elapsed_seconds": round(time.perf_counter() - started, 2),
         "mode_counts": dict(sorted(mode_counts.items())),
         "passed_by_mode": dict(sorted(passed_by_mode.items())),
         "failed_by_mode": dict(sorted(failed_by_mode.items())),
+        "soft_failed_by_mode": dict(sorted(soft_failed_by_mode.items())),
+        "hard_failed_by_mode": dict(sorted(hard_failed_by_mode.items())),
         "protocol_counts": dict(sorted(protocol_counts.items())),
         "passed_by_protocol": dict(sorted(passed_by_protocol.items())),
         "failed_by_protocol": dict(sorted(failed_by_protocol.items())),
+        "soft_publishable_by_protocol": dict(sorted(soft_publishable_by_protocol.items())),
         "parse_failure_reasons": [{"reason": k, "count": v} for k, v in parse_failed.most_common(10)],
         "top_failure_reasons": [{"reason": k, "count": v} for k, v in failures.most_common(10)],
     }
     print(
         f"INFO TRANSPORT_HANDSHAKE checked={stats['checked_total']} "
         f"active={stats['active_handshake_checked']} syntax_only={stats['tcp_syntax_only']} "
-        f"passed={stats['passed_total']} rejected={stats['rejected_total']} "
+        f"verified={stats['active_handshake_verified']} soft_publishable={stats['soft_failed_publishable']} "
+        f"published={stats['passed_total']} hard_rejected={stats['hard_rejected']} "
         f"retry_passed={stats['retry_passed']} elapsed={stats['elapsed_seconds']}s"
     )
     return accepted, stats
