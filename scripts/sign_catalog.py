@@ -40,10 +40,18 @@ def included_files() -> list[Path]:
     handshake = META / "transport_handshake.json"
     if handshake.is_file():
         files.append(handshake)
-    files.extend(sorted((OUT / "countries").glob("*.txt")))
-    files.extend(sorted((OUT / "protocols").glob("*.txt")))
-    if not any(p.parent.name == "countries" for p in files):
+
+    country_files = sorted((OUT / "countries").glob("*.txt"))
+    shard_files = sorted((OUT / "country_shards").glob("*/*.txt"))
+    protocol_files = sorted((OUT / "protocols").glob("*.txt"))
+    if not country_files:
         raise SystemExit("No country feeds were generated")
+    if not shard_files:
+        raise SystemExit("No country shards were generated")
+
+    files.extend(country_files)
+    files.extend(shard_files)
+    files.extend(protocol_files)
     return files
 
 
@@ -53,7 +61,7 @@ def main() -> int:
     generated_at = str(app_meta.get("generated_at") or "")
     files = {path.relative_to(ROOT).as_posix(): digest(path) for path in included_files()}
     payload = {
-        "schema": 1,
+        "schema": 2,
         "algorithm": "ECDSA_P256_SHA256",
         "generated_at": generated_at,
         "files": dict(sorted(files.items())),
