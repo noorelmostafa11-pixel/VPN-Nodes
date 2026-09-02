@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Merge collectors, run TCP liveness, then full-pool transport validation."""
+"""Merge collectors, semantic-dedup, run TCP, then transport validation."""
 from __future__ import annotations
 
 import asyncio
@@ -8,6 +8,7 @@ import time
 from pathlib import Path
 
 import build_tcp_pool as common
+import node_identity
 import transport_handshake
 import update_catalog as catalog
 
@@ -39,10 +40,14 @@ def main() -> int:
     protocol_rows = [row for row in all_rows if str(row.get("protocol") or "").lower() != "openvpn"]
     unique: dict[str, dict] = {}
     for row in protocol_rows:
-        unique.setdefault(catalog.dedup_key(row["uri"]), row)
+        unique.setdefault(node_identity.dedup_key(row["uri"]), row)
     rows = list(unique.values())
+    semantic_dedup_removed = len(protocol_rows) - len(rows)
 
-    print(f"INFO merged={len(all_rows)} protocol_candidates={len(rows)}")
+    print(
+        f"INFO merged={len(all_rows)} protocol_rows={len(protocol_rows)} "
+        f"protocol_candidates={len(rows)} semantic_dedup_removed={semantic_dedup_removed}"
+    )
     tcp_checked = asyncio.run(common.run_tcp_checks(rows))
     print(f"INFO tcp_reachable={len(tcp_checked)} tcp_dead={len(rows) - len(tcp_checked)}")
 
@@ -50,10 +55,12 @@ def main() -> int:
     # the publication boundary: every TCP-reachable row is evaluated below.
     META.mkdir(parents=True, exist_ok=True)
     tcp_payload = {
-        "schema": 2,
+        "schema": 3,
         "generated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
         "total_parsed": len(all_rows),
+        "protocol_rows": len(protocol_rows),
         "protocol_candidates": len(rows),
+        "semantic_dedup_removed": semantic_dedup_removed,
         "tcp_reachable": len(tcp_checked),
         "tcp_workers": common.TCP_WORKERS,
         "allowed_ports": sorted(catalog.ALLOWED_PORTS),
@@ -79,10 +86,12 @@ def main() -> int:
 
     meta = common.publish_app_pool(validated, source_health, handshake_meta)
     merged_payload = {
-        "schema": 2,
+        "schema": 3,
         "generated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
         "total_parsed": len(all_rows),
+        "protocol_rows": len(protocol_rows),
         "protocol_candidates": len(rows),
+        "semantic_dedup_removed": semantic_dedup_removed,
         "tcp_reachable": len(tcp_checked),
         "transport_publishable": len(validated),
         "transport_rejected": len(tcp_checked) - len(validated),
