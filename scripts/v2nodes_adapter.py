@@ -2,9 +2,11 @@
 from __future__ import annotations
 
 import argparse
+import os
 import re
 import sys
 import threading
+import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 from urllib.parse import urljoin
@@ -23,6 +25,22 @@ URI_RE = re.compile(
 thread_local = threading.local()
 
 
+def env_int(name: str, default: int, minimum: int, maximum: int) -> int:
+    try:
+        value = int(os.environ.get(name, str(default)))
+    except ValueError:
+        value = default
+    return max(minimum, min(maximum, value))
+
+
+def env_float(name: str, default: float, minimum: float, maximum: float) -> float:
+    try:
+        value = float(os.environ.get(name, str(default)))
+    except ValueError:
+        value = default
+    return max(minimum, min(maximum, value))
+
+
 def get_session() -> requests.Session:
     session = getattr(thread_local, "session", None)
     if session is None:
@@ -31,10 +49,12 @@ def get_session() -> requests.Session:
             "User-Agent": UA,
             "Accept": "text/html,application/xhtml+xml",
         })
+        # Explicit retry/backoff below owns retry behavior. Keep urllib3 from
+        # silently multiplying requests when v2nodes is under load.
         adapter = requests.adapters.HTTPAdapter(
-            pool_connections=8,
-            pool_maxsize=8,
-            max_retries=1,
+            pool_connections=4,
+            pool_maxsize=4,
+            max_retries=0,
         )
         session.mount("http://", adapter)
         session.mount("https://", adapter)
@@ -42,9 +62,20 @@ def get_session() -> requests.Session:
     return session
 
 
-def fetch(url: str, timeout: int = 20, attempts: int = 3) -> str:
-    last_error = None
-    for attempt in range(1, attempts + 1):
+def is_retryable_error(exc: Exception) -> bool:
+    if isinstance(exc, (requests.Timeout, requests.ConnectionError)):
+        return True
+    if isinstance(exc, requests.HTTPError):
+        response = exc.response
+        status = response.status_code if response is not None else 0
+        return status == 429 or 500 <= status < 600
+    return False
+
+
+def fetch(url: str, timeout: float = 25, attempts: int = 3) -> str:
+    last_error: Exception | None = None
+    backoff = (1.0, 3.0, 6.0)
+    for attempt in range(1, max(1, attempts) + 1):
         try:
             r = get_session().get(
                 url,
@@ -55,9 +86,10 @@ def fetch(url: str, timeout: int = 20, attempts: int = 3) -> str:
             return r.text
         except Exception as exc:
             last_error = exc
-            if attempt < attempts:
-                import time
-                time.sleep(0.5 * attempt)
+            if attempt >= attempts or not is_retryable_error(exc):
+                break
+            time.sleep(backoff[min(attempt - 1, len(backoff) - 1)])
+    assert last_error is not None
     raise last_error
 
 
@@ -141,40 +173,79 @@ def extract_uris(html: str) -> list[str]:
     return result
 
 
-def process_page(url: str) -> tuple[str, list[str], str | None]:
+def process_page(url: str, timeout: float, attempts: int) -> tuple[str, list[str], Exception | None]:
     try:
-        return url, extract_uris(fetch(url)), None
+        return url, extract_uris(fetch(url, timeout=timeout, attempts=attempts)), None
     except Exception as exc:
-        return url, [], str(exc)
+        return url, [], exc
 
 
 def collect(start_url: str = BASE, max_pages: int = 5000) -> list[str]:
-    """Collect proxy URIs using the same discovery/fetch logic as the laptop scraper."""
-    start_html = fetch(start_url)
+    """Collect proxy URIs while retrying transient v2nodes failures gently."""
+    primary_workers = env_int("V2NODES_WORKERS", 80, 1, 150)
+    retry_workers = env_int("V2NODES_RETRY_WORKERS", 20, 1, 50)
+    primary_timeout = env_float("V2NODES_TIMEOUT", 25.0, 5.0, 60.0)
+    retry_timeout = env_float("V2NODES_RETRY_TIMEOUT", 30.0, 5.0, 90.0)
+
+    start_html = fetch(start_url, timeout=primary_timeout, attempts=3)
     pages = discover_server_urls(start_html, max_pages, start_url)
 
     nodes: list[str] = []
     seen: set[str] = set()
+    retry_urls: list[str] = []
 
-    with ThreadPoolExecutor(max_workers=150) as pool:
-        futures = [pool.submit(process_page, url) for url in pages]
+    def add_found(found: list[str]) -> int:
+        new = 0
+        for uri in found:
+            if uri not in seen:
+                seen.add(uri)
+                nodes.append(uri)
+                new += 1
+        return new
+
+    print(
+        f"INFO v2nodes pages={len(pages)} primary_workers={primary_workers} "
+        f"retry_workers={retry_workers} primary_timeout_s={primary_timeout} retry_timeout_s={retry_timeout}"
+    )
+
+    # First pass: one request per page. Failed transient pages are deferred
+    # instead of retrying immediately while the site is already saturated.
+    with ThreadPoolExecutor(max_workers=primary_workers) as pool:
+        futures = [pool.submit(process_page, url, primary_timeout, 1) for url in pages]
 
         for completed, future in enumerate(as_completed(futures), 1):
             url, found, error = future.result()
 
-            if error:
-                print(f"[{completed}/{len(pages)}] ERROR {url}: {error}")
+            if error is not None:
+                if is_retryable_error(error):
+                    retry_urls.append(url)
+                    print(f"[{completed}/{len(pages)}] RETRY-LATER {url}: {error}")
+                else:
+                    print(f"[{completed}/{len(pages)}] ERROR {url}: {error}")
                 continue
 
-            new = 0
-            for uri in found:
-                if uri not in seen:
-                    seen.add(uri)
-                    nodes.append(uri)
-                    new += 1
-
+            new = add_found(found)
             print(f"[{completed}/{len(pages)}] {new} new node(s) <- {url}")
 
+    recovered_pages = 0
+    if retry_urls:
+        print(f"INFO v2nodes second_pass={len(retry_urls)} workers={retry_workers} attempts=3")
+        with ThreadPoolExecutor(max_workers=retry_workers) as pool:
+            futures = [pool.submit(process_page, url, retry_timeout, 3) for url in retry_urls]
+
+            for completed, future in enumerate(as_completed(futures), 1):
+                url, found, error = future.result()
+                if error is not None:
+                    print(f"[retry {completed}/{len(retry_urls)}] ERROR {url}: {error}")
+                    continue
+                recovered_pages += 1
+                new = add_found(found)
+                print(f"[retry {completed}/{len(retry_urls)}] {new} new node(s) <- {url}")
+
+    print(
+        f"INFO v2nodes retry_summary queued={len(retry_urls)} "
+        f"recovered_pages={recovered_pages} remaining_failed={len(retry_urls) - recovered_pages}"
+    )
     return nodes
 
 
