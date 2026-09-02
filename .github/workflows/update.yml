@@ -13,7 +13,7 @@ concurrency:
 jobs:
   update:
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v5
         with:
@@ -38,74 +38,28 @@ jobs:
             gzip -dc /tmp/GeoLite2-Country.mmdb.gz > data/GeoLite2-Country.mmdb
           fi
           test -s data/GeoLite2-Country.mmdb
-          ls -lh data/GeoLite2-Country.mmdb
 
-      - name: Run regression tests
-        run: |
-          set -euo pipefail
-          python tests/test_country_resolver.py
-          python tests/test_transport_handshake.py
-          python tests/test_node_identity.py
-          python -m py_compile scripts/node_identity.py scripts/verify_country_feeds.py scripts/transport_handshake.py scripts/build_tcp_pool.py scripts/merge_and_build_tcp_pool.py scripts/build_country_shards.py scripts/sign_catalog.py
-
-      - name: Build candidates from sources.json
+      - name: Collect nodes and build TCP-ranked country feeds
         env:
           GITHUB_TOKEN: ${{ github.token }}
-        run: python scripts/build_sources_candidates.py
-
-      - name: Build candidates from telegram_channels.json
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        run: python scripts/build_telegram_candidates.py
-
-      - name: Build candidates from v2nodes.com
-        env:
           V2NODES_WORKERS: 80
           V2NODES_RETRY_WORKERS: 20
           V2NODES_TIMEOUT: 25
           V2NODES_RETRY_TIMEOUT: 30
-        run: python scripts/build_v2nodes_candidates.py
-
-      - name: Merge candidates and run TCP plus transport validation
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-          TRANSPORT_HANDSHAKE_WORKERS: 256
-          TRANSPORT_HANDSHAKE_TIMEOUT: 2.5
-        run: python scripts/merge_and_build_tcp_pool.py
-
-      - name: Show transport validation summary
         run: |
           set -euo pipefail
-          python - <<'PY'
-          import json
-          from pathlib import Path
-          p = Path('output/metadata/transport_handshake.json')
-          if not p.is_file():
-              raise SystemExit('transport_handshake.json was not generated')
-          data = json.loads(p.read_text(encoding='utf-8'))
-          merged = Path('output/metadata/merged_pool.json')
-          merged_data = json.loads(merged.read_text(encoding='utf-8')) if merged.is_file() else {}
-          print(
-              f"TRANSPORT_HANDSHAKE checked={data.get('checked_total', 0)} "
-              f"active={data.get('active_handshake_checked', 0)} "
-              f"syntax_only={data.get('tcp_syntax_only', 0)} "
-              f"verified={data.get('active_handshake_verified', data.get('active_handshake_passed', 0))} "
-              f"soft_publishable={data.get('soft_failed_publishable', 0)} "
-              f"published={data.get('passed_total', 0)} "
-              f"hard_rejected={data.get('hard_rejected', data.get('rejected_total', 0))} "
-              f"retry_passed={data.get('retry_passed', 0)} "
-              f"elapsed_seconds={data.get('elapsed_seconds', 0)} "
-              f"semantic_dedup_removed={merged_data.get('semantic_dedup_removed', 0)} "
-              f"html_uri_normalized={merged_data.get('html_uri_normalized', 0)}"
-          )
-          print('mode_counts=', data.get('mode_counts', {}))
-          print('passed_by_mode=', data.get('passed_by_mode', {}))
-          print('soft_failed_by_mode=', data.get('soft_failed_by_mode', {}))
-          print('hard_failed_by_mode=', data.get('hard_failed_by_mode', {}))
-          print('top_failure_reasons=', data.get('top_failure_reasons', [])[:10])
-          PY
+          rm -rf output/country_shards
+          rm -f output/metadata/transport_handshake.json
+          python tests/test_country_resolver.py
+          python tests/test_node_identity.py
+          python -m py_compile scripts/node_identity.py scripts/verify_country_feeds.py scripts/build_tcp_pool.py scripts/merge_and_build_tcp_pool.py scripts/sign_catalog.py
+          python scripts/build_sources_candidates.py
+          python scripts/build_telegram_candidates.py
+          python scripts/build_v2nodes_candidates.py
+          python scripts/merge_and_build_tcp_pool.py
+          python scripts/verify_country_feeds.py
 
-      - name: Verify generated app catalog
+      - name: Verify TCP-only app catalog
         run: |
           set -euo pipefail
           python - <<'PY'
@@ -115,31 +69,22 @@ jobs:
           if not p.is_file():
               raise SystemExit('app_pool.json was not generated')
           data = json.loads(p.read_text(encoding='utf-8'))
-          if data.get('mode') != 'tcp_plus_transport_handshake_android_final_runtime_check':
+          if data.get('mode') != 'tcp_liveness_only_android_final_xray_check':
               raise SystemExit(f"unexpected app pool mode: {data.get('mode')}")
           if data.get('final_runtime_test') != 'Android Xray + local HTTP health-check':
               raise SystemExit('unexpected final runtime test marker')
-          if data.get('active_directory_generated') is not False:
-              raise SystemExit('legacy output/active generation is unexpectedly enabled')
-          handshake = data.get('transport_handshake') or {}
-          if handshake.get('checked_total') != handshake.get('input_tcp_reachable'):
-              raise SystemExit('not every TCP-reachable node entered transport validation')
+          if data.get('tcp_workers') != 512:
+              raise SystemExit(f"unexpected TCP worker count: {data.get('tcp_workers')}")
+          if data.get('allowed_ports') != [80, 443]:
+              raise SystemExit(f"unexpected allowed ports: {data.get('allowed_ports')}")
+          if 'transport_handshake' in data:
+              raise SystemExit('transport handshake metadata must not gate publication')
           print(
-              f"OK app_pool published={data.get('published_total', 0)} "
+              f"OK TCP_ONLY published={data.get('published_total', 0)} "
               f"countries={data.get('published_country_nodes', 0)} "
-              f"transport_checked={handshake.get('checked_total', 0)} "
-              f"transport_hard_rejected={handshake.get('hard_rejected', handshake.get('rejected_total', 0))} "
-              f"transport_soft_publishable={handshake.get('soft_failed_publishable', 0)}"
+              f"workers={data.get('tcp_workers')} order={data.get('country_order_policy')}"
           )
           PY
-
-      - name: Reject duplicate nodes in country feeds
-        run: python scripts/verify_country_feeds.py
-
-      - name: Build on-demand country shards
-        env:
-          COUNTRY_SHARD_SIZE: 25
-        run: python scripts/build_country_shards.py
 
       - name: Build and sign catalog manifest
         env:
