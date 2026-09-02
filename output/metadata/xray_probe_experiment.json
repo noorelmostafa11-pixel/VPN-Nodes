@@ -1,21 +1,23 @@
 {
-  "schema": 2,
-  "generated_at": "2026-09-02T07:37:17Z",
+  "schema": 3,
+  "generated_at": "2026-09-02T08:08:16Z",
   "mode": "non_gating_xray_owned_204_pilot",
   "publishes_catalog": false,
   "sample_strategy": "evenly_spaced_across_parseable_tcp_reachable_pool",
-  "pool_total": 44183,
-  "parseable_total": 43094,
+  "pool_total": 44356,
+  "parseable_total": 43251,
   "sampled": 5000,
-  "checked": 4987,
-  "passed": 157,
-  "failed": 4830,
-  "pass_rate_pct": 3.15,
-  "xray_config_failed": 13,
-  "retry_passed": 1,
-  "elapsed_seconds": 250.39,
+  "checked": 4984,
+  "passed": 158,
+  "failed": 4826,
+  "pass_rate_pct": 3.17,
+  "xray_config_failed": 16,
+  "retry_passed": 3,
+  "elapsed_seconds": 208.19,
   "workers": 256,
+  "workers_per_batch": 128,
   "batch_size": 1000,
+  "batch_processes": 2,
   "timeout_seconds": 3.0,
   "retry_rounds_total": 2,
   "allowed_ports": [
@@ -38,109 +40,143 @@
     }
   ],
   "passed_by_endpoint": {
-    "oracle_1": 150,
-    "oracle_2": 7,
-    "cloudflare_worker": 0
+    "oracle_1": 152,
+    "oracle_2": 5,
+    "cloudflare_worker": 1
   },
   "endpoint_attempts": {
-    "oracle_1": 9818,
-    "oracle_2": 9668,
-    "cloudflare_worker": 9661
+    "oracle_1": 9813,
+    "oracle_2": 9661,
+    "cloudflare_worker": 9656
   },
   "endpoint_successes": {
-    "oracle_1": 150,
-    "oracle_2": 7,
-    "cloudflare_worker": 0
+    "oracle_1": 152,
+    "oracle_2": 5,
+    "cloudflare_worker": 1
+  },
+  "protocol_stats": {
+    "shadowsocks": {
+      "checked": 34,
+      "passed": 5,
+      "failed": 29,
+      "pass_rate_pct": 14.71
+    },
+    "trojan": {
+      "checked": 844,
+      "passed": 37,
+      "failed": 807,
+      "pass_rate_pct": 4.38
+    },
+    "vless": {
+      "checked": 3858,
+      "passed": 103,
+      "failed": 3755,
+      "pass_rate_pct": 2.67
+    },
+    "vmess": {
+      "checked": 248,
+      "passed": 13,
+      "failed": 235,
+      "pass_rate_pct": 5.24
+    }
   },
   "latency_ms": {
-    "min": 492.4,
-    "p50": 812.8,
-    "p95": 1983.2,
-    "p99": 2580.7,
-    "max": 2738.7
+    "min": 367.4,
+    "p50": 639.2,
+    "p95": 1643.0,
+    "p99": 2701.1,
+    "max": 2812.5
   },
   "top_failure_reasons": [
     {
       "reason": "socket-error-104",
-      "count": 13587
+      "count": 13400
     },
     {
-      "reason": "no-http-status",
-      "count": 6579
-    },
-    {
-      "reason": "timeout",
-      "count": 4252
+      "reason": "no-http-response",
+      "count": 5896
     },
     {
       "reason": "tls-error",
-      "count": 3752
+      "count": 3590
+    },
+    {
+      "reason": "timeout",
+      "count": 2861
+    },
+    {
+      "reason": "socket-error-111",
+      "count": 2072
     },
     {
       "reason": "unexpected-status-400",
-      "count": 820
+      "count": 796
+    },
+    {
+      "reason": "no-http-status",
+      "count": 357
     }
   ],
   "parse_failure_reasons": [
     {
       "reason": "parse-ValueError",
-      "count": 1083
+      "count": 1098
     },
     {
       "reason": "parse-UnicodeDecodeError",
-      "count": 6
+      "count": 7
     }
   ],
   "batch_results": [
     {
       "batch": 1,
       "sampled": 1000,
-      "xray_config_failed": 4,
-      "checked": 996,
-      "passed": 111,
-      "failed": 885,
-      "retry_passed": 1,
-      "elapsed_seconds": 45.71
+      "xray_config_failed": 6,
+      "checked": 994,
+      "passed": 113,
+      "failed": 881,
+      "retry_passed": 2,
+      "elapsed_seconds": 75.29
     },
     {
       "batch": 2,
       "sampled": 1000,
-      "xray_config_failed": 2,
-      "checked": 998,
-      "passed": 22,
-      "failed": 976,
+      "xray_config_failed": 4,
+      "checked": 996,
+      "passed": 17,
+      "failed": 979,
       "retry_passed": 0,
-      "elapsed_seconds": 51.43
+      "elapsed_seconds": 44.4
     },
     {
       "batch": 3,
       "sampled": 1000,
-      "xray_config_failed": 1,
-      "checked": 999,
-      "passed": 3,
-      "failed": 996,
+      "xray_config_failed": 3,
+      "checked": 997,
+      "passed": 2,
+      "failed": 995,
       "retry_passed": 0,
-      "elapsed_seconds": 50.32
+      "elapsed_seconds": 80.62
     },
     {
       "batch": 4,
       "sampled": 1000,
       "xray_config_failed": 2,
       "checked": 998,
-      "passed": 5,
-      "failed": 993,
+      "passed": 6,
+      "failed": 992,
       "retry_passed": 0,
-      "elapsed_seconds": 50.8
+      "elapsed_seconds": 76.6
     },
     {
       "batch": 5,
       "sampled": 1000,
-      "xray_config_failed": 4,
-      "checked": 996,
-      "passed": 16,
-      "failed": 980,
-      "retry_passed": 0,
-      "elapsed_seconds": 52.13
+      "xray_config_failed": 1,
+      "checked": 999,
+      "passed": 20,
+      "failed": 979,
+      "retry_passed": 1,
+      "elapsed_seconds": 83.14
     }
   ]
 }
