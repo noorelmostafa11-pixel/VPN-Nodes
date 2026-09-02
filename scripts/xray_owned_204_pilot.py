@@ -184,7 +184,7 @@ def main() -> int:
         "mode": "isolated_xray_owned_204_pilot",
         "publishes_catalog": False,
         "probe": {
-            "url": probe_url,
+            "configured_via": "OWNED_204_URL",
             "expected_status": 204,
             "tls": use_tls,
         },
