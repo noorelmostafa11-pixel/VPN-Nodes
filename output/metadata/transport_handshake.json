@@ -1,0 +1,130 @@
+{
+  "schema": 1,
+  "generated_at": "2026-09-02T09:00:55Z",
+  "input_tcp_reachable": 44367,
+  "checked_total": 44367,
+  "active_handshake_checked": 35675,
+  "tcp_syntax_only": 7595,
+  "passed_total": 13376,
+  "rejected_total": 30991,
+  "parse_rejected": 1097,
+  "active_handshake_passed": 5781,
+  "active_handshake_failed": 29894,
+  "retry_passed": 1088,
+  "workers": 256,
+  "timeout_seconds": 2.5,
+  "rounds": 2,
+  "elapsed_seconds": 1098.4,
+  "mode_counts": {
+    "http2": 723,
+    "httpupgrade": 150,
+    "plain-tcp": 2744,
+    "reality-tcp": 4531,
+    "shadowsocks-tcp": 320,
+    "tls": 6833,
+    "websocket": 27969
+  },
+  "passed_by_mode": {
+    "http2": 136,
+    "tls": 3987,
+    "websocket": 1658
+  },
+  "failed_by_mode": {
+    "http2": 587,
+    "httpupgrade": 150,
+    "tls": 2846,
+    "websocket": 26311
+  },
+  "protocol_counts": {
+    "shadowsocks": 320,
+    "trojan": 7278,
+    "vless": 33554,
+    "vmess": 2118
+  },
+  "passed_by_protocol": {
+    "trojan": 3169,
+    "vless": 2538,
+    "vmess": 74
+  },
+  "failed_by_protocol": {
+    "trojan": 4101,
+    "vless": 23805,
+    "vmess": 1988
+  },
+  "parse_failure_reasons": [
+    {
+      "reason": "invalid-shadowsocks-credentials",
+      "count": 821
+    },
+    {
+      "reason": "invalid-reality-public-key",
+      "count": 212
+    },
+    {
+      "reason": "invalid-vless-uuid",
+      "count": 57
+    },
+    {
+      "reason": "'utf-8' codec can't decode byte 0xf6 in position 2: invalid start byte",
+      "count": 2
+    },
+    {
+      "reason": "'utf-8' codec can't decode byte 0xbd in position 1: invalid start byte",
+      "count": 2
+    },
+    {
+      "reason": "'utf-8' codec can't decode byte 0xdb in position 2: invalid continuation byte",
+      "count": 1
+    },
+    {
+      "reason": "'utf-8' codec can't decode byte 0xd3 in position 0: invalid continuation byte",
+      "count": 1
+    },
+    {
+      "reason": "'utf-8' codec can't decode byte 0xd7 in position 1: invalid continuation byte",
+      "count": 1
+    }
+  ],
+  "top_failure_reasons": [
+    {
+      "reason": "tls-error-SSLV3_ALERT_HANDSHAKE_FAILURE",
+      "count": 8999
+    },
+    {
+      "reason": "websocket-status-403",
+      "count": 4560
+    },
+    {
+      "reason": "websocket-status-500",
+      "count": 3284
+    },
+    {
+      "reason": "websocket-status-409",
+      "count": 2384
+    },
+    {
+      "reason": "timeout",
+      "count": 2307
+    },
+    {
+      "reason": "websocket-status-530",
+      "count": 2194
+    },
+    {
+      "reason": "websocket-status-400",
+      "count": 1473
+    },
+    {
+      "reason": "websocket-status-404",
+      "count": 1323
+    },
+    {
+      "reason": "websocket-status-429",
+      "count": 649
+    },
+    {
+      "reason": "tls-error-WRONG_VERSION_NUMBER",
+      "count": 425
+    }
+  ]
+}
