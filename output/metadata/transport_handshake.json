@@ -1,19 +1,19 @@
 {
   "schema": 2,
-  "generated_at": "2026-09-02T10:54:21Z",
-  "input_tcp_reachable": 43979,
-  "checked_total": 43979,
-  "active_handshake_checked": 34985,
-  "tcp_syntax_only": 8161,
-  "active_handshake_verified": 5326,
-  "active_handshake_failed": 29659,
-  "soft_failed_publishable": 26843,
-  "hard_rejected": 3649,
-  "passed_total": 40330,
-  "rejected_total": 3649,
-  "parse_rejected": 833,
-  "active_handshake_passed": 5326,
-  "retry_passed": 186,
+  "generated_at": "2026-09-02T11:57:56Z",
+  "input_tcp_reachable": 44892,
+  "checked_total": 44892,
+  "active_handshake_checked": 35873,
+  "tcp_syntax_only": 8188,
+  "active_handshake_verified": 5296,
+  "active_handshake_failed": 30577,
+  "soft_failed_publishable": 27005,
+  "hard_rejected": 4403,
+  "passed_total": 40489,
+  "rejected_total": 4403,
+  "parse_rejected": 831,
+  "active_handshake_passed": 5296,
+  "retry_passed": 937,
   "workers": 256,
   "timeout_seconds": 2.5,
   "rounds": 2,
@@ -21,55 +21,55 @@
     "httpupgrade",
     "websocket"
   ],
-  "elapsed_seconds": 909.93,
+  "elapsed_seconds": 1090.61,
   "mode_counts": {
-    "http2": 722,
-    "httpupgrade": 187,
-    "plain-tcp": 2170,
-    "reality-tcp": 5640,
-    "shadowsocks-tcp": 351,
-    "tls": 5721,
-    "websocket": 28355
+    "http2": 724,
+    "httpupgrade": 186,
+    "plain-tcp": 2179,
+    "reality-tcp": 5654,
+    "shadowsocks-tcp": 355,
+    "tls": 6490,
+    "websocket": 28473
   },
   "passed_by_mode": {
     "http2": 143,
-    "tls": 3484,
-    "websocket": 1699
+    "tls": 3499,
+    "websocket": 1654
   },
   "failed_by_mode": {
-    "http2": 579,
-    "httpupgrade": 187,
-    "tls": 2237,
-    "websocket": 26656
+    "http2": 581,
+    "httpupgrade": 186,
+    "tls": 2991,
+    "websocket": 26819
   },
   "soft_failed_by_mode": {
-    "httpupgrade": 187,
-    "websocket": 26656
+    "httpupgrade": 186,
+    "websocket": 26819
   },
   "hard_failed_by_mode": {
-    "http2": 579,
-    "tls": 2237
+    "http2": 581,
+    "tls": 2991
   },
   "protocol_counts": {
-    "shadowsocks": 351,
-    "trojan": 6315,
-    "vless": 34367,
-    "vmess": 2113
+    "shadowsocks": 355,
+    "trojan": 7126,
+    "vless": 34471,
+    "vmess": 2109
   },
   "passed_by_protocol": {
-    "trojan": 2600,
-    "vless": 2661,
-    "vmess": 65
+    "trojan": 2635,
+    "vless": 2597,
+    "vmess": 64
   },
   "failed_by_protocol": {
-    "trojan": 3707,
-    "vless": 23948,
-    "vmess": 2004
+    "trojan": 4483,
+    "vless": 24092,
+    "vmess": 2002
   },
   "soft_publishable_by_protocol": {
-    "trojan": 1983,
-    "vless": 22872,
-    "vmess": 1988
+    "trojan": 2008,
+    "vless": 23012,
+    "vmess": 1985
   },
   "parse_failure_reasons": [
     {
@@ -78,11 +78,11 @@
     },
     {
       "reason": "invalid-vless-uuid",
-      "count": 83
+      "count": 80
     },
     {
       "reason": "invalid-reality-public-key",
-      "count": 50
+      "count": 51
     },
     {
       "reason": "'utf-8' codec can't decode byte 0xbd in position 1: invalid start byte",
@@ -104,43 +104,43 @@
   "top_failure_reasons": [
     {
       "reason": "tls-error-SSLV3_ALERT_HANDSHAKE_FAILURE",
-      "count": 9289
+      "count": 8690
     },
     {
       "reason": "websocket-status-403",
-      "count": 4447
+      "count": 4449
     },
     {
       "reason": "websocket-status-500",
-      "count": 3553
-    },
-    {
-      "reason": "websocket-status-409",
-      "count": 2436
-    },
-    {
-      "reason": "websocket-status-530",
-      "count": 2178
+      "count": 3544
     },
     {
       "reason": "timeout",
-      "count": 1470
+      "count": 2996
+    },
+    {
+      "reason": "websocket-status-409",
+      "count": 2455
+    },
+    {
+      "reason": "websocket-status-530",
+      "count": 2147
     },
     {
       "reason": "websocket-status-400",
-      "count": 1430
+      "count": 1431
     },
     {
       "reason": "websocket-status-404",
-      "count": 1258
+      "count": 1248
     },
     {
       "reason": "websocket-status-429",
-      "count": 770
+      "count": 819
     },
     {
       "reason": "tls-error-WRONG_VERSION_NUMBER",
-      "count": 429
+      "count": 424
     }
   ]
 }
