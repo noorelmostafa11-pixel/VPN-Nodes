@@ -89,7 +89,7 @@ jobs:
             --sample 5000 \
             --batch-size 1000 \
             --workers 256 \
-            --batch-processes 2 \
+            --batch-processes 4 \
             --timeout 3
 
       - name: Show owned-204 pilot summary
