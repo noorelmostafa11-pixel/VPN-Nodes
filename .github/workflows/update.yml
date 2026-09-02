@@ -66,6 +66,69 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
         run: python scripts/merge_and_build_tcp_pool.py
 
+      - name: Install Xray for owned-204 pilot
+        continue-on-error: true
+        run: |
+          set -euo pipefail
+          mkdir -p /opt/hostedtoolcache/xray
+          curl --fail --location --silent --show-error \
+            'https://github.com/XTLS/Xray-core/releases/latest/download/Xray-linux-64.zip' \
+            --output /tmp/xray.zip
+          unzip -o /tmp/xray.zip xray -d /opt/hostedtoolcache/xray >/dev/null
+          chmod +x /opt/hostedtoolcache/xray/xray
+          /opt/hostedtoolcache/xray/xray version
+
+      - name: Run non-gating Xray owned-204 pilot
+        continue-on-error: true
+        env:
+          XRAY_BIN: /opt/hostedtoolcache/xray/xray
+        run: |
+          set -euo pipefail
+          python -m py_compile scripts/real_delay.py scripts/xray_owned_204_pilot.py
+          python scripts/xray_owned_204_pilot.py \
+            --sample 5000 \
+            --batch-size 1000 \
+            --workers 256 \
+            --timeout 3
+
+      - name: Show owned-204 pilot summary
+        if: always()
+        continue-on-error: true
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p = Path('output/metadata/xray_probe_experiment.json')
+          if not p.is_file():
+              print('OWNED_204_PILOT report not generated; catalog publication remains non-gating.')
+              raise SystemExit(0)
+          data = json.loads(p.read_text(encoding='utf-8'))
+          print(
+              f"OWNED_204_PILOT pool={data.get('pool_total', 0)} "
+              f"parseable={data.get('parseable_total', 0)} "
+              f"sampled={data.get('sampled', 0)} "
+              f"checked={data.get('checked', 0)} "
+              f"passed={data.get('passed', 0)} "
+              f"failed={data.get('failed', 0)} "
+              f"pass_rate_pct={data.get('pass_rate_pct', 0)} "
+              f"retry_passed={data.get('retry_passed', 0)} "
+              f"xray_config_failed={data.get('xray_config_failed', 0)}"
+          )
+          print('passed_by_endpoint=', data.get('passed_by_endpoint', {}))
+          print('endpoint_attempts=', data.get('endpoint_attempts', {}))
+          print('top_failure_reasons=', data.get('top_failure_reasons', [])[:10])
+          PY
+
+      - name: Upload owned-204 pilot report
+        if: always()
+        continue-on-error: true
+        uses: actions/upload-artifact@v4
+        with:
+          name: xray-owned-204-pilot
+          path: output/metadata/xray_probe_experiment.json
+          if-no-files-found: warn
+          retention-days: 7
+
       - name: Verify generated app catalog
         run: |
           set -euo pipefail
