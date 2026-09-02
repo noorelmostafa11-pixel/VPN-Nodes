@@ -48,6 +48,16 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
         run: python scripts/build_sources_candidates.py
 
+      - name: Install OpenVPN runtime
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends openvpn
+
+      - name: Verify OpenVPN candidates
+        env:
+          OPENVPN_NODE_TIMEOUT: 25
+        run: python scripts/vpngate_openvpn.py
+
       - name: Build candidates from telegram_channels.json
         env:
           GITHUB_TOKEN: ${{ github.token }}
@@ -55,7 +65,10 @@ jobs:
 
       - name: Build candidates from v2nodes.com
         env:
-          V2NODES_WORKERS: 250
+          V2NODES_WORKERS: 80
+          V2NODES_RETRY_WORKERS: 20
+          V2NODES_TIMEOUT: 25
+          V2NODES_RETRY_TIMEOUT: 30
         run: python scripts/build_v2nodes_candidates.py
 
       - name: Merge candidates and run common TCP pool
