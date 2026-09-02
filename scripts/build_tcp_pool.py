@@ -67,12 +67,13 @@ async def run_tcp_checks(rows: list[dict]) -> list[dict]:
 def publish_app_pool(rows: list[dict], source_health: list[dict]) -> dict:
     """Publish every TCP-alive node, ordered by measured TCP latency.
 
-    Explicit country metadata stays ahead of GeoIP/fallback resolution as before.
-    Inside each country-resolution tier, latency_ms is strictly ascending. No TLS,
-    WebSocket, HTTP/2 or protocol handshake is performed here; Xray on Android is
-    the final compatibility and Internet-health authority.
+    Explicit country metadata stays ahead of GeoIP/fallback resolution as in the
+    known fast catalog. Inside each country-resolution tier, latency_ms is strictly
+    ascending. No TLS, WebSocket, HTTP/2 or protocol handshake is performed here;
+    Xray on Android is the final compatibility and Internet-health authority.
     """
     import country_resolver
+    import pycountry
 
     country_result = country_resolver.resolve_rows(rows) if rows else {
         "hostname": 0,
@@ -110,6 +111,7 @@ def publish_app_pool(rows: list[dict], source_health: list[dict]) -> dict:
             protocol_rows.setdefault(protocol, []).append(row["uri"])
 
     published_total = 0
+    countries_meta: list[dict] = []
     for country, country_rows in sorted(grouped.items()):
         country_rows.sort(key=lambda item: (
             0 if str(item.get("country_resolution") or "").lower() == "metadata_explicit" else 1,
@@ -124,6 +126,15 @@ def publish_app_pool(rows: list[dict], source_health: list[dict]) -> dict:
         )
         published_total += len(uris)
 
+        match = pycountry.countries.get(alpha_2=country)
+        countries_meta.append({
+            "code": country,
+            "name": str(match.name) if match is not None else country,
+            "nodes": len(uris),
+            "active": 0,
+            "backup": len(uris),
+        })
+
     for protocol, uris in protocol_rows.items():
         (out_dirs["protocols"] / f"{protocol}.txt").write_text(
             "\n".join(uris) + "\n", encoding="utf-8"
@@ -133,6 +144,14 @@ def publish_app_pool(rows: list[dict], source_health: list[dict]) -> dict:
         (out_dirs["metadata"] / "tcp_alive_unknown_country.txt").write_text(
             "\n".join(unknown_rows) + "\n", encoding="utf-8"
         )
+    else:
+        (out_dirs["metadata"] / "tcp_alive_unknown_country.txt").unlink(missing_ok=True)
+
+    # Simple app-facing country index: no shard paths and no app-specific structure.
+    (out_dirs["metadata"] / "countries.json").write_text(
+        json.dumps({"countries": countries_meta}, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
 
     app_meta = {
         "schema": 21,
@@ -165,7 +184,7 @@ def publish_app_pool(rows: list[dict], source_health: list[dict]) -> dict:
 
     print(
         f"INFO APP_POOL tcp_only=true alive_with_country={app_meta['alive_with_country']} "
-        f"countries={published_total} backup=0 published={published_total} "
+        f"countries={len(countries_meta)} nodes={published_total} "
         f"order=tcp_latency_ascending"
     )
     return app_meta
