@@ -41,7 +41,10 @@ jobs:
           ls -lh data/GeoLite2-Country.mmdb
 
       - name: Run regression tests
-        run: python tests/test_country_resolver.py
+        run: |
+          set -euo pipefail
+          python tests/test_country_resolver.py
+          python -m py_compile scripts/transport_handshake.py scripts/build_tcp_pool.py scripts/merge_and_build_tcp_pool.py
 
       - name: Build candidates from sources.json
         env:
@@ -61,77 +64,37 @@ jobs:
           V2NODES_RETRY_TIMEOUT: 30
         run: python scripts/build_v2nodes_candidates.py
 
-      - name: Merge candidates and run common TCP pool
+      - name: Merge candidates and run TCP plus transport validation
         env:
           GITHUB_TOKEN: ${{ github.token }}
+          TRANSPORT_HANDSHAKE_WORKERS: 256
+          TRANSPORT_HANDSHAKE_TIMEOUT: 2.5
         run: python scripts/merge_and_build_tcp_pool.py
 
-      - name: Install Xray for owned-204 pilot
-        continue-on-error: true
+      - name: Show transport validation summary
         run: |
           set -euo pipefail
-          mkdir -p /opt/hostedtoolcache/xray
-          curl --fail --location --silent --show-error \
-            'https://github.com/XTLS/Xray-core/releases/latest/download/Xray-linux-64.zip' \
-            --output /tmp/xray.zip
-          unzip -o /tmp/xray.zip xray -d /opt/hostedtoolcache/xray >/dev/null
-          chmod +x /opt/hostedtoolcache/xray/xray
-          /opt/hostedtoolcache/xray/xray version
-
-      - name: Run non-gating Xray owned-204 pilot
-        continue-on-error: true
-        env:
-          XRAY_BIN: /opt/hostedtoolcache/xray/xray
-        run: |
-          set -euo pipefail
-          python -m py_compile scripts/real_delay.py scripts/xray_owned_204_pilot.py
-          python scripts/xray_owned_204_pilot.py \
-            --sample 5000 \
-            --batch-size 1000 \
-            --workers 256 \
-            --batch-processes 4 \
-            --timeout 3
-
-      - name: Show owned-204 pilot summary
-        if: always()
-        continue-on-error: true
-        run: |
           python - <<'PY'
           import json
           from pathlib import Path
-          p = Path('output/metadata/xray_probe_experiment.json')
+          p = Path('output/metadata/transport_handshake.json')
           if not p.is_file():
-              print('OWNED_204_PILOT report not generated; catalog publication remains non-gating.')
-              raise SystemExit(0)
+              raise SystemExit('transport_handshake.json was not generated')
           data = json.loads(p.read_text(encoding='utf-8'))
           print(
-              f"OWNED_204_PILOT pool={data.get('pool_total', 0)} "
-              f"parseable={data.get('parseable_total', 0)} "
-              f"sampled={data.get('sampled', 0)} "
-              f"checked={data.get('checked', 0)} "
-              f"passed={data.get('passed', 0)} "
-              f"failed={data.get('failed', 0)} "
-              f"pass_rate_pct={data.get('pass_rate_pct', 0)} "
+              f"TRANSPORT_HANDSHAKE checked={data.get('checked_total', 0)} "
+              f"active={data.get('active_handshake_checked', 0)} "
+              f"syntax_only={data.get('tcp_syntax_only', 0)} "
+              f"passed={data.get('passed_total', 0)} "
+              f"rejected={data.get('rejected_total', 0)} "
               f"retry_passed={data.get('retry_passed', 0)} "
-              f"xray_config_failed={data.get('xray_config_failed', 0)} "
-              f"elapsed_seconds={data.get('elapsed_seconds', 0)} "
-              f"batch_processes={data.get('batch_processes', 1)}"
+              f"elapsed_seconds={data.get('elapsed_seconds', 0)}"
           )
-          print('passed_by_endpoint=', data.get('passed_by_endpoint', {}))
-          print('endpoint_attempts=', data.get('endpoint_attempts', {}))
-          print('protocol_stats=', data.get('protocol_stats', {}))
+          print('mode_counts=', data.get('mode_counts', {}))
+          print('passed_by_mode=', data.get('passed_by_mode', {}))
+          print('failed_by_mode=', data.get('failed_by_mode', {}))
           print('top_failure_reasons=', data.get('top_failure_reasons', [])[:10])
           PY
-
-      - name: Upload owned-204 pilot report
-        if: always()
-        continue-on-error: true
-        uses: actions/upload-artifact@v4
-        with:
-          name: xray-owned-204-pilot
-          path: output/metadata/xray_probe_experiment.json
-          if-no-files-found: warn
-          retention-days: 7
 
       - name: Verify generated app catalog
         run: |
@@ -143,16 +106,20 @@ jobs:
           if not p.is_file():
               raise SystemExit('app_pool.json was not generated')
           data = json.loads(p.read_text(encoding='utf-8'))
-          if data.get('mode') != 'tcp_liveness_only_android_final_xray_check':
+          if data.get('mode') != 'tcp_plus_transport_handshake_android_final_runtime_check':
               raise SystemExit(f"unexpected app pool mode: {data.get('mode')}")
           if data.get('final_runtime_test') != 'Android Xray + local HTTP health-check':
               raise SystemExit('unexpected final runtime test marker')
           if data.get('active_directory_generated') is not False:
               raise SystemExit('legacy output/active generation is unexpectedly enabled')
+          handshake = data.get('transport_handshake') or {}
+          if handshake.get('checked_total') != handshake.get('input_tcp_reachable'):
+              raise SystemExit('not every TCP-reachable node entered transport validation')
           print(
               f"OK app_pool published={data.get('published_total', 0)} "
               f"countries={data.get('published_country_nodes', 0)} "
-              f"backup={data.get('published_backup', 0)}"
+              f"transport_checked={handshake.get('checked_total', 0)} "
+              f"transport_rejected={handshake.get('rejected_total', 0)}"
           )
           PY
 
