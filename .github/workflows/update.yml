@@ -89,15 +89,19 @@ jobs:
               f"TRANSPORT_HANDSHAKE checked={data.get('checked_total', 0)} "
               f"active={data.get('active_handshake_checked', 0)} "
               f"syntax_only={data.get('tcp_syntax_only', 0)} "
-              f"passed={data.get('passed_total', 0)} "
-              f"rejected={data.get('rejected_total', 0)} "
+              f"verified={data.get('active_handshake_verified', data.get('active_handshake_passed', 0))} "
+              f"soft_publishable={data.get('soft_failed_publishable', 0)} "
+              f"published={data.get('passed_total', 0)} "
+              f"hard_rejected={data.get('hard_rejected', data.get('rejected_total', 0))} "
               f"retry_passed={data.get('retry_passed', 0)} "
               f"elapsed_seconds={data.get('elapsed_seconds', 0)} "
-              f"semantic_dedup_removed={merged_data.get('semantic_dedup_removed', 0)}"
+              f"semantic_dedup_removed={merged_data.get('semantic_dedup_removed', 0)} "
+              f"html_uri_normalized={merged_data.get('html_uri_normalized', 0)}"
           )
           print('mode_counts=', data.get('mode_counts', {}))
           print('passed_by_mode=', data.get('passed_by_mode', {}))
-          print('failed_by_mode=', data.get('failed_by_mode', {}))
+          print('soft_failed_by_mode=', data.get('soft_failed_by_mode', {}))
+          print('hard_failed_by_mode=', data.get('hard_failed_by_mode', {}))
           print('top_failure_reasons=', data.get('top_failure_reasons', [])[:10])
           PY
 
@@ -124,7 +128,8 @@ jobs:
               f"OK app_pool published={data.get('published_total', 0)} "
               f"countries={data.get('published_country_nodes', 0)} "
               f"transport_checked={handshake.get('checked_total', 0)} "
-              f"transport_rejected={handshake.get('rejected_total', 0)}"
+              f"transport_hard_rejected={handshake.get('hard_rejected', handshake.get('rejected_total', 0))} "
+              f"transport_soft_publishable={handshake.get('soft_failed_publishable', 0)}"
           )
           PY
 
