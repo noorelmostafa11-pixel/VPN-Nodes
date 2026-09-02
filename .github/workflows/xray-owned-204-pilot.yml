@@ -1,0 +1,99 @@
+name: Xray owned 204 pilot
+
+on:
+  workflow_dispatch:
+    inputs:
+      limit:
+        description: Number of TCP-reachable nodes to sample
+        required: false
+        default: '20'
+      workers:
+        description: Parallel owned-204 probes
+        required: false
+        default: '20'
+      timeout:
+        description: Per-node owned-204 timeout in seconds
+        required: false
+        default: '8'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: xray-owned-204-pilot-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  pilot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      OWNED_204_URL: ${{ secrets.OWNED_204_URL }}
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+
+      - run: pip install -r requirements.txt
+
+      - name: Install Xray
+        run: |
+          set -euo pipefail
+          mkdir -p /opt/hostedtoolcache/xray
+          curl --fail --location --silent --show-error \
+            'https://github.com/XTLS/Xray-core/releases/latest/download/Xray-linux-64.zip' \
+            --output /tmp/xray.zip
+          unzip -o /tmp/xray.zip xray -d /opt/hostedtoolcache/xray >/dev/null
+          chmod +x /opt/hostedtoolcache/xray/xray
+          /opt/hostedtoolcache/xray/xray version
+
+      - name: Validate pilot configuration
+        run: |
+          set -euo pipefail
+          if [ -z "${OWNED_204_URL:-}" ]; then
+            echo 'Repository secret OWNED_204_URL is required.' >&2
+            exit 2
+          fi
+          python -m py_compile scripts/real_delay.py scripts/xray_owned_204_pilot.py
+
+      - name: Run isolated owned-204 pilot
+        env:
+          XRAY_BIN: /opt/hostedtoolcache/xray/xray
+        run: |
+          python scripts/xray_owned_204_pilot.py \
+            --limit '${{ inputs.limit }}' \
+            --workers '${{ inputs.workers }}' \
+            --timeout '${{ inputs.timeout }}'
+
+      - name: Show pilot summary
+        if: always()
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          path = Path('output/metadata/xray_owned_204_pilot.json')
+          if not path.is_file():
+              print('Pilot report was not generated.')
+              raise SystemExit(0)
+          data = json.loads(path.read_text(encoding='utf-8'))
+          print(
+              'OWNED_204_PILOT '
+              f"selected={data.get('selected', 0)} "
+              f"tested={data.get('xray_tested', 0)} "
+              f"pass={data.get('passed', 0)} "
+              f"fail={data.get('failed', 0)} "
+              f"pass_rate={data.get('pass_rate', 0)}"
+          )
+          PY
+
+      - name: Upload pilot report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: xray-owned-204-pilot
+          path: output/metadata/xray_owned_204_pilot.json
+          if-no-files-found: warn
+          retention-days: 7
