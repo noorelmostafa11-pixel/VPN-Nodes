@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
 """Build a deterministic SHA-256 catalog manifest and optionally ECDSA-sign it.
 
-The signing key is never read from the repository. GitHub Actions supplies a
-base64-encoded PEM key via CATALOG_SIGNING_PRIVATE_KEY_B64. When the secret is not
-configured, the manifest is still emitted for debug clients, while release Android
-builds continue to require a valid signature.
+The repository signs the normal app catalog only: country feeds, protocol feeds and
+metadata. App-specific shards and transport-handshake artifacts are intentionally
+not part of the catalog. The private signing key is supplied only by GitHub Actions.
 """
 from __future__ import annotations
 
@@ -38,23 +37,12 @@ def included_files() -> list[Path]:
     if missing:
         raise SystemExit(f"Missing required catalog file(s): {', '.join(missing)}")
 
-    files = required[:]
-    handshake = META / "transport_handshake.json"
-    if handshake.is_file():
-        files.append(handshake)
-
     country_files = sorted((OUT / "countries").glob("*.txt"))
-    shard_files = sorted((OUT / "country_shards").glob("*/*.txt"))
     protocol_files = sorted((OUT / "protocols").glob("*.txt"))
     if not country_files:
         raise SystemExit("No country feeds were generated")
-    if not shard_files:
-        raise SystemExit("No country shards were generated")
 
-    files.extend(country_files)
-    files.extend(shard_files)
-    files.extend(protocol_files)
-    return files
+    return required + country_files + protocol_files
 
 
 def main() -> int:
@@ -63,7 +51,7 @@ def main() -> int:
     generated_at = str(app_meta.get("generated_at") or "")
     files = {path.relative_to(ROOT).as_posix(): digest(path) for path in included_files()}
     payload = {
-        "schema": 2,
+        "schema": 1,
         "algorithm": "ECDSA_P256_SHA256",
         "generated_at": generated_at,
         "files": dict(sorted(files.items())),
