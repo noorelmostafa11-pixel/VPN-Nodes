@@ -45,7 +45,8 @@ jobs:
           set -euo pipefail
           python tests/test_country_resolver.py
           python tests/test_transport_handshake.py
-          python -m py_compile scripts/transport_handshake.py scripts/build_tcp_pool.py scripts/merge_and_build_tcp_pool.py scripts/sign_catalog.py
+          python tests/test_node_identity.py
+          python -m py_compile scripts/node_identity.py scripts/verify_country_feeds.py scripts/transport_handshake.py scripts/build_tcp_pool.py scripts/merge_and_build_tcp_pool.py scripts/sign_catalog.py
 
       - name: Build candidates from sources.json
         env:
@@ -82,6 +83,8 @@ jobs:
           if not p.is_file():
               raise SystemExit('transport_handshake.json was not generated')
           data = json.loads(p.read_text(encoding='utf-8'))
+          merged = Path('output/metadata/merged_pool.json')
+          merged_data = json.loads(merged.read_text(encoding='utf-8')) if merged.is_file() else {}
           print(
               f"TRANSPORT_HANDSHAKE checked={data.get('checked_total', 0)} "
               f"active={data.get('active_handshake_checked', 0)} "
@@ -89,7 +92,8 @@ jobs:
               f"passed={data.get('passed_total', 0)} "
               f"rejected={data.get('rejected_total', 0)} "
               f"retry_passed={data.get('retry_passed', 0)} "
-              f"elapsed_seconds={data.get('elapsed_seconds', 0)}"
+              f"elapsed_seconds={data.get('elapsed_seconds', 0)} "
+              f"semantic_dedup_removed={merged_data.get('semantic_dedup_removed', 0)}"
           )
           print('mode_counts=', data.get('mode_counts', {}))
           print('passed_by_mode=', data.get('passed_by_mode', {}))
@@ -123,6 +127,9 @@ jobs:
               f"transport_rejected={handshake.get('rejected_total', 0)}"
           )
           PY
+
+      - name: Reject duplicate nodes in country feeds
+        run: python scripts/verify_country_feeds.py
 
       - name: Build and sign catalog manifest
         env:
