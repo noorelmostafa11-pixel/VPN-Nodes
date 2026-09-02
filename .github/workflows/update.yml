@@ -44,6 +44,7 @@ jobs:
         run: |
           set -euo pipefail
           python tests/test_country_resolver.py
+          python tests/test_transport_handshake.py
           python -m py_compile scripts/transport_handshake.py scripts/build_tcp_pool.py scripts/merge_and_build_tcp_pool.py
 
       - name: Build candidates from sources.json
