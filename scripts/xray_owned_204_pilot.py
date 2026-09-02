@@ -4,6 +4,9 @@
 The pilot consumes output/metadata/tcp_reachable.json, samples evenly across the
 parseable TCP pool, and runs real traffic through Xray. It never rewrites country
 or protocol feeds.
+
+Each batch owns one long-lived Xray process. Multiple batches may run in parallel
+to reduce wall-clock time while keeping the total probe worker budget bounded.
 """
 from __future__ import annotations
 
@@ -31,9 +34,11 @@ XRAY = Path(os.environ.get("XRAY_BIN", "/opt/hostedtoolcache/xray/xray"))
 DEFAULT_SAMPLE = 5000
 DEFAULT_BATCH_SIZE = 1000
 DEFAULT_WORKERS = 256
+DEFAULT_BATCH_PROCESSES = 2
 DEFAULT_TIMEOUT = 3.0
 RETRY_ROUNDS = 2
-BASE_PORT = int(os.environ.get("OWNED_204_SOCKS_BASE", "31000"))
+BASE_PORT = int(os.environ.get("OWNED_204_SOCKS_BASE", "10000"))
+MAX_LOCAL_PORT = 65535
 ALLOWED_PORTS = {80, 443}
 
 ENDPOINT_URLS = (
@@ -245,7 +250,7 @@ def owned_204_probe(socks_port: int, endpoint: dict, timeout: float) -> tuple[bo
             f"GET {endpoint['path']} HTTP/1.1\r\n"
             f"Host: {endpoint['host']}\r\n"
             "Connection: close\r\n"
-            "User-Agent: VPN-Nodes-Owned204-Pilot/1.0\r\n"
+            "User-Agent: VPN-Nodes-Owned204-Pilot/2.0\r\n"
             "\r\n"
         ).encode("ascii")
         sock.sendall(request)
@@ -259,7 +264,7 @@ def owned_204_probe(socks_port: int, endpoint: dict, timeout: float) -> tuple[bo
 
         head = bytes(data).split(b"\r\n\r\n", 1)[0]
         lines = head.split(b"\r\n")
-        if not lines:
+        if not lines or not lines[0]:
             return False, -1.0, "no-http-response"
 
         match = re.match(rb"HTTP/\d(?:\.\d)?\s+(\d{3})", lines[0])
@@ -315,6 +320,8 @@ def probe_node(item: dict, timeout: float) -> dict:
                 return {
                     "sample_index": item["sample_index"],
                     "pool_index": item["pool_index"],
+                    "protocol": item.get("protocol"),
+                    "country": item.get("country"),
                     "passed": True,
                     "passed_endpoint": endpoint["name"],
                     "passed_round": round_no,
@@ -325,11 +332,147 @@ def probe_node(item: dict, timeout: float) -> dict:
     return {
         "sample_index": item["sample_index"],
         "pool_index": item["pool_index"],
+        "protocol": item.get("protocol"),
+        "country": item.get("country"),
         "passed": False,
         "passed_endpoint": None,
         "passed_round": None,
         "latency_ms": -1.0,
         "attempts": attempts,
+    }
+
+
+def failed_result(item: dict, reason: str, endpoint: str) -> dict:
+    return {
+        "sample_index": item["sample_index"],
+        "pool_index": item["pool_index"],
+        "protocol": item.get("protocol"),
+        "country": item.get("country"),
+        "passed": False,
+        "passed_endpoint": None,
+        "passed_round": None,
+        "latency_ms": -1.0,
+        "attempts": [{
+            "round": 0,
+            "endpoint": endpoint,
+            "ok": False,
+            "latency_ms": -1.0,
+            "reason": reason,
+        }],
+    }
+
+
+def run_batch(
+    batch_no: int,
+    source_batch: list[dict],
+    total_workers: int,
+    batch_processes: int,
+    timeout: float,
+) -> dict:
+    batch_started = time.perf_counter()
+    prepared: list[dict] = []
+    config_failures: list[dict] = []
+
+    for item in source_batch:
+        sample_index = int(item["sample_index"])
+        local_port = BASE_PORT + sample_index
+        candidate = {
+            **item,
+            "index": sample_index,
+            "port": local_port,
+        }
+        try:
+            rd.xray_outbound(candidate["node"], f"node-{sample_index + 1}")
+        except Exception as exc:
+            config_failures.append({
+                "sample_index": sample_index,
+                "pool_index": candidate["pool_index"],
+                "reason": f"outbound-conversion-{type(exc).__name__}",
+            })
+            continue
+        prepared.append(candidate)
+
+    results: list[dict] = []
+    workers_for_batch = max(1, total_workers // batch_processes)
+
+    with tempfile.TemporaryDirectory(prefix=f"owned-204-batch-{batch_no}-") as td:
+        root = Path(td)
+        valid, rejected = isolate_invalid_configs(root, prepared, batch_no)
+        config_failures.extend(rejected)
+
+        cfg = root / f"batch-{batch_no}.json"
+        if valid:
+            rd.write_cfg(cfg, valid)
+            ok, detail = write_and_test_config(root, valid, f"batch-{batch_no}-final-test")
+            if not ok:
+                for item in valid:
+                    config_failures.append({
+                        "sample_index": item["sample_index"],
+                        "pool_index": item["pool_index"],
+                        "reason": detail,
+                    })
+                valid = []
+
+        if valid:
+            log_path = root / "xray.log"
+            with log_path.open("w+", encoding="utf-8") as log_file:
+                proc = subprocess.Popen(
+                    [str(XRAY), "run", "-c", str(cfg)],
+                    stdout=log_file,
+                    stderr=log_file,
+                )
+                try:
+                    if not wait_batch_ready(valid):
+                        results.extend(
+                            failed_result(item, "xray-batch-start-failed", "xray")
+                            for item in valid
+                        )
+                    else:
+                        with ThreadPoolExecutor(max_workers=workers_for_batch) as executor:
+                            futures = {
+                                executor.submit(probe_node, item, timeout): item
+                                for item in valid
+                            }
+                            for number, future in enumerate(as_completed(futures), 1):
+                                item = futures[future]
+                                try:
+                                    result = future.result()
+                                except Exception as exc:
+                                    result = failed_result(
+                                        item,
+                                        f"worker-{type(exc).__name__}",
+                                        "worker",
+                                    )
+                                results.append(result)
+                                if number % 250 == 0 or number == len(valid):
+                                    passed_now = sum(1 for row in results if row["passed"])
+                                    print(
+                                        f"INFO owned_204_batch={batch_no} "
+                                        f"progress={number}/{len(valid)} pass={passed_now}"
+                                    )
+                finally:
+                    proc.terminate()
+                    try:
+                        proc.wait(5)
+                    except subprocess.TimeoutExpired:
+                        proc.kill()
+
+    batch_passed = sum(1 for result in results if result["passed"])
+    batch_retry_passed = sum(
+        1 for result in results
+        if result["passed"] and result["passed_round"] == 2
+    )
+    return {
+        "batch_no": batch_no,
+        "sampled": len(source_batch),
+        "checked": len(results),
+        "passed": batch_passed,
+        "failed": len(results) - batch_passed,
+        "retry_passed": batch_retry_passed,
+        "xray_config_failed": len(config_failures),
+        "elapsed_seconds": round(time.perf_counter() - batch_started, 2),
+        "results": results,
+        "config_failures": config_failures,
     }
 
 
@@ -352,6 +495,7 @@ def main() -> int:
     parser.add_argument("--sample", type=int, default=DEFAULT_SAMPLE)
     parser.add_argument("--batch-size", type=int, default=DEFAULT_BATCH_SIZE)
     parser.add_argument("--workers", type=int, default=DEFAULT_WORKERS)
+    parser.add_argument("--batch-processes", type=int, default=DEFAULT_BATCH_PROCESSES)
     parser.add_argument("--timeout", type=float, default=DEFAULT_TIMEOUT)
     args = parser.parse_args()
 
@@ -361,6 +505,7 @@ def main() -> int:
     sample_limit = max(1, args.sample)
     batch_size = max(1, min(args.batch_size, 1000))
     workers = max(1, args.workers)
+    batch_processes = max(1, min(args.batch_processes, 4))
     timeout = max(0.5, args.timeout)
 
     pool_total, parseable, parse_failures = load_parseable_pool()
@@ -368,169 +513,83 @@ def main() -> int:
     for sample_index, item in enumerate(sampled):
         item["sample_index"] = sample_index
 
+    if sampled and BASE_PORT + len(sampled) - 1 > MAX_LOCAL_PORT:
+        raise SystemExit(
+            f"sample too large for unique local SOCKS ports: "
+            f"base={BASE_PORT} sampled={len(sampled)} max_port={MAX_LOCAL_PORT}"
+        )
+
+    batches = [
+        (batch_no, sampled[offset:offset + batch_size])
+        for batch_no, offset in enumerate(range(0, len(sampled), batch_size), 1)
+    ]
+    batch_processes = min(batch_processes, max(1, len(batches)))
+    workers_per_batch = max(1, workers // batch_processes)
+
     print(
         f"INFO owned_204_pool={pool_total} parseable={len(parseable)} "
         f"sampled={len(sampled)} strategy=evenly_spaced workers={workers} "
-        f"batch_size={batch_size} timeout={timeout}s rounds={RETRY_ROUNDS}"
+        f"batch_size={batch_size} batch_processes={batch_processes} "
+        f"workers_per_batch={workers_per_batch} timeout={timeout}s rounds={RETRY_ROUNDS}"
     )
 
     started = time.perf_counter()
-    all_results: list[dict] = []
-    config_failures: list[dict] = []
+    batch_outputs: list[dict] = []
+
+    with ThreadPoolExecutor(max_workers=batch_processes) as batch_executor:
+        futures = {
+            batch_executor.submit(
+                run_batch,
+                batch_no,
+                source_batch,
+                workers,
+                batch_processes,
+                timeout,
+            ): batch_no
+            for batch_no, source_batch in batches
+        }
+        for future in as_completed(futures):
+            batch_no = futures[future]
+            output = future.result()
+            batch_outputs.append(output)
+            print(
+                f"INFO owned_204_batch_done={batch_no} "
+                f"checked={output['checked']} pass={output['passed']} "
+                f"config_failed={output['xray_config_failed']} "
+                f"elapsed={output['elapsed_seconds']}s"
+            )
+
+    batch_outputs.sort(key=lambda row: row["batch_no"])
+    all_results = [
+        result
+        for batch in batch_outputs
+        for result in batch["results"]
+    ]
+    all_results.sort(key=lambda row: row["sample_index"])
+    config_failures = [
+        failure
+        for batch in batch_outputs
+        for failure in batch["config_failures"]
+    ]
+
     failure_reasons: Counter = Counter()
     endpoint_attempts: Counter = Counter()
     endpoint_successes: Counter = Counter()
     passed_by_endpoint: Counter = Counter()
-    batch_results: list[dict] = []
     endpoint_names = {endpoint["name"] for endpoint in ENDPOINTS}
 
-    for batch_no, offset in enumerate(range(0, len(sampled), batch_size), 1):
-        batch_started = time.perf_counter()
-        source_batch = sampled[offset:offset + batch_size]
-        prepared: list[dict] = []
+    for result in all_results:
+        for attempt in result["attempts"]:
+            endpoint = attempt["endpoint"]
+            if endpoint in endpoint_names:
+                endpoint_attempts[endpoint] += 1
+                if attempt["ok"]:
+                    endpoint_successes[endpoint] += 1
+            if not attempt["ok"]:
+                failure_reasons[attempt["reason"]] += 1
+        if result["passed"]:
+            passed_by_endpoint[result["passed_endpoint"]] += 1
 
-        for local_index, item in enumerate(source_batch):
-            candidate = {
-                **item,
-                "index": local_index,
-                "port": BASE_PORT + local_index,
-            }
-            try:
-                rd.xray_outbound(candidate["node"], f"node-{candidate['sample_index'] + 1}")
-            except Exception as exc:
-                config_failures.append({
-                    "sample_index": candidate["sample_index"],
-                    "pool_index": candidate["pool_index"],
-                    "reason": f"outbound-conversion-{type(exc).__name__}",
-                })
-                continue
-            prepared.append(candidate)
-
-        batch_checked_before = len(all_results)
-        batch_config_before = len(config_failures)
-
-        with tempfile.TemporaryDirectory(prefix=f"owned-204-batch-{batch_no}-") as td:
-            root = Path(td)
-            valid, rejected = isolate_invalid_configs(root, prepared, batch_no)
-            config_failures.extend(rejected)
-
-            if valid:
-                cfg = root / f"batch-{batch_no}.json"
-                rd.write_cfg(cfg, valid)
-                ok, detail = write_and_test_config(root, valid, f"batch-{batch_no}-final-test")
-                if not ok:
-                    for item in valid:
-                        config_failures.append({
-                            "sample_index": item["sample_index"],
-                            "pool_index": item["pool_index"],
-                            "reason": detail,
-                        })
-                    valid = []
-
-            if valid:
-                log_path = root / "xray.log"
-                with log_path.open("w+", encoding="utf-8") as log_file:
-                    proc = subprocess.Popen(
-                        [str(XRAY), "run", "-c", str(cfg)],
-                        stdout=log_file,
-                        stderr=log_file,
-                    )
-                    try:
-                        if not wait_batch_ready(valid):
-                            log_file.flush()
-                            proc.poll()
-                            reason = "xray-batch-start-failed"
-                            for item in valid:
-                                result = {
-                                    "sample_index": item["sample_index"],
-                                    "pool_index": item["pool_index"],
-                                    "passed": False,
-                                    "passed_endpoint": None,
-                                    "passed_round": None,
-                                    "latency_ms": -1.0,
-                                    "attempts": [{
-                                        "round": 0,
-                                        "endpoint": "xray",
-                                        "ok": False,
-                                        "latency_ms": -1.0,
-                                        "reason": reason,
-                                    }],
-                                }
-                                all_results.append(result)
-                        else:
-                            with ThreadPoolExecutor(max_workers=workers) as executor:
-                                futures = {
-                                    executor.submit(probe_node, item, timeout): item
-                                    for item in valid
-                                }
-                                for number, future in enumerate(as_completed(futures), 1):
-                                    item = futures[future]
-                                    try:
-                                        result = future.result()
-                                    except Exception as exc:
-                                        reason = f"worker-{type(exc).__name__}"
-                                        result = {
-                                            "sample_index": item["sample_index"],
-                                            "pool_index": item["pool_index"],
-                                            "passed": False,
-                                            "passed_endpoint": None,
-                                            "passed_round": None,
-                                            "latency_ms": -1.0,
-                                            "attempts": [{
-                                                "round": 0,
-                                                "endpoint": "worker",
-                                                "ok": False,
-                                                "latency_ms": -1.0,
-                                                "reason": reason,
-                                            }],
-                                        }
-                                    all_results.append(result)
-                                    if number % 250 == 0 or number == len(valid):
-                                        passed_now = sum(
-                                            1 for row in all_results[batch_checked_before:]
-                                            if row["passed"]
-                                        )
-                                        print(
-                                            f"INFO owned_204_batch={batch_no} "
-                                            f"progress={number}/{len(valid)} pass={passed_now}"
-                                        )
-                    finally:
-                        proc.terminate()
-                        try:
-                            proc.wait(5)
-                        except subprocess.TimeoutExpired:
-                            proc.kill()
-
-        batch_slice = all_results[batch_checked_before:]
-        for result in batch_slice:
-            for attempt in result["attempts"]:
-                endpoint = attempt["endpoint"]
-                if endpoint in endpoint_names:
-                    endpoint_attempts[endpoint] += 1
-                    if attempt["ok"]:
-                        endpoint_successes[endpoint] += 1
-                if not attempt["ok"]:
-                    failure_reasons[attempt["reason"]] += 1
-            if result["passed"]:
-                passed_by_endpoint[result["passed_endpoint"]] += 1
-
-        batch_passed = sum(1 for result in batch_slice if result["passed"])
-        batch_retry_passed = sum(
-            1 for result in batch_slice
-            if result["passed"] and result["passed_round"] == 2
-        )
-        batch_results.append({
-            "batch": batch_no,
-            "sampled": len(source_batch),
-            "xray_config_failed": len(config_failures) - batch_config_before,
-            "checked": len(batch_slice),
-            "passed": batch_passed,
-            "failed": len(batch_slice) - batch_passed,
-            "retry_passed": batch_retry_passed,
-            "elapsed_seconds": round(time.perf_counter() - batch_started, 2),
-        })
-
-    all_results.sort(key=lambda row: row["sample_index"])
     checked = len(all_results)
     passed = sum(1 for result in all_results if result["passed"])
     failed = checked - passed
@@ -544,13 +603,20 @@ def main() -> int:
         if result["passed"] and result["latency_ms"] >= 0
     ]
 
-    top_failure_reasons = [
-        {"reason": reason, "count": count}
-        for reason, count in failure_reasons.most_common(20)
-    ]
+    protocol_stats: dict[str, dict[str, int | float]] = {}
+    for protocol in sorted({str(row.get("protocol") or "unknown") for row in all_results}):
+        rows = [row for row in all_results if str(row.get("protocol") or "unknown") == protocol]
+        protocol_passed = sum(1 for row in rows if row["passed"])
+        protocol_stats[protocol] = {
+            "checked": len(rows),
+            "passed": protocol_passed,
+            "failed": len(rows) - protocol_passed,
+            "pass_rate_pct": round((protocol_passed / len(rows)) * 100, 2) if rows else 0.0,
+        }
+
     endpoint_names_ordered = [endpoint["name"] for endpoint in ENDPOINTS]
     report = {
-        "schema": 2,
+        "schema": 3,
         "generated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
         "mode": "non_gating_xray_owned_204_pilot",
         "publishes_catalog": False,
@@ -566,7 +632,9 @@ def main() -> int:
         "retry_passed": retry_passed,
         "elapsed_seconds": round(time.perf_counter() - started, 2),
         "workers": workers,
+        "workers_per_batch": workers_per_batch,
         "batch_size": batch_size,
+        "batch_processes": batch_processes,
         "timeout_seconds": timeout,
         "retry_rounds_total": RETRY_ROUNDS,
         "allowed_ports": sorted(ALLOWED_PORTS),
@@ -584,6 +652,7 @@ def main() -> int:
         "endpoint_successes": {
             name: endpoint_successes.get(name, 0) for name in endpoint_names_ordered
         },
+        "protocol_stats": protocol_stats,
         "latency_ms": {
             "min": round(min(successful_latencies), 1) if successful_latencies else None,
             "p50": percentile(successful_latencies, 0.50),
@@ -591,12 +660,27 @@ def main() -> int:
             "p99": percentile(successful_latencies, 0.99),
             "max": round(max(successful_latencies), 1) if successful_latencies else None,
         },
-        "top_failure_reasons": top_failure_reasons,
+        "top_failure_reasons": [
+            {"reason": reason, "count": count}
+            for reason, count in failure_reasons.most_common(20)
+        ],
         "parse_failure_reasons": [
             {"reason": reason, "count": count}
             for reason, count in parse_failures.most_common(20)
         ],
-        "batch_results": batch_results,
+        "batch_results": [
+            {
+                "batch": batch["batch_no"],
+                "sampled": batch["sampled"],
+                "xray_config_failed": batch["xray_config_failed"],
+                "checked": batch["checked"],
+                "passed": batch["passed"],
+                "failed": batch["failed"],
+                "retry_passed": batch["retry_passed"],
+                "elapsed_seconds": batch["elapsed_seconds"],
+            }
+            for batch in batch_outputs
+        ],
     }
 
     REPORT_FILE.parent.mkdir(parents=True, exist_ok=True)
@@ -607,7 +691,8 @@ def main() -> int:
     print(
         f"INFO OWNED_204_PILOT checked={checked} passed={passed} failed={failed} "
         f"pass_rate_pct={report['pass_rate_pct']} retry_passed={retry_passed} "
-        f"xray_config_failed={len(config_failures)} report={REPORT_FILE}"
+        f"xray_config_failed={len(config_failures)} elapsed={report['elapsed_seconds']}s "
+        f"report={REPORT_FILE}"
     )
     return 0
 
