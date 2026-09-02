@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import asyncio
+import html
 import json
 import time
 from pathlib import Path
@@ -37,7 +38,17 @@ def main() -> int:
         source_health.extend(health)
         print(f"INFO loaded {path.name}: rows={len(rows)}")
 
-    protocol_rows = [row for row in all_rows if str(row.get("protocol") or "").lower() != "openvpn"]
+    protocol_rows: list[dict] = []
+    html_uri_normalized = 0
+    for original in all_rows:
+        if str(original.get("protocol") or "").lower() == "openvpn":
+            continue
+        raw_uri = str(original.get("uri") or "").strip()
+        clean_uri = html.unescape(raw_uri)
+        if clean_uri != raw_uri:
+            html_uri_normalized += 1
+        protocol_rows.append({**original, "uri": clean_uri})
+
     unique: dict[str, dict] = {}
     for row in protocol_rows:
         unique.setdefault(node_identity.dedup_key(row["uri"]), row)
@@ -46,7 +57,8 @@ def main() -> int:
 
     print(
         f"INFO merged={len(all_rows)} protocol_rows={len(protocol_rows)} "
-        f"protocol_candidates={len(rows)} semantic_dedup_removed={semantic_dedup_removed}"
+        f"protocol_candidates={len(rows)} semantic_dedup_removed={semantic_dedup_removed} "
+        f"html_uri_normalized={html_uri_normalized}"
     )
     tcp_checked = asyncio.run(common.run_tcp_checks(rows))
     print(f"INFO tcp_reachable={len(tcp_checked)} tcp_dead={len(rows) - len(tcp_checked)}")
@@ -55,12 +67,13 @@ def main() -> int:
     # the publication boundary: every TCP-reachable row is evaluated below.
     META.mkdir(parents=True, exist_ok=True)
     tcp_payload = {
-        "schema": 3,
+        "schema": 4,
         "generated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
         "total_parsed": len(all_rows),
         "protocol_rows": len(protocol_rows),
         "protocol_candidates": len(rows),
         "semantic_dedup_removed": semantic_dedup_removed,
+        "html_uri_normalized": html_uri_normalized,
         "tcp_reachable": len(tcp_checked),
         "tcp_workers": common.TCP_WORKERS,
         "allowed_ports": sorted(catalog.ALLOWED_PORTS),
@@ -81,20 +94,23 @@ def main() -> int:
     )
     print(
         f"INFO transport_publishable={len(validated)} "
-        f"transport_rejected={len(tcp_checked) - len(validated)}"
+        f"transport_hard_rejected={len(tcp_checked) - len(validated)} "
+        f"transport_soft_publishable={handshake_meta.get('soft_failed_publishable', 0)}"
     )
 
     meta = common.publish_app_pool(validated, source_health, handshake_meta)
     merged_payload = {
-        "schema": 3,
+        "schema": 4,
         "generated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
         "total_parsed": len(all_rows),
         "protocol_rows": len(protocol_rows),
         "protocol_candidates": len(rows),
         "semantic_dedup_removed": semantic_dedup_removed,
+        "html_uri_normalized": html_uri_normalized,
         "tcp_reachable": len(tcp_checked),
         "transport_publishable": len(validated),
         "transport_rejected": len(tcp_checked) - len(validated),
+        "transport_soft_publishable": handshake_meta.get("soft_failed_publishable", 0),
         "sources": source_health,
         "transport_handshake": handshake_meta,
         "common_pool": meta,
