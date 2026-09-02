@@ -48,11 +48,33 @@ jobs:
           V2NODES_RETRY_TIMEOUT: 30
         run: |
           set -euo pipefail
-          rm -rf output/country_shards
-          rm -f output/metadata/transport_handshake.json
+
+          # Remove abandoned experimental outputs before rebuilding the catalog.
+          # Keep index.json because Oracle-side automation may use its timestamp.
+          rm -rf output/country_shards output/active output/backup
+          rm -f \
+            output/metadata/transport_handshake.json \
+            output/metadata/real_delay.json \
+            output/metadata/core_driven_health.json \
+            output/metadata/staged_health.json \
+            output/metadata/xray_probe_experiment.json \
+            output/metadata/openvpn_candidates.json \
+            output/metadata/health.json
+
           python tests/test_country_resolver.py
           python tests/test_node_identity.py
-          python -m py_compile scripts/node_identity.py scripts/verify_country_feeds.py scripts/build_tcp_pool.py scripts/merge_and_build_tcp_pool.py scripts/sign_catalog.py
+          python -m py_compile \
+            scripts/update_catalog.py \
+            scripts/country_resolver.py \
+            scripts/node_identity.py \
+            scripts/build_sources_candidates.py \
+            scripts/build_telegram_candidates.py \
+            scripts/build_v2nodes_candidates.py \
+            scripts/v2nodes_adapter.py \
+            scripts/build_tcp_pool.py \
+            scripts/merge_and_build_tcp_pool.py \
+            scripts/verify_country_feeds.py \
+            scripts/sign_catalog.py
           python scripts/build_sources_candidates.py
           python scripts/build_telegram_candidates.py
           python scripts/build_v2nodes_candidates.py

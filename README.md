@@ -1,55 +1,39 @@
 # VPN-Nodes
 
-Automated catalog builder for VPN/Xray node candidates.
+Public node catalog builder for the Android VPN client.
 
-## Validation model
-
-The backend intentionally performs a lightweight **TCP reachability** check only. A node published by this repository has an endpoint that accepted a TCP connection at generation time; that does **not** prove that the full VLESS/VMess/Trojan/Shadowsocks configuration is valid.
-
-The Android application owns the final runtime validation using Xray plus a local HTTP/Internet health check.
-
-Pipeline:
+## Pipeline
 
 ```text
-public sources + Telegram + v2nodes
-        -> parse / normalize / deduplicate
-        -> TCP reachability check
+sources.json + Telegram + v2nodes
+        -> parse / normalize / semantic deduplicate
+        -> TCP reachability on ports 80/443 (512 workers)
         -> country resolution
         -> output/countries/<CC>.txt
         -> Android Xray + real-traffic validation
 ```
 
-## App-facing output
+The repository deliberately stops at TCP reachability. It does not run transport handshakes or Xray compatibility checks; the Android app owns the final runtime test.
 
-The country feeds consumed by the app live at:
+## Repository layout
 
-```text
-output/countries/<COUNTRY_CODE>.txt
-```
+- `sources/` — maintained source lists.
+- `scripts/` — current catalog pipeline plus Oracle automation support.
+- `data/` — GeoLite2 Country database and catalog signing public key.
+- `output/countries/` — canonical country feeds consumed by the app.
+- `output/protocols/` — protocol-specific feeds.
+- `output/metadata/` — compact catalog/index/signing metadata.
+- `.github/workflows/update.yml` — catalog workflow; intentionally `workflow_dispatch` only.
+- `.github/workflows/update_geolite2.yml` — GeoLite2 refresh on the 1st and 15th of each month, plus manual dispatch.
 
-`output/active/` is no longer generated because it duplicated the country feeds.
+## Scheduling
 
-Protocol-level feeds remain under `output/protocols/`, and compact run metadata remains under `output/metadata/`.
+The catalog workflow intentionally has no GitHub cron. An external Oracle server schedules the hourly refresh and sends `workflow_dispatch` using its own GitHub credential. No scheduler token or private credential is stored in this repository.
 
-## Temporary workflow files
+## Generated intermediates
 
-The collectors still generate intermediate JSON files during a workflow run because later steps need them. They are intentionally ignored by Git and are discarded with the GitHub Actions runner after the job finishes:
+Collector and TCP intermediate JSON files exist only during a workflow run and are ignored by Git. They are not part of the published repository.
 
-- `output/metadata/sources_candidates.json`
-- `output/metadata/telegram_candidates.json`
-- `output/metadata/v2nodes_candidates.json`
-- `output/metadata/tcp_reachable.json`
-- `output/metadata/merged_pool.json`
+## Catalog semantics
 
-This keeps the pipeline behavior unchanged while avoiding large, fast-changing intermediate blobs in repository history.
-
-## Updating the catalog
-
-Run the **Update node catalog** GitHub Actions workflow. It installs the pinned Python dependencies, prepares the local GeoLite2 database, runs the country resolver regression tests, builds/merges candidates, performs the common TCP checks, verifies the app metadata, and commits only publishable `output/` changes.
-
-## Important semantics
-
-- `TCP alive` means the advertised host/port accepted a TCP connection during the run.
-- It is not equivalent to `Xray verified`.
-- Country feeds are the canonical app-facing node lists.
-- Final protocol/runtime verification belongs to the Android client.
+`TCP alive` only means the advertised endpoint accepted a TCP connection when the catalog was generated. VLESS/VMess/Trojan/Shadowsocks correctness and Internet access are verified later by Xray inside the Android application.
