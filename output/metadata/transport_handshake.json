@@ -1,76 +1,96 @@
 {
-  "schema": 1,
-  "generated_at": "2026-09-02T09:00:55Z",
-  "input_tcp_reachable": 44367,
-  "checked_total": 44367,
-  "active_handshake_checked": 35675,
-  "tcp_syntax_only": 7595,
-  "passed_total": 13376,
-  "rejected_total": 30991,
-  "parse_rejected": 1097,
-  "active_handshake_passed": 5781,
-  "active_handshake_failed": 29894,
-  "retry_passed": 1088,
+  "schema": 2,
+  "generated_at": "2026-09-02T10:16:46Z",
+  "input_tcp_reachable": 45069,
+  "checked_total": 45069,
+  "active_handshake_checked": 35991,
+  "tcp_syntax_only": 8218,
+  "active_handshake_verified": 6435,
+  "active_handshake_failed": 29556,
+  "soft_failed_publishable": 26796,
+  "hard_rejected": 3620,
+  "passed_total": 41449,
+  "rejected_total": 3620,
+  "parse_rejected": 860,
+  "active_handshake_passed": 6435,
+  "retry_passed": 278,
   "workers": 256,
   "timeout_seconds": 2.5,
   "rounds": 2,
-  "elapsed_seconds": 1098.4,
+  "soft_fail_modes": [
+    "httpupgrade",
+    "websocket"
+  ],
+  "elapsed_seconds": 801.71,
   "mode_counts": {
-    "http2": 723,
-    "httpupgrade": 150,
-    "plain-tcp": 2744,
-    "reality-tcp": 4531,
-    "shadowsocks-tcp": 320,
-    "tls": 6833,
-    "websocket": 27969
+    "http2": 724,
+    "httpupgrade": 190,
+    "plain-tcp": 2178,
+    "reality-tcp": 5681,
+    "shadowsocks-tcp": 359,
+    "tls": 6695,
+    "websocket": 28382
   },
   "passed_by_mode": {
-    "http2": 136,
-    "tls": 3987,
-    "websocket": 1658
+    "http2": 148,
+    "tls": 4511,
+    "websocket": 1776
   },
   "failed_by_mode": {
-    "http2": 587,
-    "httpupgrade": 150,
-    "tls": 2846,
-    "websocket": 26311
+    "http2": 576,
+    "httpupgrade": 190,
+    "tls": 2184,
+    "websocket": 26606
+  },
+  "soft_failed_by_mode": {
+    "httpupgrade": 190,
+    "websocket": 26606
+  },
+  "hard_failed_by_mode": {
+    "http2": 576,
+    "tls": 2184
   },
   "protocol_counts": {
-    "shadowsocks": 320,
-    "trojan": 7278,
-    "vless": 33554,
-    "vmess": 2118
+    "shadowsocks": 359,
+    "trojan": 7322,
+    "vless": 34418,
+    "vmess": 2110
   },
   "passed_by_protocol": {
-    "trojan": 3169,
-    "vless": 2538,
-    "vmess": 74
+    "trojan": 3632,
+    "vless": 2735,
+    "vmess": 68
   },
   "failed_by_protocol": {
-    "trojan": 4101,
-    "vless": 23805,
-    "vmess": 1988
+    "trojan": 3682,
+    "vless": 23875,
+    "vmess": 1999
+  },
+  "soft_publishable_by_protocol": {
+    "trojan": 2001,
+    "vless": 22812,
+    "vmess": 1983
   },
   "parse_failure_reasons": [
     {
       "reason": "invalid-shadowsocks-credentials",
-      "count": 821
-    },
-    {
-      "reason": "invalid-reality-public-key",
-      "count": 212
+      "count": 725
     },
     {
       "reason": "invalid-vless-uuid",
-      "count": 57
+      "count": 82
     },
     {
-      "reason": "'utf-8' codec can't decode byte 0xf6 in position 2: invalid start byte",
-      "count": 2
+      "reason": "invalid-reality-public-key",
+      "count": 47
     },
     {
       "reason": "'utf-8' codec can't decode byte 0xbd in position 1: invalid start byte",
       "count": 2
+    },
+    {
+      "reason": "'utf-8' codec can't decode byte 0xf6 in position 2: invalid start byte",
+      "count": 1
     },
     {
       "reason": "'utf-8' codec can't decode byte 0xdb in position 2: invalid continuation byte",
@@ -88,43 +108,43 @@
   "top_failure_reasons": [
     {
       "reason": "tls-error-SSLV3_ALERT_HANDSHAKE_FAILURE",
-      "count": 8999
+      "count": 9331
     },
     {
       "reason": "websocket-status-403",
-      "count": 4560
+      "count": 4445
     },
     {
       "reason": "websocket-status-500",
-      "count": 3284
+      "count": 3574
     },
     {
       "reason": "websocket-status-409",
-      "count": 2384
-    },
-    {
-      "reason": "timeout",
-      "count": 2307
+      "count": 2435
     },
     {
       "reason": "websocket-status-530",
-      "count": 2194
+      "count": 2219
     },
     {
       "reason": "websocket-status-400",
-      "count": 1473
+      "count": 1426
     },
     {
       "reason": "websocket-status-404",
-      "count": 1323
+      "count": 1260
+    },
+    {
+      "reason": "timeout",
+      "count": 1193
     },
     {
       "reason": "websocket-status-429",
-      "count": 649
+      "count": 721
     },
     {
       "reason": "tls-error-WRONG_VERSION_NUMBER",
-      "count": 425
+      "count": 445
     }
   ]
 }
