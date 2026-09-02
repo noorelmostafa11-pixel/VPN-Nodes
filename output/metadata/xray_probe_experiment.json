@@ -1,0 +1,146 @@
+{
+  "schema": 2,
+  "generated_at": "2026-09-02T07:37:17Z",
+  "mode": "non_gating_xray_owned_204_pilot",
+  "publishes_catalog": false,
+  "sample_strategy": "evenly_spaced_across_parseable_tcp_reachable_pool",
+  "pool_total": 44183,
+  "parseable_total": 43094,
+  "sampled": 5000,
+  "checked": 4987,
+  "passed": 157,
+  "failed": 4830,
+  "pass_rate_pct": 3.15,
+  "xray_config_failed": 13,
+  "retry_passed": 1,
+  "elapsed_seconds": 250.39,
+  "workers": 256,
+  "batch_size": 1000,
+  "timeout_seconds": 3.0,
+  "retry_rounds_total": 2,
+  "allowed_ports": [
+    80,
+    443
+  ],
+  "success_policy": "first endpoint with HTTP 204 and X-Node-Probe: ok; retry full endpoint chain once only",
+  "endpoints": [
+    {
+      "name": "oracle_1",
+      "url": "http://84.235.244.28/node-health-204"
+    },
+    {
+      "name": "oracle_2",
+      "url": "http://145.241.120.1/node-health-204"
+    },
+    {
+      "name": "cloudflare_worker",
+      "url": "https://node-health-probe.noorelmostafa11.workers.dev/node-health-204"
+    }
+  ],
+  "passed_by_endpoint": {
+    "oracle_1": 150,
+    "oracle_2": 7,
+    "cloudflare_worker": 0
+  },
+  "endpoint_attempts": {
+    "oracle_1": 9818,
+    "oracle_2": 9668,
+    "cloudflare_worker": 9661
+  },
+  "endpoint_successes": {
+    "oracle_1": 150,
+    "oracle_2": 7,
+    "cloudflare_worker": 0
+  },
+  "latency_ms": {
+    "min": 492.4,
+    "p50": 812.8,
+    "p95": 1983.2,
+    "p99": 2580.7,
+    "max": 2738.7
+  },
+  "top_failure_reasons": [
+    {
+      "reason": "socket-error-104",
+      "count": 13587
+    },
+    {
+      "reason": "no-http-status",
+      "count": 6579
+    },
+    {
+      "reason": "timeout",
+      "count": 4252
+    },
+    {
+      "reason": "tls-error",
+      "count": 3752
+    },
+    {
+      "reason": "unexpected-status-400",
+      "count": 820
+    }
+  ],
+  "parse_failure_reasons": [
+    {
+      "reason": "parse-ValueError",
+      "count": 1083
+    },
+    {
+      "reason": "parse-UnicodeDecodeError",
+      "count": 6
+    }
+  ],
+  "batch_results": [
+    {
+      "batch": 1,
+      "sampled": 1000,
+      "xray_config_failed": 4,
+      "checked": 996,
+      "passed": 111,
+      "failed": 885,
+      "retry_passed": 1,
+      "elapsed_seconds": 45.71
+    },
+    {
+      "batch": 2,
+      "sampled": 1000,
+      "xray_config_failed": 2,
+      "checked": 998,
+      "passed": 22,
+      "failed": 976,
+      "retry_passed": 0,
+      "elapsed_seconds": 51.43
+    },
+    {
+      "batch": 3,
+      "sampled": 1000,
+      "xray_config_failed": 1,
+      "checked": 999,
+      "passed": 3,
+      "failed": 996,
+      "retry_passed": 0,
+      "elapsed_seconds": 50.32
+    },
+    {
+      "batch": 4,
+      "sampled": 1000,
+      "xray_config_failed": 2,
+      "checked": 998,
+      "passed": 5,
+      "failed": 993,
+      "retry_passed": 0,
+      "elapsed_seconds": 50.8
+    },
+    {
+      "batch": 5,
+      "sampled": 1000,
+      "xray_config_failed": 4,
+      "checked": 996,
+      "passed": 16,
+      "failed": 980,
+      "retry_passed": 0,
+      "elapsed_seconds": 52.13
+    }
+  ]
+}
