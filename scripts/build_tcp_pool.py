@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import asyncio
 import json
+import shutil
 import time
 from pathlib import Path
 
@@ -85,13 +86,19 @@ def publish_app_pool(rows: list[dict], source_health: list[dict]) -> dict:
         "unknown": 0,
     }
 
+    # output/active used to duplicate output/countries byte-for-byte. Remove any
+    # stale local copy and publish only the country feeds consumed by the app.
+    legacy_active_dir = OUT / "active"
+    if legacy_active_dir.exists():
+        shutil.rmtree(legacy_active_dir)
+
     out_dirs = {
-        name: OUT / name for name in ("countries", "active", "backup", "protocols", "metadata")
+        name: OUT / name for name in ("countries", "backup", "protocols", "metadata")
     }
     for directory in out_dirs.values():
         directory.mkdir(parents=True, exist_ok=True)
 
-    for name in ("countries", "active", "backup", "protocols"):
+    for name in ("countries", "backup", "protocols"):
         for path in out_dirs[name].glob("*.txt"):
             path.unlink()
 
@@ -122,9 +129,6 @@ def publish_app_pool(rows: list[dict], source_health: list[dict]) -> dict:
         (out_dirs["countries"] / f"{country}.txt").write_text(
             "\n".join(uris) + "\n", encoding="utf-8"
         )
-        (out_dirs["active"] / f"{country}.txt").write_text(
-            "\n".join(uris) + "\n", encoding="utf-8"
-        )
         published_total += len(uris)
 
     for protocol, uris in protocol_rows.items():
@@ -150,8 +154,11 @@ def publish_app_pool(rows: list[dict], source_health: list[dict]) -> dict:
         "backup_per_country": None,
         "selection_policy": "all_tcp_alive_nodes_with_resolved_country; explicit_country_metadata_first_then_geoip_then_latency",
         "country_order_policy": "explicit_country_metadata_first; geoip_second; latency_ascending_within_tier",
+        "country_feed_directory": "output/countries",
+        "active_directory_generated": False,
         "alive_with_country": sum(len(v) for v in grouped.values()),
         "alive_unknown_country": len(unknown_rows),
+        "published_country_nodes": published_total,
         "published_active": published_total,
         "published_backup": 0,
         "published_total": published_total,
@@ -165,7 +172,7 @@ def publish_app_pool(rows: list[dict], source_health: list[dict]) -> dict:
 
     print(
         f"INFO APP_POOL alive_with_country={app_meta['alive_with_country']} "
-        f"active={published_total} backup=0 published={published_total} "
+        f"countries={published_total} backup=0 published={published_total} "
         f"per_country_cap=None explicit_metadata_first=true"
     )
     return app_meta
