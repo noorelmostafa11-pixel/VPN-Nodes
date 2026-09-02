@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Merge collectors, semantic-dedup, run TCP, then transport validation."""
+"""Merge collectors, semantic-dedup, then publish the common TCP-only pool."""
 from __future__ import annotations
 
 import asyncio
@@ -10,7 +10,6 @@ from pathlib import Path
 
 import build_tcp_pool as common
 import node_identity
-import transport_handshake
 import update_catalog as catalog
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -60,14 +59,16 @@ def main() -> int:
         f"protocol_candidates={len(rows)} semantic_dedup_removed={semantic_dedup_removed} "
         f"html_uri_normalized={html_uri_normalized}"
     )
+
     tcp_checked = asyncio.run(common.run_tcp_checks(rows))
     print(f"INFO tcp_reachable={len(tcp_checked)} tcp_dead={len(rows) - len(tcp_checked)}")
 
-    # Runtime-only TCP snapshot. It remains useful for diagnostics but is no longer
-    # the publication boundary: every TCP-reachable row is evaluated below.
     META.mkdir(parents=True, exist_ok=True)
+    # Remove stale metadata from the abandoned transport-handshake publication path.
+    (META / "transport_handshake.json").unlink(missing_ok=True)
+
     tcp_payload = {
-        "schema": 4,
+        "schema": 5,
         "generated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
         "total_parsed": len(all_rows),
         "protocol_rows": len(protocol_rows),
@@ -80,44 +81,34 @@ def main() -> int:
         "source_failures": sum(1 for source in source_health if not source.get("ok")),
         "sources": source_health,
         "nodes": tcp_checked,
+        "country_order_policy": "explicit_country_metadata_first; geoip_second; latency_ascending_within_tier",
     }
     (META / "tcp_reachable.json").write_text(
         json.dumps(tcp_payload, ensure_ascii=False, indent=2) + "\n",
         encoding="utf-8",
     )
-    print(f"INFO runtime_tcp_pool={len(tcp_checked)} path=output/metadata/tcp_reachable.json")
 
-    validated, handshake_meta = asyncio.run(transport_handshake.run_transport_checks(tcp_checked))
-    (META / "transport_handshake.json").write_text(
-        json.dumps(handshake_meta, ensure_ascii=False, indent=2) + "\n",
-        encoding="utf-8",
-    )
-    print(
-        f"INFO transport_publishable={len(validated)} "
-        f"transport_hard_rejected={len(tcp_checked) - len(validated)} "
-        f"transport_soft_publishable={handshake_meta.get('soft_failed_publishable', 0)}"
-    )
-
-    meta = common.publish_app_pool(validated, source_health, handshake_meta)
+    meta = common.publish_app_pool(tcp_checked, source_health)
     merged_payload = {
-        "schema": 4,
+        "schema": 5,
         "generated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+        "mode": "tcp_only_android_final_xray_check",
         "total_parsed": len(all_rows),
         "protocol_rows": len(protocol_rows),
         "protocol_candidates": len(rows),
         "semantic_dedup_removed": semantic_dedup_removed,
         "html_uri_normalized": html_uri_normalized,
         "tcp_reachable": len(tcp_checked),
-        "transport_publishable": len(validated),
-        "transport_rejected": len(tcp_checked) - len(validated),
-        "transport_soft_publishable": handshake_meta.get("soft_failed_publishable", 0),
         "sources": source_health,
-        "transport_handshake": handshake_meta,
         "common_pool": meta,
     }
     (META / "merged_pool.json").write_text(
         json.dumps(merged_payload, ensure_ascii=False, indent=2) + "\n",
         encoding="utf-8",
+    )
+    print(
+        f"INFO published_tcp_only={meta.get('published_total', 0)} "
+        f"order=tcp_latency_ascending android_final_xray=true"
     )
     return 0
 
