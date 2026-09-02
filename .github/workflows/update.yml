@@ -48,16 +48,6 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
         run: python scripts/build_sources_candidates.py
 
-      - name: Install OpenVPN runtime
-        run: |
-          sudo apt-get update -qq
-          sudo apt-get install -y --no-install-recommends openvpn
-
-      - name: Verify OpenVPN candidates
-        env:
-          OPENVPN_NODE_TIMEOUT: 25
-        run: python scripts/vpngate_openvpn.py
-
       - name: Build candidates from telegram_channels.json
         env:
           GITHUB_TOKEN: ${{ github.token }}
