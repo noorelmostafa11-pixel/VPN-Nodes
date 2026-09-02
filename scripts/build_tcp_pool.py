@@ -1,10 +1,8 @@
 #!/usr/bin/env python3
-"""Build the lightweight, app-facing node pool.
+"""Build the lightweight app-facing TCP pool.
 
-The repository performs two fast validation layers before publication:
-1) asynchronous TCP liveness; 2) advertised transport handshake where that can be
-validated independently of protocol credentials.  The Android application still
-owns the final runtime tunnel/Internet health-check.
+Repository responsibility stops at endpoint TCP liveness and country assignment.
+The Android application owns Xray startup and the final real-traffic health check.
 """
 from __future__ import annotations
 
@@ -47,7 +45,7 @@ async def run_tcp_checks(rows: list[dict]) -> list[dict]:
     total = len(rows)
     completed = 0
 
-    async def one(item: dict):
+    async def one(item: dict) -> None:
         nonlocal completed
         row, latency = await tcp_probe(item, semaphore)
         completed += 1
@@ -66,16 +64,16 @@ async def run_tcp_checks(rows: list[dict]) -> list[dict]:
     return results
 
 
-def publish_app_pool(rows: list[dict], source_health: list[dict], handshake_meta: dict | None = None) -> dict:
-    """Publish transport-validated nodes with resolved country; no per-country cap.
+def publish_app_pool(rows: list[dict], source_health: list[dict]) -> dict:
+    """Publish every TCP-alive node, ordered by measured TCP latency.
 
-    Explicit country metadata remains first. Within each metadata tier, nodes with a
-    verified active transport handshake rank ahead of TCP+syntax-only nodes, then by
-    measured transport latency and TCP latency.
+    Explicit country metadata stays ahead of GeoIP/fallback resolution as before.
+    Inside each country-resolution tier, latency_ms is strictly ascending. No TLS,
+    WebSocket, HTTP/2 or protocol handshake is performed here; Xray on Android is
+    the final compatibility and Internet-health authority.
     """
     import country_resolver
 
-    handshake_meta = handshake_meta or {}
     country_result = country_resolver.resolve_rows(rows) if rows else {
         "hostname": 0,
         "geoip_local": 0,
@@ -115,8 +113,6 @@ def publish_app_pool(rows: list[dict], source_health: list[dict], handshake_meta
     for country, country_rows in sorted(grouped.items()):
         country_rows.sort(key=lambda item: (
             0 if str(item.get("country_resolution") or "").lower() == "metadata_explicit" else 1,
-            -int(item.get("health_score", 60)),
-            float(item.get("handshake_latency_ms") if item.get("handshake_latency_ms") is not None else 10**9),
             float(item.get("latency_ms", 10**9)),
             str(item.get("protocol", "")),
             str(item.get("source", "")),
@@ -139,21 +135,18 @@ def publish_app_pool(rows: list[dict], source_health: list[dict], handshake_meta
         )
 
     app_meta = {
-        "schema": 22,
+        "schema": 21,
         "generated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
-        "mode": "tcp_plus_transport_handshake_android_final_runtime_check",
-        "liveness_test": "TCP connect plus advertised TLS/WebSocket/HTTP2 transport handshake where independently testable",
+        "mode": "tcp_liveness_only_android_final_xray_check",
+        "liveness_test": "TCP connect to advertised endpoint",
         "final_runtime_test": "Android Xray + local HTTP health-check",
         "allowed_ports": [80, 443],
         "tcp_workers": TCP_WORKERS,
-        "transport_handshake_workers": handshake_meta.get("workers"),
-        "transport_handshake_timeout_seconds": handshake_meta.get("timeout_seconds"),
-        "transport_handshake_rounds": handshake_meta.get("rounds"),
         "per_country_cap": None,
         "active_per_country": None,
         "backup_per_country": None,
-        "selection_policy": "all_transport_publishable_nodes_with_resolved_country; explicit_country_metadata_first_then_handshake_quality_then_latency",
-        "country_order_policy": "explicit_country_metadata_first; verified_transport_before_tcp_syntax_only; handshake_latency_then_tcp_latency",
+        "selection_policy": "all_tcp_alive_nodes_with_resolved_country; explicit_country_metadata_first_then_geoip_then_latency",
+        "country_order_policy": "explicit_country_metadata_first; geoip_second; latency_ascending_within_tier",
         "country_feed_directory": "output/countries",
         "active_directory_generated": False,
         "alive_with_country": sum(len(v) for v in grouped.values()),
@@ -162,9 +155,8 @@ def publish_app_pool(rows: list[dict], source_health: list[dict], handshake_meta
         "published_active": published_total,
         "published_backup": 0,
         "published_total": published_total,
-        "transport_handshake": handshake_meta,
         "country_resolution": country_result,
-        "source_failures": sum(1 for source in source_health if not source["ok"]),
+        "source_failures": sum(1 for source in source_health if not source.get("ok")),
         "sources": source_health,
     }
     (out_dirs["metadata"] / "app_pool.json").write_text(
@@ -172,16 +164,14 @@ def publish_app_pool(rows: list[dict], source_health: list[dict], handshake_meta
     )
 
     print(
-        f"INFO APP_POOL alive_with_country={app_meta['alive_with_country']} "
+        f"INFO APP_POOL tcp_only=true alive_with_country={app_meta['alive_with_country']} "
         f"countries={published_total} backup=0 published={published_total} "
-        f"transport_validation=true per_country_cap=None"
+        f"order=tcp_latency_ascending"
     )
     return app_meta
 
 
 def main() -> None:
-    import transport_handshake
-
     cfg = json.loads(SOURCES.read_text(encoding="utf-8"))
     all_rows: list[dict] = []
     source_health: list[dict] = []
@@ -225,7 +215,6 @@ def main() -> None:
         row for row in all_rows
         if str(row.get("protocol") or "").lower() != "openvpn"
     ]
-
     unique: dict[str, dict] = {}
     for row in protocol_rows:
         unique.setdefault(catalog.dedup_key(row["uri"]), row)
@@ -233,7 +222,7 @@ def main() -> None:
 
     print(
         f"INFO parsed={len(all_rows)} protocol_candidates={len(rows)} "
-        f"async_tcp=true workers={TCP_WORKERS} transport_validation=true"
+        f"async_tcp=true workers={TCP_WORKERS} xray_deep_test=false"
     )
     tcp_checked = asyncio.run(run_tcp_checks(rows))
     print(
@@ -244,30 +233,25 @@ def main() -> None:
     meta = OUT / "metadata"
     meta.mkdir(parents=True, exist_ok=True)
     payload = {
-        "schema": 2,
+        "schema": 3,
         "generated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
         "total_parsed": len(all_rows),
         "protocol_candidates": len(rows),
         "tcp_reachable": len(tcp_checked),
         "tcp_workers": TCP_WORKERS,
         "allowed_ports": [80, 443],
-        "source_failures": sum(1 for s in source_health if not s["ok"]),
+        "xray_deep_test": False,
+        "android_final_xray_test": True,
+        "source_failures": sum(1 for s in source_health if not s.get("ok")),
         "sources": source_health,
         "nodes": tcp_checked,
+        "country_order_policy": "explicit_country_metadata_first; geoip_second; latency_ascending_within_tier",
     }
     (meta / "tcp_reachable.json").write_text(
         json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
     )
-
-    validated, handshake_meta = asyncio.run(transport_handshake.run_transport_checks(tcp_checked))
-    (meta / "transport_handshake.json").write_text(
-        json.dumps(handshake_meta, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
-    )
-    publish_app_pool(validated, source_health, handshake_meta)
-    print(
-        f"INFO transport_pool_saved={len(validated)} tcp_input={len(tcp_checked)} "
-        f"report=output/metadata/transport_handshake.json"
-    )
+    publish_app_pool(tcp_checked, source_health)
+    print(f"INFO tcp_pool_saved={len(tcp_checked)} path=output/metadata/tcp_reachable.json")
 
 
 if __name__ == "__main__":
