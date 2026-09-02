@@ -89,6 +89,7 @@ jobs:
             --sample 5000 \
             --batch-size 1000 \
             --workers 256 \
+            --batch-processes 2 \
             --timeout 3
 
       - name: Show owned-204 pilot summary
@@ -112,10 +113,13 @@ jobs:
               f"failed={data.get('failed', 0)} "
               f"pass_rate_pct={data.get('pass_rate_pct', 0)} "
               f"retry_passed={data.get('retry_passed', 0)} "
-              f"xray_config_failed={data.get('xray_config_failed', 0)}"
+              f"xray_config_failed={data.get('xray_config_failed', 0)} "
+              f"elapsed_seconds={data.get('elapsed_seconds', 0)} "
+              f"batch_processes={data.get('batch_processes', 1)}"
           )
           print('passed_by_endpoint=', data.get('passed_by_endpoint', {}))
           print('endpoint_attempts=', data.get('endpoint_attempts', {}))
+          print('protocol_stats=', data.get('protocol_stats', {}))
           print('top_failure_reasons=', data.get('top_failure_reasons', [])[:10])
           PY
 
