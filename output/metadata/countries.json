@@ -1,32 +1,25 @@
 {
   "countries": [
     {
-      "code": "AD",
-      "name": "Andorra",
-      "nodes": 1,
-      "active": 0,
-      "backup": 1
-    },
-    {
       "code": "AE",
       "name": "United Arab Emirates",
-      "nodes": 138,
+      "nodes": 145,
       "active": 0,
-      "backup": 138
+      "backup": 145
     },
     {
       "code": "AF",
       "name": "Afghanistan",
-      "nodes": 1,
+      "nodes": 2,
       "active": 0,
-      "backup": 1
+      "backup": 2
     },
     {
       "code": "AL",
       "name": "Albania",
-      "nodes": 31,
+      "nodes": 35,
       "active": 0,
-      "backup": 31
+      "backup": 35
     },
     {
       "code": "AM",
@@ -34,6 +27,13 @@
       "nodes": 8,
       "active": 0,
       "backup": 8
+    },
+    {
+      "code": "AQ",
+      "name": "Antarctica",
+      "nodes": 1,
+      "active": 0,
+      "backup": 1
     },
     {
       "code": "AR",
@@ -45,23 +45,23 @@
     {
       "code": "AT",
       "name": "Austria",
-      "nodes": 114,
+      "nodes": 116,
       "active": 0,
-      "backup": 114
+      "backup": 116
     },
     {
       "code": "AU",
       "name": "Australia",
-      "nodes": 252,
+      "nodes": 266,
       "active": 0,
-      "backup": 252
+      "backup": 266
     },
     {
       "code": "AZ",
       "name": "Azerbaijan",
-      "nodes": 7,
+      "nodes": 6,
       "active": 0,
-      "backup": 7
+      "backup": 6
     },
     {
       "code": "BA",
@@ -87,9 +87,9 @@
     {
       "code": "BE",
       "name": "Belgium",
-      "nodes": 74,
+      "nodes": 75,
       "active": 0,
-      "backup": 74
+      "backup": 75
     },
     {
       "code": "BF",
@@ -115,16 +115,16 @@
     {
       "code": "BR",
       "name": "Brazil",
-      "nodes": 84,
+      "nodes": 86,
       "active": 0,
-      "backup": 84
+      "backup": 86
     },
     {
       "code": "BY",
       "name": "Belarus",
-      "nodes": 14,
+      "nodes": 33,
       "active": 0,
-      "backup": 14
+      "backup": 33
     },
     {
       "code": "BZ",
@@ -136,16 +136,16 @@
     {
       "code": "CA",
       "name": "Canada",
-      "nodes": 984,
+      "nodes": 1025,
       "active": 0,
-      "backup": 984
+      "backup": 1025
     },
     {
       "code": "CC",
       "name": "Cocos (Keeling) Islands",
-      "nodes": 1,
+      "nodes": 2,
       "active": 0,
-      "backup": 1
+      "backup": 2
     },
     {
       "code": "CF",
@@ -157,9 +157,9 @@
     {
       "code": "CH",
       "name": "Switzerland",
-      "nodes": 137,
+      "nodes": 143,
       "active": 0,
-      "backup": 137
+      "backup": 143
     },
     {
       "code": "CL",
@@ -171,9 +171,9 @@
     {
       "code": "CN",
       "name": "China",
-      "nodes": 20,
+      "nodes": 21,
       "active": 0,
-      "backup": 20
+      "backup": 21
     },
     {
       "code": "CO",
@@ -185,37 +185,37 @@
     {
       "code": "CR",
       "name": "Costa Rica",
-      "nodes": 178,
+      "nodes": 181,
       "active": 0,
-      "backup": 178
+      "backup": 181
     },
     {
       "code": "CY",
       "name": "Cyprus",
-      "nodes": 35,
+      "nodes": 36,
       "active": 0,
-      "backup": 35
+      "backup": 36
     },
     {
       "code": "CZ",
       "name": "Czechia",
-      "nodes": 108,
+      "nodes": 109,
       "active": 0,
-      "backup": 108
+      "backup": 109
     },
     {
       "code": "DE",
       "name": "Germany",
-      "nodes": 1972,
+      "nodes": 2067,
       "active": 0,
-      "backup": 1972
+      "backup": 2067
     },
     {
       "code": "DK",
       "name": "Denmark",
-      "nodes": 18,
+      "nodes": 19,
       "active": 0,
-      "backup": 18
+      "backup": 19
     },
     {
       "code": "DO",
@@ -227,72 +227,72 @@
     {
       "code": "EE",
       "name": "Estonia",
-      "nodes": 160,
+      "nodes": 174,
       "active": 0,
-      "backup": 160
+      "backup": 174
     },
     {
       "code": "ES",
       "name": "Spain",
-      "nodes": 81,
+      "nodes": 82,
       "active": 0,
-      "backup": 81
+      "backup": 82
     },
     {
       "code": "FI",
       "name": "Finland",
-      "nodes": 324,
+      "nodes": 343,
       "active": 0,
-      "backup": 324
+      "backup": 343
     },
     {
       "code": "FR",
       "name": "France",
-      "nodes": 738,
+      "nodes": 773,
       "active": 0,
-      "backup": 738
+      "backup": 773
     },
     {
       "code": "GB",
       "name": "United Kingdom",
-      "nodes": 981,
+      "nodes": 1038,
       "active": 0,
-      "backup": 981
+      "backup": 1038
     },
     {
       "code": "GE",
       "name": "Georgia",
-      "nodes": 11,
+      "nodes": 12,
       "active": 0,
-      "backup": 11
+      "backup": 12
     },
     {
       "code": "GR",
       "name": "Greece",
-      "nodes": 26,
+      "nodes": 27,
       "active": 0,
-      "backup": 26
+      "backup": 27
     },
     {
       "code": "HK",
       "name": "Hong Kong",
-      "nodes": 586,
+      "nodes": 599,
       "active": 0,
-      "backup": 586
+      "backup": 599
     },
     {
       "code": "HR",
       "name": "Croatia",
-      "nodes": 3,
+      "nodes": 2,
       "active": 0,
-      "backup": 3
+      "backup": 2
     },
     {
       "code": "HU",
       "name": "Hungary",
-      "nodes": 34,
+      "nodes": 35,
       "active": 0,
-      "backup": 34
+      "backup": 35
     },
     {
       "code": "ID",
@@ -311,9 +311,9 @@
     {
       "code": "IL",
       "name": "Israel",
-      "nodes": 16,
+      "nodes": 18,
       "active": 0,
-      "backup": 16
+      "backup": 18
     },
     {
       "code": "IM",
@@ -325,9 +325,9 @@
     {
       "code": "IN",
       "name": "India",
-      "nodes": 99,
+      "nodes": 103,
       "active": 0,
-      "backup": 99
+      "backup": 103
     },
     {
       "code": "IQ",
@@ -339,9 +339,9 @@
     {
       "code": "IR",
       "name": "Iran, Islamic Republic of",
-      "nodes": 825,
+      "nodes": 828,
       "active": 0,
-      "backup": 825
+      "backup": 828
     },
     {
       "code": "IS",
@@ -353,16 +353,16 @@
     {
       "code": "IT",
       "name": "Italy",
-      "nodes": 92,
+      "nodes": 102,
       "active": 0,
-      "backup": 92
+      "backup": 102
     },
     {
       "code": "JE",
       "name": "Jersey",
-      "nodes": 4,
+      "nodes": 5,
       "active": 0,
-      "backup": 4
+      "backup": 5
     },
     {
       "code": "JO",
@@ -374,9 +374,9 @@
     {
       "code": "JP",
       "name": "Japan",
-      "nodes": 759,
+      "nodes": 806,
       "active": 0,
-      "backup": 759
+      "backup": 806
     },
     {
       "code": "KG",
@@ -388,9 +388,9 @@
     {
       "code": "KR",
       "name": "Korea, Republic of",
-      "nodes": 543,
+      "nodes": 552,
       "active": 0,
-      "backup": 543
+      "backup": 552
     },
     {
       "code": "KW",
@@ -402,9 +402,9 @@
     {
       "code": "KZ",
       "name": "Kazakhstan",
-      "nodes": 143,
+      "nodes": 144,
       "active": 0,
-      "backup": 143
+      "backup": 144
     },
     {
       "code": "LB",
@@ -416,9 +416,9 @@
     {
       "code": "LT",
       "name": "Lithuania",
-      "nodes": 108,
+      "nodes": 114,
       "active": 0,
-      "backup": 108
+      "backup": 114
     },
     {
       "code": "LU",
@@ -430,16 +430,16 @@
     {
       "code": "LV",
       "name": "Latvia",
-      "nodes": 59,
+      "nodes": 61,
       "active": 0,
-      "backup": 59
+      "backup": 61
     },
     {
       "code": "MD",
       "name": "Moldova, Republic of",
-      "nodes": 56,
+      "nodes": 62,
       "active": 0,
-      "backup": 56
+      "backup": 62
     },
     {
       "code": "ME",
@@ -451,9 +451,9 @@
     {
       "code": "MH",
       "name": "Marshall Islands",
-      "nodes": 10,
+      "nodes": 11,
       "active": 0,
-      "backup": 10
+      "backup": 11
     },
     {
       "code": "MK",
@@ -507,30 +507,30 @@
     {
       "code": "NG",
       "name": "Nigeria",
-      "nodes": 12,
+      "nodes": 13,
       "active": 0,
-      "backup": 12
+      "backup": 13
     },
     {
       "code": "NL",
       "name": "Netherlands",
-      "nodes": 1184,
+      "nodes": 1243,
       "active": 0,
-      "backup": 1184
+      "backup": 1243
     },
     {
       "code": "NO",
       "name": "Norway",
-      "nodes": 105,
+      "nodes": 117,
       "active": 0,
-      "backup": 105
+      "backup": 117
     },
     {
       "code": "NZ",
       "name": "New Zealand",
-      "nodes": 15,
+      "nodes": 16,
       "active": 0,
-      "backup": 15
+      "backup": 16
     },
     {
       "code": "OM",
@@ -563,9 +563,9 @@
     {
       "code": "PL",
       "name": "Poland",
-      "nodes": 338,
+      "nodes": 343,
       "active": 0,
-      "backup": 338
+      "backup": 343
     },
     {
       "code": "PT",
@@ -584,23 +584,23 @@
     {
       "code": "RO",
       "name": "Romania",
-      "nodes": 79,
+      "nodes": 87,
       "active": 0,
-      "backup": 79
+      "backup": 87
     },
     {
       "code": "RS",
       "name": "Serbia",
-      "nodes": 46,
+      "nodes": 45,
       "active": 0,
-      "backup": 46
+      "backup": 45
     },
     {
       "code": "RU",
       "name": "Russian Federation",
-      "nodes": 1856,
+      "nodes": 1903,
       "active": 0,
-      "backup": 1856
+      "backup": 1903
     },
     {
       "code": "SA",
@@ -612,23 +612,23 @@
     {
       "code": "SC",
       "name": "Seychelles",
-      "nodes": 274,
+      "nodes": 302,
       "active": 0,
-      "backup": 274
+      "backup": 302
     },
     {
       "code": "SE",
       "name": "Sweden",
-      "nodes": 515,
+      "nodes": 503,
       "active": 0,
-      "backup": 515
+      "backup": 503
     },
     {
       "code": "SG",
       "name": "Singapore",
-      "nodes": 984,
+      "nodes": 1035,
       "active": 0,
-      "backup": 984
+      "backup": 1035
     },
     {
       "code": "SI",
@@ -647,23 +647,23 @@
     {
       "code": "TH",
       "name": "Thailand",
-      "nodes": 32,
+      "nodes": 33,
       "active": 0,
-      "backup": 32
+      "backup": 33
     },
     {
       "code": "TR",
       "name": "Türkiye",
-      "nodes": 97,
+      "nodes": 109,
       "active": 0,
-      "backup": 97
+      "backup": 109
     },
     {
       "code": "TW",
       "name": "Taiwan, Province of China",
-      "nodes": 50,
+      "nodes": 52,
       "active": 0,
-      "backup": 50
+      "backup": 52
     },
     {
       "code": "UA",
@@ -682,9 +682,9 @@
     {
       "code": "US",
       "name": "United States",
-      "nodes": 29016,
+      "nodes": 29837,
       "active": 0,
-      "backup": 29016
+      "backup": 29837
     },
     {
       "code": "UZ",
@@ -703,9 +703,9 @@
     {
       "code": "VI",
       "name": "Virgin Islands, U.S.",
-      "nodes": 2,
+      "nodes": 3,
       "active": 0,
-      "backup": 2
+      "backup": 3
     },
     {
       "code": "VN",
@@ -717,9 +717,9 @@
     {
       "code": "ZA",
       "name": "South Africa",
-      "nodes": 109,
+      "nodes": 113,
       "active": 0,
-      "backup": 109
+      "backup": 113
     }
   ]
 }
