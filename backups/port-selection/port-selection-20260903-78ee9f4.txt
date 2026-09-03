@@ -1,0 +1,56 @@
+PORT SELECTION BACKUP
+=====================
+
+Repository: noorelmostafa11-pixel/VPN-Nodes
+Source main commit: 78ee9f421adb072b9b1091b000f1e8c9d37a2c18
+Purpose: Exact backup marker for the current port-selection/filtering behavior before any future changes.
+
+SOURCE BLOBS
+------------
+scripts/update_catalog.py
+blob: 5e5d33622934d213de7ba2b8772baeb13f4ff9fc
+
+scripts/build_tcp_pool.py
+blob: a395dd323569cea6d759dcb939946e921978aa51
+
+.github/workflows/update.yml
+blob: 31764f3ba3806b9857b922dd647b8a355776b126
+
+CURRENT PORT-SELECTION LOGIC
+----------------------------
+
+1) scripts/update_catalog.py
+
+ALLOWED_PORTS = {80, 443}
+
+Normal VLESS / VMess / Trojan / Shadowsocks parsing is filtered by:
+
+    host, port, remark, _ = endpoint_from_uri(uri)
+    if not host or port not in ALLOWED_PORTS:
+        continue
+    rows.append({"uri": uri, "protocol": protocol, "host": host, "port": port, "remark": remark, "country": "UNKNOWN", "source": source_name})
+
+OpenVPN remote endpoints are filtered by the same ALLOWED_PORTS set:
+
+    remotes = re.findall(r"^\\s*remote\\s+(\\S+)\\s+(\\d+)\\b", config, flags=re.MULTILINE)
+    allowed = [(host, int(port)) for host, port in remotes if int(port) in ALLOWED_PORTS]
+    if not allowed:
+        continue
+    host, port = allowed[0]
+
+2) scripts/build_tcp_pool.py
+
+The generated metadata records the selected ports in both app_pool.json and tcp_reachable.json:
+
+    "allowed_ports": [80, 443],
+
+3) .github/workflows/update.yml
+
+The workflow explicitly verifies that generated app-pool metadata still reports only ports 80 and 443:
+
+    if data.get('allowed_ports') != [80, 443]:
+        raise SystemExit(f"unexpected allowed ports: {data.get('allowed_ports')}")
+
+RESTORE REFERENCE
+-----------------
+To restore the exact pre-change implementation, use the source blobs/commit listed above. The authoritative filtering code is scripts/update_catalog.py at blob 5e5d33622934d213de7ba2b8772baeb13f4ff9fc. build_tcp_pool.py and update.yml are included because they publish and enforce the same port-selection contract.
