@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import asyncio
 import json
+import os
 import shutil
 import time
 from pathlib import Path
@@ -19,6 +20,8 @@ OUT = ROOT / "output"
 SOURCES = ROOT / "sources" / "sources.json"
 TCP_TIMEOUT = float(catalog.CONNECT_TIMEOUT)
 TCP_WORKERS = 512
+COUNTRY_SHARD_SIZE = int(os.environ.get("COUNTRY_SHARD_SIZE", "1000"))
+COUNTRY_SHARD_MAX_BYTES = 4 * 1024 * 1024
 
 
 async def tcp_probe(item: dict, semaphore: asyncio.Semaphore) -> tuple[dict, float | None]:
@@ -78,6 +81,11 @@ def publish_app_pool(rows: list[dict], source_health: list[dict]) -> dict:
     import country_resolver
     import pycountry
 
+    if COUNTRY_SHARD_SIZE < 100 or COUNTRY_SHARD_SIZE > 5000:
+        raise ValueError(
+            f"COUNTRY_SHARD_SIZE must be between 100 and 5000, got {COUNTRY_SHARD_SIZE}"
+        )
+
     country_result = country_resolver.resolve_rows(rows) if rows else {
         "hostname": 0,
         "geoip_local": 0,
@@ -89,8 +97,13 @@ def publish_app_pool(rows: list[dict], source_health: list[dict]) -> dict:
     if legacy_active_dir.exists():
         shutil.rmtree(legacy_active_dir)
 
+    country_shards_dir = OUT / "country_shards"
+    if country_shards_dir.exists():
+        shutil.rmtree(country_shards_dir)
+
     out_dirs = {
-        name: OUT / name for name in ("countries", "backup", "protocols", "metadata")
+        name: OUT / name
+        for name in ("countries", "country_shards", "backup", "protocols", "metadata")
     }
     for directory in out_dirs.values():
         directory.mkdir(parents=True, exist_ok=True)
@@ -113,7 +126,9 @@ def publish_app_pool(rows: list[dict], source_health: list[dict]) -> dict:
         if protocol:
             protocol_rows.setdefault(protocol, []).append(row["uri"])
 
+    generated_at = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
     published_total = 0
+    published_shards = 0
     countries_meta: list[dict] = []
     for country, country_rows in sorted(grouped.items()):
         # Source and country-resolution method MUST NOT influence ranking.
@@ -128,7 +143,23 @@ def publish_app_pool(rows: list[dict], source_health: list[dict]) -> dict:
         (out_dirs["countries"] / f"{country}.txt").write_text(
             "\n".join(uris) + "\n", encoding="utf-8"
         )
+
+        shard_dir = out_dirs["country_shards"] / country
+        shard_dir.mkdir(parents=True, exist_ok=True)
+        shard_count = 0
+        for shard_index, start in enumerate(range(0, len(uris), COUNTRY_SHARD_SIZE)):
+            chunk = uris[start:start + COUNTRY_SHARD_SIZE]
+            shard_bytes = ("\n".join(chunk) + "\n").encode("utf-8")
+            if len(shard_bytes) > COUNTRY_SHARD_MAX_BYTES:
+                raise ValueError(
+                    f"Country shard {country}/{shard_index:03d}.txt exceeds "
+                    f"{COUNTRY_SHARD_MAX_BYTES} bytes"
+                )
+            (shard_dir / f"{shard_index:03d}.txt").write_bytes(shard_bytes)
+            shard_count += 1
+
         published_total += len(uris)
+        published_shards += shard_count
 
         match = pycountry.countries.get(alpha_2=country)
         countries_meta.append({
@@ -137,6 +168,9 @@ def publish_app_pool(rows: list[dict], source_health: list[dict]) -> dict:
             "nodes": len(uris),
             "active": 0,
             "backup": len(uris),
+            "shards": shard_count,
+            "shard_size": COUNTRY_SHARD_SIZE,
+            "shard_path": f"output/country_shards/{country}",
         })
 
     for protocol, uris in protocol_rows.items():
@@ -151,15 +185,23 @@ def publish_app_pool(rows: list[dict], source_health: list[dict]) -> dict:
     else:
         (out_dirs["metadata"] / "tcp_alive_unknown_country.txt").unlink(missing_ok=True)
 
-    # Simple app-facing country index: no shard paths and no app-specific structure.
     (out_dirs["metadata"] / "countries.json").write_text(
-        json.dumps({"countries": countries_meta}, ensure_ascii=False, indent=2) + "\n",
+        json.dumps(
+            {
+                "schema": 2,
+                "generated_at": generated_at,
+                "shard_size": COUNTRY_SHARD_SIZE,
+                "countries": countries_meta,
+            },
+            ensure_ascii=False,
+            indent=2,
+        ) + "\n",
         encoding="utf-8",
     )
 
     app_meta = {
-        "schema": 21,
-        "generated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+        "schema": 22,
+        "generated_at": generated_at,
         "mode": "tcp_liveness_only_android_final_xray_check",
         "liveness_test": "TCP connect to advertised endpoint",
         "final_runtime_test": "Android Xray + local HTTP health-check",
@@ -171,6 +213,10 @@ def publish_app_pool(rows: list[dict], source_health: list[dict]) -> dict:
         "selection_policy": "all_tcp_alive_nodes_with_resolved_country; latency_ascending_only",
         "country_order_policy": "latency_ascending_only",
         "country_feed_directory": "output/countries",
+        "country_shard_directory": "output/country_shards",
+        "country_shard_size": COUNTRY_SHARD_SIZE,
+        "country_shards_generated": True,
+        "published_country_shards": published_shards,
         "active_directory_generated": False,
         "alive_with_country": sum(len(v) for v in grouped.values()),
         "alive_unknown_country": len(unknown_rows),
@@ -189,6 +235,7 @@ def publish_app_pool(rows: list[dict], source_health: list[dict]) -> dict:
     print(
         f"INFO APP_POOL tcp_only=true alive_with_country={app_meta['alive_with_country']} "
         f"countries={len(countries_meta)} nodes={published_total} "
+        f"shards={published_shards} shard_size={COUNTRY_SHARD_SIZE} "
         f"order=latency_ascending_only"
     )
     return app_meta

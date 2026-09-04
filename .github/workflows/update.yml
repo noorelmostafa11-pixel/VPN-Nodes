@@ -49,8 +49,8 @@ jobs:
         run: |
           set -euo pipefail
 
-          # Remove abandoned experimental outputs before rebuilding the catalog.
-          # Keep index.json because Oracle-side automation may use its timestamp.
+          # Remove generated and abandoned outputs before rebuilding the catalog.
+          # country_shards is regenerated from the same latency-ranked country order.
           rm -rf output/country_shards output/active output/backup
           rm -f \
             output/metadata/transport_handshake.json \
@@ -101,11 +101,18 @@ jobs:
               raise SystemExit(f"unexpected allowed ports: {data.get('allowed_ports')}")
           if data.get('country_order_policy') != 'latency_ascending_only':
               raise SystemExit(f"unexpected country order policy: {data.get('country_order_policy')}")
+          if data.get('country_shard_size') != 1000:
+              raise SystemExit(f"unexpected country shard size: {data.get('country_shard_size')}")
+          if data.get('country_shards_generated') is not True:
+              raise SystemExit('country shards were not generated')
+          if int(data.get('published_country_shards') or 0) <= 0:
+              raise SystemExit('published country shard count is empty')
           if 'transport_handshake' in data:
               raise SystemExit('transport handshake metadata must not gate publication')
           print(
               f"OK TCP_ONLY published={data.get('published_total', 0)} "
               f"countries={data.get('published_country_nodes', 0)} "
+              f"shards={data.get('published_country_shards', 0)} "
               f"workers={data.get('tcp_workers')} order={data.get('country_order_policy')}"
           )
           PY

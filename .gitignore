@@ -10,9 +10,9 @@ output/metadata/tcp_reachable.json
 output/metadata/merged_pool.json
 
 # Removed legacy/experimental outputs; keep them from being re-added accidentally.
+# output/country_shards/ is intentionally tracked for on-demand Android paging.
 output/active/
 output/backup/
-output/country_shards/
 output/metadata/transport_handshake.json
 output/metadata/real_delay*.json
 output/metadata/core_driven_health.json
