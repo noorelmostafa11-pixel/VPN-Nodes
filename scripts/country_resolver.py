@@ -205,13 +205,12 @@ def country_from_ip(ip: str) -> str | None:
 
 
 def resolve_rows(rows: list[dict]) -> dict[str, int | str | bool | dict]:
-    """Resolve every row with explicit node metadata first, then local GeoLite2.
+    """Resolve every row from endpoint GeoLite2 first, then explicit metadata fallback.
 
     A country inherited from a source filename/template is not trusted as node-level
-    metadata. Every row is re-evaluated: explicit remark/name/ps metadata wins; all
-    other rows are reset to UNKNOWN and resolved from the endpoint IP through the
-    local GeoLite2 database. This prevents a source hint such as US from masking a
-    real endpoint country behind Cloudflare/Anycast.
+    metadata. Every row is re-evaluated from the resolved endpoint IP through the
+    local GeoLite2 database first. Explicit remark/name/ps metadata is used only
+    when GeoLite2 cannot determine a country.
     """
     with FAILURE_LOCK:
         for key in FAILURE_STATS:
@@ -260,56 +259,47 @@ def resolve_rows(rows: list[dict]) -> dict[str, int | str | bool | dict]:
         metadata_country = extract_country_from_text(remark_text)
         previous_country = str(row.get("country") or "UNKNOWN").upper()
 
-        if metadata_country:
-            if previous_country != metadata_country:
-                reclassified_from_existing += 1
-            row["country"] = metadata_country
-            row["country_resolution"] = "metadata_explicit"
-            row["country_resolution_confidence"] = "high"
-            resolved_metadata += 1
-            for key in ("host", "server", "address"):
-                raw = _clean_host(str(row.get(key) or "").strip())
-                ip = address_to_ip.get(raw)
-                if ip:
-                    if raw != ip:
-                        dns_resolved += 1
-                    row["resolved_ip"] = ip
-                    break
-            continue
-
-        # Any non-explicit source/template country is deliberately discarded here.
         if previous_country != "UNKNOWN":
             reclassified_from_existing += 1
         row["country"] = "UNKNOWN"
         row["country_resolution"] = "pending_geoip"
         row["country_resolution_confidence"] = "none"
 
-        if reader is None:
-            row["country_resolution"] = "geolite2_unavailable"
+        country = None
+        if reader is not None:
+            for key in ("host", "server", "address"):
+                raw = _clean_host(str(row.get(key) or "").strip())
+                if not raw:
+                    continue
+                ip = address_to_ip.get(raw)
+                if not ip:
+                    continue
+                if raw != ip:
+                    dns_resolved += 1
+                row["resolved_ip"] = ip
+                country = country_from_ip(ip)
+                if country:
+                    row["country"] = country
+                    row["country_resolution"] = "geolite2_local"
+                    row["country_resolution_confidence"] = "medium"
+                    resolved_geoip += 1
+                    break
+
+        if country:
             continue
 
-        country = None
-        for key in ("host", "server", "address"):
-            raw = _clean_host(str(row.get(key) or "").strip())
-            if not raw:
-                continue
-            ip = address_to_ip.get(raw)
-            if not ip:
-                continue
-            if raw != ip:
-                dns_resolved += 1
-                row["resolved_ip"] = ip
-            country = country_from_ip(ip)
-            if country:
-                row["country"] = country
-                row["country_resolution"] = "geolite2_local"
-                row["country_resolution_confidence"] = "medium"
-                resolved_geoip += 1
-                break
+        if metadata_country:
+            row["country"] = metadata_country
+            row["country_resolution"] = "metadata_fallback"
+            row["country_resolution_confidence"] = "low"
+            resolved_metadata += 1
+            continue
 
-        if not country:
+        if reader is None:
+            row["country_resolution"] = "geolite2_unavailable"
+        else:
             row["country_resolution"] = "geolite2_unknown"
-            row["country_resolution_confidence"] = "none"
+        row["country_resolution_confidence"] = "none"
 
     unknown = sum(1 for row in rows if row.get("country") == "UNKNOWN")
     stats = dict(FAILURE_STATS)
@@ -322,15 +312,16 @@ def resolve_rows(rows: list[dict]) -> dict[str, int | str | bool | dict]:
         f"lookups:{stats['lookups']}"
     )
     print(
-        f"INFO country_metadata_first={resolved_metadata} "
-        f"country_geoip={resolved_geoip} reclassified_existing={reclassified_from_existing}"
+        f"INFO country_geoip_first={resolved_geoip} "
+        f"country_metadata_fallback={resolved_metadata} "
+        f"reclassified_existing={reclassified_from_existing}"
     )
     return {
         "hostname": dns_resolved,
         "geoip_local": resolved_geoip,
         "ip_geolocation": resolved_geoip,
         "metadata_fallback": resolved_metadata,
-        "metadata_first": resolved_metadata,
+        "metadata_first": 0,
         "reclassified_existing": reclassified_from_existing,
         "unknown": unknown,
         "database": str(GEOIP_DB_PATH),
