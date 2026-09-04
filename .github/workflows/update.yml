@@ -97,7 +97,7 @@ jobs:
               raise SystemExit('unexpected final runtime test marker')
           if data.get('tcp_workers') != 512:
               raise SystemExit(f"unexpected TCP worker count: {data.get('tcp_workers')}")
-          if data.get('allowed_ports') != [443]:
+          if data.get('allowed_ports') != [53, 80, 443, 853, 8008]:
               raise SystemExit(f"unexpected allowed ports: {data.get('allowed_ports')}")
           if data.get('country_order_policy') != 'latency_ascending_only':
               raise SystemExit(f"unexpected country order policy: {data.get('country_order_policy')}")
