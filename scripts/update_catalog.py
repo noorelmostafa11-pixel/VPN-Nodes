@@ -16,7 +16,7 @@ OUT = ROOT / "output"
 MAX_SOURCE_BYTES = 20_000_000
 CONNECT_TIMEOUT = 1.5
 READ_TIMEOUT = 8.0
-ALLOWED_PORTS = {53, 80, 443, 853, 8008}
+ALLOWED_PORTS = {443}
 PROTOCOLS = {"vless", "vmess", "trojan", "shadowsocks"}
 
 session = requests.Session()
