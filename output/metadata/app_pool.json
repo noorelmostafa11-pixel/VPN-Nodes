@@ -1,6 +1,6 @@
 {
   "schema": 22,
-  "generated_at": "2026-09-04T22:11:28Z",
+  "generated_at": "2026-09-05T00:12:40Z",
   "mode": "tcp_liveness_only_android_final_xray_check",
   "liveness_test": "TCP connect to advertised endpoint",
   "final_runtime_test": "Android Xray + local HTTP health-check",
@@ -17,18 +17,18 @@
   "country_shard_directory": "output/country_shards",
   "country_shard_size": 1000,
   "country_shards_generated": true,
-  "published_country_shards": 134,
+  "published_country_shards": 133,
   "active_directory_generated": false,
-  "alive_with_country": 51892,
+  "alive_with_country": 51476,
   "alive_unknown_country": 0,
-  "published_country_nodes": 51892,
-  "published_active": 51892,
+  "published_country_nodes": 51476,
+  "published_active": 51476,
   "published_backup": 0,
-  "published_total": 51892,
+  "published_total": 51476,
   "country_resolution": {
-    "hostname": 2648,
-    "geoip_local": 51892,
-    "ip_geolocation": 51892,
+    "hostname": 2154,
+    "geoip_local": 51476,
+    "ip_geolocation": 51476,
     "metadata_fallback": 0,
     "metadata_first": 0,
     "reclassified_existing": 0,
@@ -41,7 +41,7 @@
       "invalid_ip": 0,
       "other": 0,
       "dns_failure": 0,
-      "lookups": 51892
+      "lookups": 51476
     }
   },
   "source_failures": 0,
@@ -49,589 +49,583 @@
     {
       "name": "roosterkid-V2RAY",
       "ok": true,
-      "nodes": 63,
-      "elapsed_ms": 214.4
+      "nodes": 62,
+      "elapsed_ms": 284.4
     },
     {
       "name": "roosterkid-V2RAY_BASE64",
       "ok": true,
-      "nodes": 63,
-      "elapsed_ms": 137.5
+      "nodes": 62,
+      "elapsed_ms": 184.3
     },
     {
       "name": "roosterkid-V2RAY_RAW",
       "ok": true,
-      "nodes": 63,
-      "elapsed_ms": 123.9
+      "nodes": 62,
+      "elapsed_ms": 195.6
     },
     {
       "name": "MatinGhanbari-ss",
       "ok": true,
-      "nodes": 108,
-      "elapsed_ms": 118.7
+      "nodes": 115,
+      "elapsed_ms": 269.6
     },
     {
       "name": "MatinGhanbari-trojan",
       "ok": true,
-      "nodes": 179,
-      "elapsed_ms": 119.7
+      "nodes": 181,
+      "elapsed_ms": 197.6
     },
     {
       "name": "MatinGhanbari-vless",
       "ok": true,
-      "nodes": 174,
-      "elapsed_ms": 104.5
+      "nodes": 186,
+      "elapsed_ms": 148.1
     },
     {
       "name": "MatinGhanbari-vmess",
       "ok": true,
-      "nodes": 716,
-      "elapsed_ms": 188.1
+      "nodes": 701,
+      "elapsed_ms": 206.9
     },
     {
       "name": "mahdibland-sub_merge",
       "ok": true,
       "nodes": 1232,
-      "elapsed_ms": 200.5
+      "elapsed_ms": 618.2
     },
     {
       "name": "mahdibland-sub_merge_base64",
       "ok": true,
       "nodes": 1232,
-      "elapsed_ms": 265.7
+      "elapsed_ms": 324.3
     },
     {
       "name": "hamedcode-port_443",
       "ok": true,
-      "nodes": 7581,
-      "elapsed_ms": 735.8
+      "nodes": 7713,
+      "elapsed_ms": 1019.0
     },
     {
       "name": "hamedcode-port_80",
       "ok": true,
       "nodes": 0,
-      "elapsed_ms": 105.6
+      "elapsed_ms": 452.9
     },
     {
       "name": "F0rc3Run-Telegram",
       "ok": true,
       "nodes": 198,
-      "elapsed_ms": 134.6
+      "elapsed_ms": 326.6
     },
     {
       "name": "Baarcuda-top100-vless",
       "ok": true,
       "nodes": 65,
-      "elapsed_ms": 138.4
+      "elapsed_ms": 157.4
     },
     {
       "name": "Baarcuda-top100",
       "ok": true,
       "nodes": 30,
-      "elapsed_ms": 101.0
+      "elapsed_ms": 147.4
     },
     {
       "name": "Alirewa-V2ray-Configs",
       "ok": true,
-      "nodes": 792,
-      "elapsed_ms": 365.7
+      "nodes": 798,
+      "elapsed_ms": 171.7
     },
     {
       "name": "Epodonios-All_Configs_Sub",
       "ok": true,
-      "nodes": 3815,
-      "elapsed_ms": 485.8
+      "nodes": 3783,
+      "elapsed_ms": 848.0
     },
     {
       "name": "sakha1370-all_valid_proxies",
       "ok": true,
-      "nodes": 4578,
-      "elapsed_ms": 1070.6
+      "nodes": 4610,
+      "elapsed_ms": 962.9
     },
     {
       "name": "Au1rxx-v2ray-base64",
       "ok": true,
-      "nodes": 586,
-      "elapsed_ms": 137.5
+      "nodes": 594,
+      "elapsed_ms": 515.2
     },
     {
       "name": "Epodonios-All_Configs_base64_Sub",
       "ok": true,
-      "nodes": 3815,
-      "elapsed_ms": 421.0
+      "nodes": 3783,
+      "elapsed_ms": 342.4
     },
     {
       "name": "0xRadikal-configs_base64",
       "ok": true,
-      "nodes": 6523,
-      "elapsed_ms": 813.2
+      "nodes": 6532,
+      "elapsed_ms": 830.8
     },
     {
       "name": "SoliSpirit-all_configs",
       "ok": true,
-      "nodes": 3741,
-      "elapsed_ms": 456.2
+      "nodes": 3896,
+      "elapsed_ms": 397.2
     },
     {
       "name": "Danialsamadi-AllConfigsSub",
       "ok": true,
-      "nodes": 396,
-      "elapsed_ms": 284.6
+      "nodes": 455,
+      "elapsed_ms": 157.9
     },
     {
       "name": "ebrasha-all_extracted_configs",
       "ok": true,
-      "nodes": 13648,
-      "elapsed_ms": 1299.3
+      "nodes": 13661,
+      "elapsed_ms": 1325.1
     },
     {
       "name": "Delta-Kronecker-all_configs",
       "ok": true,
       "nodes": 4682,
-      "elapsed_ms": 339.1
+      "elapsed_ms": 1122.2
     },
     {
       "name": "mfuu-FreeProxies-sub",
       "ok": true,
-      "nodes": 444,
-      "elapsed_ms": 231.9
+      "nodes": 480,
+      "elapsed_ms": 630.9
     },
     {
       "name": "mheidari98-.proxy",
       "ok": true,
-      "nodes": 5712,
-      "elapsed_ms": 817.4
+      "nodes": 5778,
+      "elapsed_ms": 1141.9
     },
     {
       "name": "rasool083-v2ray-sub",
       "ok": true,
-      "nodes": 7776,
-      "elapsed_ms": 1124.3
+      "nodes": 7764,
+      "elapsed_ms": 1474.1
     },
     {
       "name": "teknovpnhub-servers",
       "ok": true,
       "nodes": 12,
-      "elapsed_ms": 148.6
+      "elapsed_ms": 133.4
     },
     {
       "name": "rtwo2-everything",
       "ok": true,
       "nodes": 28584,
-      "elapsed_ms": 4436.9
+      "elapsed_ms": 5028.4
     },
     {
       "name": "Pawdroid-Free-servers",
       "ok": true,
       "nodes": 15,
-      "elapsed_ms": 103.9
+      "elapsed_ms": 175.3
     },
     {
       "name": "alexantSWE-All_Configs_Sub",
       "ok": true,
-      "nodes": 2148,
-      "elapsed_ms": 433.9
+      "nodes": 2127,
+      "elapsed_ms": 448.8
     },
     {
       "name": "alexantSWE-vless",
       "ok": true,
       "nodes": 2727,
-      "elapsed_ms": 455.0
+      "elapsed_ms": 334.8
     },
     {
       "name": "alexantSWE-vmess",
       "ok": true,
       "nodes": 47,
-      "elapsed_ms": 305.5
+      "elapsed_ms": 182.4
     },
     {
       "name": "alexantSWE-trojan",
       "ok": true,
       "nodes": 642,
-      "elapsed_ms": 141.4
+      "elapsed_ms": 170.4
     },
     {
       "name": "alexantSWE-ss",
       "ok": true,
       "nodes": 150,
-      "elapsed_ms": 129.0
+      "elapsed_ms": 188.5
     },
     {
       "name": "morpheusadam-best",
       "ok": true,
       "nodes": 1301,
-      "elapsed_ms": 144.8
+      "elapsed_ms": 205.0
     },
     {
       "name": "morpheusadam-vless",
       "ok": true,
       "nodes": 13114,
-      "elapsed_ms": 1484.3
+      "elapsed_ms": 1357.5
     },
     {
       "name": "morpheusadam-reality",
       "ok": true,
       "nodes": 5685,
-      "elapsed_ms": 897.0
+      "elapsed_ms": 736.8
     },
     {
       "name": "morpheusadam-iran",
       "ok": true,
       "nodes": 1776,
-      "elapsed_ms": 454.0
+      "elapsed_ms": 284.2
     },
     {
       "name": "V2RayRoot-vless",
       "ok": true,
       "nodes": 153,
-      "elapsed_ms": 119.7
+      "elapsed_ms": 139.4
     },
     {
       "name": "V2RayRoot-vmess",
       "ok": true,
       "nodes": 4,
-      "elapsed_ms": 100.8
+      "elapsed_ms": 132.9
     },
     {
       "name": "V2RayRoot-trojan",
       "ok": true,
       "nodes": 26,
-      "elapsed_ms": 101.2
+      "elapsed_ms": 131.7
     },
     {
       "name": "V2RayRoot-shadowsocks",
       "ok": true,
       "nodes": 162,
-      "elapsed_ms": 129.8
+      "elapsed_ms": 162.0
     },
     {
       "name": "barry-far-All_Configs_Sub",
       "ok": true,
-      "nodes": 3783,
-      "elapsed_ms": 302.3
+      "nodes": 3809,
+      "elapsed_ms": 310.4
     },
     {
       "name": "MohammadBahemmat-all_servers",
       "ok": true,
       "nodes": 89,
-      "elapsed_ms": 110.9
+      "elapsed_ms": 148.4
     },
     {
       "name": "ConfigJo-main",
       "ok": true,
       "nodes": 69,
-      "elapsed_ms": 150.2
+      "elapsed_ms": 135.1
     },
     {
       "name": "anonymouskeys-all",
       "ok": true,
-      "nodes": 11465,
-      "elapsed_ms": 1421.0
+      "nodes": 11437,
+      "elapsed_ms": 1121.6
     },
     {
       "name": "iboxz-mix",
       "ok": true,
-      "nodes": 143,
-      "elapsed_ms": 139.9
+      "nodes": 148,
+      "elapsed_ms": 165.3
     },
     {
       "name": "fengfp-All_Configs_Sub",
       "ok": true,
       "nodes": 1405,
-      "elapsed_ms": 739.7
+      "elapsed_ms": 377.8
     },
     {
       "name": "nexus-nodes-all",
       "ok": true,
-      "nodes": 1872,
-      "elapsed_ms": 591.2
+      "nodes": 1880,
+      "elapsed_ms": 251.8
     },
     {
       "name": "10Dream-telegram-tls",
       "ok": true,
       "nodes": 1002,
-      "elapsed_ms": 210.7
+      "elapsed_ms": 227.7
     },
     {
       "name": "kasesm-all_raw",
       "ok": true,
       "nodes": 1032,
-      "elapsed_ms": 331.3
+      "elapsed_ms": 261.9
     },
     {
       "name": "VovaplusEXP-secure-vless",
       "ok": true,
       "nodes": 54,
-      "elapsed_ms": 112.6
+      "elapsed_ms": 142.9
     },
     {
       "name": "ALIILAPRO-server",
       "ok": true,
-      "nodes": 555,
-      "elapsed_ms": 183.6
+      "nodes": 556,
+      "elapsed_ms": 184.9
     },
     {
       "name": "VestraNet-mix-normal",
       "ok": true,
-      "nodes": 1917,
-      "elapsed_ms": 670.0
+      "nodes": 1764,
+      "elapsed_ms": 825.9
     },
     {
       "name": "V2RAYCONFIGSPOOL-v2ray-1",
       "ok": true,
-      "nodes": 6,
-      "elapsed_ms": 133.0
+      "nodes": 2,
+      "elapsed_ms": 156.3
     },
     {
       "name": "V2RAYCONFIGSPOOL-v2ray-2",
       "ok": true,
-      "nodes": 5,
-      "elapsed_ms": 115.6
+      "nodes": 4,
+      "elapsed_ms": 128.2
     },
     {
       "name": "V2RAYCONFIGSPOOL-v2ray-3",
       "ok": true,
-      "nodes": 6,
-      "elapsed_ms": 123.2
+      "nodes": 4,
+      "elapsed_ms": 155.1
     },
     {
       "name": "V2RAYCONFIGSPOOL-v2ray-4",
       "ok": true,
-      "nodes": 4,
-      "elapsed_ms": 125.1
+      "nodes": 6,
+      "elapsed_ms": 148.6
     },
     {
       "name": "V2RAYCONFIGSPOOL-v2ray-5",
       "ok": true,
-      "nodes": 10,
-      "elapsed_ms": 122.5
+      "nodes": 3,
+      "elapsed_ms": 169.2
     },
     {
       "name": "V2RAYCONFIGSPOOL-v2ray-6",
       "ok": true,
-      "nodes": 7,
-      "elapsed_ms": 126.8
+      "nodes": 2,
+      "elapsed_ms": 155.4
     },
     {
       "name": "V2RAYCONFIGSPOOL-v2ray-7",
       "ok": true,
       "nodes": 4,
-      "elapsed_ms": 114.2
+      "elapsed_ms": 125.5
     },
     {
       "name": "V2RAYCONFIGSPOOL-v2ray-8",
       "ok": true,
-      "nodes": 4,
-      "elapsed_ms": 119.4
+      "nodes": 1,
+      "elapsed_ms": 126.5
     },
     {
       "name": "V2RAYCONFIGSPOOL-v2ray-9",
       "ok": true,
-      "nodes": 2,
-      "elapsed_ms": 114.6
+      "nodes": 7,
+      "elapsed_ms": 139.1
     },
     {
       "name": "V2RAYCONFIGSPOOL-v2ray-10",
       "ok": true,
-      "nodes": 5,
-      "elapsed_ms": 108.9
+      "nodes": 3,
+      "elapsed_ms": 170.4
     },
     {
       "name": "SolVPN-all_configs",
       "ok": true,
-      "nodes": 321,
-      "elapsed_ms": 153.0
+      "nodes": 324,
+      "elapsed_ms": 179.6
     },
     {
       "name": "sakazxc1400-all-full",
       "ok": true,
-      "nodes": 73,
-      "elapsed_ms": 273.5
+      "nodes": 28,
+      "elapsed_ms": 148.9
     },
     {
       "name": "ShatakVPN-all",
       "ok": true,
       "nodes": 547,
-      "elapsed_ms": 174.0
+      "elapsed_ms": 183.8
     },
     {
       "name": "V2RayScrapeByCountry-ss",
       "ok": true,
-      "nodes": 3194,
-      "elapsed_ms": 702.9
+      "nodes": 3337,
+      "elapsed_ms": 649.8
     },
     {
       "name": "V2RayScrapeByCountry-trojan",
       "ok": true,
-      "nodes": 200,
-      "elapsed_ms": 231.2
+      "nodes": 220,
+      "elapsed_ms": 147.6
     },
     {
       "name": "V2RayScrapeByCountry-vless",
       "ok": true,
-      "nodes": 3048,
-      "elapsed_ms": 455.0
+      "nodes": 3181,
+      "elapsed_ms": 582.3
     },
     {
       "name": "V2RayScrapeByCountry-vmess",
       "ok": true,
-      "nodes": 440,
-      "elapsed_ms": 232.1
+      "nodes": 451,
+      "elapsed_ms": 437.7
     },
     {
       "name": "V2RayCFGDumper-sub",
       "ok": true,
-      "nodes": 30,
-      "elapsed_ms": 255.7
+      "nodes": 39,
+      "elapsed_ms": 276.4
     },
     {
       "name": "Config-Collector-mixed-iran",
       "ok": true,
-      "nodes": 226,
-      "elapsed_ms": 170.6
+      "nodes": 227,
+      "elapsed_ms": 140.8
     },
     {
       "name": "Firmfox-Proxify-mixed",
       "ok": true,
-      "nodes": 5223,
-      "elapsed_ms": 611.4
+      "nodes": 5252,
+      "elapsed_ms": 655.4
     },
     {
       "name": "Freedom-V2Ray-mix",
       "ok": true,
-      "nodes": 854,
-      "elapsed_ms": 395.6
+      "nodes": 847,
+      "elapsed_ms": 185.4
     },
     {
       "name": "Kastilio-githubmirror",
       "ok": true,
-      "nodes": 82704,
-      "elapsed_ms": 14187.8
+      "nodes": 82743,
+      "elapsed_ms": 15295.9
     },
     {
       "name": "zhuhaiuk-free-nodes",
       "ok": true,
-      "nodes": 8,
-      "elapsed_ms": 88.6
+      "nodes": 7,
+      "elapsed_ms": 142.1
     },
     {
       "name": "3inker-all_ru",
       "ok": true,
       "nodes": 56,
-      "elapsed_ms": 119.5
+      "elapsed_ms": 140.8
     },
     {
       "name": "3inker-all_not_ru",
       "ok": true,
       "nodes": 144,
-      "elapsed_ms": 152.6
+      "elapsed_ms": 138.7
     },
     {
       "name": "xrayvip-free",
       "ok": true,
       "nodes": 90,
-      "elapsed_ms": 237.6
+      "elapsed_ms": 180.4
     },
     {
       "name": "pog7x-githubmirror",
       "ok": true,
       "nodes": 87371,
-      "elapsed_ms": 13578.6
+      "elapsed_ms": 21665.9
     },
     {
       "name": "TGParse-mixed",
       "ok": true,
-      "nodes": 3617,
-      "elapsed_ms": 531.9
+      "nodes": 3643,
+      "elapsed_ms": 857.6
     },
     {
       "name": "free-nodes-v2rayfree",
       "ok": true,
-      "nodes": 580,
-      "elapsed_ms": 162.1
+      "nodes": 582,
+      "elapsed_ms": 386.9
     },
     {
       "name": "peasoft-NoMoreWalls",
       "ok": true,
-      "nodes": 11,
-      "elapsed_ms": 105.4
+      "nodes": 40,
+      "elapsed_ms": 315.6
     },
     {
       "name": "ts-sf-fly",
       "ok": true,
       "nodes": 51,
-      "elapsed_ms": 223.8
+      "elapsed_ms": 333.3
     },
     {
       "name": "HakurouKen-free-node",
       "ok": true,
       "nodes": 5,
-      "elapsed_ms": 100.7
+      "elapsed_ms": 487.2
     },
     {
       "name": "ermaozi-get_subscribe",
       "ok": true,
       "nodes": 1,
-      "elapsed_ms": 98.1
+      "elapsed_ms": 322.9
     },
     {
       "name": "Surfboardv2ray-Proxy-sorter",
       "ok": true,
-      "nodes": 2358,
-      "elapsed_ms": 329.9
+      "nodes": 2376,
+      "elapsed_ms": 566.0
     },
     {
       "name": "nyeinkokoaung404-V2ray-Configs",
       "ok": true,
-      "nodes": 707,
-      "elapsed_ms": 279.8
+      "nodes": 709,
+      "elapsed_ms": 718.9
     },
     {
       "name": "4n0nymou3-multi-proxy-config-fetcher",
       "ok": true,
-      "nodes": 470,
-      "elapsed_ms": 403.8
+      "nodes": 499,
+      "elapsed_ms": 353.0
     },
     {
       "name": "clashnodefree-v2ray",
       "ok": true,
       "nodes": 1062,
-      "elapsed_ms": 204.2
+      "elapsed_ms": 235.6
     },
     {
       "name": "gfpcom-trojan",
       "ok": true,
       "nodes": 4899,
-      "elapsed_ms": 500.0
+      "elapsed_ms": 926.6
     },
     {
       "name": "gfpcom-vmess",
       "ok": true,
       "nodes": 1737,
-      "elapsed_ms": 397.1
+      "elapsed_ms": 611.0
     },
     {
       "name": "gfpcom-vless",
       "ok": true,
       "nodes": 30063,
-      "elapsed_ms": 3539.1
+      "elapsed_ms": 4607.6
     },
     {
       "name": "gfpcom-ss",
       "ok": true,
       "nodes": 1259,
-      "elapsed_ms": 383.1
+      "elapsed_ms": 950.9
     },
     {
       "name": "telegram:@v2rayng3",
       "ok": true,
       "nodes": 220,
-      "elapsed_ms": 0.0
-    },
-    {
-      "name": "telegram:@tootffarangi",
-      "ok": true,
-      "nodes": 321,
       "elapsed_ms": 0.0
     },
     {
@@ -641,9 +635,21 @@
       "elapsed_ms": 0.0
     },
     {
-      "name": "telegram:@proxy_mtm",
+      "name": "telegram:@free_vpn_ch",
       "ok": true,
-      "nodes": 484,
+      "nodes": 202,
+      "elapsed_ms": 0.0
+    },
+    {
+      "name": "telegram:@tootffarangi",
+      "ok": true,
+      "nodes": 321,
+      "elapsed_ms": 0.0
+    },
+    {
+      "name": "telegram:@vpnine1",
+      "ok": true,
+      "nodes": 161,
       "elapsed_ms": 0.0
     },
     {
@@ -653,27 +659,9 @@
       "elapsed_ms": 0.0
     },
     {
-      "name": "telegram:@v2ray1_ng",
+      "name": "telegram:@v2ray313",
       "ok": true,
-      "nodes": 188,
-      "elapsed_ms": 0.0
-    },
-    {
-      "name": "telegram:@vpnine1",
-      "ok": true,
-      "nodes": 181,
-      "elapsed_ms": 0.0
-    },
-    {
-      "name": "telegram:@soskeynet",
-      "ok": true,
-      "nodes": 249,
-      "elapsed_ms": 0.0
-    },
-    {
-      "name": "telegram:@v2rayng_fast",
-      "ok": true,
-      "nodes": 302,
+      "nodes": 313,
       "elapsed_ms": 0.0
     },
     {
@@ -683,21 +671,33 @@
       "elapsed_ms": 0.0
     },
     {
-      "name": "telegram:@free_vpn_ch",
+      "name": "telegram:@soskeynet",
       "ok": true,
-      "nodes": 202,
+      "nodes": 242,
       "elapsed_ms": 0.0
     },
     {
-      "name": "telegram:@v2ray313",
+      "name": "telegram:@v2rayng_fast",
       "ok": true,
-      "nodes": 313,
+      "nodes": 297,
+      "elapsed_ms": 0.0
+    },
+    {
+      "name": "telegram:@v2ray1_ng",
+      "ok": true,
+      "nodes": 198,
+      "elapsed_ms": 0.0
+    },
+    {
+      "name": "telegram:@proxy_mtm",
+      "ok": true,
+      "nodes": 484,
       "elapsed_ms": 0.0
     },
     {
       "name": "telegram:@Farah_VPN",
       "ok": true,
-      "nodes": 201,
+      "nodes": 203,
       "elapsed_ms": 0.0
     },
     {
@@ -707,21 +707,21 @@
       "elapsed_ms": 0.0
     },
     {
-      "name": "telegram:@clashv8",
-      "ok": true,
-      "nodes": 237,
-      "elapsed_ms": 0.0
-    },
-    {
       "name": "telegram:@daily_configs",
       "ok": true,
       "nodes": 295,
       "elapsed_ms": 0.0
     },
     {
+      "name": "telegram:@clashv8",
+      "ok": true,
+      "nodes": 237,
+      "elapsed_ms": 0.0
+    },
+    {
       "name": "telegram:@netghjlkj",
       "ok": true,
-      "nodes": 167,
+      "nodes": 158,
       "elapsed_ms": 0.0
     },
     {
@@ -731,27 +731,9 @@
       "elapsed_ms": 0.0
     },
     {
-      "name": "telegram:@irconfiig",
-      "ok": true,
-      "nodes": 173,
-      "elapsed_ms": 0.0
-    },
-    {
       "name": "telegram:@bisto4_service",
       "ok": true,
       "nodes": 161,
-      "elapsed_ms": 0.0
-    },
-    {
-      "name": "telegram:@farazv2ray",
-      "ok": true,
-      "nodes": 225,
-      "elapsed_ms": 0.0
-    },
-    {
-      "name": "telegram:@Outline_Vpn",
-      "ok": true,
-      "nodes": 145,
       "elapsed_ms": 0.0
     },
     {
@@ -761,15 +743,21 @@
       "elapsed_ms": 0.0
     },
     {
-      "name": "telegram:@prrofile_purple",
-      "ok": true,
-      "nodes": 149,
-      "elapsed_ms": 0.0
-    },
-    {
       "name": "telegram:@mtmvpn",
       "ok": true,
       "nodes": 337,
+      "elapsed_ms": 0.0
+    },
+    {
+      "name": "telegram:@mehrosaboran",
+      "ok": true,
+      "nodes": 170,
+      "elapsed_ms": 0.0
+    },
+    {
+      "name": "telegram:@irconfiig",
+      "ok": true,
+      "nodes": 173,
       "elapsed_ms": 0.0
     },
     {
@@ -779,9 +767,15 @@
       "elapsed_ms": 0.0
     },
     {
-      "name": "telegram:@mehrosaboran",
+      "name": "telegram:@farazv2ray",
       "ok": true,
-      "nodes": 170,
+      "nodes": 225,
+      "elapsed_ms": 0.0
+    },
+    {
+      "name": "telegram:@prrofile_purple",
+      "ok": true,
+      "nodes": 149,
       "elapsed_ms": 0.0
     },
     {
@@ -800,6 +794,12 @@
       "name": "telegram:@v2raysaman",
       "ok": true,
       "nodes": 177,
+      "elapsed_ms": 0.0
+    },
+    {
+      "name": "telegram:@Outline_Vpn",
+      "ok": true,
+      "nodes": 145,
       "elapsed_ms": 0.0
     },
     {
@@ -827,27 +827,9 @@
       "elapsed_ms": 0.0
     },
     {
-      "name": "telegram:@hex_proxy",
-      "ok": true,
-      "nodes": 96,
-      "elapsed_ms": 0.0
-    },
-    {
       "name": "telegram:@fastkanfig",
       "ok": true,
       "nodes": 99,
-      "elapsed_ms": 0.0
-    },
-    {
-      "name": "telegram:@kafing_2",
-      "ok": true,
-      "nodes": 82,
-      "elapsed_ms": 0.0
-    },
-    {
-      "name": "telegram:@tehranargo",
-      "ok": true,
-      "nodes": 114,
       "elapsed_ms": 0.0
     },
     {
@@ -857,9 +839,27 @@
       "elapsed_ms": 0.0
     },
     {
-      "name": "telegram:@appsooner",
+      "name": "telegram:@tehranargo",
       "ok": true,
-      "nodes": 91,
+      "nodes": 114,
+      "elapsed_ms": 0.0
+    },
+    {
+      "name": "telegram:@hex_proxy",
+      "ok": true,
+      "nodes": 96,
+      "elapsed_ms": 0.0
+    },
+    {
+      "name": "telegram:@kafing_2",
+      "ok": true,
+      "nodes": 82,
+      "elapsed_ms": 0.0
+    },
+    {
+      "name": "telegram:@freenettir",
+      "ok": true,
+      "nodes": 56,
       "elapsed_ms": 0.0
     },
     {
@@ -869,9 +869,15 @@
       "elapsed_ms": 0.0
     },
     {
-      "name": "telegram:@freenettir",
+      "name": "telegram:@appsooner",
       "ok": true,
-      "nodes": 53,
+      "nodes": 91,
+      "elapsed_ms": 0.0
+    },
+    {
+      "name": "telegram:@erfanandroid",
+      "ok": true,
+      "nodes": 82,
       "elapsed_ms": 0.0
     },
     {
@@ -881,9 +887,9 @@
       "elapsed_ms": 0.0
     },
     {
-      "name": "telegram:@erfanandroid",
+      "name": "telegram:@v2ray_phoenix",
       "ok": true,
-      "nodes": 82,
+      "nodes": 124,
       "elapsed_ms": 0.0
     },
     {
@@ -901,13 +907,7 @@
     {
       "name": "telegram:@filembad",
       "ok": true,
-      "nodes": 93,
-      "elapsed_ms": 0.0
-    },
-    {
-      "name": "telegram:@v2ray_phoenix",
-      "ok": true,
-      "nodes": 124,
+      "nodes": 92,
       "elapsed_ms": 0.0
     },
     {
@@ -923,21 +923,15 @@
       "elapsed_ms": 0.0
     },
     {
-      "name": "telegram:@nexus_panell",
-      "ok": true,
-      "nodes": 29,
-      "elapsed_ms": 0.0
-    },
-    {
       "name": "telegram:@vless_vmess",
       "ok": true,
       "nodes": 52,
       "elapsed_ms": 0.0
     },
     {
-      "name": "telegram:@v2ray_free_conf",
+      "name": "telegram:@nexus_panell",
       "ok": true,
-      "nodes": 32,
+      "nodes": 29,
       "elapsed_ms": 0.0
     },
     {
@@ -947,15 +941,21 @@
       "elapsed_ms": 0.0
     },
     {
-      "name": "telegram:@hopev2ray",
-      "ok": true,
-      "nodes": 86,
-      "elapsed_ms": 0.0
-    },
-    {
       "name": "telegram:@canfingV2rayNG",
       "ok": true,
       "nodes": 76,
+      "elapsed_ms": 0.0
+    },
+    {
+      "name": "telegram:@v2ray_free_conf",
+      "ok": true,
+      "nodes": 30,
+      "elapsed_ms": 0.0
+    },
+    {
+      "name": "telegram:@hopev2ray",
+      "ok": true,
+      "nodes": 86,
       "elapsed_ms": 0.0
     },
     {
@@ -971,15 +971,15 @@
       "elapsed_ms": 0.0
     },
     {
-      "name": "telegram:@isvvpn",
+      "name": "telegram:@bigsmoke_config",
       "ok": true,
-      "nodes": 88,
+      "nodes": 77,
       "elapsed_ms": 0.0
     },
     {
-      "name": "telegram:@bigsmoke_config",
+      "name": "telegram:@V2RAYROZ",
       "ok": true,
-      "nodes": 74,
+      "nodes": 65,
       "elapsed_ms": 0.0
     },
     {
@@ -989,9 +989,9 @@
       "elapsed_ms": 0.0
     },
     {
-      "name": "telegram:@V2RAYROZ",
+      "name": "telegram:@isvvpn",
       "ok": true,
-      "nodes": 65,
+      "nodes": 88,
       "elapsed_ms": 0.0
     },
     {
@@ -1003,7 +1003,7 @@
     {
       "name": "telegram:@azarbayjab1",
       "ok": true,
-      "nodes": 54,
+      "nodes": 51,
       "elapsed_ms": 0.0
     },
     {
@@ -1021,7 +1021,7 @@
     {
       "name": "telegram:@hope_net",
       "ok": true,
-      "nodes": 20,
+      "nodes": 19,
       "elapsed_ms": 0.0
     },
     {
@@ -1031,9 +1031,9 @@
       "elapsed_ms": 0.0
     },
     {
-      "name": "telegram:@v2xnet",
+      "name": "telegram:@confiig_hub",
       "ok": true,
-      "nodes": 64,
+      "nodes": 72,
       "elapsed_ms": 0.0
     },
     {
@@ -1043,21 +1043,15 @@
       "elapsed_ms": 0.0
     },
     {
-      "name": "telegram:@icv2ray",
-      "ok": true,
-      "nodes": 58,
-      "elapsed_ms": 0.0
-    },
-    {
       "name": "telegram:@kurdconfig",
       "ok": true,
       "nodes": 71,
       "elapsed_ms": 0.0
     },
     {
-      "name": "telegram:@confiig_hub",
+      "name": "telegram:@v2xnet",
       "ok": true,
-      "nodes": 72,
+      "nodes": 64,
       "elapsed_ms": 0.0
     },
     {
@@ -1067,9 +1061,9 @@
       "elapsed_ms": 0.0
     },
     {
-      "name": "telegram:@freedomofinfor",
+      "name": "telegram:@icv2ray",
       "ok": true,
-      "nodes": 46,
+      "nodes": 58,
       "elapsed_ms": 0.0
     },
     {
@@ -1079,21 +1073,21 @@
       "elapsed_ms": 0.0
     },
     {
+      "name": "telegram:@cxrolvpn",
+      "ok": true,
+      "nodes": 42,
+      "elapsed_ms": 0.0
+    },
+    {
       "name": "telegram:@fhkllvjkll",
       "ok": true,
       "nodes": 38,
       "elapsed_ms": 0.0
     },
     {
-      "name": "telegram:@v2ray_alpha",
+      "name": "telegram:@freedomofinfor",
       "ok": true,
-      "nodes": 71,
-      "elapsed_ms": 0.0
-    },
-    {
-      "name": "telegram:@cxrolvpn",
-      "ok": true,
-      "nodes": 42,
+      "nodes": 46,
       "elapsed_ms": 0.0
     },
     {
@@ -1103,15 +1097,33 @@
       "elapsed_ms": 0.0
     },
     {
-      "name": "telegram:@alpha_v2rayip",
+      "name": "telegram:@v2ray_alpha",
       "ok": true,
-      "nodes": 45,
+      "nodes": 71,
       "elapsed_ms": 0.0
     },
     {
       "name": "telegram:@capoit",
       "ok": true,
       "nodes": 52,
+      "elapsed_ms": 0.0
+    },
+    {
+      "name": "telegram:@alpha_v2rayip",
+      "ok": true,
+      "nodes": 45,
+      "elapsed_ms": 0.0
+    },
+    {
+      "name": "telegram:@V2rayNGX",
+      "ok": true,
+      "nodes": 55,
+      "elapsed_ms": 0.0
+    },
+    {
+      "name": "telegram:@V2rayi_net",
+      "ok": true,
+      "nodes": 50,
       "elapsed_ms": 0.0
     },
     {
@@ -1127,12 +1139,6 @@
       "elapsed_ms": 0.0
     },
     {
-      "name": "telegram:@V2rayi_net",
-      "ok": true,
-      "nodes": 50,
-      "elapsed_ms": 0.0
-    },
-    {
       "name": "telegram:@hesarweb",
       "ok": true,
       "nodes": 50,
@@ -1141,19 +1147,7 @@
     {
       "name": "telegram:@outline_ir",
       "ok": true,
-      "nodes": 41,
-      "elapsed_ms": 0.0
-    },
-    {
-      "name": "telegram:@config7x",
-      "ok": true,
-      "nodes": 48,
-      "elapsed_ms": 0.0
-    },
-    {
-      "name": "telegram:@V2rayNGX",
-      "ok": true,
-      "nodes": 55,
+      "nodes": 40,
       "elapsed_ms": 0.0
     },
     {
@@ -1175,6 +1169,12 @@
       "elapsed_ms": 0.0
     },
     {
+      "name": "telegram:@config7x",
+      "ok": true,
+      "nodes": 48,
+      "elapsed_ms": 0.0
+    },
+    {
       "name": "telegram:@selinc",
       "ok": true,
       "nodes": 39,
@@ -1193,15 +1193,15 @@
       "elapsed_ms": 0.0
     },
     {
-      "name": "telegram:@vmess_ir",
+      "name": "telegram:@networld_vpn",
       "ok": true,
-      "nodes": 47,
+      "nodes": 43,
       "elapsed_ms": 0.0
     },
     {
-      "name": "telegram:@networld_vpn",
+      "name": "telegram:@vmess_ir",
       "ok": true,
-      "nodes": 48,
+      "nodes": 46,
       "elapsed_ms": 0.0
     },
     {
@@ -1229,12 +1229,6 @@
       "elapsed_ms": 0.0
     },
     {
-      "name": "telegram:@V2ray_Team",
-      "ok": true,
-      "nodes": 28,
-      "elapsed_ms": 0.0
-    },
-    {
       "name": "telegram:@mftizi",
       "ok": true,
       "nodes": 13,
@@ -1249,13 +1243,25 @@
     {
       "name": "telegram:@bigavpn",
       "ok": true,
-      "nodes": 26,
+      "nodes": 27,
+      "elapsed_ms": 0.0
+    },
+    {
+      "name": "telegram:@V2ray_Team",
+      "ok": true,
+      "nodes": 28,
       "elapsed_ms": 0.0
     },
     {
       "name": "telegram:@ProxyMtpVPN",
       "ok": true,
       "nodes": 24,
+      "elapsed_ms": 0.0
+    },
+    {
+      "name": "telegram:@ShadowProxy66",
+      "ok": true,
+      "nodes": 62,
       "elapsed_ms": 0.0
     },
     {
@@ -1267,19 +1273,7 @@
     {
       "name": "telegram:@lent_gc",
       "ok": true,
-      "nodes": 56,
-      "elapsed_ms": 0.0
-    },
-    {
-      "name": "telegram:@v2ray_outlineir",
-      "ok": true,
-      "nodes": 18,
-      "elapsed_ms": 0.0
-    },
-    {
-      "name": "telegram:@ansooyefilter",
-      "ok": true,
-      "nodes": 28,
+      "nodes": 55,
       "elapsed_ms": 0.0
     },
     {
@@ -1289,9 +1283,9 @@
       "elapsed_ms": 0.0
     },
     {
-      "name": "telegram:@ShadowProxy66",
+      "name": "telegram:@ansooyefilter",
       "ok": true,
-      "nodes": 62,
+      "nodes": 28,
       "elapsed_ms": 0.0
     },
     {
@@ -1301,15 +1295,15 @@
       "elapsed_ms": 0.0
     },
     {
-      "name": "telegram:@atovpn",
+      "name": "telegram:@v2ray_outlineir",
       "ok": true,
-      "nodes": 22,
+      "nodes": 18,
       "elapsed_ms": 0.0
     },
     {
-      "name": "telegram:@cnetvpn",
+      "name": "telegram:@atovpn",
       "ok": true,
-      "nodes": 27,
+      "nodes": 22,
       "elapsed_ms": 0.0
     },
     {
@@ -1325,9 +1319,15 @@
       "elapsed_ms": 0.0
     },
     {
+      "name": "telegram:@cnetvpn",
+      "ok": true,
+      "nodes": 27,
+      "elapsed_ms": 0.0
+    },
+    {
       "name": "telegram:@cfox_server",
       "ok": true,
-      "nodes": 46,
+      "nodes": 47,
       "elapsed_ms": 0.0
     },
     {
@@ -1343,9 +1343,15 @@
       "elapsed_ms": 0.0
     },
     {
+      "name": "telegram:@VmessProtocol",
+      "ok": true,
+      "nodes": 28,
+      "elapsed_ms": 0.0
+    },
+    {
       "name": "telegram:@vegaas_vpn",
       "ok": true,
-      "nodes": 34,
+      "nodes": 32,
       "elapsed_ms": 0.0
     },
     {
@@ -1361,27 +1367,9 @@
       "elapsed_ms": 0.0
     },
     {
-      "name": "telegram:@VmessProtocol",
-      "ok": true,
-      "nodes": 28,
-      "elapsed_ms": 0.0
-    },
-    {
-      "name": "telegram:@v2ray_configs_pool",
-      "ok": true,
-      "nodes": 23,
-      "elapsed_ms": 0.0
-    },
-    {
       "name": "telegram:@SafeNet_Server",
       "ok": true,
       "nodes": 20,
-      "elapsed_ms": 0.0
-    },
-    {
-      "name": "telegram:@ConfigsHUB",
-      "ok": true,
-      "nodes": 14,
       "elapsed_ms": 0.0
     },
     {
@@ -1391,15 +1379,21 @@
       "elapsed_ms": 0.0
     },
     {
-      "name": "telegram:@mainv2ray",
+      "name": "telegram:@v2ray_configs_pool",
       "ok": true,
-      "nodes": 24,
+      "nodes": 23,
       "elapsed_ms": 0.0
     },
     {
-      "name": "telegram:@vpn_mafia",
+      "name": "telegram:@ConfigsHUB",
       "ok": true,
-      "nodes": 23,
+      "nodes": 9,
+      "elapsed_ms": 0.0
+    },
+    {
+      "name": "telegram:@mainv2ray",
+      "ok": true,
+      "nodes": 24,
       "elapsed_ms": 0.0
     },
     {
@@ -1409,21 +1403,27 @@
       "elapsed_ms": 0.0
     },
     {
-      "name": "telegram:@spdnet",
-      "ok": true,
-      "nodes": 20,
-      "elapsed_ms": 0.0
-    },
-    {
       "name": "telegram:@confing_v2rayy",
       "ok": true,
       "nodes": 20,
       "elapsed_ms": 0.0
     },
     {
+      "name": "telegram:@vpn_mafia",
+      "ok": true,
+      "nodes": 23,
+      "elapsed_ms": 0.0
+    },
+    {
       "name": "telegram:@v2raymelliii",
       "ok": true,
       "nodes": 29,
+      "elapsed_ms": 0.0
+    },
+    {
+      "name": "telegram:@spdnet",
+      "ok": true,
+      "nodes": 20,
       "elapsed_ms": 0.0
     },
     {
@@ -1451,9 +1451,9 @@
       "elapsed_ms": 0.0
     },
     {
-      "name": "telegram:@namiraconfigs",
+      "name": "telegram:@flyv2ray",
       "ok": true,
-      "nodes": 19,
+      "nodes": 21,
       "elapsed_ms": 0.0
     },
     {
@@ -1463,27 +1463,15 @@
       "elapsed_ms": 0.0
     },
     {
-      "name": "telegram:@flyv2ray",
-      "ok": true,
-      "nodes": 21,
-      "elapsed_ms": 0.0
-    },
-    {
       "name": "telegram:@ShadowsocksM",
       "ok": true,
       "nodes": 55,
       "elapsed_ms": 0.0
     },
     {
-      "name": "telegram:@webshecan",
+      "name": "telegram:@namiraconfigs",
       "ok": true,
-      "nodes": 0,
-      "elapsed_ms": 0.0
-    },
-    {
-      "name": "telegram:@V2All",
-      "ok": true,
-      "nodes": 22,
+      "nodes": 19,
       "elapsed_ms": 0.0
     },
     {
@@ -1499,9 +1487,21 @@
       "elapsed_ms": 0.0
     },
     {
-      "name": "telegram:@FreeV2rays",
+      "name": "telegram:@webshecan",
       "ok": true,
-      "nodes": 18,
+      "nodes": 0,
+      "elapsed_ms": 0.0
+    },
+    {
+      "name": "telegram:@V2All",
+      "ok": true,
+      "nodes": 15,
+      "elapsed_ms": 0.0
+    },
+    {
+      "name": "telegram:@ProxyPJ",
+      "ok": true,
+      "nodes": 19,
       "elapsed_ms": 0.0
     },
     {
@@ -1511,9 +1511,9 @@
       "elapsed_ms": 0.0
     },
     {
-      "name": "telegram:@ProxyPJ",
+      "name": "telegram:@FreeV2rays",
       "ok": true,
-      "nodes": 19,
+      "nodes": 18,
       "elapsed_ms": 0.0
     },
     {
@@ -1532,13 +1532,7 @@
       "name": "telegram:@fnet00",
       "ok": true,
       "nodes": 17,
-      "elapsed_ms": 0.0
-    },
-    {
-      "name": "telegram:@jkvpn",
-      "ok": true,
-      "nodes": 18,
-      "elapsed_ms": 0.0
+      "elapsed_ms": 0.1
     },
     {
       "name": "telegram:@musiclovers85",
@@ -1553,15 +1547,27 @@
       "elapsed_ms": 0.0
     },
     {
-      "name": "telegram:@azaranv2ray",
+      "name": "telegram:@jkvpn",
       "ok": true,
-      "nodes": 19,
+      "nodes": 18,
       "elapsed_ms": 0.0
     },
     {
       "name": "telegram:@vpn_mikey",
       "ok": true,
       "nodes": 8,
+      "elapsed_ms": 0.0
+    },
+    {
+      "name": "telegram:@azaranv2ray",
+      "ok": true,
+      "nodes": 19,
+      "elapsed_ms": 0.0
+    },
+    {
+      "name": "telegram:@subgift",
+      "ok": true,
+      "nodes": 15,
       "elapsed_ms": 0.0
     },
     {
@@ -1577,9 +1583,9 @@
       "elapsed_ms": 0.0
     },
     {
-      "name": "telegram:@subgift",
+      "name": "telegram:@v2rayng_ip",
       "ok": true,
-      "nodes": 15,
+      "nodes": 84,
       "elapsed_ms": 0.0
     },
     {
@@ -1595,21 +1601,15 @@
       "elapsed_ms": 0.0
     },
     {
-      "name": "telegram:@v2rayng_ip",
+      "name": "telegram:@Parsashonam",
       "ok": true,
-      "nodes": 82,
+      "nodes": 15,
       "elapsed_ms": 0.0
     },
     {
       "name": "telegram:@nim_vpn_ir",
       "ok": true,
       "nodes": 13,
-      "elapsed_ms": 0.0
-    },
-    {
-      "name": "telegram:@Parsashonam",
-      "ok": true,
-      "nodes": 15,
       "elapsed_ms": 0.0
     },
     {
@@ -1625,15 +1625,15 @@
       "elapsed_ms": 0.0
     },
     {
-      "name": "telegram:@ehsawn8",
-      "ok": true,
-      "nodes": 3,
-      "elapsed_ms": 0.0
-    },
-    {
       "name": "telegram:@amvng",
       "ok": true,
       "nodes": 10,
+      "elapsed_ms": 0.0
+    },
+    {
+      "name": "telegram:@ehsawn8",
+      "ok": true,
+      "nodes": 3,
       "elapsed_ms": 0.0
     },
     {
@@ -1643,9 +1643,15 @@
       "elapsed_ms": 0.0
     },
     {
+      "name": "telegram:@rokervpn",
+      "ok": true,
+      "nodes": 12,
+      "elapsed_ms": 0.0
+    },
+    {
       "name": "telegram:@gozargahazad",
       "ok": true,
-      "nodes": 17,
+      "nodes": 10,
       "elapsed_ms": 0.0
     },
     {
@@ -1655,15 +1661,21 @@
       "elapsed_ms": 0.0
     },
     {
-      "name": "telegram:@rokervpn",
-      "ok": true,
-      "nodes": 12,
-      "elapsed_ms": 0.0
-    },
-    {
       "name": "telegram:@V2RAY_VMESS_free",
       "ok": true,
       "nodes": 6,
+      "elapsed_ms": 0.0
+    },
+    {
+      "name": "telegram:@gozargahvpn",
+      "ok": true,
+      "nodes": 9,
+      "elapsed_ms": 0.0
+    },
+    {
+      "name": "telegram:@node_pool",
+      "ok": true,
+      "nodes": 0,
       "elapsed_ms": 0.0
     },
     {
@@ -1679,21 +1691,9 @@
       "elapsed_ms": 0.0
     },
     {
-      "name": "telegram:@node_pool",
-      "ok": true,
-      "nodes": 0,
-      "elapsed_ms": 0.0
-    },
-    {
       "name": "telegram:@SafeNetIR",
       "ok": true,
       "nodes": 7,
-      "elapsed_ms": 0.0
-    },
-    {
-      "name": "telegram:@gozargahvpn",
-      "ok": true,
-      "nodes": 9,
       "elapsed_ms": 0.0
     },
     {
@@ -1709,15 +1709,15 @@
       "elapsed_ms": 0.0
     },
     {
-      "name": "telegram:@SiNAVM",
-      "ok": true,
-      "nodes": 134,
-      "elapsed_ms": 0.0
-    },
-    {
       "name": "telegram:@ZibaNabz",
       "ok": true,
       "nodes": 0,
+      "elapsed_ms": 0.0
+    },
+    {
+      "name": "telegram:@SiNAVM",
+      "ok": true,
+      "nodes": 134,
       "elapsed_ms": 0.0
     }
   ]
