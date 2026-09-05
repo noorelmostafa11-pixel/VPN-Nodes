@@ -7,7 +7,7 @@ Public node catalog builder for the Android VPN client.
 ```text
 sources.json + Telegram + v2nodes
         -> parse / normalize / semantic deduplicate
-        -> TCP reachability on ports 53/80/443/853/8008 (512 workers)
+        -> TCP reachability on port 443 (512 workers)
         -> country resolution and latency ordering
         -> output/countries/<CC>.txt (backwards-compatible full feed)
         -> output/country_shards/<CC>/<NNN>.txt (1,000 nodes per signed shard)
@@ -39,8 +39,8 @@ credential. No scheduler token or private credential is stored in this repositor
 ## On-demand country downloads
 
 Country order remains exactly the same as the latency-ranked full feed. Current
-Android clients download one signed 1,000-node shard at a time and continue to
-the next shard only when needed. Older clients can continue to use the full
+Android clients download one signed 1,000-node shard at a time and continue
+to the next shard only when needed. Older clients can continue to use the full
 `output/countries/<CC>.txt` files.
 
 ## Generated intermediates
@@ -50,6 +50,6 @@ are ignored by Git. They are not part of the published repository.
 
 ## Catalog semantics
 
-`TCP alive` only means the advertised endpoint accepted a TCP connection when
-the catalog was generated. VLESS/VMess/Trojan/Shadowsocks correctness and Internet
-access are verified later by Xray inside the Android application.
+`TCP alive` only means the advertised endpoint accepted a TCP connection on port
+443 when the catalog was generated. VLESS/VMess/Trojan/Shadowsocks correctness
+and Internet access are verified later by Xray inside the Android application.
