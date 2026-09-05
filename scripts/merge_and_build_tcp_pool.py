@@ -6,6 +6,7 @@ import asyncio
 import html
 import json
 import time
+import urllib.parse
 from pathlib import Path
 
 import build_tcp_pool as common
@@ -19,6 +20,40 @@ INPUTS = (
     META / "telegram_candidates.json",
     META / "v2nodes_candidates.json",
 )
+
+
+
+def is_insecure_plain_vless(uri: str) -> bool:
+    """True only when VLESS has neither transport security nor VLESS Encryption."""
+    try:
+        parsed = urllib.parse.urlsplit(uri)
+        if parsed.scheme.lower() != "vless":
+            return False
+        query = {
+            key.lower(): values
+            for key, values in urllib.parse.parse_qs(
+                parsed.query,
+                keep_blank_values=True,
+            ).items()
+        }
+
+        def first(*keys: str) -> str:
+            for key in keys:
+                values = query.get(key.lower())
+                if values:
+                    return str(values[0]).strip()
+            return ""
+
+        security = (first("security", "tls") or "none").lower()
+        encryption = (first("encryption") or "none").lower()
+        has_reality_key = bool(first("pbk", "publicKey"))
+        return (
+            not has_reality_key
+            and security in {"none", "false", "0"}
+            and encryption == "none"
+        )
+    except (TypeError, ValueError):
+        return False
 
 
 def load_rows(path: Path) -> tuple[list[dict], list[dict]]:
@@ -39,6 +74,7 @@ def main() -> int:
 
     protocol_rows: list[dict] = []
     html_uri_normalized = 0
+    insecure_plain_vless_removed = 0
     for original in all_rows:
         if str(original.get("protocol") or "").lower() == "openvpn":
             continue
@@ -46,6 +82,9 @@ def main() -> int:
         clean_uri = html.unescape(raw_uri)
         if clean_uri != raw_uri:
             html_uri_normalized += 1
+        if is_insecure_plain_vless(clean_uri):
+            insecure_plain_vless_removed += 1
+            continue
         protocol_rows.append({**original, "uri": clean_uri})
 
     unique: dict[str, dict] = {}
@@ -57,7 +96,8 @@ def main() -> int:
     print(
         f"INFO merged={len(all_rows)} protocol_rows={len(protocol_rows)} "
         f"protocol_candidates={len(rows)} semantic_dedup_removed={semantic_dedup_removed} "
-        f"html_uri_normalized={html_uri_normalized}"
+        f"html_uri_normalized={html_uri_normalized} "
+        f"insecure_plain_vless_removed={insecure_plain_vless_removed}"
     )
 
     tcp_checked = asyncio.run(common.run_tcp_checks(rows))
@@ -75,6 +115,7 @@ def main() -> int:
         "protocol_candidates": len(rows),
         "semantic_dedup_removed": semantic_dedup_removed,
         "html_uri_normalized": html_uri_normalized,
+        "insecure_plain_vless_removed": insecure_plain_vless_removed,
         "tcp_reachable": len(tcp_checked),
         "tcp_workers": common.TCP_WORKERS,
         "allowed_ports": sorted(catalog.ALLOWED_PORTS),
@@ -98,6 +139,7 @@ def main() -> int:
         "protocol_candidates": len(rows),
         "semantic_dedup_removed": semantic_dedup_removed,
         "html_uri_normalized": html_uri_normalized,
+        "insecure_plain_vless_removed": insecure_plain_vless_removed,
         "tcp_reachable": len(tcp_checked),
         "sources": source_health,
         "common_pool": meta,
