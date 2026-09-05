@@ -25,8 +25,8 @@ COUNTRY_SHARD_MAX_BYTES = 4 * 1024 * 1024
 
 
 async def tcp_probe(item: dict, semaphore: asyncio.Semaphore) -> tuple[dict, float | None]:
-    started = time.perf_counter()
     async with semaphore:
+        started = time.perf_counter()
         try:
             _, writer = await asyncio.wait_for(
                 asyncio.open_connection(item["host"], item["port"]),
