@@ -9,6 +9,7 @@ from pathlib import Path
 import update_catalog as catalog
 from freev2raynodes_adapter import candidate_urls
 from publicvpnlist_adapter import collect_publicvpnlist
+from freeproxydb_adapter import collect_freeproxydb
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCES = ROOT / "sources" / "sources.json"
@@ -52,6 +53,11 @@ def main() -> int:
     rows.extend(public)
     health.append({"name": "PublicVPNList-api", "ok": True, "nodes": len(public)})
     print(f"OK source PublicVPNList-api: {len(public)}")
+
+    freeproxy = collect_freeproxydb()
+    rows.extend(freeproxy)
+    health.append({"name": "FreeProxyDB-api", "ok": True, "nodes": len(freeproxy)})
+    print(f"OK source FreeProxyDB-api: {len(freeproxy)}")
 
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(json.dumps({
