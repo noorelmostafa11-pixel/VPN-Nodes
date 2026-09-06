@@ -67,7 +67,11 @@ async def run_tcp_checks(rows: list[dict]) -> list[dict]:
     return results
 
 
-def publish_app_pool(rows: list[dict], source_health: list[dict]) -> dict:
+def publish_app_pool(
+    rows: list[dict],
+    source_health: list[dict],
+    freshness_summary: dict | None = None,
+) -> dict:
     """Publish every TCP-alive node, globally ordered by TCP latency per country.
 
     Country/source discovery method never affects ranking. Once a node is assigned
@@ -228,8 +232,43 @@ def publish_app_pool(rows: list[dict], source_health: list[dict]) -> dict:
         "source_failures": sum(1 for source in source_health if not source.get("ok")),
         "sources": source_health,
     }
+    if freshness_summary:
+        app_meta["source_freshness"] = {
+            key: value for key, value in freshness_summary.items() if key != "sources"
+        }
     (out_dirs["metadata"] / "app_pool.json").write_text(
         json.dumps(app_meta, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
+    )
+
+    # Keep the legacy metadata endpoint synchronized for installed Android builds.
+    # The file name and schema remain unchanged; only its generated values refresh.
+    country_names = {item["code"]: item["name"] for item in countries_meta}
+    published_by_country = {
+        item["code"]: {"active": 0, "backup": item["nodes"], "total": item["nodes"]}
+        for item in countries_meta
+    }
+    legacy_index = {
+        "schema": 9,
+        "generated_at": generated_at,
+        "tcp_reachable_total": len(rows),
+        "xray_included": 0,
+        "config_conversion_failed": 0,
+        "active": 0,
+        "backup": published_total,
+        "failed_after_core": 0,
+        "healthy": 0,
+        "published_total": published_total,
+        "countries": len(countries_meta),
+        "published_by_country": published_by_country,
+        "country_names": country_names,
+        "allowed_ports": sorted(catalog.ALLOWED_PORTS),
+        "policy": "tcp_liveness_only; Android Xray performs the final real-traffic check",
+        "ranking": "latency_ascending_only",
+        "country_policy": "all_resolved_tcp_alive_nodes",
+        "country_resolution": country_result,
+    }
+    (out_dirs["metadata"] / "index.json").write_text(
+        json.dumps(legacy_index, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
     )
 
     print(
