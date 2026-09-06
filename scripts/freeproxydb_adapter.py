@@ -27,7 +27,7 @@ PAGE_SIZE = 100
 MAX_PAGES = 5000
 
 PAGE_DELAY = 2
-PROTOCOL_DELAY = 15
+PROTOCOL_DELAY = 30
 MAX_RETRIES = 4
 
 
@@ -257,7 +257,7 @@ def collect_freeproxydb() -> list[dict]:
     rows = []
 
 
-    for protocol in PROTOCOLS:
+    for index, protocol in enumerate(PROTOCOLS):
 
         rows.extend(
             fetch_protocol(
@@ -265,9 +265,10 @@ def collect_freeproxydb() -> list[dict]:
             )
         )
 
-        time.sleep(
-            PROTOCOL_DELAY
-        )
+        if index < len(PROTOCOLS) - 1:
+            time.sleep(
+                PROTOCOL_DELAY
+            )
 
 
     print(
