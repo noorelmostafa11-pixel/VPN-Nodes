@@ -21,6 +21,14 @@ def main() -> int:
     if not uris:
         raise SystemExit("v2nodes returned no proxy URIs")
     rows = catalog.parse_lines("\n".join(uris), "v2nodes")
+    health = {
+        "name": "v2nodes",
+        "ok": bool(rows),
+        "nodes": len(rows),
+        "raw_nodes": len(uris),
+    }
+    if not rows:
+        health["error"] = "source returned no supported nodes"
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(json.dumps({
         "generated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
@@ -28,6 +36,7 @@ def main() -> int:
         "raw_uris": len(uris),
         "parsed": len(rows),
         "rows": rows,
+        "sources": [health],
     }, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(f"INFO v2nodes raw_uris={len(uris)} parsed={len(rows)} elapsed_ms={round((time.perf_counter() - started) * 1000, 1)}")
     return 0
