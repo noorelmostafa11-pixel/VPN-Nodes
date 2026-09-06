@@ -1,17 +1,27 @@
 {
   "schema": 2,
-  "generated_at": "2026-09-06T05:38:12Z",
+  "generated_at": "2026-09-06T06:38:10Z",
   "shard_size": 1000,
   "countries": [
     {
       "code": "AE",
       "name": "United Arab Emirates",
-      "nodes": 103,
+      "nodes": 104,
       "active": 0,
-      "backup": 103,
+      "backup": 104,
       "shards": 1,
       "shard_size": 1000,
       "shard_path": "output/country_shards/AE"
+    },
+    {
+      "code": "AF",
+      "name": "Afghanistan",
+      "nodes": 1,
+      "active": 0,
+      "backup": 1,
+      "shards": 1,
+      "shard_size": 1000,
+      "shard_path": "output/country_shards/AF"
     },
     {
       "code": "AL",
@@ -66,9 +76,9 @@
     {
       "code": "AU",
       "name": "Australia",
-      "nodes": 233,
+      "nodes": 191,
       "active": 0,
-      "backup": 233,
+      "backup": 191,
       "shards": 1,
       "shard_size": 1000,
       "shard_path": "output/country_shards/AU"
@@ -156,9 +166,9 @@
     {
       "code": "CA",
       "name": "Canada",
-      "nodes": 131,
+      "nodes": 129,
       "active": 0,
-      "backup": 131,
+      "backup": 129,
       "shards": 1,
       "shard_size": 1000,
       "shard_path": "output/country_shards/CA"
@@ -166,9 +176,9 @@
     {
       "code": "CH",
       "name": "Switzerland",
-      "nodes": 132,
+      "nodes": 133,
       "active": 0,
-      "backup": 132,
+      "backup": 133,
       "shards": 1,
       "shard_size": 1000,
       "shard_path": "output/country_shards/CH"
@@ -216,9 +226,9 @@
     {
       "code": "CY",
       "name": "Cyprus",
-      "nodes": 39,
+      "nodes": 40,
       "active": 0,
-      "backup": 39,
+      "backup": 40,
       "shards": 1,
       "shard_size": 1000,
       "shard_path": "output/country_shards/CY"
@@ -236,9 +246,9 @@
     {
       "code": "DE",
       "name": "Germany",
-      "nodes": 1180,
+      "nodes": 1145,
       "active": 0,
-      "backup": 1180,
+      "backup": 1145,
       "shards": 2,
       "shard_size": 1000,
       "shard_path": "output/country_shards/DE"
@@ -266,9 +276,9 @@
     {
       "code": "EE",
       "name": "Estonia",
-      "nodes": 136,
+      "nodes": 132,
       "active": 0,
-      "backup": 136,
+      "backup": 132,
       "shards": 1,
       "shard_size": 1000,
       "shard_path": "output/country_shards/EE"
@@ -286,9 +296,9 @@
     {
       "code": "FI",
       "name": "Finland",
-      "nodes": 254,
+      "nodes": 256,
       "active": 0,
-      "backup": 254,
+      "backup": 256,
       "shards": 1,
       "shard_size": 1000,
       "shard_path": "output/country_shards/FI"
@@ -306,9 +316,9 @@
     {
       "code": "GB",
       "name": "United Kingdom",
-      "nodes": 783,
+      "nodes": 763,
       "active": 0,
-      "backup": 783,
+      "backup": 763,
       "shards": 1,
       "shard_size": 1000,
       "shard_path": "output/country_shards/GB"
@@ -326,9 +336,9 @@
     {
       "code": "GR",
       "name": "Greece",
-      "nodes": 30,
+      "nodes": 31,
       "active": 0,
-      "backup": 30,
+      "backup": 31,
       "shards": 1,
       "shard_size": 1000,
       "shard_path": "output/country_shards/GR"
@@ -336,9 +346,9 @@
     {
       "code": "HK",
       "name": "Hong Kong",
-      "nodes": 468,
+      "nodes": 364,
       "active": 0,
-      "backup": 468,
+      "backup": 364,
       "shards": 1,
       "shard_size": 1000,
       "shard_path": "output/country_shards/HK"
@@ -366,9 +376,9 @@
     {
       "code": "ID",
       "name": "Indonesia",
-      "nodes": 4,
+      "nodes": 3,
       "active": 0,
-      "backup": 4,
+      "backup": 3,
       "shards": 1,
       "shard_size": 1000,
       "shard_path": "output/country_shards/ID"
@@ -376,9 +386,9 @@
     {
       "code": "IE",
       "name": "Ireland",
-      "nodes": 61,
+      "nodes": 30,
       "active": 0,
-      "backup": 61,
+      "backup": 30,
       "shards": 1,
       "shard_size": 1000,
       "shard_path": "output/country_shards/IE"
@@ -386,9 +396,9 @@
     {
       "code": "IL",
       "name": "Israel",
-      "nodes": 15,
+      "nodes": 13,
       "active": 0,
-      "backup": 15,
+      "backup": 13,
       "shards": 1,
       "shard_size": 1000,
       "shard_path": "output/country_shards/IL"
@@ -406,9 +416,9 @@
     {
       "code": "IN",
       "name": "India",
-      "nodes": 32,
+      "nodes": 33,
       "active": 0,
-      "backup": 32,
+      "backup": 33,
       "shards": 1,
       "shard_size": 1000,
       "shard_path": "output/country_shards/IN"
@@ -446,9 +456,9 @@
     {
       "code": "IT",
       "name": "Italy",
-      "nodes": 46,
+      "nodes": 45,
       "active": 0,
-      "backup": 46,
+      "backup": 45,
       "shards": 1,
       "shard_size": 1000,
       "shard_path": "output/country_shards/IT"
@@ -466,9 +476,9 @@
     {
       "code": "JP",
       "name": "Japan",
-      "nodes": 673,
+      "nodes": 360,
       "active": 0,
-      "backup": 673,
+      "backup": 360,
       "shards": 1,
       "shard_size": 1000,
       "shard_path": "output/country_shards/JP"
@@ -486,9 +496,9 @@
     {
       "code": "KR",
       "name": "Korea, Republic of",
-      "nodes": 492,
+      "nodes": 198,
       "active": 0,
-      "backup": 492,
+      "backup": 198,
       "shards": 1,
       "shard_size": 1000,
       "shard_path": "output/country_shards/KR"
@@ -506,9 +516,9 @@
     {
       "code": "KZ",
       "name": "Kazakhstan",
-      "nodes": 93,
+      "nodes": 91,
       "active": 0,
-      "backup": 93,
+      "backup": 91,
       "shards": 1,
       "shard_size": 1000,
       "shard_path": "output/country_shards/KZ"
@@ -536,9 +546,9 @@
     {
       "code": "LV",
       "name": "Latvia",
-      "nodes": 65,
+      "nodes": 67,
       "active": 0,
-      "backup": 65,
+      "backup": 67,
       "shards": 1,
       "shard_size": 1000,
       "shard_path": "output/country_shards/LV"
@@ -546,9 +556,9 @@
     {
       "code": "MD",
       "name": "Moldova, Republic of",
-      "nodes": 71,
+      "nodes": 64,
       "active": 0,
-      "backup": 71,
+      "backup": 64,
       "shards": 1,
       "shard_size": 1000,
       "shard_path": "output/country_shards/MD"
@@ -586,9 +596,9 @@
     {
       "code": "MO",
       "name": "Macao",
-      "nodes": 1,
+      "nodes": 2,
       "active": 0,
-      "backup": 1,
+      "backup": 2,
       "shards": 1,
       "shard_size": 1000,
       "shard_path": "output/country_shards/MO"
@@ -626,9 +636,9 @@
     {
       "code": "NL",
       "name": "Netherlands",
-      "nodes": 959,
+      "nodes": 899,
       "active": 0,
-      "backup": 959,
+      "backup": 899,
       "shards": 1,
       "shard_size": 1000,
       "shard_path": "output/country_shards/NL"
@@ -636,9 +646,9 @@
     {
       "code": "NO",
       "name": "Norway",
-      "nodes": 95,
+      "nodes": 96,
       "active": 0,
-      "backup": 95,
+      "backup": 96,
       "shards": 1,
       "shard_size": 1000,
       "shard_path": "output/country_shards/NO"
@@ -696,9 +706,9 @@
     {
       "code": "PL",
       "name": "Poland",
-      "nodes": 289,
+      "nodes": 243,
       "active": 0,
-      "backup": 289,
+      "backup": 243,
       "shards": 1,
       "shard_size": 1000,
       "shard_path": "output/country_shards/PL"
@@ -726,9 +736,9 @@
     {
       "code": "RO",
       "name": "Romania",
-      "nodes": 54,
+      "nodes": 56,
       "active": 0,
-      "backup": 54,
+      "backup": 56,
       "shards": 1,
       "shard_size": 1000,
       "shard_path": "output/country_shards/RO"
@@ -736,9 +746,9 @@
     {
       "code": "RS",
       "name": "Serbia",
-      "nodes": 61,
+      "nodes": 60,
       "active": 0,
-      "backup": 61,
+      "backup": 60,
       "shards": 1,
       "shard_size": 1000,
       "shard_path": "output/country_shards/RS"
@@ -746,9 +756,9 @@
     {
       "code": "RU",
       "name": "Russian Federation",
-      "nodes": 1377,
+      "nodes": 1274,
       "active": 0,
-      "backup": 1377,
+      "backup": 1274,
       "shards": 2,
       "shard_size": 1000,
       "shard_path": "output/country_shards/RU"
@@ -786,9 +796,9 @@
     {
       "code": "SG",
       "name": "Singapore",
-      "nodes": 901,
+      "nodes": 507,
       "active": 0,
-      "backup": 901,
+      "backup": 507,
       "shards": 1,
       "shard_size": 1000,
       "shard_path": "output/country_shards/SG"
@@ -826,9 +836,9 @@
     {
       "code": "TR",
       "name": "Türkiye",
-      "nodes": 58,
+      "nodes": 57,
       "active": 0,
-      "backup": 58,
+      "backup": 57,
       "shards": 1,
       "shard_size": 1000,
       "shard_path": "output/country_shards/TR"
@@ -836,9 +846,9 @@
     {
       "code": "TW",
       "name": "Taiwan, Province of China",
-      "nodes": 39,
+      "nodes": 38,
       "active": 0,
-      "backup": 39,
+      "backup": 38,
       "shards": 1,
       "shard_size": 1000,
       "shard_path": "output/country_shards/TW"
@@ -856,9 +866,9 @@
     {
       "code": "US",
       "name": "United States",
-      "nodes": 22751,
+      "nodes": 22463,
       "active": 0,
-      "backup": 22751,
+      "backup": 22463,
       "shards": 23,
       "shard_size": 1000,
       "shard_path": "output/country_shards/US"
@@ -906,9 +916,9 @@
     {
       "code": "ZA",
       "name": "South Africa",
-      "nodes": 68,
+      "nodes": 67,
       "active": 0,
-      "backup": 68,
+      "backup": 67,
       "shards": 1,
       "shard_size": 1000,
       "shard_path": "output/country_shards/ZA"
