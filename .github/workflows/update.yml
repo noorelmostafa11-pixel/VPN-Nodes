@@ -76,6 +76,10 @@ jobs:
           python -m py_compile \
             scripts/update_catalog.py \
             scripts/gitverse_adapter.py \
+            scripts/freev2raynodes_adapter.py \
+            scripts/publicvpnlist_adapter.py \
+            scripts/freeproxydb_adapter.py \
+            scripts/clashxw_daily_adapter.py \
             scripts/country_resolver.py \
             scripts/node_identity.py \
             scripts/source_freshness.py \
