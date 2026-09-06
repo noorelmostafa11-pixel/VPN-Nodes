@@ -3,6 +3,8 @@ from __future__ import annotations
 
 import requests
 
+from clashxw_daily_adapter import collect_clashxw_daily
+
 SOURCES = {
     "sshs8": "https://sshs8.com/free-vless-server-v2ray/",
     "racevpn": "https://www.racevpn.com/free-v2ray-server",
@@ -23,4 +25,6 @@ def fetch_pages():
             out[name] = r.text
         except Exception:
             out[name] = ""
+
+    out["clashxw_daily"] = collect_clashxw_daily()
     return out
