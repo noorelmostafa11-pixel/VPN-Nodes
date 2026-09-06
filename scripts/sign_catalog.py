@@ -32,7 +32,12 @@ def digest(path: Path) -> str:
 
 
 def included_files() -> list[Path]:
-    required = [META / "countries.json", META / "app_pool.json"]
+    required = [
+        META / "countries.json",
+        META / "app_pool.json",
+        META / "index.json",
+        META / "source_freshness.json",
+    ]
     missing = [str(p.relative_to(ROOT)) for p in required if not p.is_file()]
     if missing:
         raise SystemExit(f"Missing required catalog file(s): {', '.join(missing)}")
@@ -67,6 +72,10 @@ def main() -> int:
     encoded_key = os.environ.get("CATALOG_SIGNING_PRIVATE_KEY_B64", "").strip()
     if not encoded_key:
         SIGNATURE.unlink(missing_ok=True)
+        if os.environ.get("REQUIRE_CATALOG_SIGNATURE", "").strip() == "1":
+            raise SystemExit(
+                "CATALOG_SIGNING_PRIVATE_KEY_B64 is required for a release catalog"
+            )
         print(
             f"WARN catalog manifest built for {len(files)} files but signing secret is not configured; "
             "debug clients may use it, release clients will reject it"
