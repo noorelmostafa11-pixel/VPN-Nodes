@@ -10,6 +10,7 @@ import update_catalog as catalog
 from freev2raynodes_adapter import candidate_urls
 from publicvpnlist_adapter import collect_publicvpnlist
 from freeproxydb_adapter import collect_freeproxydb
+from clashxw_daily_adapter import collect_clashxw_daily
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCES = ROOT / "sources" / "sources.json"
@@ -58,6 +59,11 @@ def main() -> int:
     rows.extend(freeproxy)
     health.append({"name": "FreeProxyDB-api", "ok": True, "nodes": len(freeproxy)})
     print(f"OK source FreeProxyDB-api: {len(freeproxy)}")
+
+    clashxw = collect_clashxw_daily()
+    rows.extend(clashxw)
+    health.append({"name": "ClashXW-Daily", "ok": True, "nodes": len(clashxw)})
+    print(f"OK source ClashXW-Daily: {len(clashxw)}")
 
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(json.dumps({
