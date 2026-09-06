@@ -63,8 +63,10 @@ jobs:
 
           python tests/test_country_resolver.py
           python tests/test_node_identity.py
+          python tests/test_gitverse_adapter.py
           python -m py_compile \
             scripts/update_catalog.py \
+            scripts/gitverse_adapter.py \
             scripts/country_resolver.py \
             scripts/node_identity.py \
             scripts/build_sources_candidates.py \
