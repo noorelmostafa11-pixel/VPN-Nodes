@@ -1,6 +1,6 @@
 {
   "schema": 22,
-  "generated_at": "2026-09-06T14:31:28Z",
+  "generated_at": "2026-09-06T14:54:11Z",
   "mode": "tcp_liveness_only_android_final_xray_check",
   "liveness_test": "TCP connect to advertised endpoint",
   "final_runtime_test": "Android Xray + local HTTP health-check",
@@ -17,18 +17,18 @@
   "country_shard_directory": "output/country_shards",
   "country_shard_size": 1000,
   "country_shards_generated": true,
-  "published_country_shards": 115,
+  "published_country_shards": 123,
   "active_directory_generated": false,
-  "alive_with_country": 35093,
+  "alive_with_country": 41275,
   "alive_unknown_country": 0,
-  "published_country_nodes": 35093,
-  "published_active": 35093,
+  "published_country_nodes": 41275,
+  "published_active": 41275,
   "published_backup": 0,
-  "published_total": 35093,
+  "published_total": 41275,
   "country_resolution": {
-    "hostname": 2500,
-    "geoip_local": 35093,
-    "ip_geolocation": 35093,
+    "hostname": 2362,
+    "geoip_local": 41275,
+    "ip_geolocation": 41275,
     "metadata_fallback": 0,
     "metadata_first": 0,
     "reclassified_existing": 0,
@@ -41,10 +41,10 @@
       "invalid_ip": 0,
       "other": 0,
       "dns_failure": 0,
-      "lookups": 35093
+      "lookups": 41275
     }
   },
-  "source_failures": 14,
+  "source_failures": 0,
   "sources": [
     {
       "name": "roosterkid-V2RAY_RAW",
@@ -54,8 +54,8 @@
       "competition_active": true,
       "included_nodes": 58,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -66,8 +66,8 @@
       "competition_active": true,
       "included_nodes": 116,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -78,8 +78,8 @@
       "competition_active": true,
       "included_nodes": 194,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -90,8 +90,8 @@
       "competition_active": true,
       "included_nodes": 153,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -102,8 +102,8 @@
       "competition_active": true,
       "included_nodes": 745,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -114,18 +114,18 @@
       "competition_active": true,
       "included_nodes": 1252,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
       "name": "hamedcode-port_443",
       "ok": true,
-      "nodes": 8463,
+      "nodes": 7729,
       "fresh": true,
       "competition_active": true,
-      "included_nodes": 8463,
-      "last_changed_at": "2026-09-06T14:29:42Z",
+      "included_nodes": 7729,
+      "last_changed_at": "2026-09-06T14:52:18Z",
       "age_hours": 0.0,
       "freshness_reason": "changed",
       "duplicate_of": null
@@ -138,8 +138,8 @@
       "competition_active": true,
       "included_nodes": 220,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -150,8 +150,8 @@
       "competition_active": true,
       "included_nodes": 34,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -162,8 +162,8 @@
       "competition_active": true,
       "included_nodes": 787,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -174,8 +174,8 @@
       "competition_active": true,
       "included_nodes": 3881,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -186,8 +186,8 @@
       "competition_active": true,
       "included_nodes": 4473,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -198,18 +198,18 @@
       "competition_active": true,
       "included_nodes": 545,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
       "name": "0xRadikal-configs_base64",
       "ok": true,
-      "nodes": 6169,
+      "nodes": 6173,
       "fresh": true,
       "competition_active": true,
-      "included_nodes": 6169,
-      "last_changed_at": "2026-09-06T14:29:42Z",
+      "included_nodes": 6173,
+      "last_changed_at": "2026-09-06T14:52:18Z",
       "age_hours": 0.0,
       "freshness_reason": "changed",
       "duplicate_of": null
@@ -222,8 +222,8 @@
       "competition_active": true,
       "included_nodes": 3513,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -234,20 +234,20 @@
       "competition_active": true,
       "included_nodes": 396,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
       "name": "ebrasha-all_extracted_configs",
       "ok": true,
-      "nodes": 13295,
+      "nodes": 13301,
       "fresh": true,
       "competition_active": true,
-      "included_nodes": 13295,
+      "included_nodes": 13301,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -258,8 +258,8 @@
       "competition_active": true,
       "included_nodes": 4286,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -270,8 +270,8 @@
       "competition_active": true,
       "included_nodes": 239,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -282,8 +282,8 @@
       "competition_active": true,
       "included_nodes": 7872,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -294,8 +294,8 @@
       "competition_active": true,
       "included_nodes": 7482,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -306,21 +306,20 @@
       "competition_active": true,
       "included_nodes": 12,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
       "name": "rtwo2-everything",
-      "ok": false,
-      "nodes": 0,
-      "error": "https://raw.githubusercontent.com/rtwo2/FastNodes/main/sub/everything.txt: An IPv4 address cannot be in brackets",
-      "fresh": false,
-      "competition_active": false,
-      "included_nodes": 0,
-      "last_changed_at": "2026-09-06T14:29:42Z",
+      "ok": true,
+      "nodes": 28355,
+      "fresh": true,
+      "competition_active": true,
+      "included_nodes": 28355,
+      "last_changed_at": "2026-09-06T14:52:18Z",
       "age_hours": 0.0,
-      "freshness_reason": "fetch_failed",
+      "freshness_reason": "changed",
       "duplicate_of": null
     },
     {
@@ -331,8 +330,8 @@
       "competition_active": true,
       "included_nodes": 14,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -343,8 +342,8 @@
       "competition_active": true,
       "included_nodes": 2121,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -355,34 +354,32 @@
       "competition_active": true,
       "included_nodes": 1059,
       "last_changed_at": "2026-09-06T14:29:42Z",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    {
+      "name": "morpheusadam-vless",
+      "ok": true,
+      "nodes": 12920,
+      "fresh": true,
+      "competition_active": true,
+      "included_nodes": 12920,
+      "last_changed_at": "2026-09-06T14:52:18Z",
       "age_hours": 0.0,
       "freshness_reason": "changed",
       "duplicate_of": null
     },
     {
-      "name": "morpheusadam-vless",
-      "ok": false,
-      "nodes": 0,
-      "error": "https://raw.githubusercontent.com/morpheusadam/v2ray-config/main/subs/bundles/vless.txt: 'emailprotected' does not appear to be an IPv4 or IPv6 address",
-      "fresh": false,
-      "competition_active": false,
-      "included_nodes": 0,
-      "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "fetch_failed",
-      "duplicate_of": null
-    },
-    {
       "name": "morpheusadam-reality",
-      "ok": false,
-      "nodes": 0,
-      "error": "https://raw.githubusercontent.com/morpheusadam/v2ray-config/main/subs/bundles/reality.txt: 'emailprotected' does not appear to be an IPv4 or IPv6 address",
-      "fresh": false,
-      "competition_active": false,
-      "included_nodes": 0,
-      "last_changed_at": "2026-09-06T14:29:42Z",
+      "ok": true,
+      "nodes": 5283,
+      "fresh": true,
+      "competition_active": true,
+      "included_nodes": 5283,
+      "last_changed_at": "2026-09-06T14:52:18Z",
       "age_hours": 0.0,
-      "freshness_reason": "fetch_failed",
+      "freshness_reason": "changed",
       "duplicate_of": null
     },
     {
@@ -393,8 +390,8 @@
       "competition_active": true,
       "included_nodes": 1586,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -405,8 +402,8 @@
       "competition_active": true,
       "included_nodes": 153,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -417,8 +414,8 @@
       "competition_active": true,
       "included_nodes": 4,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -429,8 +426,8 @@
       "competition_active": true,
       "included_nodes": 26,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -441,8 +438,8 @@
       "competition_active": true,
       "included_nodes": 9,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -453,7 +450,7 @@
       "competition_active": false,
       "included_nodes": 0,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
+      "age_hours": 0.38,
       "freshness_reason": "exact_mirror",
       "duplicate_of": "Epodonios-All_Configs_Sub"
     },
@@ -465,8 +462,8 @@
       "competition_active": true,
       "included_nodes": 89,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -477,8 +474,8 @@
       "competition_active": true,
       "included_nodes": 92,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -489,8 +486,8 @@
       "competition_active": true,
       "included_nodes": 11021,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -501,8 +498,8 @@
       "competition_active": true,
       "included_nodes": 151,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -513,8 +510,8 @@
       "competition_active": true,
       "included_nodes": 1399,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -525,8 +522,8 @@
       "competition_active": true,
       "included_nodes": 1716,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -537,8 +534,8 @@
       "competition_active": true,
       "included_nodes": 1502,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -549,8 +546,8 @@
       "competition_active": true,
       "included_nodes": 43,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -561,21 +558,20 @@
       "competition_active": false,
       "included_nodes": 0,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
+      "age_hours": 0.38,
       "freshness_reason": "exact_mirror",
       "duplicate_of": "luxxuria-harvester-speed_tested"
     },
     {
-      "name": "NiREvil-vless",
-      "ok": false,
-      "nodes": 0,
-      "error": "https://raw.githubusercontent.com/NiREvil/vless/main/vless: 404 Client Error: Not Found for url: https://raw.githubusercontent.com/NiREvil/vless/main/vless",
-      "fresh": false,
-      "competition_active": false,
-      "included_nodes": 0,
-      "last_changed_at": "2026-09-06T14:29:42Z",
+      "name": "NiREvil-SSTime",
+      "ok": true,
+      "nodes": 22,
+      "fresh": true,
+      "competition_active": true,
+      "included_nodes": 22,
+      "last_changed_at": "2026-09-06T14:52:18Z",
       "age_hours": 0.0,
-      "freshness_reason": "fetch_failed",
+      "freshness_reason": "changed",
       "duplicate_of": null
     },
     {
@@ -586,8 +582,8 @@
       "competition_active": true,
       "included_nodes": 863,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -598,8 +594,8 @@
       "competition_active": true,
       "included_nodes": 208,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -610,18 +606,18 @@
       "competition_active": true,
       "included_nodes": 352,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
       "name": "alicivil-workers-sub",
       "ok": true,
-      "nodes": 139,
+      "nodes": 122,
       "fresh": true,
       "competition_active": true,
-      "included_nodes": 139,
-      "last_changed_at": "2026-09-06T14:29:42Z",
+      "included_nodes": 122,
+      "last_changed_at": "2026-09-06T14:52:18Z",
       "age_hours": 0.0,
       "freshness_reason": "changed",
       "duplicate_of": null
@@ -634,8 +630,8 @@
       "competition_active": true,
       "included_nodes": 90,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -646,8 +642,8 @@
       "competition_active": true,
       "included_nodes": 1286,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -658,8 +654,8 @@
       "competition_active": true,
       "included_nodes": 22,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -670,8 +666,8 @@
       "competition_active": true,
       "included_nodes": 7,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -682,8 +678,8 @@
       "competition_active": true,
       "included_nodes": 1,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -694,8 +690,8 @@
       "competition_active": true,
       "included_nodes": 34,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -706,8 +702,8 @@
       "competition_active": true,
       "included_nodes": 3004,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -718,18 +714,18 @@
       "competition_active": true,
       "included_nodes": 9,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
       "name": "0xabolfazl-pyroconfig",
       "ok": true,
-      "nodes": 123,
+      "nodes": 169,
       "fresh": true,
       "competition_active": true,
-      "included_nodes": 123,
-      "last_changed_at": "2026-09-06T14:29:42Z",
+      "included_nodes": 169,
+      "last_changed_at": "2026-09-06T14:52:18Z",
       "age_hours": 0.0,
       "freshness_reason": "changed",
       "duplicate_of": null
@@ -742,8 +738,8 @@
       "competition_active": true,
       "included_nodes": 2496,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -754,8 +750,8 @@
       "competition_active": true,
       "included_nodes": 1004,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -766,8 +762,8 @@
       "competition_active": true,
       "included_nodes": 18018,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -778,8 +774,8 @@
       "competition_active": true,
       "included_nodes": 2043,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -790,18 +786,18 @@
       "competition_active": true,
       "included_nodes": 1032,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
       "name": "4n0nymou3-multi-proxy-config-fetcher",
       "ok": true,
-      "nodes": 444,
+      "nodes": 449,
       "fresh": true,
       "competition_active": true,
-      "included_nodes": 444,
-      "last_changed_at": "2026-09-06T14:29:42Z",
+      "included_nodes": 449,
+      "last_changed_at": "2026-09-06T14:52:18Z",
       "age_hours": 0.0,
       "freshness_reason": "changed",
       "duplicate_of": null
@@ -813,7 +809,7 @@
       "fresh": true,
       "competition_active": true,
       "included_nodes": 534,
-      "last_changed_at": "2026-09-06T14:29:42Z",
+      "last_changed_at": "2026-09-06T14:52:18Z",
       "age_hours": 0.0,
       "freshness_reason": "changed",
       "duplicate_of": null
@@ -826,8 +822,8 @@
       "competition_active": true,
       "included_nodes": 791,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -838,8 +834,8 @@
       "competition_active": true,
       "included_nodes": 13058,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -850,21 +846,20 @@
       "competition_active": true,
       "included_nodes": 20,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
       "name": "avencores-goida-vpn-configs",
-      "ok": false,
-      "nodes": 0,
-      "error": "https://raw.githubusercontent.com/AvenCores/goida-vpn-configs/refs/heads/main/githubmirror/13.txt: An IPv4 address cannot be in brackets",
-      "fresh": false,
-      "competition_active": false,
-      "included_nodes": 0,
-      "last_changed_at": "2026-09-06T14:29:42Z",
+      "ok": true,
+      "nodes": 983,
+      "fresh": true,
+      "competition_active": true,
+      "included_nodes": 983,
+      "last_changed_at": "2026-09-06T14:52:18Z",
       "age_hours": 0.0,
-      "freshness_reason": "fetch_failed",
+      "freshness_reason": "changed",
       "duplicate_of": null
     },
     {
@@ -875,8 +870,8 @@
       "competition_active": true,
       "included_nodes": 185,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -887,20 +882,20 @@
       "competition_active": true,
       "included_nodes": 3,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
       "name": "captchaq-vless-servers",
       "ok": true,
-      "nodes": 2,
+      "nodes": 4,
       "fresh": true,
       "competition_active": true,
-      "included_nodes": 2,
+      "included_nodes": 4,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -911,21 +906,20 @@
       "competition_active": true,
       "included_nodes": 28,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
       "name": "dukemehdi-freelist-v2ray-configs",
-      "ok": false,
-      "nodes": 0,
-      "error": "https://raw.githubusercontent.com/DukeMehdi/FreeList-V2ray-Configs/main/Configs/All-DukeMehdi-Configs.txt: Invalid IPv6 URL",
-      "fresh": false,
-      "competition_active": false,
-      "included_nodes": 0,
-      "last_changed_at": "2026-09-06T14:29:42Z",
+      "ok": true,
+      "nodes": 14230,
+      "fresh": true,
+      "competition_active": true,
+      "included_nodes": 14230,
+      "last_changed_at": "2026-09-06T14:52:18Z",
       "age_hours": 0.0,
-      "freshness_reason": "fetch_failed",
+      "freshness_reason": "changed",
       "duplicate_of": null
     },
     {
@@ -936,8 +930,8 @@
       "competition_active": true,
       "included_nodes": 269,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -948,8 +942,8 @@
       "competition_active": true,
       "included_nodes": 55,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -960,22 +954,21 @@
       "competition_active": true,
       "included_nodes": 94,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
       "name": "hidashimora-free-vpn-anti-rkn",
-      "ok": false,
-      "nodes": 0,
-      "error": "https://raw.githubusercontent.com/Hidashimora/free-vpn-anti-rkn/main/configs/13.2.txt: An IPv4 address cannot be in brackets",
-      "fresh": false,
+      "ok": true,
+      "nodes": 983,
+      "fresh": true,
       "competition_active": false,
       "included_nodes": 0,
-      "last_changed_at": "2026-09-06T14:29:42Z",
+      "last_changed_at": "2026-09-06T14:52:18Z",
       "age_hours": 0.0,
-      "freshness_reason": "fetch_failed",
-      "duplicate_of": null
+      "freshness_reason": "exact_mirror",
+      "duplicate_of": "avencores-goida-vpn-configs"
     },
     {
       "name": "lalatinahub-mineral",
@@ -985,8 +978,8 @@
       "competition_active": true,
       "included_nodes": 789,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -997,8 +990,8 @@
       "competition_active": true,
       "included_nodes": 9993,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -1009,8 +1002,8 @@
       "competition_active": true,
       "included_nodes": 46,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -1021,8 +1014,8 @@
       "competition_active": true,
       "included_nodes": 28,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -1033,8 +1026,8 @@
       "competition_active": true,
       "included_nodes": 128,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -1045,8 +1038,8 @@
       "competition_active": true,
       "included_nodes": 468,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -1057,8 +1050,8 @@
       "competition_active": true,
       "included_nodes": 942,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -1069,21 +1062,21 @@
       "competition_active": true,
       "included_nodes": 44,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
       "name": "mokafela-config-finder",
-      "ok": false,
+      "ok": true,
       "nodes": 0,
-      "error": "source returned no supported nodes",
+      "status": "no_supported_nodes",
       "fresh": false,
       "competition_active": false,
       "included_nodes": 0,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "fetch_failed",
+      "age_hours": 0.38,
+      "freshness_reason": "empty_source",
       "duplicate_of": null
     },
     {
@@ -1094,31 +1087,31 @@
       "competition_active": true,
       "included_nodes": 264,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
       "name": "mrabolfazlnorouzi-iran-configs",
-      "ok": false,
+      "ok": true,
       "nodes": 0,
-      "error": "source returned no supported nodes",
+      "status": "no_supported_nodes",
       "fresh": false,
       "competition_active": false,
       "included_nodes": 0,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "fetch_failed",
+      "age_hours": 0.38,
+      "freshness_reason": "empty_source",
       "duplicate_of": null
     },
     {
       "name": "mustafabaqer-vestranet-nodes",
       "ok": true,
-      "nodes": 1932,
+      "nodes": 1983,
       "fresh": true,
       "competition_active": true,
-      "included_nodes": 1932,
-      "last_changed_at": "2026-09-06T14:29:42Z",
+      "included_nodes": 1983,
+      "last_changed_at": "2026-09-06T14:52:18Z",
       "age_hours": 0.0,
       "freshness_reason": "changed",
       "duplicate_of": null
@@ -1131,8 +1124,8 @@
       "competition_active": true,
       "included_nodes": 281,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -1143,8 +1136,8 @@
       "competition_active": true,
       "included_nodes": 40,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -1155,18 +1148,18 @@
       "competition_active": true,
       "included_nodes": 146,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
       "name": "planaslii-vira-v2ray-configs",
       "ok": true,
-      "nodes": 30,
+      "nodes": 46,
       "fresh": true,
       "competition_active": true,
-      "included_nodes": 30,
-      "last_changed_at": "2026-09-06T14:29:42Z",
+      "included_nodes": 46,
+      "last_changed_at": "2026-09-06T14:52:18Z",
       "age_hours": 0.0,
       "freshness_reason": "changed",
       "duplicate_of": null
@@ -1174,11 +1167,11 @@
     {
       "name": "shadowexception-vpn",
       "ok": true,
-      "nodes": 21,
+      "nodes": 24,
       "fresh": true,
       "competition_active": true,
-      "included_nodes": 21,
-      "last_changed_at": "2026-09-06T14:29:42Z",
+      "included_nodes": 24,
+      "last_changed_at": "2026-09-06T14:52:18Z",
       "age_hours": 0.0,
       "freshness_reason": "changed",
       "duplicate_of": null
@@ -1191,8 +1184,8 @@
       "competition_active": true,
       "included_nodes": 542,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -1203,8 +1196,8 @@
       "competition_active": true,
       "included_nodes": 22,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -1215,8 +1208,8 @@
       "competition_active": true,
       "included_nodes": 3209,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -1227,8 +1220,8 @@
       "competition_active": true,
       "included_nodes": 17501,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -1239,43 +1232,43 @@
       "competition_active": true,
       "included_nodes": 2390,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
       "name": "vovaplusexp-p-configs",
       "ok": true,
-      "nodes": 50,
+      "nodes": 35,
       "fresh": true,
       "competition_active": true,
-      "included_nodes": 50,
-      "last_changed_at": "2026-09-06T14:29:42Z",
+      "included_nodes": 35,
+      "last_changed_at": "2026-09-06T14:52:18Z",
       "age_hours": 0.0,
       "freshness_reason": "changed",
       "duplicate_of": null
     },
     {
       "name": "wlget-v2ray_configs_64",
-      "ok": false,
+      "ok": true,
       "nodes": 0,
-      "error": "source returned no supported nodes",
+      "status": "no_supported_nodes",
       "fresh": false,
       "competition_active": false,
       "included_nodes": 0,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "fetch_failed",
+      "age_hours": 0.38,
+      "freshness_reason": "empty_source",
       "duplicate_of": null
     },
     {
       "name": "yawstar-proxy-hunter",
       "ok": true,
-      "nodes": 132,
+      "nodes": 135,
       "fresh": true,
       "competition_active": true,
-      "included_nodes": 132,
-      "last_changed_at": "2026-09-06T14:29:42Z",
+      "included_nodes": 135,
+      "last_changed_at": "2026-09-06T14:52:18Z",
       "age_hours": 0.0,
       "freshness_reason": "changed",
       "duplicate_of": null
@@ -1288,8 +1281,8 @@
       "competition_active": true,
       "included_nodes": 70,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -1300,18 +1293,18 @@
       "competition_active": true,
       "included_nodes": 117,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
       "name": "aishervin-subfine",
       "ok": true,
-      "nodes": 797,
+      "nodes": 827,
       "fresh": true,
       "competition_active": true,
-      "included_nodes": 797,
-      "last_changed_at": "2026-09-06T14:29:42Z",
+      "included_nodes": 827,
+      "last_changed_at": "2026-09-06T14:52:18Z",
       "age_hours": 0.0,
       "freshness_reason": "changed",
       "duplicate_of": null
@@ -1319,11 +1312,11 @@
     {
       "name": "amir-reza-bijandi-v2ray-configs",
       "ok": true,
-      "nodes": 212,
+      "nodes": 210,
       "fresh": true,
       "competition_active": true,
-      "included_nodes": 212,
-      "last_changed_at": "2026-09-06T14:29:42Z",
+      "included_nodes": 210,
+      "last_changed_at": "2026-09-06T14:52:18Z",
       "age_hours": 0.0,
       "freshness_reason": "changed",
       "duplicate_of": null
@@ -1331,26 +1324,25 @@
     {
       "name": "amirkma-proxykma",
       "ok": true,
-      "nodes": 121,
+      "nodes": 115,
       "fresh": true,
       "competition_active": true,
-      "included_nodes": 121,
-      "last_changed_at": "2026-09-06T14:29:42Z",
+      "included_nodes": 115,
+      "last_changed_at": "2026-09-06T14:52:18Z",
       "age_hours": 0.0,
       "freshness_reason": "changed",
       "duplicate_of": null
     },
     {
       "name": "arahmani6991-cyber-v2ray-configs",
-      "ok": false,
-      "nodes": 0,
-      "error": "https://raw.githubusercontent.com/arahmani6991-cyber/v2ray-configs/main/sub.txt: Invalid IPv6 URL",
-      "fresh": false,
-      "competition_active": false,
-      "included_nodes": 0,
-      "last_changed_at": "2026-09-06T14:29:42Z",
+      "ok": true,
+      "nodes": 4599,
+      "fresh": true,
+      "competition_active": true,
+      "included_nodes": 4599,
+      "last_changed_at": "2026-09-06T14:52:18Z",
       "age_hours": 0.0,
-      "freshness_reason": "fetch_failed",
+      "freshness_reason": "changed",
       "duplicate_of": null
     },
     {
@@ -1361,8 +1353,8 @@
       "competition_active": true,
       "included_nodes": 17,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -1373,8 +1365,8 @@
       "competition_active": true,
       "included_nodes": 2,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -1385,8 +1377,8 @@
       "competition_active": true,
       "included_nodes": 37,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -1397,18 +1389,18 @@
       "competition_active": true,
       "included_nodes": 251,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
       "name": "damiryuldashbaev-oss-vless-de-subscription",
       "ok": true,
-      "nodes": 3,
+      "nodes": 10,
       "fresh": true,
       "competition_active": true,
-      "included_nodes": 3,
-      "last_changed_at": "2026-09-06T14:29:42Z",
+      "included_nodes": 10,
+      "last_changed_at": "2026-09-06T14:52:18Z",
       "age_hours": 0.0,
       "freshness_reason": "changed",
       "duplicate_of": null
@@ -1421,8 +1413,8 @@
       "competition_active": true,
       "included_nodes": 37,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -1433,8 +1425,8 @@
       "competition_active": true,
       "included_nodes": 6,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -1445,8 +1437,8 @@
       "competition_active": true,
       "included_nodes": 136,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -1457,8 +1449,8 @@
       "competition_active": true,
       "included_nodes": 570,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -1469,8 +1461,8 @@
       "competition_active": true,
       "included_nodes": 125,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -1481,8 +1473,8 @@
       "competition_active": true,
       "included_nodes": 440,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -1493,21 +1485,21 @@
       "competition_active": true,
       "included_nodes": 968,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
       "name": "hello-world-1989-cn-news",
-      "ok": false,
+      "ok": true,
       "nodes": 0,
-      "error": "source returned no supported nodes",
+      "status": "no_supported_nodes",
       "fresh": false,
       "competition_active": false,
       "included_nodes": 0,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "fetch_failed",
+      "age_hours": 0.38,
+      "freshness_reason": "empty_source",
       "duplicate_of": null
     },
     {
@@ -1518,8 +1510,8 @@
       "competition_active": true,
       "included_nodes": 73,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -1530,18 +1522,18 @@
       "competition_active": true,
       "included_nodes": 64,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
       "name": "itsyebekhe-psg",
       "ok": true,
-      "nodes": 131,
+      "nodes": 134,
       "fresh": true,
       "competition_active": true,
-      "included_nodes": 131,
-      "last_changed_at": "2026-09-06T14:29:42Z",
+      "included_nodes": 134,
+      "last_changed_at": "2026-09-06T14:52:18Z",
       "age_hours": 0.0,
       "freshness_reason": "changed",
       "duplicate_of": null
@@ -1554,18 +1546,18 @@
       "competition_active": true,
       "included_nodes": 13,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
       "name": "kasesm-free-config",
       "ok": true,
-      "nodes": 924,
+      "nodes": 929,
       "fresh": true,
       "competition_active": true,
-      "included_nodes": 924,
-      "last_changed_at": "2026-09-06T14:29:42Z",
+      "included_nodes": 929,
+      "last_changed_at": "2026-09-06T14:52:18Z",
       "age_hours": 0.0,
       "freshness_reason": "changed",
       "duplicate_of": null
@@ -1578,8 +1570,8 @@
       "competition_active": true,
       "included_nodes": 236,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -1590,8 +1582,8 @@
       "competition_active": true,
       "included_nodes": 1,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -1602,8 +1594,8 @@
       "competition_active": true,
       "included_nodes": 879,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -1614,8 +1606,8 @@
       "competition_active": true,
       "included_nodes": 395,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -1626,18 +1618,18 @@
       "competition_active": true,
       "included_nodes": 140,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
       "name": "mahsanet-mahsafreeconfig",
       "ok": true,
-      "nodes": 14,
+      "nodes": 13,
       "fresh": true,
       "competition_active": true,
-      "included_nodes": 14,
-      "last_changed_at": "2026-09-06T14:29:42Z",
+      "included_nodes": 13,
+      "last_changed_at": "2026-09-06T14:52:18Z",
       "age_hours": 0.0,
       "freshness_reason": "changed",
       "duplicate_of": null
@@ -1650,8 +1642,8 @@
       "competition_active": true,
       "included_nodes": 199,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -1662,8 +1654,8 @@
       "competition_active": true,
       "included_nodes": 203,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -1674,8 +1666,8 @@
       "competition_active": true,
       "included_nodes": 122,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -1686,8 +1678,8 @@
       "competition_active": true,
       "included_nodes": 213,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -1698,8 +1690,8 @@
       "competition_active": true,
       "included_nodes": 354,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -1710,8 +1702,8 @@
       "competition_active": true,
       "included_nodes": 22814,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -1722,8 +1714,8 @@
       "competition_active": true,
       "included_nodes": 705,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -1734,8 +1726,8 @@
       "competition_active": true,
       "included_nodes": 39,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -1746,8 +1738,8 @@
       "competition_active": true,
       "included_nodes": 14,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -1758,8 +1750,8 @@
       "competition_active": true,
       "included_nodes": 759,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -1770,7 +1762,7 @@
       "competition_active": false,
       "included_nodes": 0,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
+      "age_hours": 0.38,
       "freshness_reason": "exact_mirror",
       "duplicate_of": "free18-v2ray"
     },
@@ -1782,8 +1774,8 @@
       "competition_active": true,
       "included_nodes": 157,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -1794,18 +1786,18 @@
       "competition_active": true,
       "included_nodes": 83,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
       "name": "sakazxc1400-creator-free-vpn-sub",
       "ok": true,
-      "nodes": 308,
+      "nodes": 298,
       "fresh": true,
       "competition_active": true,
-      "included_nodes": 308,
-      "last_changed_at": "2026-09-06T14:29:42Z",
+      "included_nodes": 298,
+      "last_changed_at": "2026-09-06T14:52:18Z",
       "age_hours": 0.0,
       "freshness_reason": "changed",
       "duplicate_of": null
@@ -1818,8 +1810,8 @@
       "competition_active": true,
       "included_nodes": 163,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -1830,18 +1822,18 @@
       "competition_active": true,
       "included_nodes": 31,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
       "name": "thealiiakbarii-ai-vcc",
       "ok": true,
-      "nodes": 2892,
+      "nodes": 2956,
       "fresh": true,
       "competition_active": true,
-      "included_nodes": 2892,
-      "last_changed_at": "2026-09-06T14:29:42Z",
+      "included_nodes": 2956,
+      "last_changed_at": "2026-09-06T14:52:18Z",
       "age_hours": 0.0,
       "freshness_reason": "changed",
       "duplicate_of": null
@@ -1854,8 +1846,8 @@
       "competition_active": true,
       "included_nodes": 56,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -1866,8 +1858,8 @@
       "competition_active": true,
       "included_nodes": 308,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -1878,8 +1870,8 @@
       "competition_active": true,
       "included_nodes": 5963,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -1890,18 +1882,18 @@
       "competition_active": true,
       "included_nodes": 1330,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
       "name": "zhuhaiuk-free-nodes",
       "ok": true,
-      "nodes": 10,
+      "nodes": 9,
       "fresh": true,
       "competition_active": true,
-      "included_nodes": 10,
-      "last_changed_at": "2026-09-06T14:29:42Z",
+      "included_nodes": 9,
+      "last_changed_at": "2026-09-06T14:52:18Z",
       "age_hours": 0.0,
       "freshness_reason": "changed",
       "duplicate_of": null
@@ -1914,8 +1906,8 @@
       "competition_active": true,
       "included_nodes": 122,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -1926,66 +1918,65 @@
       "competition_active": true,
       "included_nodes": 27,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
       "name": "freev2raynodes",
       "ok": true,
-      "nodes": 17281,
-      "raw_nodes": 17281,
-      "elapsed_ms": 34704.0,
+      "nodes": 28788,
+      "raw_nodes": 28788,
+      "elapsed_ms": 16971.3,
       "fresh": true,
       "competition_active": true,
-      "included_nodes": 17281,
-      "last_changed_at": "2026-09-06T14:29:42Z",
+      "included_nodes": 28788,
+      "last_changed_at": "2026-09-06T14:52:18Z",
       "age_hours": 0.0,
       "freshness_reason": "changed",
       "duplicate_of": null
     },
     {
       "name": "PublicVPNList-api",
-      "ok": false,
+      "ok": true,
       "nodes": 0,
-      "raw_nodes": 479,
-      "elapsed_ms": 6083.3,
-      "error": "source returned no supported nodes",
+      "raw_nodes": 461,
+      "elapsed_ms": 4949.6,
+      "status": "no_supported_nodes",
       "fresh": false,
       "competition_active": false,
       "included_nodes": 0,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "fetch_failed",
+      "age_hours": 0.38,
+      "freshness_reason": "empty_source",
       "duplicate_of": null
     },
     {
       "name": "FreeProxyDB-api",
       "ok": true,
-      "nodes": 905,
-      "raw_nodes": 1997,
-      "elapsed_ms": 442396.7,
+      "nodes": 548,
+      "raw_nodes": 1489,
+      "elapsed_ms": 64636.4,
       "fresh": true,
       "competition_active": true,
-      "included_nodes": 905,
-      "last_changed_at": "2026-09-06T14:29:42Z",
+      "included_nodes": 548,
+      "last_changed_at": "2026-09-06T14:52:18Z",
       "age_hours": 0.0,
       "freshness_reason": "changed",
       "duplicate_of": null
     },
     {
       "name": "ClashXW-Daily",
-      "ok": false,
-      "nodes": 0,
-      "raw_nodes": 0,
-      "error": "An IPv4 address cannot be in brackets",
-      "elapsed_ms": 2549.5,
-      "fresh": false,
-      "competition_active": false,
-      "included_nodes": 0,
-      "last_changed_at": "2026-09-06T14:29:42Z",
+      "ok": true,
+      "nodes": 2578,
+      "raw_nodes": 6599,
+      "elapsed_ms": 1656.4,
+      "fresh": true,
+      "competition_active": true,
+      "included_nodes": 2578,
+      "last_changed_at": "2026-09-06T14:52:18Z",
       "age_hours": 0.0,
-      "freshness_reason": "fetch_failed",
+      "freshness_reason": "changed",
       "duplicate_of": null
     },
     {
@@ -1997,8 +1988,8 @@
       "competition_active": true,
       "included_nodes": 220,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -2010,8 +2001,8 @@
       "competition_active": true,
       "included_nodes": 222,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -2023,99 +2014,8 @@
       "competition_active": true,
       "included_nodes": 330,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
-      "duplicate_of": null
-    },
-    {
-      "name": "telegram:@proxy_mtm",
-      "ok": true,
-      "nodes": 500,
-      "elapsed_ms": 0.0,
-      "fresh": true,
-      "competition_active": true,
-      "included_nodes": 500,
-      "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
-      "duplicate_of": null
-    },
-    {
-      "name": "telegram:@soskeynet",
-      "ok": true,
-      "nodes": 249,
-      "elapsed_ms": 0.0,
-      "fresh": true,
-      "competition_active": true,
-      "included_nodes": 249,
-      "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
-      "duplicate_of": null
-    },
-    {
-      "name": "telegram:@meliproxyy",
-      "ok": true,
-      "nodes": 362,
-      "elapsed_ms": 0.0,
-      "fresh": true,
-      "competition_active": true,
-      "included_nodes": 362,
-      "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
-      "duplicate_of": null
-    },
-    {
-      "name": "telegram:@vpnine1",
-      "ok": true,
-      "nodes": 187,
-      "elapsed_ms": 0.0,
-      "fresh": true,
-      "competition_active": true,
-      "included_nodes": 187,
-      "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
-      "duplicate_of": null
-    },
-    {
-      "name": "telegram:@oneclickvpnkeys",
-      "ok": true,
-      "nodes": 268,
-      "elapsed_ms": 0.0,
-      "fresh": true,
-      "competition_active": true,
-      "included_nodes": 268,
-      "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
-      "duplicate_of": null
-    },
-    {
-      "name": "telegram:@soskeynets",
-      "ok": true,
-      "nodes": 218,
-      "elapsed_ms": 0.0,
-      "fresh": true,
-      "competition_active": true,
-      "included_nodes": 218,
-      "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
-      "duplicate_of": null
-    },
-    {
-      "name": "telegram:@free_vpn_ch",
-      "ok": true,
-      "nodes": 202,
-      "elapsed_ms": 0.0,
-      "fresh": true,
-      "competition_active": true,
-      "included_nodes": 202,
-      "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -2127,6 +2027,71 @@
       "competition_active": true,
       "included_nodes": 203,
       "last_changed_at": "2026-09-06T14:29:42Z",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    {
+      "name": "telegram:@soskeynets",
+      "ok": true,
+      "nodes": 218,
+      "elapsed_ms": 0.0,
+      "fresh": true,
+      "competition_active": true,
+      "included_nodes": 218,
+      "last_changed_at": "2026-09-06T14:29:42Z",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    {
+      "name": "telegram:@free_vpn_ch",
+      "ok": true,
+      "nodes": 202,
+      "elapsed_ms": 0.0,
+      "fresh": true,
+      "competition_active": true,
+      "included_nodes": 202,
+      "last_changed_at": "2026-09-06T14:29:42Z",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    {
+      "name": "telegram:@meliproxyy",
+      "ok": true,
+      "nodes": 362,
+      "elapsed_ms": 0.0,
+      "fresh": true,
+      "competition_active": true,
+      "included_nodes": 362,
+      "last_changed_at": "2026-09-06T14:52:18Z",
+      "age_hours": 0.0,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    {
+      "name": "telegram:@soskeynet",
+      "ok": true,
+      "nodes": 253,
+      "elapsed_ms": 0.0,
+      "fresh": true,
+      "competition_active": true,
+      "included_nodes": 253,
+      "last_changed_at": "2026-09-06T14:52:18Z",
+      "age_hours": 0.0,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    {
+      "name": "telegram:@vpnine1",
+      "ok": true,
+      "nodes": 177,
+      "elapsed_ms": 0.0,
+      "fresh": true,
+      "competition_active": true,
+      "included_nodes": 177,
+      "last_changed_at": "2026-09-06T14:52:18Z",
       "age_hours": 0.0,
       "freshness_reason": "changed",
       "duplicate_of": null
@@ -2140,8 +2105,34 @@
       "competition_active": true,
       "included_nodes": 313,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    {
+      "name": "telegram:@proxy_mtm",
+      "ok": true,
+      "nodes": 500,
+      "elapsed_ms": 0.0,
+      "fresh": true,
+      "competition_active": true,
+      "included_nodes": 500,
+      "last_changed_at": "2026-09-06T14:29:42Z",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    {
+      "name": "telegram:@oneclickvpnkeys",
+      "ok": true,
+      "nodes": 268,
+      "elapsed_ms": 0.0,
+      "fresh": true,
+      "competition_active": true,
+      "included_nodes": 268,
+      "last_changed_at": "2026-09-06T14:29:42Z",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -2153,19 +2144,19 @@
       "competition_active": true,
       "included_nodes": 302,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
       "name": "telegram:@Farah_VPN",
       "ok": true,
-      "nodes": 218,
+      "nodes": 217,
       "elapsed_ms": 0.0,
       "fresh": true,
       "competition_active": true,
-      "included_nodes": 218,
-      "last_changed_at": "2026-09-06T14:29:42Z",
+      "included_nodes": 217,
+      "last_changed_at": "2026-09-06T14:52:18Z",
       "age_hours": 0.0,
       "freshness_reason": "changed",
       "duplicate_of": null
@@ -2179,19 +2170,19 @@
       "competition_active": true,
       "included_nodes": 247,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
       "name": "telegram:@daily_configs",
       "ok": true,
-      "nodes": 290,
+      "nodes": 284,
       "elapsed_ms": 0.0,
       "fresh": true,
       "competition_active": true,
-      "included_nodes": 290,
-      "last_changed_at": "2026-09-06T14:29:42Z",
+      "included_nodes": 284,
+      "last_changed_at": "2026-09-06T14:52:18Z",
       "age_hours": 0.0,
       "freshness_reason": "changed",
       "duplicate_of": null
@@ -2205,19 +2196,32 @@
       "competition_active": true,
       "included_nodes": 180,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
-      "name": "telegram:@farazv2ray",
+      "name": "telegram:@bisto4_service",
       "ok": true,
-      "nodes": 208,
+      "nodes": 161,
       "elapsed_ms": 0.0,
       "fresh": true,
       "competition_active": true,
-      "included_nodes": 208,
+      "included_nodes": 161,
       "last_changed_at": "2026-09-06T14:29:42Z",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    {
+      "name": "telegram:@netghjlkj",
+      "ok": true,
+      "nodes": 214,
+      "elapsed_ms": 0.0,
+      "fresh": true,
+      "competition_active": true,
+      "included_nodes": 214,
+      "last_changed_at": "2026-09-06T14:52:18Z",
       "age_hours": 0.0,
       "freshness_reason": "changed",
       "duplicate_of": null
@@ -2231,8 +2235,8 @@
       "competition_active": true,
       "included_nodes": 181,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -2244,21 +2248,8 @@
       "competition_active": true,
       "included_nodes": 149,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
-      "duplicate_of": null
-    },
-    {
-      "name": "telegram:@netghjlkj",
-      "ok": true,
-      "nodes": 215,
-      "elapsed_ms": 0.0,
-      "fresh": true,
-      "competition_active": true,
-      "included_nodes": 215,
-      "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -2270,6 +2261,19 @@
       "competition_active": true,
       "included_nodes": 326,
       "last_changed_at": "2026-09-06T14:29:42Z",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    {
+      "name": "telegram:@farazv2ray",
+      "ok": true,
+      "nodes": 216,
+      "elapsed_ms": 0.0,
+      "fresh": true,
+      "competition_active": true,
+      "included_nodes": 216,
+      "last_changed_at": "2026-09-06T14:52:18Z",
       "age_hours": 0.0,
       "freshness_reason": "changed",
       "duplicate_of": null
@@ -2283,86 +2287,8 @@
       "competition_active": true,
       "included_nodes": 171,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
-      "duplicate_of": null
-    },
-    {
-      "name": "telegram:@bisto4_service",
-      "ok": true,
-      "nodes": 161,
-      "elapsed_ms": 0.0,
-      "fresh": true,
-      "competition_active": true,
-      "included_nodes": 161,
-      "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
-      "duplicate_of": null
-    },
-    {
-      "name": "telegram:@configprxy",
-      "ok": true,
-      "nodes": 142,
-      "elapsed_ms": 0.0,
-      "fresh": true,
-      "competition_active": true,
-      "included_nodes": 142,
-      "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
-      "duplicate_of": null
-    },
-    {
-      "name": "telegram:@prrofile_purple",
-      "ok": true,
-      "nodes": 156,
-      "elapsed_ms": 0.0,
-      "fresh": true,
-      "competition_active": true,
-      "included_nodes": 156,
-      "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
-      "duplicate_of": null
-    },
-    {
-      "name": "telegram:@ppal03",
-      "ok": true,
-      "nodes": 120,
-      "elapsed_ms": 0.0,
-      "fresh": true,
-      "competition_active": true,
-      "included_nodes": 120,
-      "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
-      "duplicate_of": null
-    },
-    {
-      "name": "telegram:@bored_vpn",
-      "ok": true,
-      "nodes": 165,
-      "elapsed_ms": 0.0,
-      "fresh": true,
-      "competition_active": true,
-      "included_nodes": 165,
-      "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
-      "duplicate_of": null
-    },
-    {
-      "name": "telegram:@configv2rayng",
-      "ok": true,
-      "nodes": 291,
-      "elapsed_ms": 0.0,
-      "fresh": true,
-      "competition_active": true,
-      "included_nodes": 291,
-      "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -2374,8 +2300,73 @@
       "competition_active": true,
       "included_nodes": 173,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    {
+      "name": "telegram:@ppal03",
+      "ok": true,
+      "nodes": 120,
+      "elapsed_ms": 0.0,
+      "fresh": true,
+      "competition_active": true,
+      "included_nodes": 120,
+      "last_changed_at": "2026-09-06T14:29:42Z",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    {
+      "name": "telegram:@configv2rayng",
+      "ok": true,
+      "nodes": 291,
+      "elapsed_ms": 0.0,
+      "fresh": true,
+      "competition_active": true,
+      "included_nodes": 291,
+      "last_changed_at": "2026-09-06T14:29:42Z",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    {
+      "name": "telegram:@prrofile_purple",
+      "ok": true,
+      "nodes": 156,
+      "elapsed_ms": 0.0,
+      "fresh": true,
+      "competition_active": true,
+      "included_nodes": 156,
+      "last_changed_at": "2026-09-06T14:29:42Z",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    {
+      "name": "telegram:@configprxy",
+      "ok": true,
+      "nodes": 142,
+      "elapsed_ms": 0.0,
+      "fresh": true,
+      "competition_active": true,
+      "included_nodes": 142,
+      "last_changed_at": "2026-09-06T14:29:42Z",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    {
+      "name": "telegram:@bored_vpn",
+      "ok": true,
+      "nodes": 165,
+      "elapsed_ms": 0.0,
+      "fresh": true,
+      "competition_active": true,
+      "included_nodes": 165,
+      "last_changed_at": "2026-09-06T14:29:42Z",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -2387,8 +2378,8 @@
       "competition_active": true,
       "included_nodes": 161,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -2400,47 +2391,8 @@
       "competition_active": true,
       "included_nodes": 115,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
-      "duplicate_of": null
-    },
-    {
-      "name": "telegram:@v2raybaaz",
-      "ok": true,
-      "nodes": 110,
-      "elapsed_ms": 0.0,
-      "fresh": true,
-      "competition_active": true,
-      "included_nodes": 110,
-      "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
-      "duplicate_of": null
-    },
-    {
-      "name": "telegram:@DailyV2RY",
-      "ok": true,
-      "nodes": 80,
-      "elapsed_ms": 0.0,
-      "fresh": true,
-      "competition_active": true,
-      "included_nodes": 80,
-      "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
-      "duplicate_of": null
-    },
-    {
-      "name": "telegram:@tehranargo",
-      "ok": true,
-      "nodes": 113,
-      "elapsed_ms": 0.0,
-      "fresh": true,
-      "competition_active": true,
-      "included_nodes": 113,
-      "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -2452,34 +2404,34 @@
       "competition_active": true,
       "included_nodes": 123,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
-      "name": "telegram:@fastkanfig",
+      "name": "telegram:@tehranargo",
       "ok": true,
-      "nodes": 100,
+      "nodes": 113,
       "elapsed_ms": 0.0,
       "fresh": true,
       "competition_active": true,
-      "included_nodes": 100,
+      "included_nodes": 113,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
-      "name": "telegram:@hex_proxy",
+      "name": "telegram:@v2raybaaz",
       "ok": true,
-      "nodes": 88,
+      "nodes": 110,
       "elapsed_ms": 0.0,
       "fresh": true,
       "competition_active": true,
-      "included_nodes": 88,
+      "included_nodes": 110,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -2491,34 +2443,47 @@
       "competition_active": true,
       "included_nodes": 82,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
-      "name": "telegram:@GH_v2rayng",
+      "name": "telegram:@fastkanfig",
       "ok": true,
-      "nodes": 103,
+      "nodes": 100,
       "elapsed_ms": 0.0,
       "fresh": true,
       "competition_active": true,
-      "included_nodes": 103,
+      "included_nodes": 100,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
-      "name": "telegram:@freenettir",
+      "name": "telegram:@DailyV2RY",
       "ok": true,
-      "nodes": 25,
+      "nodes": 80,
       "elapsed_ms": 0.0,
       "fresh": true,
       "competition_active": true,
-      "included_nodes": 25,
+      "included_nodes": 80,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    {
+      "name": "telegram:@hex_proxy",
+      "ok": true,
+      "nodes": 88,
+      "elapsed_ms": 0.0,
+      "fresh": true,
+      "competition_active": true,
+      "included_nodes": 88,
+      "last_changed_at": "2026-09-06T14:29:42Z",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -2530,21 +2495,8 @@
       "competition_active": true,
       "included_nodes": 91,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
-      "duplicate_of": null
-    },
-    {
-      "name": "telegram:@b2hub",
-      "ok": true,
-      "nodes": 133,
-      "elapsed_ms": 0.0,
-      "fresh": true,
-      "competition_active": true,
-      "included_nodes": 133,
-      "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -2556,32 +2508,45 @@
       "competition_active": true,
       "included_nodes": 89,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
-      "name": "telegram:@vistav2ray",
+      "name": "telegram:@GH_v2rayng",
       "ok": true,
-      "nodes": 85,
+      "nodes": 103,
       "elapsed_ms": 0.0,
       "fresh": true,
       "competition_active": true,
-      "included_nodes": 85,
+      "included_nodes": 103,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
-      "name": "telegram:@nofiltering2",
+      "name": "telegram:@b2hub",
       "ok": true,
-      "nodes": 90,
+      "nodes": 133,
       "elapsed_ms": 0.0,
       "fresh": true,
       "competition_active": true,
-      "included_nodes": 90,
+      "included_nodes": 133,
       "last_changed_at": "2026-09-06T14:29:42Z",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    {
+      "name": "telegram:@freenettir",
+      "ok": true,
+      "nodes": 21,
+      "elapsed_ms": 0.0,
+      "fresh": true,
+      "competition_active": true,
+      "included_nodes": 21,
+      "last_changed_at": "2026-09-06T14:52:18Z",
       "age_hours": 0.0,
       "freshness_reason": "changed",
       "duplicate_of": null
@@ -2595,19 +2560,58 @@
       "competition_active": true,
       "included_nodes": 132,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    {
+      "name": "telegram:@nofiltering2",
+      "ok": true,
+      "nodes": 90,
+      "elapsed_ms": 0.0,
+      "fresh": true,
+      "competition_active": true,
+      "included_nodes": 90,
+      "last_changed_at": "2026-09-06T14:29:42Z",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
       "name": "telegram:@filembad",
       "ok": true,
-      "nodes": 79,
+      "nodes": 84,
       "elapsed_ms": 0.0,
       "fresh": true,
       "competition_active": true,
-      "included_nodes": 79,
+      "included_nodes": 84,
+      "last_changed_at": "2026-09-06T14:52:18Z",
+      "age_hours": 0.0,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    {
+      "name": "telegram:@vistav2ray",
+      "ok": true,
+      "nodes": 85,
+      "elapsed_ms": 0.0,
+      "fresh": true,
+      "competition_active": true,
+      "included_nodes": 85,
       "last_changed_at": "2026-09-06T14:29:42Z",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    {
+      "name": "telegram:@V2rayConfigList",
+      "ok": true,
+      "nodes": 39,
+      "elapsed_ms": 0.0,
+      "fresh": true,
+      "competition_active": true,
+      "included_nodes": 39,
+      "last_changed_at": "2026-09-06T14:52:18Z",
       "age_hours": 0.0,
       "freshness_reason": "changed",
       "duplicate_of": null
@@ -2621,21 +2625,8 @@
       "competition_active": true,
       "included_nodes": 88,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
-      "duplicate_of": null
-    },
-    {
-      "name": "telegram:@vless_vmess",
-      "ok": true,
-      "nodes": 52,
-      "elapsed_ms": 0.0,
-      "fresh": true,
-      "competition_active": true,
-      "included_nodes": 52,
-      "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -2647,8 +2638,21 @@
       "competition_active": true,
       "included_nodes": 31,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    {
+      "name": "telegram:@vless_vmess",
+      "ok": true,
+      "nodes": 52,
+      "elapsed_ms": 0.0,
+      "fresh": true,
+      "competition_active": true,
+      "included_nodes": 52,
+      "last_changed_at": "2026-09-06T14:29:42Z",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -2660,6 +2664,19 @@
       "competition_active": true,
       "included_nodes": 76,
       "last_changed_at": "2026-09-06T14:29:42Z",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    {
+      "name": "telegram:@v2ray_free_conf",
+      "ok": true,
+      "nodes": 42,
+      "elapsed_ms": 0.0,
+      "fresh": true,
+      "competition_active": true,
+      "included_nodes": 42,
+      "last_changed_at": "2026-09-06T14:52:18Z",
       "age_hours": 0.0,
       "freshness_reason": "changed",
       "duplicate_of": null
@@ -2673,34 +2690,8 @@
       "competition_active": true,
       "included_nodes": 71,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
-      "duplicate_of": null
-    },
-    {
-      "name": "telegram:@V2rayConfigList",
-      "ok": true,
-      "nodes": 39,
-      "elapsed_ms": 0.0,
-      "fresh": true,
-      "competition_active": true,
-      "included_nodes": 39,
-      "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
-      "duplicate_of": null
-    },
-    {
-      "name": "telegram:@v2ray_free_conf",
-      "ok": true,
-      "nodes": 42,
-      "elapsed_ms": 0.0,
-      "fresh": true,
-      "competition_active": true,
-      "included_nodes": 42,
-      "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -2712,32 +2703,19 @@
       "competition_active": true,
       "included_nodes": 86,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
       "name": "telegram:@vpnfail_v2ray",
       "ok": true,
-      "nodes": 39,
+      "nodes": 40,
       "elapsed_ms": 0.0,
       "fresh": true,
       "competition_active": true,
-      "included_nodes": 39,
-      "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
-      "duplicate_of": null
-    },
-    {
-      "name": "telegram:@isvvpn",
-      "ok": true,
-      "nodes": 88,
-      "elapsed_ms": 0.0,
-      "fresh": true,
-      "competition_active": true,
-      "included_nodes": 88,
-      "last_changed_at": "2026-09-06T14:29:42Z",
+      "included_nodes": 40,
+      "last_changed_at": "2026-09-06T14:52:18Z",
       "age_hours": 0.0,
       "freshness_reason": "changed",
       "duplicate_of": null
@@ -2751,8 +2729,8 @@
       "competition_active": true,
       "included_nodes": 83,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -2764,8 +2742,21 @@
       "competition_active": true,
       "included_nodes": 78,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    {
+      "name": "telegram:@isvvpn",
+      "ok": true,
+      "nodes": 88,
+      "elapsed_ms": 0.0,
+      "fresh": true,
+      "competition_active": true,
+      "included_nodes": 88,
+      "last_changed_at": "2026-09-06T14:29:42Z",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -2777,34 +2768,8 @@
       "competition_active": false,
       "included_nodes": 0,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
+      "age_hours": 0.38,
       "freshness_reason": "empty_source",
-      "duplicate_of": null
-    },
-    {
-      "name": "telegram:@V2RAYROZ",
-      "ok": true,
-      "nodes": 63,
-      "elapsed_ms": 0.0,
-      "fresh": true,
-      "competition_active": true,
-      "included_nodes": 63,
-      "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
-      "duplicate_of": null
-    },
-    {
-      "name": "telegram:@vpnowl",
-      "ok": true,
-      "nodes": 77,
-      "elapsed_ms": 0.0,
-      "fresh": true,
-      "competition_active": true,
-      "included_nodes": 77,
-      "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
       "duplicate_of": null
     },
     {
@@ -2816,8 +2781,34 @@
       "competition_active": false,
       "included_nodes": 0,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
+      "age_hours": 0.38,
       "freshness_reason": "empty_source",
+      "duplicate_of": null
+    },
+    {
+      "name": "telegram:@vpnowl",
+      "ok": true,
+      "nodes": 77,
+      "elapsed_ms": 0.0,
+      "fresh": true,
+      "competition_active": true,
+      "included_nodes": 77,
+      "last_changed_at": "2026-09-06T14:29:42Z",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    {
+      "name": "telegram:@V2RAYROZ",
+      "ok": true,
+      "nodes": 63,
+      "elapsed_ms": 0.0,
+      "fresh": true,
+      "competition_active": true,
+      "included_nodes": 63,
+      "last_changed_at": "2026-09-06T14:29:42Z",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -2829,21 +2820,8 @@
       "competition_active": true,
       "included_nodes": 48,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
-      "duplicate_of": null
-    },
-    {
-      "name": "telegram:@hope_net",
-      "ok": true,
-      "nodes": 12,
-      "elapsed_ms": 0.0,
-      "fresh": true,
-      "competition_active": true,
-      "included_nodes": 12,
-      "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -2855,73 +2833,21 @@
       "competition_active": true,
       "included_nodes": 71,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
-      "name": "telegram:@prisonvpnc",
+      "name": "telegram:@hope_net",
       "ok": true,
-      "nodes": 70,
+      "nodes": 12,
       "elapsed_ms": 0.0,
       "fresh": true,
       "competition_active": true,
-      "included_nodes": 70,
+      "included_nodes": 12,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
-      "duplicate_of": null
-    },
-    {
-      "name": "telegram:@kurdconfig",
-      "ok": true,
-      "nodes": 72,
-      "elapsed_ms": 0.0,
-      "fresh": true,
-      "competition_active": true,
-      "included_nodes": 72,
-      "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
-      "duplicate_of": null
-    },
-    {
-      "name": "telegram:@hibyevpnn",
-      "ok": true,
-      "nodes": 66,
-      "elapsed_ms": 0.0,
-      "fresh": true,
-      "competition_active": true,
-      "included_nodes": 66,
-      "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
-      "duplicate_of": null
-    },
-    {
-      "name": "telegram:@icv2ray",
-      "ok": true,
-      "nodes": 68,
-      "elapsed_ms": 0.0,
-      "fresh": true,
-      "competition_active": true,
-      "included_nodes": 68,
-      "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
-      "duplicate_of": null
-    },
-    {
-      "name": "telegram:@v2xnet",
-      "ok": true,
-      "nodes": 65,
-      "elapsed_ms": 0.0,
-      "fresh": true,
-      "competition_active": true,
-      "included_nodes": 65,
-      "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -2933,21 +2859,73 @@
       "competition_active": true,
       "included_nodes": 72,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
-      "name": "telegram:@express_freevpn",
+      "name": "telegram:@kurdconfig",
       "ok": true,
-      "nodes": 50,
+      "nodes": 72,
       "elapsed_ms": 0.0,
       "fresh": true,
       "competition_active": true,
-      "included_nodes": 50,
+      "included_nodes": 72,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    {
+      "name": "telegram:@prisonvpnc",
+      "ok": true,
+      "nodes": 70,
+      "elapsed_ms": 0.0,
+      "fresh": true,
+      "competition_active": true,
+      "included_nodes": 70,
+      "last_changed_at": "2026-09-06T14:29:42Z",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    {
+      "name": "telegram:@v2xnet",
+      "ok": true,
+      "nodes": 65,
+      "elapsed_ms": 0.0,
+      "fresh": true,
+      "competition_active": true,
+      "included_nodes": 65,
+      "last_changed_at": "2026-09-06T14:29:42Z",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    {
+      "name": "telegram:@icv2ray",
+      "ok": true,
+      "nodes": 68,
+      "elapsed_ms": 0.0,
+      "fresh": true,
+      "competition_active": true,
+      "included_nodes": 68,
+      "last_changed_at": "2026-09-06T14:29:42Z",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    {
+      "name": "telegram:@hibyevpnn",
+      "ok": true,
+      "nodes": 66,
+      "elapsed_ms": 0.0,
+      "fresh": true,
+      "competition_active": true,
+      "included_nodes": 66,
+      "last_changed_at": "2026-09-06T14:29:42Z",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -2959,6 +2937,19 @@
       "competition_active": true,
       "included_nodes": 59,
       "last_changed_at": "2026-09-06T14:29:42Z",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    {
+      "name": "telegram:@express_freevpn",
+      "ok": true,
+      "nodes": 57,
+      "elapsed_ms": 0.0,
+      "fresh": true,
+      "competition_active": true,
+      "included_nodes": 57,
+      "last_changed_at": "2026-09-06T14:52:18Z",
       "age_hours": 0.0,
       "freshness_reason": "changed",
       "duplicate_of": null
@@ -2972,8 +2963,8 @@
       "competition_active": true,
       "included_nodes": 42,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -2985,8 +2976,8 @@
       "competition_active": true,
       "included_nodes": 46,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -2998,21 +2989,8 @@
       "competition_active": true,
       "included_nodes": 54,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
-      "duplicate_of": null
-    },
-    {
-      "name": "telegram:@fhkllvjkll",
-      "ok": true,
-      "nodes": 39,
-      "elapsed_ms": 0.0,
-      "fresh": true,
-      "competition_active": true,
-      "included_nodes": 39,
-      "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -3024,34 +3002,21 @@
       "competition_active": true,
       "included_nodes": 72,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
-      "name": "telegram:@V2rayi_net",
+      "name": "telegram:@fhkllvjkll",
       "ok": true,
-      "nodes": 50,
+      "nodes": 39,
       "elapsed_ms": 0.0,
       "fresh": true,
       "competition_active": true,
-      "included_nodes": 50,
+      "included_nodes": 39,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
-      "duplicate_of": null
-    },
-    {
-      "name": "telegram:@capoit",
-      "ok": true,
-      "nodes": 49,
-      "elapsed_ms": 0.0,
-      "fresh": true,
-      "competition_active": true,
-      "included_nodes": 49,
-      "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -3063,8 +3028,34 @@
       "competition_active": true,
       "included_nodes": 44,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    {
+      "name": "telegram:@V2rayi_net",
+      "ok": true,
+      "nodes": 50,
+      "elapsed_ms": 0.0,
+      "fresh": true,
+      "competition_active": true,
+      "included_nodes": 50,
+      "last_changed_at": "2026-09-06T14:29:42Z",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    {
+      "name": "telegram:@capoit",
+      "ok": true,
+      "nodes": 49,
+      "elapsed_ms": 0.0,
+      "fresh": true,
+      "competition_active": true,
+      "included_nodes": 49,
+      "last_changed_at": "2026-09-06T14:29:42Z",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -3076,8 +3067,8 @@
       "competition_active": true,
       "included_nodes": 55,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -3089,8 +3080,8 @@
       "competition_active": true,
       "included_nodes": 43,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -3102,60 +3093,8 @@
       "competition_active": true,
       "included_nodes": 49,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
-      "duplicate_of": null
-    },
-    {
-      "name": "telegram:@outline_ir",
-      "ok": true,
-      "nodes": 44,
-      "elapsed_ms": 0.0,
-      "fresh": true,
-      "competition_active": true,
-      "included_nodes": 44,
-      "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
-      "duplicate_of": null
-    },
-    {
-      "name": "telegram:@inetchnl",
-      "ok": true,
-      "nodes": 47,
-      "elapsed_ms": 0.0,
-      "fresh": true,
-      "competition_active": true,
-      "included_nodes": 47,
-      "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
-      "duplicate_of": null
-    },
-    {
-      "name": "telegram:@irdusti",
-      "ok": true,
-      "nodes": 58,
-      "elapsed_ms": 0.0,
-      "fresh": true,
-      "competition_active": true,
-      "included_nodes": 58,
-      "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
-      "duplicate_of": null
-    },
-    {
-      "name": "telegram:@freeonlinevpn",
-      "ok": true,
-      "nodes": 23,
-      "elapsed_ms": 0.0,
-      "fresh": true,
-      "competition_active": true,
-      "included_nodes": 23,
-      "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -3167,8 +3106,47 @@
       "competition_active": true,
       "included_nodes": 60,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    {
+      "name": "telegram:@outline_ir",
+      "ok": true,
+      "nodes": 44,
+      "elapsed_ms": 0.0,
+      "fresh": true,
+      "competition_active": true,
+      "included_nodes": 44,
+      "last_changed_at": "2026-09-06T14:29:42Z",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    {
+      "name": "telegram:@irdusti",
+      "ok": true,
+      "nodes": 58,
+      "elapsed_ms": 0.0,
+      "fresh": true,
+      "competition_active": true,
+      "included_nodes": 58,
+      "last_changed_at": "2026-09-06T14:29:42Z",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    {
+      "name": "telegram:@inetchnl",
+      "ok": true,
+      "nodes": 47,
+      "elapsed_ms": 0.0,
+      "fresh": true,
+      "competition_active": true,
+      "included_nodes": 47,
+      "last_changed_at": "2026-09-06T14:29:42Z",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -3180,8 +3158,21 @@
       "competition_active": true,
       "included_nodes": 48,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    {
+      "name": "telegram:@freeonlinevpn",
+      "ok": true,
+      "nodes": 23,
+      "elapsed_ms": 0.0,
+      "fresh": true,
+      "competition_active": true,
+      "included_nodes": 23,
+      "last_changed_at": "2026-09-06T14:29:42Z",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -3193,8 +3184,8 @@
       "competition_active": true,
       "included_nodes": 39,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -3206,8 +3197,8 @@
       "competition_active": true,
       "included_nodes": 50,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -3219,8 +3210,8 @@
       "competition_active": true,
       "included_nodes": 24,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -3232,8 +3223,8 @@
       "competition_active": true,
       "included_nodes": 19,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -3245,8 +3236,8 @@
       "competition_active": true,
       "included_nodes": 48,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -3258,8 +3249,8 @@
       "competition_active": true,
       "included_nodes": 32,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -3271,8 +3262,8 @@
       "competition_active": true,
       "included_nodes": 25,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -3284,8 +3275,8 @@
       "competition_active": true,
       "included_nodes": 13,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -3297,8 +3288,8 @@
       "competition_active": true,
       "included_nodes": 13,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -3310,47 +3301,8 @@
       "competition_active": true,
       "included_nodes": 44,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
-      "duplicate_of": null
-    },
-    {
-      "name": "telegram:@eliv2ray",
-      "ok": true,
-      "nodes": 29,
-      "elapsed_ms": 0.0,
-      "fresh": true,
-      "competition_active": true,
-      "included_nodes": 29,
-      "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
-      "duplicate_of": null
-    },
-    {
-      "name": "telegram:@ShadowProxy66",
-      "ok": true,
-      "nodes": 27,
-      "elapsed_ms": 0.0,
-      "fresh": true,
-      "competition_active": true,
-      "included_nodes": 27,
-      "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
-      "duplicate_of": null
-    },
-    {
-      "name": "telegram:@ProxyMtpVPN",
-      "ok": true,
-      "nodes": 14,
-      "elapsed_ms": 0.0,
-      "fresh": true,
-      "competition_active": true,
-      "included_nodes": 14,
-      "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -3362,8 +3314,34 @@
       "competition_active": true,
       "included_nodes": 28,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    {
+      "name": "telegram:@eliv2ray",
+      "ok": true,
+      "nodes": 29,
+      "elapsed_ms": 0.0,
+      "fresh": true,
+      "competition_active": true,
+      "included_nodes": 29,
+      "last_changed_at": "2026-09-06T14:29:42Z",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    {
+      "name": "telegram:@ShadowProxy66",
+      "ok": true,
+      "nodes": 27,
+      "elapsed_ms": 0.0,
+      "fresh": true,
+      "competition_active": true,
+      "included_nodes": 27,
+      "last_changed_at": "2026-09-06T14:29:42Z",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -3375,8 +3353,34 @@
       "competition_active": true,
       "included_nodes": 31,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    {
+      "name": "telegram:@lent_gc",
+      "ok": true,
+      "nodes": 42,
+      "elapsed_ms": 0.0,
+      "fresh": true,
+      "competition_active": true,
+      "included_nodes": 42,
+      "last_changed_at": "2026-09-06T14:29:42Z",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    {
+      "name": "telegram:@ProxyMtpVPN",
+      "ok": true,
+      "nodes": 14,
+      "elapsed_ms": 0.0,
+      "fresh": true,
+      "competition_active": true,
+      "included_nodes": 14,
+      "last_changed_at": "2026-09-06T14:29:42Z",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -3388,8 +3392,8 @@
       "competition_active": true,
       "included_nodes": 27,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -3401,8 +3405,8 @@
       "competition_active": true,
       "included_nodes": 39,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -3414,8 +3418,8 @@
       "competition_active": true,
       "included_nodes": 27,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -3427,21 +3431,8 @@
       "competition_active": true,
       "included_nodes": 19,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
-      "duplicate_of": null
-    },
-    {
-      "name": "telegram:@lent_gc",
-      "ok": true,
-      "nodes": 42,
-      "elapsed_ms": 0.1,
-      "fresh": true,
-      "competition_active": true,
-      "included_nodes": 42,
-      "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -3453,8 +3444,8 @@
       "competition_active": true,
       "included_nodes": 12,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -3466,34 +3457,8 @@
       "competition_active": true,
       "included_nodes": 22,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
-      "duplicate_of": null
-    },
-    {
-      "name": "telegram:@cnetvpn",
-      "ok": true,
-      "nodes": 27,
-      "elapsed_ms": 0.0,
-      "fresh": true,
-      "competition_active": true,
-      "included_nodes": 27,
-      "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
-      "duplicate_of": null
-    },
-    {
-      "name": "telegram:@evay_vpn",
-      "ok": true,
-      "nodes": 19,
-      "elapsed_ms": 0.0,
-      "fresh": true,
-      "competition_active": true,
-      "included_nodes": 19,
-      "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -3505,8 +3470,34 @@
       "competition_active": true,
       "included_nodes": 22,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    {
+      "name": "telegram:@cnetvpn",
+      "ok": true,
+      "nodes": 27,
+      "elapsed_ms": 0.0,
+      "fresh": true,
+      "competition_active": true,
+      "included_nodes": 27,
+      "last_changed_at": "2026-09-06T14:29:42Z",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    {
+      "name": "telegram:@evay_vpn",
+      "ok": true,
+      "nodes": 19,
+      "elapsed_ms": 0.0,
+      "fresh": true,
+      "competition_active": true,
+      "included_nodes": 19,
+      "last_changed_at": "2026-09-06T14:29:42Z",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -3518,21 +3509,8 @@
       "competition_active": true,
       "included_nodes": 23,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
-      "duplicate_of": null
-    },
-    {
-      "name": "telegram:@vpncostumer",
-      "ok": true,
-      "nodes": 22,
-      "elapsed_ms": 0.0,
-      "fresh": true,
-      "competition_active": true,
-      "included_nodes": 22,
-      "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -3544,45 +3522,32 @@
       "competition_active": true,
       "included_nodes": 49,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
-      "name": "telegram:@zdyz2",
+      "name": "telegram:@vpncostumer",
       "ok": true,
-      "nodes": 25,
+      "nodes": 22,
       "elapsed_ms": 0.0,
       "fresh": true,
       "competition_active": true,
-      "included_nodes": 25,
+      "included_nodes": 22,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
-      "duplicate_of": null
-    },
-    {
-      "name": "telegram:@VmessProtocol",
-      "ok": true,
-      "nodes": 28,
-      "elapsed_ms": 0.0,
-      "fresh": true,
-      "competition_active": true,
-      "included_nodes": 28,
-      "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
       "name": "telegram:@vegaas_vpn",
       "ok": true,
-      "nodes": 32,
+      "nodes": 31,
       "elapsed_ms": 0.0,
       "fresh": true,
       "competition_active": true,
-      "included_nodes": 32,
-      "last_changed_at": "2026-09-06T14:29:42Z",
+      "included_nodes": 31,
+      "last_changed_at": "2026-09-06T14:52:18Z",
       "age_hours": 0.0,
       "freshness_reason": "changed",
       "duplicate_of": null
@@ -3596,8 +3561,34 @@
       "competition_active": true,
       "included_nodes": 7,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    {
+      "name": "telegram:@zdyz2",
+      "ok": true,
+      "nodes": 25,
+      "elapsed_ms": 0.0,
+      "fresh": true,
+      "competition_active": true,
+      "included_nodes": 25,
+      "last_changed_at": "2026-09-06T14:29:42Z",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    {
+      "name": "telegram:@VmessProtocol",
+      "ok": true,
+      "nodes": 28,
+      "elapsed_ms": 0.0,
+      "fresh": true,
+      "competition_active": true,
+      "included_nodes": 28,
+      "last_changed_at": "2026-09-06T14:29:42Z",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -3609,21 +3600,8 @@
       "competition_active": true,
       "included_nodes": 20,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
-      "duplicate_of": null
-    },
-    {
-      "name": "telegram:@ConfigsHUB",
-      "ok": true,
-      "nodes": 24,
-      "elapsed_ms": 0.0,
-      "fresh": true,
-      "competition_active": true,
-      "included_nodes": 24,
-      "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -3635,8 +3613,8 @@
       "competition_active": true,
       "included_nodes": 25,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -3648,6 +3626,19 @@
       "competition_active": true,
       "included_nodes": 23,
       "last_changed_at": "2026-09-06T14:29:42Z",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    {
+      "name": "telegram:@ConfigsHUB",
+      "ok": true,
+      "nodes": 29,
+      "elapsed_ms": 0.0,
+      "fresh": true,
+      "competition_active": true,
+      "included_nodes": 29,
+      "last_changed_at": "2026-09-06T14:52:18Z",
       "age_hours": 0.0,
       "freshness_reason": "changed",
       "duplicate_of": null
@@ -3661,8 +3652,8 @@
       "competition_active": true,
       "included_nodes": 24,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -3674,34 +3665,8 @@
       "competition_active": true,
       "included_nodes": 15,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
-      "duplicate_of": null
-    },
-    {
-      "name": "telegram:@confing_v2rayy",
-      "ok": true,
-      "nodes": 20,
-      "elapsed_ms": 0.0,
-      "fresh": true,
-      "competition_active": true,
-      "included_nodes": 20,
-      "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
-      "duplicate_of": null
-    },
-    {
-      "name": "telegram:@sil3nt_network",
-      "ok": true,
-      "nodes": 12,
-      "elapsed_ms": 0.0,
-      "fresh": true,
-      "competition_active": true,
-      "included_nodes": 12,
-      "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -3713,8 +3678,21 @@
       "competition_active": true,
       "included_nodes": 34,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    {
+      "name": "telegram:@confing_v2rayy",
+      "ok": true,
+      "nodes": 20,
+      "elapsed_ms": 0.0,
+      "fresh": true,
+      "competition_active": true,
+      "included_nodes": 20,
+      "last_changed_at": "2026-09-06T14:29:42Z",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -3726,8 +3704,8 @@
       "competition_active": true,
       "included_nodes": 20,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -3739,8 +3717,21 @@
       "competition_active": true,
       "included_nodes": 30,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    {
+      "name": "telegram:@sil3nt_network",
+      "ok": true,
+      "nodes": 12,
+      "elapsed_ms": 0.0,
+      "fresh": true,
+      "competition_active": true,
+      "included_nodes": 12,
+      "last_changed_at": "2026-09-06T14:29:42Z",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -3752,21 +3743,8 @@
       "competition_active": true,
       "included_nodes": 29,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
-      "duplicate_of": null
-    },
-    {
-      "name": "telegram:@flyv2ray",
-      "ok": true,
-      "nodes": 21,
-      "elapsed_ms": 0.0,
-      "fresh": true,
-      "competition_active": true,
-      "included_nodes": 21,
-      "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -3778,8 +3756,21 @@
       "competition_active": true,
       "included_nodes": 21,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    {
+      "name": "telegram:@flyv2ray",
+      "ok": true,
+      "nodes": 21,
+      "elapsed_ms": 0.0,
+      "fresh": true,
+      "competition_active": true,
+      "included_nodes": 21,
+      "last_changed_at": "2026-09-06T14:29:42Z",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -3791,21 +3782,8 @@
       "competition_active": true,
       "included_nodes": 5,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
-      "duplicate_of": null
-    },
-    {
-      "name": "telegram:@nufilter",
-      "ok": true,
-      "nodes": 14,
-      "elapsed_ms": 0.0,
-      "fresh": true,
-      "competition_active": true,
-      "included_nodes": 14,
-      "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -3817,8 +3795,21 @@
       "competition_active": true,
       "included_nodes": 46,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    {
+      "name": "telegram:@nufilter",
+      "ok": true,
+      "nodes": 14,
+      "elapsed_ms": 0.0,
+      "fresh": true,
+      "competition_active": true,
+      "included_nodes": 14,
+      "last_changed_at": "2026-09-06T14:29:42Z",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -3830,21 +3821,8 @@
       "competition_active": true,
       "included_nodes": 19,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
-      "duplicate_of": null
-    },
-    {
-      "name": "telegram:@webshecan",
-      "ok": true,
-      "nodes": 0,
-      "elapsed_ms": 0.0,
-      "fresh": false,
-      "competition_active": false,
-      "included_nodes": 0,
-      "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "empty_source",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -3856,8 +3834,21 @@
       "competition_active": true,
       "included_nodes": 15,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    {
+      "name": "telegram:@webshecan",
+      "ok": true,
+      "nodes": 0,
+      "elapsed_ms": 0.0,
+      "fresh": false,
+      "competition_active": false,
+      "included_nodes": 0,
+      "last_changed_at": "2026-09-06T14:29:42Z",
+      "age_hours": 0.38,
+      "freshness_reason": "empty_source",
       "duplicate_of": null
     },
     {
@@ -3869,21 +3860,8 @@
       "competition_active": true,
       "included_nodes": 19,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
-      "duplicate_of": null
-    },
-    {
-      "name": "telegram:@FreeV2rays",
-      "ok": true,
-      "nodes": 18,
-      "elapsed_ms": 0.0,
-      "fresh": true,
-      "competition_active": true,
-      "included_nodes": 18,
-      "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -3895,8 +3873,8 @@
       "competition_active": true,
       "included_nodes": 14,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -3908,8 +3886,8 @@
       "competition_active": true,
       "included_nodes": 19,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -3921,8 +3899,21 @@
       "competition_active": true,
       "included_nodes": 18,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    {
+      "name": "telegram:@FreeV2rays",
+      "ok": true,
+      "nodes": 18,
+      "elapsed_ms": 0.0,
+      "fresh": true,
+      "competition_active": true,
+      "included_nodes": 18,
+      "last_changed_at": "2026-09-06T14:29:42Z",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -3934,8 +3925,8 @@
       "competition_active": true,
       "included_nodes": 2,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -3947,6 +3938,19 @@
       "competition_active": true,
       "included_nodes": 17,
       "last_changed_at": "2026-09-06T14:29:42Z",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    {
+      "name": "telegram:@musiclovers85",
+      "ok": true,
+      "nodes": 21,
+      "elapsed_ms": 0.0,
+      "fresh": true,
+      "competition_active": true,
+      "included_nodes": 21,
+      "last_changed_at": "2026-09-06T14:52:18Z",
       "age_hours": 0.0,
       "freshness_reason": "changed",
       "duplicate_of": null
@@ -3960,21 +3964,8 @@
       "competition_active": true,
       "included_nodes": 17,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
-      "duplicate_of": null
-    },
-    {
-      "name": "telegram:@musiclovers85",
-      "ok": true,
-      "nodes": 20,
-      "elapsed_ms": 0.0,
-      "fresh": true,
-      "competition_active": true,
-      "included_nodes": 20,
-      "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -3986,8 +3977,8 @@
       "competition_active": true,
       "included_nodes": 14,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -3999,8 +3990,8 @@
       "competition_active": true,
       "included_nodes": 8,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -4012,8 +4003,8 @@
       "competition_active": true,
       "included_nodes": 10,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -4025,21 +4016,8 @@
       "competition_active": true,
       "included_nodes": 18,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
-      "duplicate_of": null
-    },
-    {
-      "name": "telegram:@socks5tobefree",
-      "ok": true,
-      "nodes": 15,
-      "elapsed_ms": 0.0,
-      "fresh": true,
-      "competition_active": true,
-      "included_nodes": 15,
-      "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -4051,73 +4029,8 @@
       "competition_active": true,
       "included_nodes": 10,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
-      "duplicate_of": null
-    },
-    {
-      "name": "telegram:@subgift",
-      "ok": true,
-      "nodes": 15,
-      "elapsed_ms": 0.0,
-      "fresh": true,
-      "competition_active": true,
-      "included_nodes": 15,
-      "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
-      "duplicate_of": null
-    },
-    {
-      "name": "telegram:@v2rayng_ip",
-      "ok": true,
-      "nodes": 91,
-      "elapsed_ms": 0.0,
-      "fresh": true,
-      "competition_active": true,
-      "included_nodes": 91,
-      "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
-      "duplicate_of": null
-    },
-    {
-      "name": "telegram:@hollowcon",
-      "ok": true,
-      "nodes": 13,
-      "elapsed_ms": 0.0,
-      "fresh": true,
-      "competition_active": true,
-      "included_nodes": 13,
-      "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
-      "duplicate_of": null
-    },
-    {
-      "name": "telegram:@Parsashonam",
-      "ok": true,
-      "nodes": 15,
-      "elapsed_ms": 0.0,
-      "fresh": true,
-      "competition_active": true,
-      "included_nodes": 15,
-      "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
-      "duplicate_of": null
-    },
-    {
-      "name": "telegram:@nim_vpn_ir",
-      "ok": true,
-      "nodes": 13,
-      "elapsed_ms": 0.0,
-      "fresh": true,
-      "competition_active": true,
-      "included_nodes": 13,
-      "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -4129,21 +4042,73 @@
       "competition_active": true,
       "included_nodes": 15,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
-      "name": "telegram:@i10vpn",
+      "name": "telegram:@subgift",
       "ok": true,
-      "nodes": 34,
+      "nodes": 15,
       "elapsed_ms": 0.0,
       "fresh": true,
       "competition_active": true,
-      "included_nodes": 34,
+      "included_nodes": 15,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    {
+      "name": "telegram:@hollowcon",
+      "ok": true,
+      "nodes": 13,
+      "elapsed_ms": 0.0,
+      "fresh": true,
+      "competition_active": true,
+      "included_nodes": 13,
+      "last_changed_at": "2026-09-06T14:29:42Z",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    {
+      "name": "telegram:@socks5tobefree",
+      "ok": true,
+      "nodes": 15,
+      "elapsed_ms": 0.0,
+      "fresh": true,
+      "competition_active": true,
+      "included_nodes": 15,
+      "last_changed_at": "2026-09-06T14:29:42Z",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    {
+      "name": "telegram:@v2rayng_ip",
+      "ok": true,
+      "nodes": 91,
+      "elapsed_ms": 0.0,
+      "fresh": true,
+      "competition_active": true,
+      "included_nodes": 91,
+      "last_changed_at": "2026-09-06T14:29:42Z",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    {
+      "name": "telegram:@nim_vpn_ir",
+      "ok": true,
+      "nodes": 13,
+      "elapsed_ms": 0.0,
+      "fresh": true,
+      "competition_active": true,
+      "included_nodes": 13,
+      "last_changed_at": "2026-09-06T14:29:42Z",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -4155,21 +4120,8 @@
       "competition_active": false,
       "included_nodes": 0,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
+      "age_hours": 0.38,
       "freshness_reason": "empty_source",
-      "duplicate_of": null
-    },
-    {
-      "name": "telegram:@ehsawn8",
-      "ok": true,
-      "nodes": 3,
-      "elapsed_ms": 0.0,
-      "fresh": true,
-      "competition_active": true,
-      "included_nodes": 3,
-      "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
       "duplicate_of": null
     },
     {
@@ -4181,8 +4133,47 @@
       "competition_active": true,
       "included_nodes": 10,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    {
+      "name": "telegram:@Parsashonam",
+      "ok": true,
+      "nodes": 15,
+      "elapsed_ms": 0.0,
+      "fresh": true,
+      "competition_active": true,
+      "included_nodes": 15,
+      "last_changed_at": "2026-09-06T14:29:42Z",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    {
+      "name": "telegram:@i10vpn",
+      "ok": true,
+      "nodes": 34,
+      "elapsed_ms": 0.0,
+      "fresh": true,
+      "competition_active": true,
+      "included_nodes": 34,
+      "last_changed_at": "2026-09-06T14:29:42Z",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    {
+      "name": "telegram:@ehsawn8",
+      "ok": true,
+      "nodes": 3,
+      "elapsed_ms": 0.0,
+      "fresh": true,
+      "competition_active": true,
+      "included_nodes": 3,
+      "last_changed_at": "2026-09-06T14:29:42Z",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -4194,21 +4185,8 @@
       "competition_active": true,
       "included_nodes": 16,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
-      "duplicate_of": null
-    },
-    {
-      "name": "telegram:@gozargahazad",
-      "ok": true,
-      "nodes": 18,
-      "elapsed_ms": 0.0,
-      "fresh": true,
-      "competition_active": true,
-      "included_nodes": 18,
-      "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -4220,8 +4198,8 @@
       "competition_active": true,
       "included_nodes": 12,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -4233,8 +4211,8 @@
       "competition_active": true,
       "included_nodes": 11,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -4246,19 +4224,19 @@
       "competition_active": true,
       "included_nodes": 6,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
-      "name": "telegram:@privatevpns",
+      "name": "telegram:@gozargahazad",
       "ok": true,
-      "nodes": 1,
+      "nodes": 13,
       "elapsed_ms": 0.0,
       "fresh": true,
       "competition_active": true,
-      "included_nodes": 1,
-      "last_changed_at": "2026-09-06T14:29:42Z",
+      "included_nodes": 13,
+      "last_changed_at": "2026-09-06T14:52:18Z",
       "age_hours": 0.0,
       "freshness_reason": "changed",
       "duplicate_of": null
@@ -4272,21 +4250,8 @@
       "competition_active": false,
       "included_nodes": 0,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
+      "age_hours": 0.38,
       "freshness_reason": "empty_source",
-      "duplicate_of": null
-    },
-    {
-      "name": "telegram:@gozargahvpn",
-      "ok": true,
-      "nodes": 9,
-      "elapsed_ms": 0.0,
-      "fresh": true,
-      "competition_active": true,
-      "included_nodes": 9,
-      "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
       "duplicate_of": null
     },
     {
@@ -4298,8 +4263,34 @@
       "competition_active": true,
       "included_nodes": 9,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    {
+      "name": "telegram:@privatevpns",
+      "ok": true,
+      "nodes": 1,
+      "elapsed_ms": 0.0,
+      "fresh": true,
+      "competition_active": true,
+      "included_nodes": 1,
+      "last_changed_at": "2026-09-06T14:29:42Z",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    {
+      "name": "telegram:@gozargahvpn",
+      "ok": true,
+      "nodes": 9,
+      "elapsed_ms": 0.0,
+      "fresh": true,
+      "competition_active": true,
+      "included_nodes": 9,
+      "last_changed_at": "2026-09-06T14:29:42Z",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -4311,8 +4302,8 @@
       "competition_active": true,
       "included_nodes": 7,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -4324,8 +4315,8 @@
       "competition_active": true,
       "included_nodes": 6,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -4337,8 +4328,8 @@
       "competition_active": true,
       "included_nodes": 9,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
@@ -4350,7 +4341,7 @@
       "competition_active": false,
       "included_nodes": 0,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
+      "age_hours": 0.38,
       "freshness_reason": "empty_source",
       "duplicate_of": null
     },
@@ -4363,19 +4354,19 @@
       "competition_active": true,
       "included_nodes": 107,
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "age_hours": 0.0,
-      "freshness_reason": "changed",
+      "age_hours": 0.38,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     {
       "name": "v2nodes",
       "ok": true,
-      "nodes": 409,
-      "raw_nodes": 922,
+      "nodes": 411,
+      "raw_nodes": 921,
       "fresh": true,
       "competition_active": true,
-      "included_nodes": 409,
-      "last_changed_at": "2026-09-06T14:29:42Z",
+      "included_nodes": 411,
+      "last_changed_at": "2026-09-06T14:52:18Z",
       "age_hours": 0.0,
       "freshness_reason": "changed",
       "duplicate_of": null
@@ -4383,14 +4374,15 @@
   ],
   "source_freshness": {
     "schema": 1,
-    "generated_at": "2026-09-06T14:29:42Z",
+    "generated_at": "2026-09-06T14:52:18Z",
     "max_stale_hours": 72,
     "sources_checked": 344,
-    "active_sources": 321,
+    "active_sources": 329,
     "stale_sources": 0,
-    "duplicate_sources": 3,
-    "failed_sources": 20,
-    "input_nodes": 249779,
-    "included_nodes": 245719
+    "duplicate_sources": 4,
+    "failed_sources": 0,
+    "empty_sources": 11,
+    "input_nodes": 330346,
+    "included_nodes": 325303
   }
 }
