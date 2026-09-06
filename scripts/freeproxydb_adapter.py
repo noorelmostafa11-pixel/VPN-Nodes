@@ -1,16 +1,16 @@
 #!/usr/bin/env python3
-"""Rate-limit-aware FreeProxyDB adapter with a rolling repository cache.
+"""Collect the newest mixed-protocol FreeProxyDB pages.
 
 The public search API returns at most 100 records per request and limits the
-total records returned to one client IP over time. Request all supported
-protocols together, continue from a different page on the next workflow run,
-and retain recently seen nodes when the upstream returns HTTP 429.
+total records returned per client IP. Every run therefore reads pages 1..20,
+ordered by the most recent check, for a maximum of 2,000 current nodes. A
+short-lived snapshot is used only as a fallback when a run is interrupted; it
+is never used to continue into older pages.
 """
 
 from __future__ import annotations
 
 import json
-import math
 import os
 import time
 import urllib.error
@@ -27,21 +27,14 @@ PROTOCOLS = ("vless", "vmess", "trojan", "ss")
 SUPPORTED_PREFIXES = tuple(f"{protocol}://" for protocol in PROTOCOLS)
 
 PAGE_SIZE = 100
-MAX_REQUESTS_PER_RUN = max(
-    1,
-    int(os.environ.get("FREEPROXYDB_REQUESTS_PER_RUN", "20")),
-)
+MAX_PAGES = 20
 PAGE_DELAY = max(
     0.0,
     float(os.environ.get("FREEPROXYDB_PAGE_DELAY", "2")),
 )
-CACHE_MAX_AGE_HOURS = max(
+SNAPSHOT_MAX_AGE_HOURS = max(
     1,
     int(os.environ.get("FREEPROXYDB_CACHE_MAX_AGE_HOURS", "72")),
-)
-MAX_CACHE_NODES = max(
-    PAGE_SIZE,
-    int(os.environ.get("FREEPROXYDB_MAX_CACHE_NODES", "20000")),
 )
 MAX_RETRIES = 3
 
@@ -65,8 +58,8 @@ def fetch_json(url: str) -> dict:
                 return json.loads(response.read().decode("utf-8"))
         except urllib.error.HTTPError as exc:
             if exc.code == 429:
-                # Sleeping for a few seconds cannot reset the hourly/record
-                # quota. Preserve the cache and resume on the next workflow.
+                # A short sleep does not reliably reset the per-IP record
+                # quota. Keep the previous snapshot instead.
                 raise RateLimited("public API record quota reached") from exc
             if 500 <= exc.code < 600 and attempt < MAX_RETRIES:
                 time.sleep(attempt * 5)
@@ -86,7 +79,7 @@ def build_url(page: int) -> str:
         "speed": "0,60",
         "page_index": page,
         "page_size": PAGE_SIZE,
-        "order_by": "id",
+        "order_by": "last_checked",
         "order_dir": "desc",
     }
     return BASE_URL + "?" + urllib.parse.urlencode(params)
@@ -154,18 +147,17 @@ def extract_data(payload: dict) -> tuple[list, int]:
     return (container if isinstance(container, list) else []), total
 
 
-def _load_cache(now: int) -> tuple[dict[str, int], int]:
+def _load_snapshot(now: int) -> dict[str, int]:
     if not CACHE_FILE.is_file():
-        return {}, 1
+        return {}
 
     try:
         payload = json.loads(CACHE_FILE.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError):
-        return {}, 1
+        return {}
 
-    cutoff = now - CACHE_MAX_AGE_HOURS * 3600
+    cutoff = now - SNAPSHOT_MAX_AGE_HOURS * 3600
     nodes: dict[str, int] = {}
-
     for item in payload.get("nodes", []):
         if not isinstance(item, dict):
             continue
@@ -179,24 +171,20 @@ def _load_cache(now: int) -> tuple[dict[str, int], int]:
         if uri.startswith(SUPPORTED_PREFIXES) and seen_at >= cutoff:
             nodes[uri] = max(nodes.get(uri, 0), seen_at)
 
-    try:
-        next_page = max(1, int(payload.get("next_page") or 1))
-    except (TypeError, ValueError):
-        next_page = 1
-
-    return nodes, next_page
+    return nodes
 
 
-def _save_cache(
+def _save_snapshot(
     nodes: dict[str, int],
     *,
-    next_page: int,
     total_count: int,
     pages_fetched: int,
+    complete: bool,
     rate_limited: bool,
     now: int,
 ) -> dict[str, int]:
-    cutoff = now - CACHE_MAX_AGE_HOURS * 3600
+    limit = PAGE_SIZE * MAX_PAGES
+    cutoff = now - SNAPSHOT_MAX_AGE_HOURS * 3600
     ordered = sorted(
         (
             (uri, seen_at)
@@ -204,20 +192,23 @@ def _save_cache(
             if uri.startswith(SUPPORTED_PREFIXES) and seen_at >= cutoff
         ),
         key=lambda row: (-row[1], row[0]),
-    )[:MAX_CACHE_NODES]
+    )[:limit]
     kept = dict(ordered)
 
     payload = {
-        "schema": 1,
+        "schema": 2,
+        "mode": "newest_mixed_protocol_pages",
         "generated_at": now,
         "protocols": list(PROTOCOLS),
+        "order_by": "last_checked",
+        "order_dir": "desc",
         "page_size": PAGE_SIZE,
-        "requests_per_run": MAX_REQUESTS_PER_RUN,
-        "cache_max_age_hours": CACHE_MAX_AGE_HOURS,
+        "max_pages": MAX_PAGES,
+        "snapshot_max_age_hours": SNAPSHOT_MAX_AGE_HOURS,
         "total_count_reported": total_count,
         "pages_fetched": pages_fetched,
+        "complete": complete,
         "rate_limited": rate_limited,
-        "next_page": max(1, next_page),
         "nodes": [
             {"uri": uri, "last_seen_at": seen_at}
             for uri, seen_at in ordered
@@ -236,79 +227,79 @@ def _save_cache(
 
 def collect_freeproxydb() -> list[dict]:
     now = int(time.time())
-    nodes, start_page = _load_cache(now)
-    previous_count = len(nodes)
-    next_page = start_page
+    previous = _load_snapshot(now)
+    current: dict[str, int] = {}
     total_count = 0
     pages_fetched = 0
     rate_limited = False
+    reached_end = False
 
-    for offset in range(MAX_REQUESTS_PER_RUN):
-        page = start_page + offset
-
+    for page in range(1, MAX_PAGES + 1):
         try:
             payload = fetch_json(build_url(page))
         except RateLimited as exc:
             rate_limited = True
-            next_page = page
             print(
                 f"INFO FreeProxyDB page {page}: {exc}; "
-                f"retaining {len(nodes)} cached nodes"
+                "using the latest available snapshot"
             )
             break
         except Exception as exc:
-            next_page = page
             print(
                 f"WARN FreeProxyDB page {page}: {exc}; "
-                f"retaining {len(nodes)} cached nodes"
+                "using the latest available snapshot"
             )
             break
 
         data, reported_total = extract_data(payload)
         total_count = max(total_count, reported_total)
-
         if not data:
-            next_page = 1
-            print(f"INFO FreeProxyDB page {page}: empty; restarting at page 1")
+            reached_end = True
             break
 
         pages_fetched += 1
         for item in data:
             uri = extract_uri(item)
             if uri:
-                nodes[uri] = now
-
-        total_pages = (
-            math.ceil(total_count / PAGE_SIZE)
-            if total_count
-            else 0
-        )
-        reached_end = (
-            len(data) < PAGE_SIZE
-            or (total_pages and page >= total_pages)
-        )
-        next_page = 1 if reached_end else page + 1
+                current[uri] = now
 
         print(
             f"FreeProxyDB page {page}: records={len(data)} "
-            f"cache={len(nodes)} total={total_count or 'unknown'}"
+            f"newest_snapshot={len(current)} "
+            f"total={total_count or 'unknown'}"
         )
 
-        if reached_end:
+        if len(data) < PAGE_SIZE:
+            reached_end = True
             break
-        if offset + 1 < MAX_REQUESTS_PER_RUN:
+        if page < MAX_PAGES:
             time.sleep(PAGE_DELAY)
 
-    nodes = _save_cache(
-        nodes,
-        next_page=next_page,
+    complete = reached_end or pages_fetched == MAX_PAGES
+    if complete:
+        selected = current
+    else:
+        # A partial failure must not publish zero nodes. Fresh rows take
+        # priority, then the previous newest-2,000 snapshot fills the gap.
+        selected = dict(current)
+        for uri, seen_at in sorted(
+            previous.items(),
+            key=lambda row: (-row[1], row[0]),
+        ):
+            if len(selected) >= PAGE_SIZE * MAX_PAGES:
+                break
+            selected.setdefault(uri, seen_at)
+
+    selected = _save_snapshot(
+        selected,
         total_count=total_count,
         pages_fetched=pages_fetched,
+        complete=complete,
         rate_limited=rate_limited,
         now=now,
     )
 
-    counts = Counter(uri.split("://", 1)[0].lower() for uri in nodes)
+    counts = Counter(uri.split("://", 1)[0].lower() for uri in selected)
     rows = [
         {
             "name": f"FreeProxyDB-{uri.split('://', 1)[0].lower()}",
@@ -316,7 +307,7 @@ def collect_freeproxydb() -> list[dict]:
             "url": uri,
             "protocol": uri.split("://", 1)[0].lower(),
         }
-        for uri in sorted(nodes)
+        for uri in sorted(selected)
     ]
 
     details = ", ".join(
@@ -324,9 +315,9 @@ def collect_freeproxydb() -> list[dict]:
         for protocol in PROTOCOLS
     )
     print(
-        f"OK source FreeProxyDB-api: cached={len(rows)} "
-        f"previous={previous_count} pages={pages_fetched} "
-        f"next_page={next_page} ({details})"
+        f"OK source FreeProxyDB-api: newest={len(rows)} "
+        f"pages={pages_fetched}/{MAX_PAGES} "
+        f"fallback={not complete} ({details})"
     )
     return rows
 
