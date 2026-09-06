@@ -1,21 +1,21 @@
 {
   "schema": 1,
-  "generated_at": "2026-09-06T22:35:47Z",
+  "generated_at": "2026-09-06T23:36:02Z",
   "max_stale_hours": 72,
-  "sources_checked": 358,
-  "active_sources": 345,
+  "sources_checked": 363,
+  "active_sources": 347,
   "stale_sources": 0,
-  "duplicate_sources": 4,
-  "failed_sources": 0,
-  "empty_sources": 9,
-  "input_nodes": 357514,
-  "included_nodes": 356856,
+  "duplicate_sources": 5,
+  "failed_sources": 1,
+  "empty_sources": 10,
+  "input_nodes": 361727,
+  "included_nodes": 357203,
   "sources": {
     "roosterkid-V2RAY_RAW": {
-      "fingerprint": "99c4c60de31093995d7fb517fadbf0fca2e0bb0353b1ea6858259d443602a56b",
-      "semantic_nodes": 54,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T22:35:47Z",
+      "fingerprint": "2583c33951ce8ad16bca844c12e1f6dbf1dadd70551642b60b06a050c152c7d5",
+      "semantic_nodes": 56,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T23:36:02Z",
       "fresh": true,
       "competition_active": true,
       "freshness_reason": "changed",
@@ -24,47 +24,47 @@
     "MatinGhanbari-ss": {
       "fingerprint": "8e45433dfe2ab9d6f4a1edbc1e0549f2d607afed299fa407dd37e8a476adda90",
       "semantic_nodes": 113,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T22:35:47Z",
       "fresh": true,
       "competition_active": true,
-      "freshness_reason": "changed",
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     "MatinGhanbari-trojan": {
       "fingerprint": "625f06e09bc97a04ffc2237f394f0d782d681dabadd1e96011c29403fd573885",
       "semantic_nodes": 189,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T22:35:47Z",
       "fresh": true,
       "competition_active": true,
-      "freshness_reason": "changed",
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     "MatinGhanbari-vless": {
       "fingerprint": "a3489da51b541128a7a627ed1ce671ee2f83f08565784509d407ef710c69a790",
       "semantic_nodes": 138,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T22:35:47Z",
       "fresh": true,
       "competition_active": true,
-      "freshness_reason": "changed",
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     "MatinGhanbari-vmess": {
       "fingerprint": "f0b2c02b4100b7e772c4c3410362503274a14eb528de0585c0a3e2415f7916d3",
       "semantic_nodes": 707,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T22:35:47Z",
       "fresh": true,
       "competition_active": true,
-      "freshness_reason": "changed",
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     "mahdibland-sub_merge": {
       "fingerprint": "0e976184223ff9e0acd5de9c04f840537f69a8fd10baa7c2e81d7d177df293aa",
       "semantic_nodes": 1226,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T16:33:32Z",
       "fresh": true,
       "competition_active": true,
@@ -74,17 +74,17 @@
     "hamedcode-port_443": {
       "fingerprint": "de5a767954a84d181b147b9d7a93c76ae3ba290087e455c1884ff05df3c1b024",
       "semantic_nodes": 2973,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T22:35:47Z",
       "fresh": true,
       "competition_active": true,
-      "freshness_reason": "changed",
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     "F0rc3Run-Telegram": {
       "fingerprint": "e8803b6288e1071ead2c9143c221b5c5808a5c04fb7e8c4e00b2d9d211b60994",
       "semantic_nodes": 213,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T15:31:22Z",
       "fresh": true,
       "competition_active": true,
@@ -94,37 +94,37 @@
     "Baarcuda-top100": {
       "fingerprint": "8559dc62d553bb4fa4ade850e567901a71218e2123bab9c59429beae3d0ada98",
       "semantic_nodes": 29,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T22:35:47Z",
-      "fresh": true,
-      "competition_active": true,
-      "freshness_reason": "changed",
-      "duplicate_of": null
-    },
-    "Alirewa-V2ray-Configs": {
-      "fingerprint": "18b38d3789e50f855e25ad25ede7849905d331ec382bde40b0227966d8b195e8",
-      "semantic_nodes": 794,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T22:35:47Z",
-      "fresh": true,
-      "competition_active": true,
-      "freshness_reason": "changed",
-      "duplicate_of": null
-    },
-    "Epodonios-All_Configs_Sub": {
-      "fingerprint": "a2890c739c546b454d6c992793fe262df2243448d13a74708a2131589120ff86",
-      "semantic_nodes": 1946,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T18:34:08Z",
       "fresh": true,
       "competition_active": true,
       "freshness_reason": "within_window",
       "duplicate_of": null
     },
+    "Alirewa-V2ray-Configs": {
+      "fingerprint": "18b38d3789e50f855e25ad25ede7849905d331ec382bde40b0227966d8b195e8",
+      "semantic_nodes": 794,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T22:35:47Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    "Epodonios-All_Configs_Sub": {
+      "fingerprint": "be35e983f1ab0c1bd1bc11fdd2c50c325529436b9322b2ffb028cf9cd9514b34",
+      "semantic_nodes": 1952,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T23:36:02Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
     "sakha1370-all_valid_proxies": {
       "fingerprint": "e2d821c905fc4f9953a322d0268978e7ebe6a83983a7222dc953b8adfbc4cfb2",
       "semantic_nodes": 3932,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T21:33:56Z",
       "fresh": true,
       "competition_active": true,
@@ -132,30 +132,30 @@
       "duplicate_of": null
     },
     "Au1rxx-v2ray-base64": {
-      "fingerprint": "496e548132f0d97110cd86954d5db922aa7a21c3c5ba3644eb08a0f07aa67916",
-      "semantic_nodes": 193,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T22:35:47Z",
+      "fingerprint": "9427cf31be5b894ca6d243d4ce114e874896a4b081ad122554fe6449dca0faf6",
+      "semantic_nodes": 196,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T23:36:02Z",
       "fresh": true,
       "competition_active": true,
       "freshness_reason": "changed",
       "duplicate_of": null
     },
     "0xRadikal-configs_base64": {
-      "fingerprint": "8eef8f52c77f3ef422c947bc0ac01d16259a53d20929f05a5edbac0e8e9df1cd",
-      "semantic_nodes": 6074,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T22:35:47Z",
+      "fingerprint": "0d504cdc69c4be801709e0391d59ef797e24633ffcd9e1f96944aabaa86385fc",
+      "semantic_nodes": 6077,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T23:36:02Z",
       "fresh": true,
       "competition_active": true,
       "freshness_reason": "changed",
       "duplicate_of": null
     },
     "SoliSpirit-all_configs": {
-      "fingerprint": "3da6748b3ca6febf3bd55801b81042241cff981563dc72519f1b203c47b1d66a",
-      "semantic_nodes": 2516,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T22:35:47Z",
+      "fingerprint": "36e877d03e9e118ee9b3216131360532eb3130fa696521fffa2f2f63fd67bd82",
+      "semantic_nodes": 2414,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T23:36:02Z",
       "fresh": true,
       "competition_active": true,
       "freshness_reason": "changed",
@@ -164,18 +164,18 @@
     "Danialsamadi-AllConfigsSub": {
       "fingerprint": "a089452c49cccadc7688754064978cd262896d1bf63e5d8d5ac5d336cc4ab2fb",
       "semantic_nodes": 411,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T22:35:47Z",
       "fresh": true,
       "competition_active": true,
-      "freshness_reason": "changed",
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     "ebrasha-all_extracted_configs": {
-      "fingerprint": "3bdf72604bceb3c8461d7ec2d5e57b74365f8d2df6763515b4d3f63c4c87d80d",
-      "semantic_nodes": 11345,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T22:35:47Z",
+      "fingerprint": "f4ee53febc7d18023e016219cdd433051ddb6927acc1973fc7792c872e7725e1",
+      "semantic_nodes": 11343,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T23:36:02Z",
       "fresh": true,
       "competition_active": true,
       "freshness_reason": "changed",
@@ -184,7 +184,7 @@
     "Delta-Kronecker-all_configs": {
       "fingerprint": "36ef33c0b64055d19915711be5e07fe653f4374ed58050b91afc944cf0194450",
       "semantic_nodes": 4153,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T14:29:42Z",
       "fresh": true,
       "competition_active": true,
@@ -192,39 +192,39 @@
       "duplicate_of": null
     },
     "mfuu-FreeProxies-sub": {
-      "fingerprint": "866a0e9967904115f789008dd47a2510dc5af2c13f174e0fc59428451896acdf",
-      "semantic_nodes": 202,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T16:33:32Z",
+      "fingerprint": "b38ee315efaaa82859ef2a398abae3d4ec67317cae2893e099cbdda410f054ad",
+      "semantic_nodes": 204,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T23:36:02Z",
       "fresh": true,
       "competition_active": true,
-      "freshness_reason": "within_window",
+      "freshness_reason": "changed",
       "duplicate_of": null
     },
     "mheidari98-.proxy": {
-      "fingerprint": "9349169a8776d76766e45f429fdc393db74551eadf099dd3045289afd1b89676",
-      "semantic_nodes": 5898,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T21:33:56Z",
+      "fingerprint": "97db68d6d2a9a5479406a4cbc18fdc39f00e7af5d8728056ce18a3cc4b406627",
+      "semantic_nodes": 5969,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T23:36:02Z",
       "fresh": true,
       "competition_active": true,
-      "freshness_reason": "within_window",
+      "freshness_reason": "changed",
       "duplicate_of": null
     },
     "rasool083-v2ray-sub": {
-      "fingerprint": "e2ebffca09073a113d47e1c5872b7a0b0d57dda25c578c15992fd47e77220e08",
-      "semantic_nodes": 5982,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T21:33:56Z",
+      "fingerprint": "507f1c1ec14b1ee91a2c41b49ebaf13be24efe6ede361e4a5d00b9966c3dd0d8",
+      "semantic_nodes": 5971,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T23:36:02Z",
       "fresh": true,
       "competition_active": true,
-      "freshness_reason": "within_window",
+      "freshness_reason": "changed",
       "duplicate_of": null
     },
     "teknovpnhub-servers": {
       "fingerprint": "f1e14f3ea39a190a8f0ed6ecba5aa10e86e13e9fe9c87ff59891617940bc1171",
       "semantic_nodes": 12,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T14:29:42Z",
       "fresh": true,
       "competition_active": true,
@@ -234,37 +234,37 @@
     "rtwo2-everything": {
       "fingerprint": "2c3d5b01da409e0f23fbeb2a0cc8b597dedcd7859219f855eea8352cf0058092",
       "semantic_nodes": 26578,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T22:35:47Z",
       "fresh": true,
       "competition_active": true,
-      "freshness_reason": "changed",
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     "Pawdroid-Free-servers": {
-      "fingerprint": "84fef22153bc716a895669a77f67edc7f63adc8239354c49c37b479380debae6",
-      "semantic_nodes": 19,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T22:35:47Z",
+      "fingerprint": "2d37730bcfbf5e054f257d12d97c730204de110764a29dcf14f77b1474c33ddd",
+      "semantic_nodes": 15,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T23:36:02Z",
       "fresh": true,
       "competition_active": true,
       "freshness_reason": "changed",
       "duplicate_of": null
     },
     "alexantSWE-All_Configs_Sub": {
-      "fingerprint": "2cabde4849d1514e809931db42b9d616ef805905ca5ec466083626b3ba947d9e",
-      "semantic_nodes": 2097,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T21:33:56Z",
+      "fingerprint": "cceee2b32de3b8182154a5a5531ebf4c296bd81ddff4978ab71ed768d8353f6c",
+      "semantic_nodes": 2072,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T23:36:02Z",
       "fresh": true,
       "competition_active": true,
-      "freshness_reason": "within_window",
+      "freshness_reason": "changed",
       "duplicate_of": null
     },
     "morpheusadam-best": {
       "fingerprint": "b11590eabb3f47980e7fc18e2c5cfefbb4e08bad0a692068cd15e15a70d44f03",
       "semantic_nodes": 847,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T16:33:32Z",
       "fresh": true,
       "competition_active": true,
@@ -274,7 +274,7 @@
     "morpheusadam-vless": {
       "fingerprint": "2f6c5966adffdaa741aa2d9b6a5efde9e8cdd9400ddc7ad1684654defa12cd28",
       "semantic_nodes": 13275,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T16:33:32Z",
       "fresh": true,
       "competition_active": true,
@@ -284,7 +284,7 @@
     "morpheusadam-reality": {
       "fingerprint": "d00d5ff5ef28735a047011d2d42873d8155ea9070d99139a0062cc87c6140e0b",
       "semantic_nodes": 5378,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T16:33:32Z",
       "fresh": true,
       "competition_active": true,
@@ -294,7 +294,7 @@
     "morpheusadam-iran": {
       "fingerprint": "31275398627132049d00c54e32c548652bc198669328bf8946ce3c1f9d4b7c0c",
       "semantic_nodes": 1577,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T16:33:32Z",
       "fresh": true,
       "competition_active": true,
@@ -304,7 +304,7 @@
     "V2RayRoot-vless": {
       "fingerprint": "55bc5c677f23b4f4b9af77a123fae7f211df3410123d59bdd7765cc08e79dc63",
       "semantic_nodes": 108,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T14:29:42Z",
       "fresh": true,
       "competition_active": true,
@@ -314,7 +314,7 @@
     "V2RayRoot-vmess": {
       "fingerprint": "f7a76a8802a393400390c4af3d22d16f8283f15053781b1dd20c0f6ce7bc1751",
       "semantic_nodes": 4,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T14:29:42Z",
       "fresh": true,
       "competition_active": true,
@@ -324,7 +324,7 @@
     "V2RayRoot-trojan": {
       "fingerprint": "5f47b20fac0d00b4f89b6d779d67063493975aa6a4f05c89983e6daf79b7c1e3",
       "semantic_nodes": 21,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T14:29:42Z",
       "fresh": true,
       "competition_active": true,
@@ -334,7 +334,7 @@
     "V2RayRoot-shadowsocks": {
       "fingerprint": "4879fbba5b1ac6d8198b671996f19bd4a21a1a0ff19c69dfa38edc9906065f5b",
       "semantic_nodes": 8,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T14:29:42Z",
       "fresh": true,
       "competition_active": true,
@@ -344,17 +344,17 @@
     "barry-far-All_Configs_Sub": {
       "fingerprint": "be35e983f1ab0c1bd1bc11fdd2c50c325529436b9322b2ffb028cf9cd9514b34",
       "semantic_nodes": 1952,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T22:35:47Z",
       "fresh": true,
-      "competition_active": true,
-      "freshness_reason": "changed",
-      "duplicate_of": null
+      "competition_active": false,
+      "freshness_reason": "exact_mirror",
+      "duplicate_of": "Epodonios-All_Configs_Sub"
     },
     "MohammadBahemmat-all_servers": {
       "fingerprint": "3d976c5abc5e98d22850dbc51e151aa0f36ca36221af2a3778155c618f0d0f95",
       "semantic_nodes": 85,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T14:29:42Z",
       "fresh": true,
       "competition_active": true,
@@ -364,37 +364,37 @@
     "ConfigJo-main": {
       "fingerprint": "5df7b51d1a0c398cc76b9e21ef8c1f099ed8bf301cb4f3939b89f41fd3978935",
       "semantic_nodes": 70,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T22:35:47Z",
-      "fresh": true,
-      "competition_active": true,
-      "freshness_reason": "changed",
-      "duplicate_of": null
-    },
-    "anonymouskeys-all": {
-      "fingerprint": "3f3980cbf6f3dbf8e31e6ee807c5050144b0221abccacfa02bbec5fa9835c24f",
-      "semantic_nodes": 9693,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T22:35:47Z",
-      "fresh": true,
-      "competition_active": true,
-      "freshness_reason": "changed",
-      "duplicate_of": null
-    },
-    "iboxz-mix": {
-      "fingerprint": "64ec38fc307d0b6354cb80c101c3d9902c59e3a9f2aebe78f0252fe2ae601e47",
-      "semantic_nodes": 134,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T21:33:56Z",
       "fresh": true,
       "competition_active": true,
       "freshness_reason": "within_window",
       "duplicate_of": null
     },
+    "anonymouskeys-all": {
+      "fingerprint": "3f3980cbf6f3dbf8e31e6ee807c5050144b0221abccacfa02bbec5fa9835c24f",
+      "semantic_nodes": 9693,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T22:35:47Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    "iboxz-mix": {
+      "fingerprint": "2468b1ff2bda9de497b16ce3f12ffe0e5406d6851efb265a5299901da07a0aaa",
+      "semantic_nodes": 139,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T23:36:02Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
     "fengfp-All_Configs_Sub": {
       "fingerprint": "a36e96aadef514d871e283fb8c9c25499c83b668e8dd6e55b9732a5de6d88186",
       "semantic_nodes": 1270,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T14:29:42Z",
       "fresh": true,
       "competition_active": true,
@@ -404,17 +404,17 @@
     "nexus-nodes-all": {
       "fingerprint": "3174eb5263ba34e468242e8a019c2f60335c8aede4d73ae1ab8b250fb2f33360",
       "semantic_nodes": 856,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T22:35:47Z",
       "fresh": true,
       "competition_active": true,
-      "freshness_reason": "changed",
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     "10Dream-telegram-tls": {
       "fingerprint": "d6bdc084a60cbe65fe3ab9984910b4fc724e392f4225fdd6a4ea04e6c32bd03c",
       "semantic_nodes": 1456,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T14:29:42Z",
       "fresh": true,
       "competition_active": true,
@@ -424,7 +424,7 @@
     "luxxuria-harvester-speed_tested": {
       "fingerprint": "d4957dde48497a0f5e158bebf7f66404371cc880d2f0cc35e7c1a138e9331911",
       "semantic_nodes": 23,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T18:34:08Z",
       "fresh": true,
       "competition_active": true,
@@ -434,7 +434,7 @@
     "luxxuria-harvester-top_600": {
       "fingerprint": "d4957dde48497a0f5e158bebf7f66404371cc880d2f0cc35e7c1a138e9331911",
       "semantic_nodes": 23,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T18:34:08Z",
       "fresh": true,
       "competition_active": false,
@@ -444,7 +444,7 @@
     "NiREvil-SSTime": {
       "fingerprint": "729eba3daf39aa8069bf6e2e512861e7746d74aa66e2bf013cdb0a011432eaa7",
       "semantic_nodes": 22,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T14:52:18Z",
       "fresh": true,
       "competition_active": true,
@@ -454,7 +454,7 @@
     "MahanKenway-Freedom-V2Ray-mix": {
       "fingerprint": "3461c57dd0f0fc820a0eb0cc08677ac3bff7a6f3107ae8433a87928a85825d69",
       "semantic_nodes": 872,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T20:34:03Z",
       "fresh": true,
       "competition_active": true,
@@ -464,7 +464,7 @@
     "weoknow-dayupdate-1-z": {
       "fingerprint": "a98009651d631d1881137a8be285f42b10c66038f7e7f528df7e5fcd30694092",
       "semantic_nodes": 146,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T14:29:42Z",
       "fresh": true,
       "competition_active": true,
@@ -472,20 +472,20 @@
       "duplicate_of": null
     },
     "svinakraft-podpiska": {
-      "fingerprint": "34a3ea5fa2a0a77da8441fbea42474c91c497e933fc67a2c84f51d489a76bf53",
-      "semantic_nodes": 289,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T22:35:47Z",
+      "fingerprint": "cb8e5ccc08279597ef1d2fac1ca96df3b4bacc357c67af6511df81a3c78153a7",
+      "semantic_nodes": 291,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T23:36:02Z",
       "fresh": true,
       "competition_active": true,
       "freshness_reason": "changed",
       "duplicate_of": null
     },
     "alicivil-workers-sub": {
-      "fingerprint": "01beb818c7fe79abce4fdaf4a0aaa14a9c9fc88816a063a97d700f6cff8c2618",
-      "semantic_nodes": 121,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T22:35:47Z",
+      "fingerprint": "b236d44e9237bd72e07fd3fca9d5bd26997b2f070eb94684c5df6195c4732b31",
+      "semantic_nodes": 124,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T23:36:02Z",
       "fresh": true,
       "competition_active": true,
       "freshness_reason": "changed",
@@ -494,28 +494,28 @@
     "xrayvip-free": {
       "fingerprint": "9a5cbd651392107bbc14f2e6007dd5c67562afed7a4d0856a26081c0d93c9f5a",
       "semantic_nodes": 92,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T22:35:47Z",
       "fresh": true,
       "competition_active": true,
-      "freshness_reason": "changed",
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     "trojanvmess-cmcm-b64": {
-      "fingerprint": "44dd532b46ad23f8d8b3de27866650b912bdaa1ab8e5e566c27d1e351d23e8ed",
-      "semantic_nodes": 1265,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T22:35:47Z",
+      "fingerprint": "52cd9fde426342fd6a13557ad71b1c9264bd3b0f67d6d2fb74f9c3cb85aec30f",
+      "semantic_nodes": 1267,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T23:36:02Z",
       "fresh": true,
       "competition_active": true,
       "freshness_reason": "changed",
       "duplicate_of": null
     },
     "igareck-WHITE-CIDR-RU-all": {
-      "fingerprint": "2d8383c4351c59554c4a7b17f03635867a38aa7d6af1ba79343b0f10cc4fea6f",
-      "semantic_nodes": 5,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T22:35:47Z",
+      "fingerprint": "b6c473620d8bb4a69cc065eb0194fb37cb580a25cfafc52ce5577e63c1e7bb1b",
+      "semantic_nodes": 3,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T23:36:02Z",
       "fresh": true,
       "competition_active": true,
       "freshness_reason": "changed",
@@ -524,7 +524,7 @@
     "xiaoji235-airport-free": {
       "fingerprint": "308b4d167ad652173d7eb15350d0dfe72cfeb5ac293c357f8bd8f069b2845275",
       "semantic_nodes": 7,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T14:29:42Z",
       "fresh": true,
       "competition_active": true,
@@ -534,7 +534,7 @@
     "dfantomasd-myvpn-subscription": {
       "fingerprint": "3f915f79d9eb3d7500603a35b88a8ac75927b698e362aca0dfae443b9acea64c",
       "semantic_nodes": 2,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T21:33:56Z",
       "fresh": true,
       "competition_active": true,
@@ -544,7 +544,7 @@
     "ruk1ng001-freesub": {
       "fingerprint": "e74df078b0de3e25c98a6d0809c6b2d05863bc3ac13fbefad27931280254654d",
       "semantic_nodes": 34,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T14:29:42Z",
       "fresh": true,
       "competition_active": true,
@@ -554,7 +554,7 @@
     "limilco-v2r": {
       "fingerprint": "771b04b2552b1862547fda4f6aefd25030ff676a89fc79b7e2a58436d89fca9d",
       "semantic_nodes": 2345,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T14:29:42Z",
       "fresh": true,
       "competition_active": true,
@@ -564,7 +564,7 @@
     "maskkost93-kizyak-vpn-4.0": {
       "fingerprint": "bbca0cac6e878dd2b3bb1df21bc5064094615a8f5a66db2116853cbf9c7f315f",
       "semantic_nodes": 17,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T20:34:03Z",
       "fresh": true,
       "competition_active": true,
@@ -574,7 +574,7 @@
     "0xabolfazl-pyroconfig": {
       "fingerprint": "fcfbf273b979c91c961201ee494373cad4c90e5b973df6c2e754dfb9ca3b4fde",
       "semantic_nodes": 125,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T20:34:03Z",
       "fresh": true,
       "competition_active": true,
@@ -584,7 +584,7 @@
     "10ium-scrapeandcategorize": {
       "fingerprint": "ac9646896f37a42e41df3b7caba4aeaeb393ba55385e18e0050528107f1c1310",
       "semantic_nodes": 1554,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T14:29:42Z",
       "fresh": true,
       "competition_active": true,
@@ -594,7 +594,7 @@
     "10ium-v2hub3": {
       "fingerprint": "dd285ec15f3e28207ec3bda6022009fa00bca9f05a494d59bda578bfd0935f0a",
       "semantic_nodes": 869,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T14:29:42Z",
       "fresh": true,
       "competition_active": true,
@@ -604,7 +604,7 @@
     "10ium-v2ray-config": {
       "fingerprint": "5371068c1d6f958fd980e9c3cdfba380307a90287784a066d1df72823f51ee88",
       "semantic_nodes": 11579,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T16:33:32Z",
       "fresh": true,
       "competition_active": true,
@@ -614,7 +614,7 @@
     "10ium-base64-encoder": {
       "fingerprint": "311d7f5f0f308194093ddc13dab297dff53ac88681a5868a60f69a7d194f0121",
       "semantic_nodes": 1744,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T14:29:42Z",
       "fresh": true,
       "competition_active": true,
@@ -624,7 +624,7 @@
     "3inker-v2ray-subscription": {
       "fingerprint": "d10d1ba2e22455b4fc3516143e4ef0055a7970c7bdcaeab967687aca7b7a182e",
       "semantic_nodes": 1976,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T16:33:32Z",
       "fresh": true,
       "competition_active": true,
@@ -634,17 +634,17 @@
     "4n0nymou3-multi-proxy-config-fetcher": {
       "fingerprint": "d563520d11d8b0cce7f9c2eadfcc306e48e6f21de30d6cb551031971e8ef341a",
       "semantic_nodes": 406,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T22:35:47Z",
       "fresh": true,
       "competition_active": true,
-      "freshness_reason": "changed",
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     "aliilapro-v2rayng-config": {
       "fingerprint": "e1ba2ec3622395b066d662f60848106e70eb650d8ba86f9420ec4b11169d88c8",
       "semantic_nodes": 474,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T21:33:56Z",
       "fresh": true,
       "competition_active": true,
@@ -654,7 +654,7 @@
     "argh94-proxy-list": {
       "fingerprint": "eecb523977bedde92c3a060ba8b8fb77f4975af27d5e4c88ff89cd145c8449f7",
       "semantic_nodes": 694,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T20:34:03Z",
       "fresh": true,
       "competition_active": true,
@@ -662,19 +662,19 @@
       "duplicate_of": null
     },
     "argh94-v2rayautoconfig": {
-      "fingerprint": "b0ae91f0e3c96d05a006b9adde95ba58b2e954060cefe53315e953b7b85a7771",
-      "semantic_nodes": 8057,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T21:33:56Z",
+      "fingerprint": "667d049bb9860cf5d7ecf11f10ad75f219ef6871a7cd5ef416305930d6dfee77",
+      "semantic_nodes": 8088,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T23:36:02Z",
       "fresh": true,
       "competition_active": true,
-      "freshness_reason": "within_window",
+      "freshness_reason": "changed",
       "duplicate_of": null
     },
     "arianlavi-rebeldevconfig": {
       "fingerprint": "99b10f0ea73df9f7b8cb3da6ef8c19e6d1cefb759632bd38fb3957f1e42afac7",
       "semantic_nodes": 13,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T21:33:56Z",
       "fresh": true,
       "competition_active": true,
@@ -684,7 +684,7 @@
     "avencores-goida-vpn-configs": {
       "fingerprint": "86bc38b4a425cd9e8054bf62b5357deafdd2c078bf549e7c91fa49a96ea17c02",
       "semantic_nodes": 418,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T21:33:56Z",
       "fresh": true,
       "competition_active": true,
@@ -694,7 +694,7 @@
     "blackkillrt-config_for_v2ray": {
       "fingerprint": "d6fcd77c398a3c657c9d0aca993c3fe9f142625c95109b9e2e3abf0a3b7e5a60",
       "semantic_nodes": 12,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T16:33:32Z",
       "fresh": true,
       "competition_active": true,
@@ -704,7 +704,7 @@
     "blastvpn-freevpn": {
       "fingerprint": "b5edf9fce3fb1a34a3849357bd53935c950583894846f107c7068a0519713418",
       "semantic_nodes": 3,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T21:33:56Z",
       "fresh": true,
       "competition_active": true,
@@ -712,10 +712,10 @@
       "duplicate_of": null
     },
     "captchaq-vless-servers": {
-      "fingerprint": "0544b5885bf8e36f48153697fcb255ea8aef48e19b1e85a7907ebb0a979145b3",
-      "semantic_nodes": 19,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T22:35:47Z",
+      "fingerprint": "8b5deca134aeebda9f021e95ea710c1e1af3e695de233820aee33f3aa6b7f23c",
+      "semantic_nodes": 5,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T23:36:02Z",
       "fresh": true,
       "competition_active": true,
       "freshness_reason": "changed",
@@ -724,7 +724,7 @@
     "created-by-telegram-eag1e_yt": {
       "fingerprint": "0f98bfaabd1534ddfb1ca07447aa6d4c91d6e9b9cc32589323feb92e5864bcde",
       "semantic_nodes": 26,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T20:34:03Z",
       "fresh": true,
       "competition_active": true,
@@ -732,10 +732,10 @@
       "duplicate_of": null
     },
     "dukemehdi-freelist-v2ray-configs": {
-      "fingerprint": "c2c60e714c7f5483b0f37764bd0f5605a634270ecde60f8547687a8efae60f22",
-      "semantic_nodes": 11673,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T22:35:47Z",
+      "fingerprint": "e14ef3dd671d4260dd779eb51035ef0414a6cfd02207900eef79247ea1027374",
+      "semantic_nodes": 11669,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T23:36:02Z",
       "fresh": true,
       "competition_active": true,
       "freshness_reason": "changed",
@@ -744,7 +744,7 @@
     "farid-karimi-config-collector": {
       "fingerprint": "fca78c4c3989a0d9e3cad42f19b15c39621fd1e823a17424af5ae5b469c55a8c",
       "semantic_nodes": 177,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T14:29:42Z",
       "fresh": true,
       "competition_active": true,
@@ -752,19 +752,19 @@
       "duplicate_of": null
     },
     "firmfox-proxify": {
-      "fingerprint": "a8e39ee38e0a3ad201a3f99b44faa5e1af29da3a3cc19a93e7734c1bf0d95379",
-      "semantic_nodes": 49,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T21:33:56Z",
+      "fingerprint": "b64fbf2562832e93c081e737c2916ada33eaeab0566836b6985a2230eadc2758",
+      "semantic_nodes": 42,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T23:36:02Z",
       "fresh": true,
       "competition_active": true,
-      "freshness_reason": "within_window",
+      "freshness_reason": "changed",
       "duplicate_of": null
     },
     "freedom-guard-builder-freedom-finder": {
       "fingerprint": "3f627b0137d9761e734d0f91808475a071aeaed162ffb06e0b002c299f18d8f9",
       "semantic_nodes": 81,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T14:29:42Z",
       "fresh": true,
       "competition_active": true,
@@ -774,7 +774,7 @@
     "hidashimora-free-vpn-anti-rkn": {
       "fingerprint": "86bc38b4a425cd9e8054bf62b5357deafdd2c078bf549e7c91fa49a96ea17c02",
       "semantic_nodes": 418,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T22:35:47Z",
       "fresh": true,
       "competition_active": false,
@@ -784,7 +784,7 @@
     "lalatinahub-mineral": {
       "fingerprint": "ba2d2efa02d9d8330fd336a66cf8c4a792d6f20f01094228d90351dc6a4a5240",
       "semantic_nodes": 763,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T14:29:42Z",
       "fresh": true,
       "competition_active": true,
@@ -794,7 +794,7 @@
     "leilaomi-automergepublicnodes-optimized": {
       "fingerprint": "81c9ceb3a1c37066519239aaae3af8e6ecab2abf2e91f8da7bf116563672d0b6",
       "semantic_nodes": 9762,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T20:34:03Z",
       "fresh": true,
       "competition_active": true,
@@ -804,17 +804,17 @@
     "mahankenway-pusheen-v2ray": {
       "fingerprint": "721727d2057d7f5f9b026d0c09210afbae1551e0c4ab9c8c20a6557b5a2d7221",
       "semantic_nodes": 49,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T22:35:47Z",
       "fresh": true,
       "competition_active": true,
-      "freshness_reason": "changed",
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     "mahdi0024-proxycollector": {
       "fingerprint": "55f8cc9c72d3a7e118fbfdc36ce207863bd4c29503510e671df03b3c153ca47f",
       "semantic_nodes": 92,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T15:31:22Z",
       "fresh": true,
       "competition_active": true,
@@ -822,29 +822,29 @@
       "duplicate_of": null
     },
     "meret2019-vless-subscription": {
-      "fingerprint": "e8ea335f2dc0d6f96ec940571e06d767eee320ff86ce4c6a43cef90bc659ef4d",
-      "semantic_nodes": 129,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T21:33:56Z",
+      "fingerprint": "a1b5d7bdb98eb32567c6d13d6f29d95576e84ad9786d2cdfc7c1807f3a4e37a6",
+      "semantic_nodes": 127,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T23:36:02Z",
       "fresh": true,
       "competition_active": true,
-      "freshness_reason": "within_window",
+      "freshness_reason": "changed",
       "duplicate_of": null
     },
     "mhditaheri-v2raycollector": {
-      "fingerprint": "e2104058cb7dae8ef6ba1b2adb3e9f930b2501b5fc07ef8834872a185b1bde2d",
-      "semantic_nodes": 251,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T19:34:56Z",
+      "fingerprint": "3a8d3838481da5094a7723071d7057726aea061d58182cead4dc7ac22c6cd5a2",
+      "semantic_nodes": 249,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T23:36:02Z",
       "fresh": true,
       "competition_active": true,
-      "freshness_reason": "within_window",
+      "freshness_reason": "changed",
       "duplicate_of": null
     },
     "mhditaheri-v2raycollector_py": {
       "fingerprint": "14710e13981834e3e83128eb3e7baa46045b7542d530b3b9dd4bc80fe65e8454",
       "semantic_nodes": 291,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T19:34:56Z",
       "fresh": true,
       "competition_active": true,
@@ -854,7 +854,7 @@
     "mohsenreyhani-vless-subscriptions": {
       "fingerprint": "dc9ff9322ec5aff21251acd141d3df89425e07ca7e01f055085d311deee7c583",
       "semantic_nodes": 48,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T19:34:56Z",
       "fresh": true,
       "competition_active": true,
@@ -864,7 +864,7 @@
     "mokafela-config-finder": {
       "fingerprint": "83b6a5be46e1c91b7e080d7ecab0d3f7b3dd503dde20288b2c7c77cd5ad988d2",
       "semantic_nodes": 48,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T21:33:56Z",
       "fresh": true,
       "competition_active": true,
@@ -874,7 +874,7 @@
     "mosifree-free2config": {
       "fingerprint": "51e35c1985db59901cedf9e47d9683d82cd3a1af5dfd5f998cf94cd65241f3c2",
       "semantic_nodes": 37,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T18:34:08Z",
       "fresh": true,
       "competition_active": true,
@@ -882,7 +882,7 @@
       "duplicate_of": null
     },
     "mrabolfazlnorouzi-iran-configs": {
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T14:29:42Z",
       "fresh": false,
       "competition_active": false,
@@ -891,39 +891,39 @@
       "semantic_nodes": 0
     },
     "mustafabaqer-vestranet-nodes": {
-      "fingerprint": "5953475467e396b4c4fcbb02bf40f65929430fe8744fda4c2c347185123f73e4",
-      "semantic_nodes": 1211,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T22:35:47Z",
+      "fingerprint": "86915058114586cf3ed0351d391d85326a652f6362b73b324c18158da779b769",
+      "semantic_nodes": 1101,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T23:36:02Z",
       "fresh": true,
       "competition_active": true,
       "freshness_reason": "changed",
       "duplicate_of": null
     },
     "nima-monajjemy-v2ray-configs-nofolter": {
-      "fingerprint": "31af7f0df64467b3d2c0f09e4f342446ad3976321333a3d9392d8c8e8c196da9",
-      "semantic_nodes": 51,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T20:34:03Z",
+      "fingerprint": "a728fa499f0d388f65d98b995e22da8cb5b4370e7db87f41480fbcdd47216546",
+      "semantic_nodes": 52,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T23:36:02Z",
       "fresh": true,
       "competition_active": true,
-      "freshness_reason": "within_window",
+      "freshness_reason": "changed",
       "duplicate_of": null
     },
     "nima-monajjemy-v2ray-configs": {
-      "fingerprint": "0decbe056978a68b06afc3af3902d48bfde933f99681ca565eb8ba0197cf195c",
-      "semantic_nodes": 37,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T21:33:56Z",
+      "fingerprint": "be0a5eef8ebc270b7dbb02a8f0bb8f97ca1912e9576c845e727323d3f104ab26",
+      "semantic_nodes": 45,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T23:36:02Z",
       "fresh": true,
       "competition_active": true,
-      "freshness_reason": "within_window",
+      "freshness_reason": "changed",
       "duplicate_of": null
     },
     "pasimand-v2ray-config-agg": {
       "fingerprint": "97f2d22dbf5af7a227cc7f8cfc2a1a5e3fd19ee59fd7cfd2ef641224fdad6aff",
       "semantic_nodes": 138,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T18:34:08Z",
       "fresh": true,
       "competition_active": true,
@@ -931,20 +931,20 @@
       "duplicate_of": null
     },
     "planaslii-vira-v2ray-configs": {
-      "fingerprint": "a7161482e8ad92a7be45d523d5a28db48fb49975a809a6392962a02d12db1925",
-      "semantic_nodes": 54,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T22:35:47Z",
+      "fingerprint": "78dada2e08e0ddbef17906335e866dc4b50e5505165c1f1a658febec967b4d4b",
+      "semantic_nodes": 24,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T23:36:02Z",
       "fresh": true,
       "competition_active": true,
       "freshness_reason": "changed",
       "duplicate_of": null
     },
     "shadowexception-vpn": {
-      "fingerprint": "23fdcb583703c2a8068986da331da373be30211728c344ba4a362be31e1a64b0",
-      "semantic_nodes": 46,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T22:35:47Z",
+      "fingerprint": "03286897a74f319d8322f6f0a120c1e17d5335863f6967646ffe67a8c87cf4be",
+      "semantic_nodes": 48,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T23:36:02Z",
       "fresh": true,
       "competition_active": true,
       "freshness_reason": "changed",
@@ -953,17 +953,17 @@
     "shatakvpn-configforge-v2ray": {
       "fingerprint": "9e2d1e61c710fe4e1f80ca605487aa46c64a6a3a32c8ccaed5bf813ab6098723",
       "semantic_nodes": 405,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T22:35:47Z",
       "fresh": true,
       "competition_active": true,
-      "freshness_reason": "changed",
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     "solispirit-solvpn": {
       "fingerprint": "0f58c8d7aa2436355bcce3fb2a462fe3fba72dd05256032b098a4ffa0544e9ab",
       "semantic_nodes": 22,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T14:29:42Z",
       "fresh": true,
       "competition_active": true,
@@ -971,10 +971,10 @@
       "duplicate_of": null
     },
     "surfboardv2ray-tgparse": {
-      "fingerprint": "24b19dd8380a7628fa3bcc75f598560afdbdaba7ebf01af8c42c6d9f14fb6a11",
-      "semantic_nodes": 1624,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T22:35:47Z",
+      "fingerprint": "5385268bf335356b54b25e4cdabd190b27bb392f3868dff1a933db6fa54f41fd",
+      "semantic_nodes": 1626,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T23:36:02Z",
       "fresh": true,
       "competition_active": true,
       "freshness_reason": "changed",
@@ -983,27 +983,27 @@
     "thecrowcreature-v2rayextractor": {
       "fingerprint": "816aa8305e29b7552a6ebfb7be6e3214c00207f0eb3858a1da5aa1d54f21322f",
       "semantic_nodes": 10531,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T22:35:47Z",
-      "fresh": true,
-      "competition_active": true,
-      "freshness_reason": "changed",
-      "duplicate_of": null
-    },
-    "void-anonymity-v.o.i.d-vpn_bypass": {
-      "fingerprint": "cc35e2661ae51b34e5c86aae4a84ba4f844ea30488d698407194a2623f0d0bb9",
-      "semantic_nodes": 649,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T21:33:56Z",
       "fresh": true,
       "competition_active": true,
       "freshness_reason": "within_window",
       "duplicate_of": null
     },
+    "void-anonymity-v.o.i.d-vpn_bypass": {
+      "fingerprint": "294dd7b0c864ee78372218977d28650c883f524540f4c0ab6d27ca9ae625675c",
+      "semantic_nodes": 652,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T23:36:02Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
     "vovaplusexp-p-configs": {
       "fingerprint": "0dc699249c17de93988b88a91fe46015898bf666d0550077b55528a2981c44b2",
       "semantic_nodes": 16,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T14:52:18Z",
       "fresh": true,
       "competition_active": true,
@@ -1013,37 +1013,37 @@
     "wlget-v2ray_configs_64": {
       "fingerprint": "b3709da8f3672286a093a5082c4b87c6e687e96e581870cee9770322f28c64d4",
       "semantic_nodes": 9,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T22:35:47Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    "yawstar-proxy-hunter": {
+      "fingerprint": "b28ecc3e7d7eb03625e774dfdb440db6b6eee8ab98b7c1bb9afa4d7be91fa345",
+      "semantic_nodes": 78,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T23:36:02Z",
       "fresh": true,
       "competition_active": true,
       "freshness_reason": "changed",
       "duplicate_of": null
     },
-    "yawstar-proxy-hunter": {
-      "fingerprint": "e9acea9cf84e814e716e4471a53d1c4f3b1e63fd0dfad098c141705a464b27c3",
-      "semantic_nodes": 75,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T20:34:03Z",
-      "fresh": true,
-      "competition_active": true,
-      "freshness_reason": "within_window",
-      "duplicate_of": null
-    },
     "zendanteam-ss44-sub": {
-      "fingerprint": "3ce5efc2db83d21a4972febcb35360b6f7098aca975070be94266566a590baa1",
-      "semantic_nodes": 48,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T21:33:56Z",
+      "fingerprint": "b03dd1959effc898029f95e6bb4fee6f085d4a995aba18231df3fd5a05a3c4f0",
+      "semantic_nodes": 57,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T23:36:02Z",
       "fresh": true,
       "competition_active": true,
-      "freshness_reason": "within_window",
+      "freshness_reason": "changed",
       "duplicate_of": null
     },
     "acymz-autovpn": {
       "fingerprint": "871d0da0015843bd9c9e4b7ffcb12dd19d32637f7703bf6aa5e0d397a7179a97",
       "semantic_nodes": 117,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T21:33:56Z",
       "fresh": true,
       "competition_active": true,
@@ -1051,10 +1051,10 @@
       "duplicate_of": null
     },
     "aishervin-subfine": {
-      "fingerprint": "e2dc7fe98770ebb4a4f9228a1a96560ee6224b032cdd66169171278c3e9fc836",
-      "semantic_nodes": 792,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T22:35:47Z",
+      "fingerprint": "baf3b85363dd472fd8fef2b6f02687e844be596c96190639501ef341d31382d7",
+      "semantic_nodes": 812,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T23:36:02Z",
       "fresh": true,
       "competition_active": true,
       "freshness_reason": "changed",
@@ -1063,7 +1063,7 @@
     "amir-reza-bijandi-v2ray-configs": {
       "fingerprint": "d58ebfd8359098b0bf7f770a1d2d4761de1fee1e16b1d0a8431ae7bdda29e3a6",
       "semantic_nodes": 99,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T20:34:03Z",
       "fresh": true,
       "competition_active": true,
@@ -1071,10 +1071,10 @@
       "duplicate_of": null
     },
     "amirkma-proxykma": {
-      "fingerprint": "582167a1519211823790e620ed1a82c2a2a8db0e78f68e3416e5122db64bf611",
-      "semantic_nodes": 114,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T22:35:47Z",
+      "fingerprint": "a89edc99afec045b98060e2d24ea4056e01a3de606ca4b9c5fb253e0fac2c20b",
+      "semantic_nodes": 112,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T23:36:02Z",
       "fresh": true,
       "competition_active": true,
       "freshness_reason": "changed",
@@ -1083,7 +1083,7 @@
     "arahmani6991-cyber-v2ray-configs": {
       "fingerprint": "33734ea225dd9995c6971cb682f8f13e48b0e91642648ad909507f7577462aaf",
       "semantic_nodes": 3240,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T14:52:18Z",
       "fresh": true,
       "competition_active": true,
@@ -1093,7 +1093,7 @@
     "asgharkapk-sub-config-extractor": {
       "fingerprint": "ef9206e3bf66219b13d6b9810239e2bef56579dd39bc2c29ccfd287b50714650",
       "semantic_nodes": 16,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T20:34:03Z",
       "fresh": true,
       "competition_active": true,
@@ -1103,7 +1103,7 @@
     "awesome-vpn-awesome-vpn": {
       "fingerprint": "d3996c243ddd6e17570314249fced831529e7d66f669f0181c69974ebe7f0086",
       "semantic_nodes": 2,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T14:29:42Z",
       "fresh": true,
       "competition_active": true,
@@ -1113,28 +1113,28 @@
     "balochscript-free-vpn-configs": {
       "fingerprint": "7162c9474720ce35f779b5fec9c57a9828b8f77e98fff4d5cec07dbd41cdcd60",
       "semantic_nodes": 36,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T22:35:47Z",
       "fresh": true,
       "competition_active": true,
-      "freshness_reason": "changed",
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     "crackbest-v2ray-config": {
       "fingerprint": "2ec2de697caa2a4b34691372209b5219c6a0ffdf39b0bb4756b879a7dda66abf",
       "semantic_nodes": 192,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T22:35:47Z",
       "fresh": true,
       "competition_active": true,
-      "freshness_reason": "changed",
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     "damiryuldashbaev-oss-vless-de-subscription": {
-      "fingerprint": "897974fdabb3544ba9541e638aa635cbbbfe7775c03a051ec340755fa98db6cb",
-      "semantic_nodes": 3,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T22:35:47Z",
+      "fingerprint": "939bfb11e9dc226f94d5e086dc9fb65c0aae2b72f7d75e6d0c8f5599de09cbb3",
+      "semantic_nodes": 8,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T23:36:02Z",
       "fresh": true,
       "competition_active": true,
       "freshness_reason": "changed",
@@ -1143,7 +1143,7 @@
     "electron-v2ray-telegram-config-dumpr": {
       "fingerprint": "ed1b11fa00787c5f1738add28db066517be2c601c49612accd1230921ffc5168",
       "semantic_nodes": 38,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T18:34:08Z",
       "fresh": true,
       "competition_active": true,
@@ -1153,7 +1153,7 @@
     "ermaozi-get_subscribe": {
       "fingerprint": "d2ff57a254916a8503d60d7d4b5c9e2c23aa7d732362a746d5b8f835520030dd",
       "semantic_nodes": 6,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T14:29:42Z",
       "fresh": true,
       "competition_active": true,
@@ -1163,7 +1163,7 @@
     "free18-v2ray": {
       "fingerprint": "8b3c020005a4fcbb3c244e3855875374e688a65b24922c8927c6ba2658c06126",
       "semantic_nodes": 125,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T14:29:42Z",
       "fresh": true,
       "competition_active": true,
@@ -1173,7 +1173,7 @@
     "freenodess-freenodess": {
       "fingerprint": "b202c79c17f8cfa29b9dab5d3025d3e994c3f933cfc090351abbb6fe24577c6c",
       "semantic_nodes": 277,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T14:29:42Z",
       "fresh": true,
       "competition_active": true,
@@ -1183,7 +1183,7 @@
     "gbcwror-v2ray-tester": {
       "fingerprint": "9eecf8250f6acab9eaac3f788eebbee5eaa2ccb360e5385208082d78ceb3766d",
       "semantic_nodes": 108,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T15:31:22Z",
       "fresh": true,
       "competition_active": true,
@@ -1193,25 +1193,25 @@
     "hamedp-71-sub_checker_creator": {
       "fingerprint": "9cd1fe54dd1ffa079ae912fd8544f6e87f8923edef1c8102679fe929e57d6f71",
       "semantic_nodes": 278,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T22:35:47Z",
       "fresh": true,
       "competition_active": true,
-      "freshness_reason": "changed",
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     "heliataromi-confighub": {
       "fingerprint": "7bedd429b9c17c92f3960e853c36438f18da15d5d9d9eaec5ade3ee553c4fc54",
       "semantic_nodes": 752,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T22:35:47Z",
       "fresh": true,
       "competition_active": true,
-      "freshness_reason": "changed",
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     "hello-world-1989-cn-news": {
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T14:29:42Z",
       "fresh": false,
       "competition_active": false,
@@ -1220,19 +1220,19 @@
       "semantic_nodes": 0
     },
     "hiztin-vless-po-gribi": {
-      "fingerprint": "665ebb7b15d66201dade31fd0c352c9d2769c563036c2052cc26ccb6a03c0fb8",
-      "semantic_nodes": 64,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T20:34:03Z",
+      "fingerprint": "feebec6496cfadc2f7985e542404d9456bdc55339dcc3375c336d8f9b185416b",
+      "semantic_nodes": 76,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T23:36:02Z",
       "fresh": true,
       "competition_active": true,
-      "freshness_reason": "within_window",
+      "freshness_reason": "changed",
       "duplicate_of": null
     },
     "iampedii-whitedns-sub": {
       "fingerprint": "9724ff4661f4aba8e640c940edb7d6c7e165586e7030adb2c0bd76f5175c2051",
       "semantic_nodes": 52,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T19:34:56Z",
       "fresh": true,
       "competition_active": true,
@@ -1242,7 +1242,7 @@
     "itsyebekhe-psg": {
       "fingerprint": "88860ea2fe4ac928da4e7984af188efc37912222646485d8df089e7977929d57",
       "semantic_nodes": 129,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T20:34:03Z",
       "fresh": true,
       "competition_active": true,
@@ -1252,18 +1252,18 @@
     "jafarm83-configv2ray": {
       "fingerprint": "1770119ee1cb3f343a92e6bcebeb2d584b8cf31ca29bb4e197c1418ba115d5c5",
       "semantic_nodes": 16,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T22:35:47Z",
       "fresh": true,
       "competition_active": true,
-      "freshness_reason": "changed",
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     "kasesm-free-config": {
-      "fingerprint": "174682881d848f1a057c0ddcb5bd3c0e64806c2f4931145d25ec5b29a44b6e1f",
-      "semantic_nodes": 863,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T22:35:47Z",
+      "fingerprint": "0d1f412ac75601284087ed33624c96820d093db8db3ccce00f7ff0c04aa135ed",
+      "semantic_nodes": 923,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T23:36:02Z",
       "fresh": true,
       "competition_active": true,
       "freshness_reason": "changed",
@@ -1272,27 +1272,27 @@
     "komoterdon-free-sub": {
       "fingerprint": "8d0e2fedc96cc8e8bd1ff1cad3bb0d07ce8ead84faf7b2b55c9249e32168c370",
       "semantic_nodes": 239,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T22:35:47Z",
       "fresh": true,
       "competition_active": true,
-      "freshness_reason": "changed",
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     "kooker-freesubscheck": {
       "fingerprint": "6aba72832576958d6e356ebe5b5e90198f5273be7360fe951954801358279936",
       "semantic_nodes": 10,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T22:35:47Z",
       "fresh": true,
       "competition_active": true,
-      "freshness_reason": "changed",
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     "kort0881-vpn-checker-backend": {
       "fingerprint": "21c859b98e44c497335fa18a46daec6e5f4aebd562508c7c57c2cd194dae7650",
       "semantic_nodes": 570,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T20:34:03Z",
       "fresh": true,
       "competition_active": true,
@@ -1302,7 +1302,7 @@
     "liketolivefree-kobabi": {
       "fingerprint": "4cc54de39ca50db7a339a4080f025579fc1b691744ce61948e2f11c758d2b458",
       "semantic_nodes": 248,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T14:29:42Z",
       "fresh": true,
       "competition_active": true,
@@ -1312,7 +1312,7 @@
     "longlon-v2ray-config": {
       "fingerprint": "160a4303f36a58e9d1d5075c5a373d48e92054ee3449fc9ab8b88978e4df025d",
       "semantic_nodes": 126,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T21:33:56Z",
       "fresh": true,
       "competition_active": true,
@@ -1320,70 +1320,70 @@
       "duplicate_of": null
     },
     "mahsanet-mahsafreeconfig": {
-      "fingerprint": "bd17d62b3ebb2163a684d2ed16564b322f297304fcbd6e8aad5cce417dfbde87",
-      "semantic_nodes": 9,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T22:35:47Z",
+      "fingerprint": "404c7e9c891ef51a71fcb96b4b47294f1ba8222336dab4c6523c8510c60423d5",
+      "semantic_nodes": 10,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T23:36:02Z",
       "fresh": true,
       "competition_active": true,
       "freshness_reason": "changed",
       "duplicate_of": null
     },
     "mehrtat-vless-collector": {
-      "fingerprint": "11fb8cd5bfd93d4dfd33f9d60a1f086b40e6d0bb789174571df0cd580501879f",
-      "semantic_nodes": 191,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T21:33:56Z",
+      "fingerprint": "c2e206b50cc05228c3c173819d8f42801a58fb6b24d72cf062f7ad47f2f800f9",
+      "semantic_nodes": 193,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T23:36:02Z",
       "fresh": true,
       "competition_active": true,
-      "freshness_reason": "within_window",
+      "freshness_reason": "changed",
       "duplicate_of": null
     },
     "miladtahanian-config-collector": {
-      "fingerprint": "d3601840f41c886c20465c4e0740fd9c02234580d680efec5109caefe583abe9",
-      "semantic_nodes": 169,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T22:35:47Z",
+      "fingerprint": "69ed55347d356334696b6ea3fb4f22dec612ca7776655871f555e45df8f01c3b",
+      "semantic_nodes": 173,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T23:36:02Z",
       "fresh": true,
       "competition_active": true,
       "freshness_reason": "changed",
       "duplicate_of": null
     },
     "mohamadfg-dev-telegram-v2ray-configs-collector": {
-      "fingerprint": "75d25f70c98a591db183ec21d6627ed4688e17047dd7292ce8973c91a080994b",
-      "semantic_nodes": 110,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T21:33:56Z",
-      "fresh": true,
-      "competition_active": true,
-      "freshness_reason": "within_window",
-      "duplicate_of": null
-    },
-    "mohammmdmdmkdmewof-v2rayconfigsforyou": {
-      "fingerprint": "8846a132bdd25110cfff85bea5a700385b4912f95bd9388f4d5f90864172efb2",
-      "semantic_nodes": 188,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T21:33:56Z",
-      "fresh": true,
-      "competition_active": true,
-      "freshness_reason": "within_window",
-      "duplicate_of": null
-    },
-    "momimamadrar-config_v2ray": {
-      "fingerprint": "9a8a313c80dd82391a9f9ee85e6142a29f767f954b6a6647849f5de20ec2d04a",
-      "semantic_nodes": 269,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T22:35:47Z",
+      "fingerprint": "fdda307de3ef711b807f7d599230da7cdcc4f8c45e8f5e685715e4596410f6c5",
+      "semantic_nodes": 113,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T23:36:02Z",
       "fresh": true,
       "competition_active": true,
       "freshness_reason": "changed",
       "duplicate_of": null
     },
-    "myominn062-svg-mk-studio-vpn-service": {
-      "fingerprint": "db74e2e346f3de27c1bf0093ff08ef84b8b138b1d7e3af9502dd5775a8b41d45",
-      "semantic_nodes": 17654,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+    "mohammmdmdmkdmewof-v2rayconfigsforyou": {
+      "fingerprint": "25989e8cbc2c872abed8caa4d5b21652139f26ebbfdcfa94845920cc0bff388f",
+      "semantic_nodes": 186,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T23:36:02Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "momimamadrar-config_v2ray": {
+      "fingerprint": "9a8a313c80dd82391a9f9ee85e6142a29f767f954b6a6647849f5de20ec2d04a",
+      "semantic_nodes": 269,
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T22:35:47Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    "myominn062-svg-mk-studio-vpn-service": {
+      "fingerprint": "0c612e07187b8778b93f36d0f279cf7013c2743989bc8306ef38871cdbe40b3b",
+      "semantic_nodes": 17559,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T23:36:02Z",
       "fresh": true,
       "competition_active": true,
       "freshness_reason": "changed",
@@ -1392,17 +1392,17 @@
     "nyeinkokoaung404-v2ray-configs": {
       "fingerprint": "4d858947874148778acf36611a5a47f1f4f456a67cc061b999911f03292a4f82",
       "semantic_nodes": 582,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T22:35:47Z",
       "fresh": true,
       "competition_active": true,
-      "freshness_reason": "changed",
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     "patterniha-free-configs": {
       "fingerprint": "f8cc378f13c296593d256330820480dbad36191285141b3cc0c606186a2892fd",
       "semantic_nodes": 27,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T14:29:42Z",
       "fresh": true,
       "competition_active": true,
@@ -1410,19 +1410,19 @@
       "duplicate_of": null
     },
     "peasoft-nomorewalls": {
-      "fingerprint": "83f48d1bca266408e1c9057ba55353233f4b1afbebe74682d5efc422e16ce617",
-      "semantic_nodes": 16,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T20:34:03Z",
+      "fingerprint": "0acb7bf7638b8fc0fc46e818b79ecd08d8ce1d3e60af132fc44faf65982bf09a",
+      "semantic_nodes": 22,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T23:36:02Z",
       "fresh": true,
       "competition_active": true,
-      "freshness_reason": "within_window",
+      "freshness_reason": "changed",
       "duplicate_of": null
     },
     "penhandev-autoaivpn": {
       "fingerprint": "420bacb6e992981f28321267c8a0058a5dd3cf71b6c1a848ee0349e613d449b7",
       "semantic_nodes": 758,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T19:34:56Z",
       "fresh": true,
       "competition_active": true,
@@ -1432,7 +1432,7 @@
     "pog7x-vpn-configs": {
       "fingerprint": "8b3c020005a4fcbb3c244e3855875374e688a65b24922c8927c6ba2658c06126",
       "semantic_nodes": 125,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T14:29:42Z",
       "fresh": true,
       "competition_active": false,
@@ -1442,7 +1442,7 @@
     "ramram33-ram-v2ray-configs": {
       "fingerprint": "e20631a169be6effa2161e830687f23b8ba66e96a65b021ea720842511e6bcfa",
       "semantic_nodes": 101,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T20:34:03Z",
       "fresh": true,
       "competition_active": true,
@@ -1452,7 +1452,7 @@
     "rango-cfs-newcollector": {
       "fingerprint": "a20254628f287d598389fdbcb29b51d430d098e70782866339aa5dfd1c16499b",
       "semantic_nodes": 70,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T19:34:56Z",
       "fresh": true,
       "competition_active": true,
@@ -1462,27 +1462,27 @@
     "sakazxc1400-creator-free-vpn-sub": {
       "fingerprint": "9708cdd6784a6f95c7f57bc6af82b9adcaa6338e1eda8410fec73f1aff3d52d9",
       "semantic_nodes": 276,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T22:35:47Z",
-      "fresh": true,
-      "competition_active": true,
-      "freshness_reason": "changed",
-      "duplicate_of": null
-    },
-    "sinavm-svm": {
-      "fingerprint": "028850434543acbf325411bee3ede2babdfd9379ead8fdbf07d22535fd1cdaed",
-      "semantic_nodes": 166,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T20:34:03Z",
       "fresh": true,
       "competition_active": true,
       "freshness_reason": "within_window",
       "duplicate_of": null
     },
+    "sinavm-svm": {
+      "fingerprint": "4f39fba4cfe4d32ee9e1d6e51136a182b2935f53d91f862ff4238f5c15d2a7fa",
+      "semantic_nodes": 217,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T23:36:02Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
     "ssrsub-ssr": {
       "fingerprint": "e3250357559117a6be92c4812f54312108f96de964c170ce229c326f528abd04",
       "semantic_nodes": 16,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T15:31:22Z",
       "fresh": true,
       "competition_active": true,
@@ -1490,19 +1490,19 @@
       "duplicate_of": null
     },
     "thealiiakbarii-ai-vcc": {
-      "fingerprint": "984d94b546621daca87cb1267cbf9fbdc4776e9f1d51348620648ba0db82a2d2",
-      "semantic_nodes": 2932,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T21:33:56Z",
+      "fingerprint": "1a44d19dca9a7393555e06075d7af0c8a4f96b687141695daab9ec9a553ad75a",
+      "semantic_nodes": 3490,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T23:36:02Z",
       "fresh": true,
       "competition_active": true,
-      "freshness_reason": "within_window",
+      "freshness_reason": "changed",
       "duplicate_of": null
     },
     "ts-sf-fly": {
       "fingerprint": "599f29ed4e3bf249426d3928041254ba2bde58f90fb954118f780a10bfcefbc2",
       "semantic_nodes": 56,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T18:34:08Z",
       "fresh": true,
       "competition_active": true,
@@ -1512,7 +1512,7 @@
     "wuqb2i4f-xray-config-toolkit": {
       "fingerprint": "510a9c891a6192d814e3ed4d1293e5424549011fda8733a196c3d6e5291cee65",
       "semantic_nodes": 313,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T21:33:56Z",
       "fresh": true,
       "competition_active": true,
@@ -1522,7 +1522,7 @@
     "yitong2333-proxy-minging": {
       "fingerprint": "c241fcb3f26c97802b3f3aaf7ffa47ce3216d44fce6fae0bcf340f2064e64d39",
       "semantic_nodes": 2831,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T21:33:56Z",
       "fresh": true,
       "competition_active": true,
@@ -1532,37 +1532,37 @@
     "youfoundamin-v2raycollector": {
       "fingerprint": "be61ea32b118598f41a22c1e97d65e93a6aa4db73db37b85a01d0cc107be0c9a",
       "semantic_nodes": 1187,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T22:35:47Z",
       "fresh": true,
       "competition_active": true,
-      "freshness_reason": "changed",
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     "zhuhaiuk-free-nodes": {
       "fingerprint": "60c93023879805086f0d4269d6659c27c52751afd9f3519a72e6c4cac98ed22a",
       "semantic_nodes": 1,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T22:35:47Z",
       "fresh": true,
       "competition_active": true,
-      "freshness_reason": "changed",
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     "zieng2-wl": {
       "fingerprint": "247673c0d172ad383111a67ee65ea63f93b64617258002a9b50aef23e7bdc510",
       "semantic_nodes": 102,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T22:35:47Z",
       "fresh": true,
       "competition_active": true,
-      "freshness_reason": "changed",
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     "zjfb-subcrawler": {
       "fingerprint": "8acff536aa4bd9c8c70dbebd3d07bed2fd25bbc0c8f6c966d06093cb82d4e93b",
       "semantic_nodes": 27,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T14:29:42Z",
       "fresh": true,
       "competition_active": true,
@@ -1572,7 +1572,7 @@
     "arg9244-v2r-subs-mix": {
       "fingerprint": "be925f803b250fa1c848d6fa784e0e20915f50511138f4a9314387345efa0e03",
       "semantic_nodes": 13837,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T16:33:32Z",
       "fresh": true,
       "competition_active": true,
@@ -1582,7 +1582,7 @@
     "shabane-kamaji-tested-merged": {
       "fingerprint": "991b4d7f918e2fe8e166dcb743bb79ce12c759c8277b05cde474df024cdc4540",
       "semantic_nodes": 783,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T16:33:32Z",
       "fresh": true,
       "competition_active": true,
@@ -1592,7 +1592,7 @@
     "huntx-all-sources": {
       "fingerprint": "5aecbff5eb14330364dede184743ec6e96c416dd716f0904b3c35515c8cd7cb1",
       "semantic_nodes": 318,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T16:33:32Z",
       "fresh": true,
       "competition_active": true,
@@ -1602,7 +1602,7 @@
     "idtheo-cleanips-shield": {
       "fingerprint": "c72c82c6e4ca1d849e297e30c7c5acb3ecbca835b0daa0ead9a486b0b6f0800c",
       "semantic_nodes": 27,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T20:34:03Z",
       "fresh": true,
       "competition_active": true,
@@ -1612,27 +1612,27 @@
     "igareck-russia-vless": {
       "fingerprint": "ffeb387af2cd7ef6d00c641ced5a931c0135cdf90580d3183eb9ed13eba81ea2",
       "semantic_nodes": 38,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T22:35:47Z",
       "fresh": true,
       "competition_active": true,
-      "freshness_reason": "changed",
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     "igareck-russia-ss-all": {
       "fingerprint": "6c6ff71d3817b17dd73ec83a7f6f407a750ca3cc33b3913610196a6d8b35ad8d",
       "semantic_nodes": 54,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T22:35:47Z",
       "fresh": true,
       "competition_active": true,
-      "freshness_reason": "changed",
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     "mehrdadmb2-v2ray-sub-mix": {
       "fingerprint": "287a9b5ef074f3d40530ecb0320d0b4e8d5089dc16adf649a0b6c22f83c45e3e",
       "semantic_nodes": 80,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T16:33:32Z",
       "fresh": true,
       "competition_active": true,
@@ -1642,7 +1642,7 @@
     "arshiacomplus-v2rayextractor-mix": {
       "fingerprint": "927002d4004ffa01a2fa4dd1b20a34032f40c0bedcd82fc593fff60987013fd5",
       "semantic_nodes": 76,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T16:33:32Z",
       "fresh": true,
       "competition_active": true,
@@ -1652,7 +1652,7 @@
     "v2rayconfigspool-v2ray-sub-tree": {
       "fingerprint": "f768dde69239f923dd4ce0cb90459edfb840ac965eda997e231cbd29baabc869",
       "semantic_nodes": 36,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T16:33:32Z",
       "fresh": true,
       "competition_active": true,
@@ -1662,7 +1662,7 @@
     "firefoxmmx2-v2rayshare-subscription": {
       "fingerprint": "308b4d167ad652173d7eb15350d0dfe72cfeb5ac293c357f8bd8f069b2845275",
       "semantic_nodes": 7,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T16:33:32Z",
       "fresh": true,
       "competition_active": false,
@@ -1672,7 +1672,7 @@
     "dorrin-v2ray-pool-russia": {
       "fingerprint": "79a26d9941176077450e48cbb089c30107b92a8a4b4c4dfb15257f669f585de8",
       "semantic_nodes": 1,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T16:33:32Z",
       "fresh": true,
       "competition_active": true,
@@ -1682,7 +1682,7 @@
     "heydarlaptop-v2ray-subscription": {
       "fingerprint": "13b566edec5e1ec6b31a8d92d558d1867b176ff22b199332045a1d962e351aa9",
       "semantic_nodes": 225,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T16:33:32Z",
       "fresh": true,
       "competition_active": true,
@@ -1692,7 +1692,7 @@
     "trm8g466d4-v2ray-sub": {
       "fingerprint": "6b47dc98adabd21e521c8c4afc694558d52228b276ec305c08a903e8b42a7eba",
       "semantic_nodes": 2,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T16:33:32Z",
       "fresh": true,
       "competition_active": true,
@@ -1702,17 +1702,66 @@
     "gitverse-aetrisvpn-black-list": {
       "fingerprint": "11b9e0e6df675566aebc39079c290e5ae53efabb77212f91fa9fb785c77b5b78",
       "semantic_nodes": 141,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T16:33:32Z",
       "fresh": true,
       "competition_active": true,
       "freshness_reason": "within_window",
       "duplicate_of": null
     },
+    "rahi-eq3-all-configs": {
+      "fingerprint": "49a6f78de8e2f107a60a577fa5f7509d678868be3ca8ccadb6dceab5f1242a1c",
+      "semantic_nodes": 45,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T23:36:02Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "manifest-dpdns-v2ray": {
+      "fingerprint": "d5156f7f9ad308448c940fd0431e51c106a8967b2b494f022f5b35d2b4abeccf",
+      "semantic_nodes": 11,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T23:36:02Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "etoneya-subscription": {
+      "fingerprint": "cab03fa0f738ebd75d44ad891b66587619c2e472930e30594465205fa07d5f21",
+      "semantic_nodes": 2343,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T23:36:02Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "shadowmere-b64sub": {
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T23:36:02Z",
+      "fresh": false,
+      "competition_active": false,
+      "freshness_reason": "fetch_failed",
+      "duplicate_of": null,
+      "semantic_nodes": 0
+    },
+    "robin-victoriacross": {
+      "fingerprint": "32cbc705787285cd4f33ba924368f662d3899b82a249f521e4c448ccae07ebf8",
+      "semantic_nodes": 195,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T23:36:02Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
     "freev2raynodes": {
       "fingerprint": "648546dc53da35fd14258a435c8bb4b556cda73f04089e6c2256ef2972da835c",
       "semantic_nodes": 4176,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T14:52:18Z",
       "fresh": true,
       "competition_active": true,
@@ -1720,7 +1769,7 @@
       "duplicate_of": null
     },
     "PublicVPNList-api": {
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T14:29:42Z",
       "fresh": false,
       "competition_active": false,
@@ -1731,18 +1780,38 @@
     "FreeProxyDB-api": {
       "fingerprint": "5ad7a160b40dd820054aa6b77274ed22ebb2d9fd799419b6582300c1600e66c9",
       "semantic_nodes": 910,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T22:35:47Z",
       "fresh": true,
       "competition_active": true,
-      "freshness_reason": "changed",
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     "ClashXW-Daily": {
       "fingerprint": "8c90818666b53df10c90fbdd16276993c0fe4979389d7f5923b091d762d771e6",
       "semantic_nodes": 2042,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T14:52:18Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    "telegram:@free_vpn_ch": {
+      "fingerprint": "b7f728bcc9adeb9e121069eaafce560a94f5169193922fccd061b9a7061e97e4",
+      "semantic_nodes": 186,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T14:29:42Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    "telegram:@v2ray1_ng": {
+      "fingerprint": "27efdf6a1785fb2d72ed7fb03e384448c87729810c573fb4fa59b3b47413235b",
+      "semantic_nodes": 105,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T22:35:47Z",
       "fresh": true,
       "competition_active": true,
       "freshness_reason": "within_window",
@@ -1751,47 +1820,17 @@
     "telegram:@tootffarangi": {
       "fingerprint": "0e3a1bdc141a78b03a8db16435a372cc72d4a5ef0dfdec8d14f4320349ecaba2",
       "semantic_nodes": 230,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T22:35:47Z",
-      "fresh": true,
-      "competition_active": true,
-      "freshness_reason": "changed",
-      "duplicate_of": null
-    },
-    "telegram:@v2ray1_ng": {
-      "fingerprint": "27efdf6a1785fb2d72ed7fb03e384448c87729810c573fb4fa59b3b47413235b",
-      "semantic_nodes": 105,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T22:35:47Z",
-      "fresh": true,
-      "competition_active": true,
-      "freshness_reason": "changed",
-      "duplicate_of": null
-    },
-    "telegram:@oneclickvpnkeys": {
-      "fingerprint": "33634ad4faeaa6ee16566123a5ba6d9f5e9346061906bf3c87c41f3b1bdc323b",
-      "semantic_nodes": 248,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T21:33:56Z",
       "fresh": true,
       "competition_active": true,
       "freshness_reason": "within_window",
       "duplicate_of": null
     },
-    "telegram:@soskeynet": {
-      "fingerprint": "7c0058a1ef97d8cc02f8c02dee042c2b47ca72be64260b56ee2a90179d270fd5",
-      "semantic_nodes": 224,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T22:35:47Z",
-      "fresh": true,
-      "competition_active": true,
-      "freshness_reason": "changed",
-      "duplicate_of": null
-    },
     "telegram:@v2rayng3": {
       "fingerprint": "6d26a9d466d5bdff72a9d4f82147441373757b8e808221427124b8fad438eddd",
       "semantic_nodes": 196,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T14:29:42Z",
       "fresh": true,
       "competition_active": true,
@@ -1801,7 +1840,37 @@
     "telegram:@meliproxyy": {
       "fingerprint": "272db1ff363299b5f08f253c65deb6b7f1315bfc25dc16b73a05390799de8539",
       "semantic_nodes": 301,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T21:33:56Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    "telegram:@v2ray313": {
+      "fingerprint": "758c43db6cf00804d531a9531bb8c82384697865df99e06b1225743b831dba41",
+      "semantic_nodes": 211,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T16:33:32Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    "telegram:@Farah_VPN": {
+      "fingerprint": "e1500bd681789501f3a12e4d96c7d7d76806fd718f2a16640528ae6f1aa655ac",
+      "semantic_nodes": 187,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T23:36:02Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "telegram:@v2rayng_fast": {
+      "fingerprint": "0e139b38fda91216b773985234d8b3b3774076430c4cdacb827b04ec4ceda9b4",
+      "semantic_nodes": 196,
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T21:33:56Z",
       "fresh": true,
       "competition_active": true,
@@ -1811,88 +1880,58 @@
     "telegram:@v2ray_ng": {
       "fingerprint": "6c92631fa5877311ac1958a1c3ab6b78ae72451965cc033865026ee251d2edfd",
       "semantic_nodes": 208,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "fresh": true,
-      "competition_active": true,
-      "freshness_reason": "within_window",
-      "duplicate_of": null
-    },
-    "telegram:@free_vpn_ch": {
-      "fingerprint": "b7f728bcc9adeb9e121069eaafce560a94f5169193922fccd061b9a7061e97e4",
-      "semantic_nodes": 186,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T14:29:42Z",
-      "fresh": true,
-      "competition_active": true,
-      "freshness_reason": "within_window",
-      "duplicate_of": null
-    },
-    "telegram:@soskeynets": {
-      "fingerprint": "be3c50e3ee7ad2802eb5e564ba0fd07ae7a11a178d2fe91a9d5537aeb749908e",
-      "semantic_nodes": 216,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T14:29:42Z",
-      "fresh": true,
-      "competition_active": true,
-      "freshness_reason": "within_window",
-      "duplicate_of": null
-    },
-    "telegram:@v2rayng_fast": {
-      "fingerprint": "0e139b38fda91216b773985234d8b3b3774076430c4cdacb827b04ec4ceda9b4",
-      "semantic_nodes": 196,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T21:33:56Z",
-      "fresh": true,
-      "competition_active": true,
-      "freshness_reason": "within_window",
-      "duplicate_of": null
-    },
-    "telegram:@proxy_mtm": {
-      "fingerprint": "290e9ad84600de9da83fa03ebacf1bee16dc3a1654c6f657959b35ffd204c881",
-      "semantic_nodes": 274,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T20:34:03Z",
       "fresh": true,
       "competition_active": true,
       "freshness_reason": "within_window",
       "duplicate_of": null
     },
     "telegram:@vpnine1": {
-      "fingerprint": "04b2ef74c22c33345462f6180ba7209a2a2e4a1d5dd3c2e149029235259a9828",
-      "semantic_nodes": 190,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T22:35:47Z",
+      "fingerprint": "218dee910d2de52191bea4a056854036c91f624edf882c13325927c060ecc5f8",
+      "semantic_nodes": 181,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T23:36:02Z",
       "fresh": true,
       "competition_active": true,
       "freshness_reason": "changed",
       "duplicate_of": null
     },
-    "telegram:@Farah_VPN": {
-      "fingerprint": "030983569f3071949e7a57c681a6ed202eb54a9b94435d988c69c8c2ac92d676",
-      "semantic_nodes": 188,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T22:35:47Z",
-      "fresh": true,
-      "competition_active": true,
-      "freshness_reason": "changed",
-      "duplicate_of": null
-    },
-    "telegram:@daily_configs": {
-      "fingerprint": "c01b8834422bd76c9414d2ed675f73106686388adbe1601cf0607f51dd465a1c",
-      "semantic_nodes": 226,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T18:34:08Z",
+    "telegram:@soskeynets": {
+      "fingerprint": "be3c50e3ee7ad2802eb5e564ba0fd07ae7a11a178d2fe91a9d5537aeb749908e",
+      "semantic_nodes": 216,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T14:29:42Z",
       "fresh": true,
       "competition_active": true,
       "freshness_reason": "within_window",
       "duplicate_of": null
     },
-    "telegram:@v2ray313": {
-      "fingerprint": "758c43db6cf00804d531a9531bb8c82384697865df99e06b1225743b831dba41",
-      "semantic_nodes": 211,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T16:33:32Z",
+    "telegram:@soskeynet": {
+      "fingerprint": "4fd65cc53c1f75f339d32381a679e59c7a781100cfd97fd0fb6083952bac7b87",
+      "semantic_nodes": 224,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T23:36:02Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "telegram:@proxy_mtm": {
+      "fingerprint": "290e9ad84600de9da83fa03ebacf1bee16dc3a1654c6f657959b35ffd204c881",
+      "semantic_nodes": 274,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T20:34:03Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    "telegram:@oneclickvpnkeys": {
+      "fingerprint": "33634ad4faeaa6ee16566123a5ba6d9f5e9346061906bf3c87c41f3b1bdc323b",
+      "semantic_nodes": 248,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T21:33:56Z",
       "fresh": true,
       "competition_active": true,
       "freshness_reason": "within_window",
@@ -1901,47 +1940,47 @@
     "telegram:@clashv8": {
       "fingerprint": "7c1bfe156c5090dc5ed52126c575f5d7c7afcf7921b2181014c32fdc818aef5f",
       "semantic_nodes": 237,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T14:29:42Z",
       "fresh": true,
       "competition_active": true,
       "freshness_reason": "within_window",
       "duplicate_of": null
     },
-    "telegram:@leviconfigs": {
-      "fingerprint": "4bba8184a605c9f3f93f78b9ae469c1b5f64287ce40ba46384cf7b76fd014fd7",
-      "semantic_nodes": 140,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T14:29:42Z",
-      "fresh": true,
-      "competition_active": true,
-      "freshness_reason": "within_window",
-      "duplicate_of": null
-    },
-    "telegram:@netghjlkj": {
-      "fingerprint": "e854a909ea6a7dcd83f81f8f1d2f200932f6926efe6a74e33971f6922bed4c0e",
-      "semantic_nodes": 153,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T22:35:47Z",
-      "fresh": true,
-      "competition_active": true,
-      "freshness_reason": "changed",
-      "duplicate_of": null
-    },
-    "telegram:@irconfiig": {
-      "fingerprint": "f7d50fd9cf61eaa79bf287e7e8823faa60099758e2d6af13a92ce861aef66ec4",
-      "semantic_nodes": 135,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+    "telegram:@daily_configs": {
+      "fingerprint": "c01b8834422bd76c9414d2ed675f73106686388adbe1601cf0607f51dd465a1c",
+      "semantic_nodes": 226,
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T18:34:08Z",
       "fresh": true,
       "competition_active": true,
       "freshness_reason": "within_window",
       "duplicate_of": null
     },
-    "telegram:@Outline_Vpn": {
-      "fingerprint": "d6182d18a029effea4db2ad42636fa62483930c7b787055856045b8aecf829f4",
-      "semantic_nodes": 88,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+    "telegram:@netghjlkj": {
+      "fingerprint": "8a536384e280179107414e90a724408bc1bd12a2f6f0cd0dc0e3a97b6beeca2b",
+      "semantic_nodes": 152,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T23:36:02Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "telegram:@leviconfigs": {
+      "fingerprint": "4bba8184a605c9f3f93f78b9ae469c1b5f64287ce40ba46384cf7b76fd014fd7",
+      "semantic_nodes": 140,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T14:29:42Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    "telegram:@irconfiig": {
+      "fingerprint": "f7d50fd9cf61eaa79bf287e7e8823faa60099758e2d6af13a92ce861aef66ec4",
+      "semantic_nodes": 135,
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T18:34:08Z",
       "fresh": true,
       "competition_active": true,
@@ -1951,18 +1990,8 @@
     "telegram:@bisto4_service": {
       "fingerprint": "4ba292f14ae5a1fa4fc9ff3d218bdc6bc4386ec1bc5944114b86fc3b3755fa17",
       "semantic_nodes": 126,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "fresh": true,
-      "competition_active": true,
-      "freshness_reason": "within_window",
-      "duplicate_of": null
-    },
-    "telegram:@farazv2ray": {
-      "fingerprint": "958e78a13213f040b379f0a8a77a066e7e87573b46cd4b438834316861f62c3e",
-      "semantic_nodes": 172,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T21:33:56Z",
       "fresh": true,
       "competition_active": true,
       "freshness_reason": "within_window",
@@ -1971,28 +2000,28 @@
     "telegram:@mtmvpn": {
       "fingerprint": "8efc8e0497f57ce3ef7050d877929c3666d9a93938ae9029fe9f3d80657a08da",
       "semantic_nodes": 171,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T20:34:03Z",
       "fresh": true,
       "competition_active": true,
       "freshness_reason": "within_window",
       "duplicate_of": null
     },
-    "telegram:@ppal03": {
-      "fingerprint": "00109ce723e73707230d73b49cebcd3cf5d97d11eb6e8e1e6551e82434284898",
-      "semantic_nodes": 120,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+    "telegram:@configprxy": {
+      "fingerprint": "3b883e851ddefa9733a66ab5ed87a31fce43ad14e887a30233afcc3da356db77",
+      "semantic_nodes": 114,
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T14:29:42Z",
       "fresh": true,
       "competition_active": true,
       "freshness_reason": "within_window",
       "duplicate_of": null
     },
-    "telegram:@prrofile_purple": {
-      "fingerprint": "47039ac051261deb33cd587a00284abfe8ea8a79a4c37d365ea6eb301ad1ac9a",
-      "semantic_nodes": 150,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T20:34:03Z",
+    "telegram:@Outline_Vpn": {
+      "fingerprint": "d6182d18a029effea4db2ad42636fa62483930c7b787055856045b8aecf829f4",
+      "semantic_nodes": 88,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T18:34:08Z",
       "fresh": true,
       "competition_active": true,
       "freshness_reason": "within_window",
@@ -2001,37 +2030,17 @@
     "telegram:@mehrosaboran": {
       "fingerprint": "0080f3d21353d581dbd40327b3ba3f01cb236ad47665492b027f876e8dd77155",
       "semantic_nodes": 146,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T22:35:47Z",
       "fresh": true,
       "competition_active": true,
-      "freshness_reason": "changed",
-      "duplicate_of": null
-    },
-    "telegram:@configprxy": {
-      "fingerprint": "3b883e851ddefa9733a66ab5ed87a31fce43ad14e887a30233afcc3da356db77",
-      "semantic_nodes": 114,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T14:29:42Z",
-      "fresh": true,
-      "competition_active": true,
       "freshness_reason": "within_window",
       "duplicate_of": null
     },
-    "telegram:@v2raysaman": {
-      "fingerprint": "79c64a6ea4ee4b50bf368e452f86151c8a002bcc649f1dae6369d2f024980f76",
-      "semantic_nodes": 137,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T18:34:08Z",
-      "fresh": true,
-      "competition_active": true,
-      "freshness_reason": "within_window",
-      "duplicate_of": null
-    },
-    "telegram:@bored_vpn": {
-      "fingerprint": "ff551341a0091789159e34c6650e5e3ee64fb591ed92365cc33a324655a6ba5c",
-      "semantic_nodes": 139,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+    "telegram:@prrofile_purple": {
+      "fingerprint": "47039ac051261deb33cd587a00284abfe8ea8a79a4c37d365ea6eb301ad1ac9a",
+      "semantic_nodes": 150,
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T20:34:03Z",
       "fresh": true,
       "competition_active": true,
@@ -2041,8 +2050,48 @@
     "telegram:@configv2rayng": {
       "fingerprint": "9b8e9dfc40c10b63aa1d650803c403019c6d0dbbe3e7fcd897f2a8fbe20fcd33",
       "semantic_nodes": 167,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T14:29:42Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    "telegram:@farazv2ray": {
+      "fingerprint": "b3b23466ad4e95882342baec7d34362977f169ef7698b15c42d5bb5a84c1dcbf",
+      "semantic_nodes": 155,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T23:36:02Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "telegram:@bored_vpn": {
+      "fingerprint": "ff551341a0091789159e34c6650e5e3ee64fb591ed92365cc33a324655a6ba5c",
+      "semantic_nodes": 139,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T20:34:03Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    "telegram:@ppal03": {
+      "fingerprint": "00109ce723e73707230d73b49cebcd3cf5d97d11eb6e8e1e6551e82434284898",
+      "semantic_nodes": 120,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T14:29:42Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    "telegram:@v2raysaman": {
+      "fingerprint": "79c64a6ea4ee4b50bf368e452f86151c8a002bcc649f1dae6369d2f024980f76",
+      "semantic_nodes": 137,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T18:34:08Z",
       "fresh": true,
       "competition_active": true,
       "freshness_reason": "within_window",
@@ -2051,7 +2100,7 @@
     "telegram:@masterserver1": {
       "fingerprint": "da7ad7206143f0b39d29c22e7be7ffae3f34a0bffb06cace2c080e397aa0caac",
       "semantic_nodes": 161,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T14:29:42Z",
       "fresh": true,
       "competition_active": true,
@@ -2061,7 +2110,7 @@
     "telegram:@vpnsal": {
       "fingerprint": "e4a70ec15fb050c3214b3cf58e6bca6f6f5c54ca5cbf74267472208c40509890",
       "semantic_nodes": 109,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T14:29:42Z",
       "fresh": true,
       "competition_active": true,
@@ -2071,7 +2120,27 @@
     "telegram:@DailyV2RY": {
       "fingerprint": "32ef1f9c85ad4fa256361733af46e619bb3299758934c5650da47240522c9b4b",
       "semantic_nodes": 27,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T14:29:42Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    "telegram:@v2raybaaz": {
+      "fingerprint": "2c3490208dd61505d3089ae4d8c85da9feec57d573a81ce51cfd1821268f4d81",
+      "semantic_nodes": 78,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T23:36:02Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "telegram:@fastkanfig": {
+      "fingerprint": "69a7797ab2d94475ea9280176c3efdff26bf06fa459d5bcb616f5911fc816fb1",
+      "semantic_nodes": 73,
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T14:29:42Z",
       "fresh": true,
       "competition_active": true,
@@ -2081,18 +2150,8 @@
     "telegram:@vmesskhodam": {
       "fingerprint": "a5f625e9e65bba8c3213e36f08acd08858b0f2c63b6c5c019e22b3b65a30367c",
       "semantic_nodes": 103,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T20:34:03Z",
-      "fresh": true,
-      "competition_active": true,
-      "freshness_reason": "within_window",
-      "duplicate_of": null
-    },
-    "telegram:@hex_proxy": {
-      "fingerprint": "3bcd9cae7b7e82eab12cbf5fb603e3687b9e4a3fa8de9c741afd6044cd3a6a4d",
-      "semantic_nodes": 58,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T19:34:56Z",
       "fresh": true,
       "competition_active": true,
       "freshness_reason": "within_window",
@@ -2101,18 +2160,8 @@
     "telegram:@tehranargo": {
       "fingerprint": "c3abe388f4b921a740ef7a409f6715e0840664f412a6f6033bcc455b62c069e3",
       "semantic_nodes": 87,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T20:34:03Z",
-      "fresh": true,
-      "competition_active": true,
-      "freshness_reason": "within_window",
-      "duplicate_of": null
-    },
-    "telegram:@fastkanfig": {
-      "fingerprint": "69a7797ab2d94475ea9280176c3efdff26bf06fa459d5bcb616f5911fc816fb1",
-      "semantic_nodes": 73,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T14:29:42Z",
       "fresh": true,
       "competition_active": true,
       "freshness_reason": "within_window",
@@ -2121,7 +2170,27 @@
     "telegram:@kafing_2": {
       "fingerprint": "102e8f5a54ec0b4d9a816b7270828f9a51e1dc30e0c3ac9ea85df9498871e937",
       "semantic_nodes": 77,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T14:29:42Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    "telegram:@hex_proxy": {
+      "fingerprint": "3bcd9cae7b7e82eab12cbf5fb603e3687b9e4a3fa8de9c741afd6044cd3a6a4d",
+      "semantic_nodes": 58,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T19:34:56Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    "telegram:@GH_v2rayng": {
+      "fingerprint": "c9255a2eaa3f6b81701c631c070fc60c95a0bfd88d51f5299f490c478c3fee8d",
+      "semantic_nodes": 86,
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T14:29:42Z",
       "fresh": true,
       "competition_active": true,
@@ -2131,37 +2200,17 @@
     "telegram:@b2hub": {
       "fingerprint": "1d697d2578f387f33b7ccd7189d3a254c3fdabb871a34a2c5a7c15817f4633e8",
       "semantic_nodes": 124,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T19:34:56Z",
       "fresh": true,
       "competition_active": true,
       "freshness_reason": "within_window",
       "duplicate_of": null
     },
-    "telegram:@v2raybaaz": {
-      "fingerprint": "f7f4caae6fe55dd7665d57128b44d3bbec62a0506801932ab27343e7258dbff9",
-      "semantic_nodes": 81,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T15:31:22Z",
-      "fresh": true,
-      "competition_active": true,
-      "freshness_reason": "within_window",
-      "duplicate_of": null
-    },
-    "telegram:@freenettir": {
-      "fingerprint": "8d484d829750850c7ff75d85d829758bad0f6205f5edc2957ba04003ff7fe877",
-      "semantic_nodes": 14,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T22:35:47Z",
-      "fresh": true,
-      "competition_active": true,
-      "freshness_reason": "changed",
-      "duplicate_of": null
-    },
     "telegram:@erfanandroid": {
       "fingerprint": "3f73a0ef38770fa03db9c7e1b096d59e1c197a742ee44b31ddfd6a8781a5d48e",
       "semantic_nodes": 82,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T14:29:42Z",
       "fresh": true,
       "competition_active": true,
@@ -2171,27 +2220,27 @@
     "telegram:@appsooner": {
       "fingerprint": "211f8b24330e6eb97491c736ca63de51248d21e5a9115ffc43c812f351387c79",
       "semantic_nodes": 87,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T14:29:42Z",
       "fresh": true,
       "competition_active": true,
       "freshness_reason": "within_window",
       "duplicate_of": null
     },
-    "telegram:@GH_v2rayng": {
-      "fingerprint": "c9255a2eaa3f6b81701c631c070fc60c95a0bfd88d51f5299f490c478c3fee8d",
-      "semantic_nodes": 86,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T14:29:42Z",
+    "telegram:@freenettir": {
+      "fingerprint": "4c82233b92bc19a53a0a7f86c5ae0378cd54f3e207e0903e96bcd65b6543d6e3",
+      "semantic_nodes": 15,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T23:36:02Z",
       "fresh": true,
       "competition_active": true,
-      "freshness_reason": "within_window",
+      "freshness_reason": "changed",
       "duplicate_of": null
     },
     "telegram:@nofiltering2": {
       "fingerprint": "39bb080c0aa62f88a8d8bc717d8d153199dc8811883db3f2574c19d03afd99cc",
       "semantic_nodes": 86,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T14:29:42Z",
       "fresh": true,
       "competition_active": true,
@@ -2201,18 +2250,8 @@
     "telegram:@v2ray_phoenix": {
       "fingerprint": "ee89b7452c9cc65bd6d751ad4b0ec31b4806347b5b31a33bd7340d16744144e0",
       "semantic_nodes": 130,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T16:33:32Z",
-      "fresh": true,
-      "competition_active": true,
-      "freshness_reason": "within_window",
-      "duplicate_of": null
-    },
-    "telegram:@vistav2ray": {
-      "fingerprint": "6f6d44cc6506f9eb877850eaff8b27d00b34da87d419a973f89f62864bc618df",
-      "semantic_nodes": 83,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T20:34:03Z",
       "fresh": true,
       "competition_active": true,
       "freshness_reason": "within_window",
@@ -2221,18 +2260,28 @@
     "telegram:@filembad": {
       "fingerprint": "ffaa27b6617f06787ba490db7fc84503c3ee0e455017e52e311107c1ed2e63c7",
       "semantic_nodes": 51,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T22:35:47Z",
       "fresh": true,
       "competition_active": true,
-      "freshness_reason": "changed",
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    "telegram:@vistav2ray": {
+      "fingerprint": "6f6d44cc6506f9eb877850eaff8b27d00b34da87d419a973f89f62864bc618df",
+      "semantic_nodes": 83,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T20:34:03Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     "telegram:@V2rayConfigList": {
-      "fingerprint": "3f10623d931c6f3f26250829b710c70f580294f2b3505727f02b3d67e442e8ba",
-      "semantic_nodes": 34,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T22:35:47Z",
+      "fingerprint": "ae6a0f927b8434b4627406e16a91f5b0a0cae8b06464d280e4c71dd49c4c34e5",
+      "semantic_nodes": 39,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T23:36:02Z",
       "fresh": true,
       "competition_active": true,
       "freshness_reason": "changed",
@@ -2241,18 +2290,8 @@
     "telegram:@father_vpn": {
       "fingerprint": "d798e04c7a8e6d24377d84a084c155cc81c5bf9facb649ec0e46024e4b19f4fd",
       "semantic_nodes": 81,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T14:29:42Z",
-      "fresh": true,
-      "competition_active": true,
-      "freshness_reason": "within_window",
-      "duplicate_of": null
-    },
-    "telegram:@nexus_panell": {
-      "fingerprint": "2ef702ffd185cf43ea83953c4a17aaa1da1a0fd4e51e7d99b9d12941c3753fce",
-      "semantic_nodes": 33,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T16:33:32Z",
       "fresh": true,
       "competition_active": true,
       "freshness_reason": "within_window",
@@ -2261,17 +2300,7 @@
     "telegram:@arshiavpn12": {
       "fingerprint": "6661f271cbd925581d7b048591ae5c53c61e16d335e95d208f9720e67cb42d74",
       "semantic_nodes": 66,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T14:29:42Z",
-      "fresh": true,
-      "competition_active": true,
-      "freshness_reason": "within_window",
-      "duplicate_of": null
-    },
-    "telegram:@canfingV2rayNG": {
-      "fingerprint": "57673277e0cc4113f5b4116acea86775744d626b0943d81cf5041cd709ebc6bf",
-      "semantic_nodes": 73,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T14:29:42Z",
       "fresh": true,
       "competition_active": true,
@@ -2281,47 +2310,47 @@
     "telegram:@vless_vmess": {
       "fingerprint": "d6cc8616ad8109365c1cbde812dc9e0ce656429794c6ad8c15444c4452ac0281",
       "semantic_nodes": 48,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T14:29:42Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    "telegram:@nexus_panell": {
+      "fingerprint": "2ef702ffd185cf43ea83953c4a17aaa1da1a0fd4e51e7d99b9d12941c3753fce",
+      "semantic_nodes": 33,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T16:33:32Z",
       "fresh": true,
       "competition_active": true,
       "freshness_reason": "within_window",
       "duplicate_of": null
     },
     "telegram:@v2ray_free_conf": {
-      "fingerprint": "fc290f917efc55965ba87ecce4bb3cdba8cbbe852b6911df4ada575e93003c97",
-      "semantic_nodes": 35,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T22:35:47Z",
+      "fingerprint": "7dc1aae605a783742fa32df620ea8547cb08eee46d951abc344fb52b6b6c9894",
+      "semantic_nodes": 34,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T23:36:02Z",
       "fresh": true,
       "competition_active": true,
       "freshness_reason": "changed",
       "duplicate_of": null
     },
-    "telegram:@ap_ir6": {
-      "fingerprint": "3f78eb1ea2546205e20e7919bbcb56b43425ae4792485d124f58dbe1b2f88b77",
-      "semantic_nodes": 77,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+    "telegram:@canfingV2rayNG": {
+      "fingerprint": "57673277e0cc4113f5b4116acea86775744d626b0943d81cf5041cd709ebc6bf",
+      "semantic_nodes": 73,
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T14:29:42Z",
       "fresh": true,
       "competition_active": true,
       "freshness_reason": "within_window",
       "duplicate_of": null
     },
-    "telegram:@vpnfail_v2ray": {
-      "fingerprint": "21f6be0f2bae540fca06db8008c8a304b7a029b0a5e6fbb2b33c13500a58435e",
-      "semantic_nodes": 38,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T22:35:47Z",
-      "fresh": true,
-      "competition_active": true,
-      "freshness_reason": "changed",
-      "duplicate_of": null
-    },
     "telegram:@hopev2ray": {
       "fingerprint": "00af735aaedc4228c184b77013a15b5b3b80df1b9f94421cb25e167ffeff04f9",
       "semantic_nodes": 80,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T14:29:42Z",
       "fresh": true,
       "competition_active": true,
@@ -2331,25 +2360,45 @@
     "telegram:@bigsmoke_config": {
       "fingerprint": "255fddd6c4db9d0d87aa6ddbf544847ff7494a0e77bbd386801d773c7f2ab2b5",
       "semantic_nodes": 79,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T20:34:03Z",
       "fresh": true,
       "competition_active": true,
       "freshness_reason": "within_window",
       "duplicate_of": null
     },
-    "telegram:@V2RAYROZ": {
-      "fingerprint": "7e68f10a024a23fa664f3b3797f8dfcefbfa7deca40d07ec502ae4678c2b57ba",
-      "semantic_nodes": 52,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T22:35:47Z",
+    "telegram:@isvvpn": {
+      "fingerprint": "15ad110eccb1c762f16c7b0d9f2b67bb8fd67e651bcc5e293913cecd7064dbb0",
+      "semantic_nodes": 85,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T14:29:42Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    "telegram:@vpnfail_v2ray": {
+      "fingerprint": "eec9f6bad94a0019a4ef458a51264d9e2836fda17b8844bd99b12e76fcd7123d",
+      "semantic_nodes": 40,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T23:36:02Z",
       "fresh": true,
       "competition_active": true,
       "freshness_reason": "changed",
       "duplicate_of": null
     },
+    "telegram:@ap_ir6": {
+      "fingerprint": "3f78eb1ea2546205e20e7919bbcb56b43425ae4792485d124f58dbe1b2f88b77",
+      "semantic_nodes": 77,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T14:29:42Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
     "telegram:@migavpnpro": {
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T14:29:42Z",
       "fresh": false,
       "competition_active": false,
@@ -2357,11 +2406,11 @@
       "duplicate_of": null,
       "semantic_nodes": 0
     },
-    "telegram:@isvvpn": {
-      "fingerprint": "15ad110eccb1c762f16c7b0d9f2b67bb8fd67e651bcc5e293913cecd7064dbb0",
-      "semantic_nodes": 85,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T14:29:42Z",
+    "telegram:@V2RAYROZ": {
+      "fingerprint": "7e68f10a024a23fa664f3b3797f8dfcefbfa7deca40d07ec502ae4678c2b57ba",
+      "semantic_nodes": 52,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T22:35:47Z",
       "fresh": true,
       "competition_active": true,
       "freshness_reason": "within_window",
@@ -2370,7 +2419,7 @@
     "telegram:@vpnowl": {
       "fingerprint": "9090353cce1484857cf21a3b38b4a9a9abfaaef07c8e787faa4c037241e687b7",
       "semantic_nodes": 76,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T14:29:42Z",
       "fresh": true,
       "competition_active": true,
@@ -2378,7 +2427,7 @@
       "duplicate_of": null
     },
     "telegram:@azadmarz": {
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T14:29:42Z",
       "fresh": false,
       "competition_active": false,
@@ -2389,7 +2438,7 @@
     "telegram:@azarbayjab1": {
       "fingerprint": "7d2237cd001d62663d0bc8b43865f5a1256c14b9bf6068ce909b7bba9bdb3ddb",
       "semantic_nodes": 46,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T14:29:42Z",
       "fresh": true,
       "competition_active": true,
@@ -2399,28 +2448,48 @@
     "telegram:@freakconfig": {
       "fingerprint": "be769d5560d4b162fe1c4a8e3e37178c2c2f1d6b72f0c714558639a4e69ed22f",
       "semantic_nodes": 63,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T21:33:56Z",
       "fresh": true,
       "competition_active": true,
       "freshness_reason": "within_window",
       "duplicate_of": null
     },
-    "telegram:@hope_net": {
-      "fingerprint": "5204191382c1358cab90d053d407bb9535ce36f36b7821fe23b0cd3a6b70cbc0",
-      "semantic_nodes": 19,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T22:35:47Z",
+    "telegram:@confiig_hub": {
+      "fingerprint": "1cc73b26118dffa8ccf225e402c992a6e85cc2713d95ccb91372329fe42cc0fe",
+      "semantic_nodes": 69,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T14:29:42Z",
       "fresh": true,
       "competition_active": true,
-      "freshness_reason": "changed",
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     "telegram:@kurdconfig": {
       "fingerprint": "ffdaf93d81742c12e0c57076b257ec6b3088c1ba98edd2e2f04288eca87cef30",
       "semantic_nodes": 70,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T18:34:08Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    "telegram:@hope_net": {
+      "fingerprint": "733978f2bfa659e03194dc690dfafcce734ace767e4d903dc4e7b0de67216f5d",
+      "semantic_nodes": 22,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T23:36:02Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "telegram:@prisonvpnc": {
+      "fingerprint": "767c64f19d93ddc72becdc06a151e478527d922d5b2e1a54f379381f3722f88a",
+      "semantic_nodes": 70,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T14:29:42Z",
       "fresh": true,
       "competition_active": true,
       "freshness_reason": "within_window",
@@ -2429,7 +2498,7 @@
     "telegram:@hibyevpnn": {
       "fingerprint": "ab1a98835db135f4dce5f6efd6c7a8f23aa55b2b1c25ce2e63129351bb2c76a1",
       "semantic_nodes": 64,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T14:29:42Z",
       "fresh": true,
       "competition_active": true,
@@ -2439,28 +2508,8 @@
     "telegram:@icv2ray": {
       "fingerprint": "e35decd497acba7486ab0a3129521832de7436f7ae244f6d0f2979fa3db26111",
       "semantic_nodes": 55,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T18:34:08Z",
-      "fresh": true,
-      "competition_active": true,
-      "freshness_reason": "within_window",
-      "duplicate_of": null
-    },
-    "telegram:@prisonvpnc": {
-      "fingerprint": "767c64f19d93ddc72becdc06a151e478527d922d5b2e1a54f379381f3722f88a",
-      "semantic_nodes": 70,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T14:29:42Z",
-      "fresh": true,
-      "competition_active": true,
-      "freshness_reason": "within_window",
-      "duplicate_of": null
-    },
-    "telegram:@confiig_hub": {
-      "fingerprint": "1cc73b26118dffa8ccf225e402c992a6e85cc2713d95ccb91372329fe42cc0fe",
-      "semantic_nodes": 69,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T14:29:42Z",
       "fresh": true,
       "competition_active": true,
       "freshness_reason": "within_window",
@@ -2469,7 +2518,7 @@
     "telegram:@v2xnet": {
       "fingerprint": "da56e1b171009bf0c9172cff27e59f3fb97116db658154bbc3e24fe6757df1bc",
       "semantic_nodes": 65,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T14:29:42Z",
       "fresh": true,
       "competition_active": true,
@@ -2479,7 +2528,7 @@
     "telegram:@express_freevpn": {
       "fingerprint": "727e9c8c563e57718611d7d7670ed5f693290aa5bea7b986c07a4b55c4e70548",
       "semantic_nodes": 55,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T20:34:03Z",
       "fresh": true,
       "competition_active": true,
@@ -2489,17 +2538,7 @@
     "telegram:@customvpnserver": {
       "fingerprint": "71685ee64f35e7deb27f19127a22cd9994bcbc24baeb1c556a6b11b95204994d",
       "semantic_nodes": 57,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T14:29:42Z",
-      "fresh": true,
-      "competition_active": true,
-      "freshness_reason": "within_window",
-      "duplicate_of": null
-    },
-    "telegram:@freedomofinfor": {
-      "fingerprint": "f90133bec80f6a1ae1ddf490770c2df5dff08fe0ca890be0c2fe9fe54f4a87c0",
-      "semantic_nodes": 43,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T14:29:42Z",
       "fresh": true,
       "competition_active": true,
@@ -2509,17 +2548,7 @@
     "telegram:@cxrolvpn": {
       "fingerprint": "d0591dc23801b6d6df673098c5708e86241e482f00db89d1aabde8e0159dfc9a",
       "semantic_nodes": 38,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T14:29:42Z",
-      "fresh": true,
-      "competition_active": true,
-      "freshness_reason": "within_window",
-      "duplicate_of": null
-    },
-    "telegram:@configfori": {
-      "fingerprint": "2f29be1cb97fa2d62cf038edee7af2c52a19e92a8f351fccdf148460153ba267",
-      "semantic_nodes": 49,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T14:29:42Z",
       "fresh": true,
       "competition_active": true,
@@ -2529,7 +2558,37 @@
     "telegram:@v2ray_alpha": {
       "fingerprint": "2118d4fff754625711ef8d74721f8d55fb34b26cd008a1290cf2b932efb7b0ea",
       "semantic_nodes": 48,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T20:34:03Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    "telegram:@freedomofinfor": {
+      "fingerprint": "f90133bec80f6a1ae1ddf490770c2df5dff08fe0ca890be0c2fe9fe54f4a87c0",
+      "semantic_nodes": 43,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T14:29:42Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    "telegram:@configfori": {
+      "fingerprint": "2f29be1cb97fa2d62cf038edee7af2c52a19e92a8f351fccdf148460153ba267",
+      "semantic_nodes": 49,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T14:29:42Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    "telegram:@alpha_v2rayip": {
+      "fingerprint": "a0b67699a18e049982c40ae5e28ae8c780dc9b7e454701a6ef072256194015fb",
+      "semantic_nodes": 36,
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T20:34:03Z",
       "fresh": true,
       "competition_active": true,
@@ -2539,17 +2598,7 @@
     "telegram:@fhkllvjkll": {
       "fingerprint": "10f9a1d0da2c89b0dc41998c716187741be1e2d4c76a836b2cf78a3d81429eaf",
       "semantic_nodes": 38,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T14:29:42Z",
-      "fresh": true,
-      "competition_active": true,
-      "freshness_reason": "within_window",
-      "duplicate_of": null
-    },
-    "telegram:@V2rayi_net": {
-      "fingerprint": "3a3b6664eea4526ba9b16e9c4795e07a101b8a2ca21acff91982e39e1dcd94e8",
-      "semantic_nodes": 47,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T14:29:42Z",
       "fresh": true,
       "competition_active": true,
@@ -2559,18 +2608,18 @@
     "telegram:@capoit": {
       "fingerprint": "b3c7cdceb86356d2f393bf04651d5adad5e9f1a9758aa27cc0fb790b4a85481b",
       "semantic_nodes": 46,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T15:31:22Z",
       "fresh": true,
       "competition_active": true,
       "freshness_reason": "within_window",
       "duplicate_of": null
     },
-    "telegram:@alpha_v2rayip": {
-      "fingerprint": "a0b67699a18e049982c40ae5e28ae8c780dc9b7e454701a6ef072256194015fb",
-      "semantic_nodes": 36,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T20:34:03Z",
+    "telegram:@V2rayi_net": {
+      "fingerprint": "3a3b6664eea4526ba9b16e9c4795e07a101b8a2ca21acff91982e39e1dcd94e8",
+      "semantic_nodes": 47,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T14:29:42Z",
       "fresh": true,
       "competition_active": true,
       "freshness_reason": "within_window",
@@ -2579,17 +2628,7 @@
     "telegram:@V2rayNGX": {
       "fingerprint": "0e6c07de5cd46be8eaff13d9eaba5ca9e7a63274fbb05c1f2543f7164767d00c",
       "semantic_nodes": 42,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T14:29:42Z",
-      "fresh": true,
-      "competition_active": true,
-      "freshness_reason": "within_window",
-      "duplicate_of": null
-    },
-    "telegram:@inetchnl": {
-      "fingerprint": "3213d4533e5041add73cc126bba0723b7d0be0824cac3ac48eda292f426e9ce4",
-      "semantic_nodes": 47,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T14:29:42Z",
       "fresh": true,
       "competition_active": true,
@@ -2599,7 +2638,17 @@
     "telegram:@azarakhsh_proxy": {
       "fingerprint": "ce4c2383c538d5030105e63b72ca3c5c5b05bb53f4d8caf234d1210e628efc27",
       "semantic_nodes": 41,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T14:29:42Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    "telegram:@irdusti": {
+      "fingerprint": "e7829e5cf63647b84425baa5d4a90570ee77c952deb5a0b0f1ceb0ef789298b7",
+      "semantic_nodes": 46,
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T14:29:42Z",
       "fresh": true,
       "competition_active": true,
@@ -2609,7 +2658,7 @@
     "telegram:@hesarweb": {
       "fingerprint": "30453c5aedbb97c5f1ba290c61c7edd7cb019d4c217c94bff9ac7799e3a33a08",
       "semantic_nodes": 45,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T19:34:56Z",
       "fresh": true,
       "competition_active": true,
@@ -2619,87 +2668,17 @@
     "telegram:@marambashi": {
       "fingerprint": "8ef87e0745fd14d7a1c2e74f30e15813d3745a48d17185aee04d63194acbaccb",
       "semantic_nodes": 51,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T20:34:03Z",
       "fresh": true,
       "competition_active": true,
       "freshness_reason": "within_window",
       "duplicate_of": null
     },
-    "telegram:@irdusti": {
-      "fingerprint": "e7829e5cf63647b84425baa5d4a90570ee77c952deb5a0b0f1ceb0ef789298b7",
-      "semantic_nodes": 46,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T14:29:42Z",
-      "fresh": true,
-      "competition_active": true,
-      "freshness_reason": "within_window",
-      "duplicate_of": null
-    },
-    "telegram:@outline_ir": {
-      "fingerprint": "dc67cb29f644261dfffe819e187258c9c482f6b504b0e28906d171ebf14d4592",
-      "semantic_nodes": 44,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T16:33:32Z",
-      "fresh": true,
-      "competition_active": true,
-      "freshness_reason": "within_window",
-      "duplicate_of": null
-    },
-    "telegram:@selinc": {
-      "fingerprint": "7ca4d11568a9c5f791f90758b3b15d1f52afd472bf56d26aa386398f481b8fce",
-      "semantic_nodes": 33,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T14:29:42Z",
-      "fresh": true,
-      "competition_active": true,
-      "freshness_reason": "within_window",
-      "duplicate_of": null
-    },
-    "telegram:@vpnbaz": {
-      "fingerprint": "26d40b3fa686cf480997edb3bf41ed7546aafdcf998744eb730bf3f2335d23c6",
-      "semantic_nodes": 19,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T20:34:03Z",
-      "fresh": true,
-      "competition_active": true,
-      "freshness_reason": "within_window",
-      "duplicate_of": null
-    },
-    "telegram:@freeonlinevpn": {
-      "fingerprint": "dd48071348d37a187f34e4420013fe575a76815cb37a48ae9beb7fa48b0629a0",
-      "semantic_nodes": 21,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T14:29:42Z",
-      "fresh": true,
-      "competition_active": true,
-      "freshness_reason": "within_window",
-      "duplicate_of": null
-    },
-    "telegram:@networld_vpn": {
-      "fingerprint": "4243cf9696a6c02b96e166246e36de82512ef15382dc91f490d6bb69691a35c8",
-      "semantic_nodes": 60,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T20:34:03Z",
-      "fresh": true,
-      "competition_active": true,
-      "freshness_reason": "within_window",
-      "duplicate_of": null
-    },
-    "telegram:@vmess_ir": {
-      "fingerprint": "73b12ea40a464543bb4628dffa5a4060037bf370488007fb39b699a9e85af230",
-      "semantic_nodes": 41,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T18:34:08Z",
-      "fresh": true,
-      "competition_active": true,
-      "freshness_reason": "within_window",
-      "duplicate_of": null
-    },
-    "telegram:@iran_v2ray1": {
-      "fingerprint": "54f21237cca61b44c797c0a351cef570b1135e87ffa14d9a19ec49fda04488fe",
-      "semantic_nodes": 18,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+    "telegram:@inetchnl": {
+      "fingerprint": "3213d4533e5041add73cc126bba0723b7d0be0824cac3ac48eda292f426e9ce4",
+      "semantic_nodes": 47,
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T14:29:42Z",
       "fresh": true,
       "competition_active": true,
@@ -2709,8 +2688,78 @@
     "telegram:@config7x": {
       "fingerprint": "bd770424019cbd463775e68c3e3933b6ad2b763c7ae8a596c73d20174236f465",
       "semantic_nodes": 42,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T14:29:42Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    "telegram:@outline_ir": {
+      "fingerprint": "dc67cb29f644261dfffe819e187258c9c482f6b504b0e28906d171ebf14d4592",
+      "semantic_nodes": 44,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T16:33:32Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    "telegram:@freeonlinevpn": {
+      "fingerprint": "dd48071348d37a187f34e4420013fe575a76815cb37a48ae9beb7fa48b0629a0",
+      "semantic_nodes": 21,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T14:29:42Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    "telegram:@vpnbaz": {
+      "fingerprint": "f5e094ee8088028f2d6a954ce030e0e006ba5cf33607c4f4ac9904a076af1775",
+      "semantic_nodes": 17,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T23:36:02Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "telegram:@networld_vpn": {
+      "fingerprint": "4243cf9696a6c02b96e166246e36de82512ef15382dc91f490d6bb69691a35c8",
+      "semantic_nodes": 60,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T20:34:03Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    "telegram:@iran_v2ray1": {
+      "fingerprint": "54f21237cca61b44c797c0a351cef570b1135e87ffa14d9a19ec49fda04488fe",
+      "semantic_nodes": 18,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T14:29:42Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    "telegram:@selinc": {
+      "fingerprint": "7ca4d11568a9c5f791f90758b3b15d1f52afd472bf56d26aa386398f481b8fce",
+      "semantic_nodes": 33,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T14:29:42Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    "telegram:@vmess_ir": {
+      "fingerprint": "73b12ea40a464543bb4628dffa5a4060037bf370488007fb39b699a9e85af230",
+      "semantic_nodes": 41,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T18:34:08Z",
       "fresh": true,
       "competition_active": true,
       "freshness_reason": "within_window",
@@ -2719,17 +2768,7 @@
     "telegram:@filtershekan_channel": {
       "fingerprint": "ce20e16c4f11e9f616337d671bfc498e8a8703fc942fd00a93dd77eb760e079f",
       "semantic_nodes": 31,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T14:29:42Z",
-      "fresh": true,
-      "competition_active": true,
-      "freshness_reason": "within_window",
-      "duplicate_of": null
-    },
-    "telegram:@vpn_ioss": {
-      "fingerprint": "f3021543a4e9662217bdb1cfa8296009ee55c386315e0fd849a366bd14ef375f",
-      "semantic_nodes": 10,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T14:29:42Z",
       "fresh": true,
       "competition_active": true,
@@ -2739,7 +2778,17 @@
     "telegram:@mftizi": {
       "fingerprint": "1f93e818a3651b35a8ab12f5af4377e7195fa06465db88d6f599906a73148ef3",
       "semantic_nodes": 12,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T14:29:42Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    "telegram:@vpn_ioss": {
+      "fingerprint": "f3021543a4e9662217bdb1cfa8296009ee55c386315e0fd849a366bd14ef375f",
+      "semantic_nodes": 10,
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T14:29:42Z",
       "fresh": true,
       "competition_active": true,
@@ -2749,27 +2798,7 @@
     "telegram:@sylphnet": {
       "fingerprint": "087e1df5eaff9fa1af9827b60584532b438becbb059ed6896ec714031e9e97a4",
       "semantic_nodes": 11,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T14:29:42Z",
-      "fresh": true,
-      "competition_active": true,
-      "freshness_reason": "within_window",
-      "duplicate_of": null
-    },
-    "telegram:@ShadowProxy66": {
-      "fingerprint": "7a3003cbcae80a025572af1ece00b30015cd2f7b06a7f2e31db79f7ec41c62e6",
-      "semantic_nodes": 27,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T14:29:42Z",
-      "fresh": true,
-      "competition_active": true,
-      "freshness_reason": "within_window",
-      "duplicate_of": null
-    },
-    "telegram:@eliv2ray": {
-      "fingerprint": "b31506e4051a45ae25980dd9ec403f01f775a07773b590f24e23ea589129547b",
-      "semantic_nodes": 27,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T14:29:42Z",
       "fresh": true,
       "competition_active": true,
@@ -2779,7 +2808,7 @@
     "telegram:@napsternetvirani": {
       "fingerprint": "41c9ac3812d94b792bccb9c72146c305f00dba5a33c8897bca3bd73ebe9e2c8b",
       "semantic_nodes": 32,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T14:29:42Z",
       "fresh": true,
       "competition_active": true,
@@ -2789,27 +2818,17 @@
     "telegram:@ProxyMtpVPN": {
       "fingerprint": "7bd9e291d926bfe5448b0a43292bf2a53dbbaaf81fc92213a92a6420c3d7cf11",
       "semantic_nodes": 17,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T22:35:47Z",
-      "fresh": true,
-      "competition_active": true,
-      "freshness_reason": "changed",
-      "duplicate_of": null
-    },
-    "telegram:@bigavpn": {
-      "fingerprint": "a543de5a24b658e5a48aea0b86eff0536495b016417e44b312e46c9f0c287319",
-      "semantic_nodes": 28,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T21:33:56Z",
       "fresh": true,
       "competition_active": true,
       "freshness_reason": "within_window",
       "duplicate_of": null
     },
-    "telegram:@lockey_vpn": {
-      "fingerprint": "5c61c3623b4c3dfabdbe33b1dd0baa23b3d1d6da80a8be4df5b8c1a503848c79",
-      "semantic_nodes": 26,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+    "telegram:@ShadowProxy66": {
+      "fingerprint": "7a3003cbcae80a025572af1ece00b30015cd2f7b06a7f2e31db79f7ec41c62e6",
+      "semantic_nodes": 27,
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T14:29:42Z",
       "fresh": true,
       "competition_active": true,
@@ -2819,27 +2838,27 @@
     "telegram:@V2ray_Team": {
       "fingerprint": "38637949f1fa61544f7d02cc87da502bc550c3951a77154e0c9f6cc11b254ca1",
       "semantic_nodes": 27,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T14:29:42Z",
       "fresh": true,
       "competition_active": true,
       "freshness_reason": "within_window",
       "duplicate_of": null
     },
-    "telegram:@DeamNet_proxy": {
-      "fingerprint": "db4e3b4364a7189f6515a2b43a6134aa812a593d95cb6770a663ffc71152ea75",
-      "semantic_nodes": 41,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T18:34:08Z",
+    "telegram:@eliv2ray": {
+      "fingerprint": "b31506e4051a45ae25980dd9ec403f01f775a07773b590f24e23ea589129547b",
+      "semantic_nodes": 27,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T14:29:42Z",
       "fresh": true,
       "competition_active": true,
       "freshness_reason": "within_window",
       "duplicate_of": null
     },
-    "telegram:@lent_gc": {
-      "fingerprint": "7a0bf2c1f3c85fc549139173dc1a43ef36e1bfc8212c4b311f7c1ca5743a3f51",
-      "semantic_nodes": 33,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+    "telegram:@bigavpn": {
+      "fingerprint": "a543de5a24b658e5a48aea0b86eff0536495b016417e44b312e46c9f0c287319",
+      "semantic_nodes": 28,
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T21:33:56Z",
       "fresh": true,
       "competition_active": true,
@@ -2849,17 +2868,27 @@
     "telegram:@ansooyefilter": {
       "fingerprint": "c4a193fea80245c53d8fc7cc8043475c435af61737168c1f999f7ea9c3c09b04",
       "semantic_nodes": 22,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T21:33:56Z",
       "fresh": true,
       "competition_active": true,
       "freshness_reason": "within_window",
       "duplicate_of": null
     },
-    "telegram:@freeland8": {
-      "fingerprint": "f239e17e1c2e975d021a6c7253360bec74541263fc8e8e28c94161c54125b29d",
-      "semantic_nodes": 16,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+    "telegram:@lent_gc": {
+      "fingerprint": "7a0bf2c1f3c85fc549139173dc1a43ef36e1bfc8212c4b311f7c1ca5743a3f51",
+      "semantic_nodes": 33,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T21:33:56Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    "telegram:@DeamNet_proxy": {
+      "fingerprint": "db4e3b4364a7189f6515a2b43a6134aa812a593d95cb6770a663ffc71152ea75",
+      "semantic_nodes": 41,
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T18:34:08Z",
       "fresh": true,
       "competition_active": true,
@@ -2869,8 +2898,28 @@
     "telegram:@v2ray_outlineir": {
       "fingerprint": "9fe9c1d5ccb7b5a53c97fe4e45f37c884bc2335edba3a0632a1acef9ca8ed914",
       "semantic_nodes": 19,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T14:29:42Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    "telegram:@lockey_vpn": {
+      "fingerprint": "5c61c3623b4c3dfabdbe33b1dd0baa23b3d1d6da80a8be4df5b8c1a503848c79",
+      "semantic_nodes": 26,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T14:29:42Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    "telegram:@freeland8": {
+      "fingerprint": "f239e17e1c2e975d021a6c7253360bec74541263fc8e8e28c94161c54125b29d",
+      "semantic_nodes": 16,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T18:34:08Z",
       "fresh": true,
       "competition_active": true,
       "freshness_reason": "within_window",
@@ -2879,27 +2928,7 @@
     "telegram:@atovpn": {
       "fingerprint": "2cb5be8efb25b978804a6eefdfa7e6ffde2a61af119a5379f756e51524c85c28",
       "semantic_nodes": 21,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T14:29:42Z",
-      "fresh": true,
-      "competition_active": true,
-      "freshness_reason": "within_window",
-      "duplicate_of": null
-    },
-    "telegram:@freeconfigsplus": {
-      "fingerprint": "2e18da4f1cb85d9e97da7da0270bca442dc763dabb9cafdfb0047d096af73cd7",
-      "semantic_nodes": 21,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T14:29:42Z",
-      "fresh": true,
-      "competition_active": true,
-      "freshness_reason": "within_window",
-      "duplicate_of": null
-    },
-    "telegram:@evay_vpn": {
-      "fingerprint": "e43ab0ea55f6106cc917a6d8fa909d73aab990cba09360c2b7c4abc92c5a2e4c",
-      "semantic_nodes": 19,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T14:29:42Z",
       "fresh": true,
       "competition_active": true,
@@ -2909,27 +2938,27 @@
     "telegram:@cnetvpn": {
       "fingerprint": "795e4f74a234931a4f445353d085ef4a569bee289662f5a240538e5a955ff0f1",
       "semantic_nodes": 25,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T18:34:08Z",
       "fresh": true,
       "competition_active": true,
       "freshness_reason": "within_window",
       "duplicate_of": null
     },
-    "telegram:@cfox_server": {
-      "fingerprint": "a07bc088d0612099d0fb8a92c5f38917f047d5283d2cb9f63a94589e8e643093",
-      "semantic_nodes": 57,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T20:34:03Z",
+    "telegram:@freeconfigsplus": {
+      "fingerprint": "2e18da4f1cb85d9e97da7da0270bca442dc763dabb9cafdfb0047d096af73cd7",
+      "semantic_nodes": 21,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T14:29:42Z",
       "fresh": true,
       "competition_active": true,
       "freshness_reason": "within_window",
       "duplicate_of": null
     },
-    "telegram:@free4allVPN": {
-      "fingerprint": "bb37530054f131a7de42d6ac1a73f1e1e4ac241ed015b19af9d0b06020350186",
-      "semantic_nodes": 22,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+    "telegram:@evay_vpn": {
+      "fingerprint": "e43ab0ea55f6106cc917a6d8fa909d73aab990cba09360c2b7c4abc92c5a2e4c",
+      "semantic_nodes": 19,
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T14:29:42Z",
       "fresh": true,
       "competition_active": true,
@@ -2939,7 +2968,37 @@
     "telegram:@vpncostumer": {
       "fingerprint": "faffe59592e5095ecfc64134ac46eb12e94aa486a983cec260f7ed5853ee1457",
       "semantic_nodes": 20,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T14:29:42Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    "telegram:@cfox_server": {
+      "fingerprint": "0f587bda1eee54c7a27f4d90ea93e13308c1b16a26519c20817dfd0502f0b467",
+      "semantic_nodes": 60,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T23:36:02Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "telegram:@free4allVPN": {
+      "fingerprint": "bb37530054f131a7de42d6ac1a73f1e1e4ac241ed015b19af9d0b06020350186",
+      "semantic_nodes": 22,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T14:29:42Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    "telegram:@VmessProtocol": {
+      "fingerprint": "06d60491f0598d0d8871b3053fe253a0db6648d31f29673e8b0db236c7ccf2c5",
+      "semantic_nodes": 27,
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T14:29:42Z",
       "fresh": true,
       "competition_active": true,
@@ -2949,17 +3008,17 @@
     "telegram:@vegaas_vpn": {
       "fingerprint": "2d01d0ba192973d24011c6558a527098f972a15875f212b62a7fdb7c894153a7",
       "semantic_nodes": 27,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T15:31:22Z",
       "fresh": true,
       "competition_active": true,
       "freshness_reason": "within_window",
       "duplicate_of": null
     },
-    "telegram:@VmessProtocol": {
-      "fingerprint": "06d60491f0598d0d8871b3053fe253a0db6648d31f29673e8b0db236c7ccf2c5",
-      "semantic_nodes": 27,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+    "telegram:@zdyz2": {
+      "fingerprint": "bebd7d5e0a2fd8197c2ed4d7e3ca8766f0ad4547543e1027de06570e6002446d",
+      "semantic_nodes": 25,
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T14:29:42Z",
       "fresh": true,
       "competition_active": true,
@@ -2969,7 +3028,17 @@
     "telegram:@FalconPolV2rayNG": {
       "fingerprint": "891ca3cc02dd723118349de1fe3082340c5dc34ada12fa98e139a0b06bd08415",
       "semantic_nodes": 7,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T14:29:42Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    "telegram:@v2ray_configs_pool": {
+      "fingerprint": "36753e98bb572b8a0c128217b68f8aba1f97b0fbd2a18f3d353bc22647ffe3e7",
+      "semantic_nodes": 22,
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T14:29:42Z",
       "fresh": true,
       "competition_active": true,
@@ -2979,27 +3048,7 @@
     "telegram:@SafeNet_Server": {
       "fingerprint": "5db310b22ffb88e63e80127411afae310ab5c5a9f4431b634c82f01cecafdd8b",
       "semantic_nodes": 20,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T14:29:42Z",
-      "fresh": true,
-      "competition_active": true,
-      "freshness_reason": "within_window",
-      "duplicate_of": null
-    },
-    "telegram:@zdyz2": {
-      "fingerprint": "bebd7d5e0a2fd8197c2ed4d7e3ca8766f0ad4547543e1027de06570e6002446d",
-      "semantic_nodes": 25,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T14:29:42Z",
-      "fresh": true,
-      "competition_active": true,
-      "freshness_reason": "within_window",
-      "duplicate_of": null
-    },
-    "telegram:@expressvpn_420": {
-      "fingerprint": "799b164d4d9ee0c3b03647668df93d1ca126bdb1e563fc3d2ad8a7baed75c634",
-      "semantic_nodes": 25,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T14:29:42Z",
       "fresh": true,
       "competition_active": true,
@@ -3009,17 +3058,17 @@
     "telegram:@ConfigsHUB": {
       "fingerprint": "f893b16310cd4757cff944a4a3296c6779c622d4ad20b0447280732676ab78e4",
       "semantic_nodes": 20,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T19:34:56Z",
       "fresh": true,
       "competition_active": true,
       "freshness_reason": "within_window",
       "duplicate_of": null
     },
-    "telegram:@v2ray_configs_pool": {
-      "fingerprint": "36753e98bb572b8a0c128217b68f8aba1f97b0fbd2a18f3d353bc22647ffe3e7",
-      "semantic_nodes": 22,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+    "telegram:@expressvpn_420": {
+      "fingerprint": "799b164d4d9ee0c3b03647668df93d1ca126bdb1e563fc3d2ad8a7baed75c634",
+      "semantic_nodes": 25,
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T14:29:42Z",
       "fresh": true,
       "competition_active": true,
@@ -3029,28 +3078,28 @@
     "telegram:@mainv2ray": {
       "fingerprint": "92365b77cb895c5255a0ac66eab04a8c2cb1c5f898261a30e3a95bc1cc4f5b89",
       "semantic_nodes": 26,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T22:35:47Z",
       "fresh": true,
       "competition_active": true,
-      "freshness_reason": "changed",
+      "freshness_reason": "within_window",
       "duplicate_of": null
     },
     "telegram:@freeconfigforyou": {
       "fingerprint": "409c3ea514dffe435d9af0d0bd370e21df2473be6a5469913a54a127f008186b",
       "semantic_nodes": 13,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T18:34:08Z",
       "fresh": true,
       "competition_active": true,
       "freshness_reason": "within_window",
       "duplicate_of": null
     },
-    "telegram:@vpn_mafia": {
-      "fingerprint": "04de133fd1b6ec26ff064730f17f76fe0533f690af765d66ba2b74b44f4f2d75",
-      "semantic_nodes": 30,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T14:29:42Z",
+    "telegram:@spdnet": {
+      "fingerprint": "7994bd6f7e511e10356fd3955e7617625f934cffe242645f2182302437752bbb",
+      "semantic_nodes": 19,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T20:34:03Z",
       "fresh": true,
       "competition_active": true,
       "freshness_reason": "within_window",
@@ -3059,7 +3108,27 @@
     "telegram:@v2raymelliii": {
       "fingerprint": "d069768a354245652c20a0955ee93c8115abaa1f3d258772630c3a9bf176cdfe",
       "semantic_nodes": 34,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T14:29:42Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    "telegram:@confing_v2rayy": {
+      "fingerprint": "80c8f3a40d89381c1ef66bee810343530307b72808b7756a3226e4619df9e2e6",
+      "semantic_nodes": 20,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T14:29:42Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    "telegram:@vpn_mafia": {
+      "fingerprint": "04de133fd1b6ec26ff064730f17f76fe0533f690af765d66ba2b74b44f4f2d75",
+      "semantic_nodes": 30,
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T14:29:42Z",
       "fresh": true,
       "competition_active": true,
@@ -3069,27 +3138,7 @@
     "telegram:@sil3nt_network": {
       "fingerprint": "991b66665b03e71193ceb77d36b2ff048316f66352c7c0c6be490ecbc435c781",
       "semantic_nodes": 11,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T14:29:42Z",
-      "fresh": true,
-      "competition_active": true,
-      "freshness_reason": "within_window",
-      "duplicate_of": null
-    },
-    "telegram:@spdnet": {
-      "fingerprint": "7994bd6f7e511e10356fd3955e7617625f934cffe242645f2182302437752bbb",
-      "semantic_nodes": 19,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T20:34:03Z",
-      "fresh": true,
-      "competition_active": true,
-      "freshness_reason": "within_window",
-      "duplicate_of": null
-    },
-    "telegram:@confing_v2rayy": {
-      "fingerprint": "80c8f3a40d89381c1ef66bee810343530307b72808b7756a3226e4619df9e2e6",
-      "semantic_nodes": 20,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T14:29:42Z",
       "fresh": true,
       "competition_active": true,
@@ -3099,7 +3148,7 @@
     "telegram:@netmellianti": {
       "fingerprint": "fc77d47778581ecf77780dcdf76bfd7e65d185168703f022e5feb2c4ed103f6a",
       "semantic_nodes": 21,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T14:29:42Z",
       "fresh": true,
       "competition_active": true,
@@ -3109,7 +3158,17 @@
     "telegram:@surfboardv2ray": {
       "fingerprint": "497855f049d9d0b11d9d8c1293c8bb59fd9028313e66897b4568f173ff1b9e47",
       "semantic_nodes": 31,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T20:34:03Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    "telegram:@vpnserverrr": {
+      "fingerprint": "762a40cb8e51f9272776cf3fd39a83f31f95d7a5ff4548f5071ae4fd57d7c6d3",
+      "semantic_nodes": 8,
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T20:34:03Z",
       "fresh": true,
       "competition_active": true,
@@ -3119,18 +3178,18 @@
     "telegram:@flyv2ray": {
       "fingerprint": "6ee4b298d3e1c2ed7f19005bc2dd576f40109d145bfeae8bf9c4a4917ed28d85",
       "semantic_nodes": 20,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T14:29:42Z",
       "fresh": true,
       "competition_active": true,
       "freshness_reason": "within_window",
       "duplicate_of": null
     },
-    "telegram:@vpnserverrr": {
-      "fingerprint": "762a40cb8e51f9272776cf3fd39a83f31f95d7a5ff4548f5071ae4fd57d7c6d3",
-      "semantic_nodes": 8,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T20:34:03Z",
+    "telegram:@ShadowsocksM": {
+      "fingerprint": "5e7b7b7151ec060b8d8612a1a37c69ea76505067221282f7c0c7df3874f0944c",
+      "semantic_nodes": 44,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T14:29:42Z",
       "fresh": true,
       "competition_active": true,
       "freshness_reason": "within_window",
@@ -3139,17 +3198,7 @@
     "telegram:@namiraconfigs": {
       "fingerprint": "d0a2aa1a018a2a1ba3b8f9b5ab213ceeb2c0bb1bcc326f89219ba65312aaadbb",
       "semantic_nodes": 19,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T14:29:42Z",
-      "fresh": true,
-      "competition_active": true,
-      "freshness_reason": "within_window",
-      "duplicate_of": null
-    },
-    "telegram:@free_conf_iran": {
-      "fingerprint": "21381c416df7033963e7f4efbe9682d8a35073cab4fed4c1224ebc160727ed6c",
-      "semantic_nodes": 14,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T14:29:42Z",
       "fresh": true,
       "competition_active": true,
@@ -3159,7 +3208,17 @@
     "telegram:@nufilter": {
       "fingerprint": "1c6c0416e494e9ae77700cd927cebddb81cc9bdd86a83ecab248f69e017d5bfa",
       "semantic_nodes": 14,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T14:29:42Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    "telegram:@free_conf_iran": {
+      "fingerprint": "21381c416df7033963e7f4efbe9682d8a35073cab4fed4c1224ebc160727ed6c",
+      "semantic_nodes": 14,
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T14:29:42Z",
       "fresh": true,
       "competition_active": true,
@@ -3167,7 +3226,7 @@
       "duplicate_of": null
     },
     "telegram:@webshecan": {
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T14:29:42Z",
       "fresh": false,
       "competition_active": false,
@@ -3175,21 +3234,11 @@
       "duplicate_of": null,
       "semantic_nodes": 0
     },
-    "telegram:@ShadowsocksM": {
-      "fingerprint": "5e7b7b7151ec060b8d8612a1a37c69ea76505067221282f7c0c7df3874f0944c",
-      "semantic_nodes": 44,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T14:29:42Z",
-      "fresh": true,
-      "competition_active": true,
-      "freshness_reason": "within_window",
-      "duplicate_of": null
-    },
     "telegram:@V2All": {
-      "fingerprint": "e4f324998a872f0c544dced1ae717396eccd034209451b49f20f5a89d8d72587",
-      "semantic_nodes": 22,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T22:35:47Z",
+      "fingerprint": "d18c371c82225e5585842b19f67c8b31458e295aeffa130fca4351ec25f0aecc",
+      "semantic_nodes": 23,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T23:36:02Z",
       "fresh": true,
       "competition_active": true,
       "freshness_reason": "changed",
@@ -3198,7 +3247,27 @@
     "telegram:@alfred_config": {
       "fingerprint": "8ea928952f664822a5edd82a750dede219bb6d3f4d1bdb44aa9285f123f5b87b",
       "semantic_nodes": 18,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T14:29:42Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    "telegram:@FreeV2rays": {
+      "fingerprint": "ffdbec9d8eefefb53fdf0451e6ab2b075f721adb09984a62d04339909ae65c56",
+      "semantic_nodes": 18,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T14:29:42Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    "telegram:@ProxyPJ": {
+      "fingerprint": "3f6775c61d8d8ad3cae8107606e12411c739fe75b998c7d2185f2e53883a0cf2",
+      "semantic_nodes": 18,
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T14:29:42Z",
       "fresh": true,
       "competition_active": true,
@@ -3208,18 +3277,8 @@
     "telegram:@ghand_sheken": {
       "fingerprint": "b5c25165e3a279c85dd594a80f47b3e17a8bc3e37655cc8a4d37c81773941a0b",
       "semantic_nodes": 17,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T16:33:32Z",
-      "fresh": true,
-      "competition_active": true,
-      "freshness_reason": "within_window",
-      "duplicate_of": null
-    },
-    "telegram:@ProxyPJ": {
-      "fingerprint": "3f6775c61d8d8ad3cae8107606e12411c739fe75b998c7d2185f2e53883a0cf2",
-      "semantic_nodes": 18,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T14:29:42Z",
       "fresh": true,
       "competition_active": true,
       "freshness_reason": "within_window",
@@ -3228,18 +3287,8 @@
     "telegram:@kingofilter": {
       "fingerprint": "f66a3024f5ea2e7be5be0e5c656bb0505a9d3a43bf284cfdea79f63b2977ea41",
       "semantic_nodes": 8,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T18:34:08Z",
-      "fresh": true,
-      "competition_active": true,
-      "freshness_reason": "within_window",
-      "duplicate_of": null
-    },
-    "telegram:@FreeV2rays": {
-      "fingerprint": "ffdbec9d8eefefb53fdf0451e6ab2b075f721adb09984a62d04339909ae65c56",
-      "semantic_nodes": 18,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T14:29:42Z",
       "fresh": true,
       "competition_active": true,
       "freshness_reason": "within_window",
@@ -3248,97 +3297,7 @@
     "telegram:@arv2ray": {
       "fingerprint": "0172f8764bececc91cc89d31ca3528f5d4f51ff992d0f160534fc982d4483082",
       "semantic_nodes": 16,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T14:29:42Z",
-      "fresh": true,
-      "competition_active": true,
-      "freshness_reason": "within_window",
-      "duplicate_of": null
-    },
-    "telegram:@fnet00": {
-      "fingerprint": "4cc1246d7cf8b2353e9172c123ed3f3cce3a4fc7a8cfc05516ecb0e2184f9acd",
-      "semantic_nodes": 17,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T14:29:42Z",
-      "fresh": true,
-      "competition_active": true,
-      "freshness_reason": "within_window",
-      "duplicate_of": null
-    },
-    "telegram:@jkvpn": {
-      "fingerprint": "0c1d7e43b63e8c20dd99129b79b8f659e9c7eb9c0546157565735da0eb64c43e",
-      "semantic_nodes": 14,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T22:35:47Z",
-      "fresh": true,
-      "competition_active": true,
-      "freshness_reason": "changed",
-      "duplicate_of": null
-    },
-    "telegram:@V2Graphy": {
-      "fingerprint": "cdceed4b5796df0f5fc6ff4c3294027035abe74751511aa52ab1011887d28629",
-      "semantic_nodes": 10,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T14:29:42Z",
-      "fresh": true,
-      "competition_active": true,
-      "freshness_reason": "within_window",
-      "duplicate_of": null
-    },
-    "telegram:@azaranv2ray": {
-      "fingerprint": "4a513415157b5b7cbdaf312899fcea8e7d34cc5900e3eb6ba073a605931b8c7d",
-      "semantic_nodes": 17,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T14:29:42Z",
-      "fresh": true,
-      "competition_active": true,
-      "freshness_reason": "within_window",
-      "duplicate_of": null
-    },
-    "telegram:@musiclovers85": {
-      "fingerprint": "d0a6f166b1a2f07c5db9b04bf4c7d68638791d60ddb042c03b187662fa3a5aa8",
-      "semantic_nodes": 15,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T19:34:56Z",
-      "fresh": true,
-      "competition_active": true,
-      "freshness_reason": "within_window",
-      "duplicate_of": null
-    },
-    "telegram:@hollowcon": {
-      "fingerprint": "82ffd1f078448968bb7b7560be6affa62025b655b80e49679532dcf659846bd5",
-      "semantic_nodes": 13,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T14:29:42Z",
-      "fresh": true,
-      "competition_active": true,
-      "freshness_reason": "within_window",
-      "duplicate_of": null
-    },
-    "telegram:@v2ryng01": {
-      "fingerprint": "27aab1cf9036b076bbc63e78d2ae26d65a7e82e67f637a153438b2c42bccda8b",
-      "semantic_nodes": 10,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T22:35:47Z",
-      "fresh": true,
-      "competition_active": true,
-      "freshness_reason": "changed",
-      "duplicate_of": null
-    },
-    "telegram:@v2ray_spatial": {
-      "fingerprint": "8caa5c79b31540c80308ae15675893b8741c1eab6ae644116408882788a3b104",
-      "semantic_nodes": 13,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T14:29:42Z",
-      "fresh": true,
-      "competition_active": true,
-      "freshness_reason": "within_window",
-      "duplicate_of": null
-    },
-    "telegram:@subgift": {
-      "fingerprint": "702b28430f04c348a02eb8ea14095e4e5a2eb40e9e05e33de110635b6c46a01e",
-      "semantic_nodes": 15,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T14:29:42Z",
       "fresh": true,
       "competition_active": true,
@@ -3348,7 +3307,107 @@
     "telegram:@vpn_mikey": {
       "fingerprint": "7dd5817c5a5c6cee20b1c3971915b796509a1433a7a9f5910f8e0b8804323a52",
       "semantic_nodes": 8,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T14:29:42Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    "telegram:@musiclovers85": {
+      "fingerprint": "d0a6f166b1a2f07c5db9b04bf4c7d68638791d60ddb042c03b187662fa3a5aa8",
+      "semantic_nodes": 15,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T19:34:56Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    "telegram:@V2Graphy": {
+      "fingerprint": "cdceed4b5796df0f5fc6ff4c3294027035abe74751511aa52ab1011887d28629",
+      "semantic_nodes": 10,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T14:29:42Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    "telegram:@fnet00": {
+      "fingerprint": "4cc1246d7cf8b2353e9172c123ed3f3cce3a4fc7a8cfc05516ecb0e2184f9acd",
+      "semantic_nodes": 17,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T14:29:42Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    "telegram:@jkvpn": {
+      "fingerprint": "0c1d7e43b63e8c20dd99129b79b8f659e9c7eb9c0546157565735da0eb64c43e",
+      "semantic_nodes": 14,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T22:35:47Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    "telegram:@azaranv2ray": {
+      "fingerprint": "4a513415157b5b7cbdaf312899fcea8e7d34cc5900e3eb6ba073a605931b8c7d",
+      "semantic_nodes": 17,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T14:29:42Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    "telegram:@subgift": {
+      "fingerprint": "702b28430f04c348a02eb8ea14095e4e5a2eb40e9e05e33de110635b6c46a01e",
+      "semantic_nodes": 15,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T14:29:42Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    "telegram:@v2ryng01": {
+      "fingerprint": "27aab1cf9036b076bbc63e78d2ae26d65a7e82e67f637a153438b2c42bccda8b",
+      "semantic_nodes": 10,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T22:35:47Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    "telegram:@socks5tobefree": {
+      "fingerprint": "a8ea520491941189e677953c61597110a45f702a2d31a0c5ff580e6c14bb63ee",
+      "semantic_nodes": 15,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T14:29:42Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    "telegram:@hollowcon": {
+      "fingerprint": "82ffd1f078448968bb7b7560be6affa62025b655b80e49679532dcf659846bd5",
+      "semantic_nodes": 13,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T14:29:42Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    "telegram:@v2ray_spatial": {
+      "fingerprint": "8caa5c79b31540c80308ae15675893b8741c1eab6ae644116408882788a3b104",
+      "semantic_nodes": 13,
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T14:29:42Z",
       "fresh": true,
       "competition_active": true,
@@ -3358,18 +3417,8 @@
     "telegram:@v2rayng_ip": {
       "fingerprint": "77a32c49cd46a1ea285dfc4187668187b9def801f4b12e2c96456f68c3b06b2f",
       "semantic_nodes": 76,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T22:35:47Z",
-      "fresh": true,
-      "competition_active": true,
-      "freshness_reason": "changed",
-      "duplicate_of": null
-    },
-    "telegram:@socks5tobefree": {
-      "fingerprint": "a8ea520491941189e677953c61597110a45f702a2d31a0c5ff580e6c14bb63ee",
-      "semantic_nodes": 15,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T14:29:42Z",
       "fresh": true,
       "competition_active": true,
       "freshness_reason": "within_window",
@@ -3378,7 +3427,7 @@
     "telegram:@nim_vpn_ir": {
       "fingerprint": "0d506a617781cd841bc404743a580f1d6d66a113ef42e88c465573f8e45a72e1",
       "semantic_nodes": 10,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T14:29:42Z",
       "fresh": true,
       "competition_active": true,
@@ -3388,7 +3437,7 @@
     "telegram:@Parsashonam": {
       "fingerprint": "0801cd81a971adc63ca3c011fae9343c0ab644d5888ec144af5fa9c42a79012e",
       "semantic_nodes": 15,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T14:29:42Z",
       "fresh": true,
       "competition_active": true,
@@ -3398,7 +3447,7 @@
     "telegram:@i10vpn": {
       "fingerprint": "5bc87d8f9d8ec092f8ebaa1cfca15b846ae85ebd9206673c5aa11a5daae3ba97",
       "semantic_nodes": 28,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T14:29:42Z",
       "fresh": true,
       "competition_active": true,
@@ -3406,7 +3455,7 @@
       "duplicate_of": null
     },
     "telegram:@abc_configs": {
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T14:29:42Z",
       "fresh": false,
       "competition_active": false,
@@ -3414,30 +3463,30 @@
       "duplicate_of": null,
       "semantic_nodes": 0
     },
-    "telegram:@ehsawn8": {
-      "fingerprint": "4e857fa236638104e27ae1a5538b18e538a23ae9bfa72c27bae2a0ff0cfcb1b5",
-      "semantic_nodes": 3,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T14:29:42Z",
-      "fresh": true,
-      "competition_active": true,
-      "freshness_reason": "within_window",
-      "duplicate_of": null
-    },
     "telegram:@amvng": {
       "fingerprint": "510f82875b95586440c8d81207dfa828bd9d66071426b8e5549bc249ddc7638b",
       "semantic_nodes": 10,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T14:29:42Z",
       "fresh": true,
       "competition_active": true,
       "freshness_reason": "within_window",
       "duplicate_of": null
     },
-    "telegram:@rokervpn": {
-      "fingerprint": "916a37e4b9cc316095a5c289ac83bf605fa7e0c49e7293772fbefd6dd6d7192c",
-      "semantic_nodes": 12,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+    "telegram:@SiNAVM": {
+      "fingerprint": "af1b0448c0509f75835fbad439f31923289475c27b0ec5e8f3075e8133391262",
+      "semantic_nodes": 52,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T14:29:42Z",
+      "fresh": false,
+      "competition_active": false,
+      "freshness_reason": "empty_source",
+      "duplicate_of": null
+    },
+    "telegram:@ehsawn8": {
+      "fingerprint": "4e857fa236638104e27ae1a5538b18e538a23ae9bfa72c27bae2a0ff0cfcb1b5",
+      "semantic_nodes": 3,
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T14:29:42Z",
       "fresh": true,
       "competition_active": true,
@@ -3447,7 +3496,7 @@
     "telegram:@atlas_v2vpn": {
       "fingerprint": "a9e85ead9016fa2203a7df12ef4c49b4058776d63ef952680167825b2e86f211",
       "semantic_nodes": 16,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T14:29:42Z",
       "fresh": true,
       "competition_active": true,
@@ -3455,19 +3504,29 @@
       "duplicate_of": null
     },
     "telegram:@gozargahazad": {
-      "fingerprint": "70a52799d26956c65f645a1921f92f8492142c4680d803df1810df57a94113a0",
-      "semantic_nodes": 14,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T22:35:47Z",
+      "fingerprint": "607594ab977c36677cdede742246fb9e39d276e97fea66d9dd056ead377649fc",
+      "semantic_nodes": 11,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T23:36:02Z",
       "fresh": true,
       "competition_active": true,
       "freshness_reason": "changed",
       "duplicate_of": null
     },
+    "telegram:@rokervpn": {
+      "fingerprint": "916a37e4b9cc316095a5c289ac83bf605fa7e0c49e7293772fbefd6dd6d7192c",
+      "semantic_nodes": 12,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T14:29:42Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
     "telegram:@ViPVpn_v2ray": {
       "fingerprint": "2ca6805f2cd5df98d5fdebbecb064dd70bf0ba9c5ad38733d5c9e1e9f2c3a186",
       "semantic_nodes": 11,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T14:29:42Z",
       "fresh": true,
       "competition_active": true,
@@ -3477,7 +3536,7 @@
     "telegram:@V2RAY_VMESS_free": {
       "fingerprint": "c4ae9d7d330bd14f938c873b89ca51d387e9f8f8fc95bb322aa497678cd83584",
       "semantic_nodes": 6,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T14:29:42Z",
       "fresh": true,
       "competition_active": true,
@@ -3487,7 +3546,36 @@
     "telegram:@privatevpns": {
       "fingerprint": "7b7ab3358e0142370d39a8c365f26d52363cc23fa8faf9ac79dc882ecffb1b8b",
       "semantic_nodes": 1,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T14:29:42Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    "telegram:@SvnTeam": {
+      "fingerprint": "72d6413d44dd570c46aa58e9b11b00927996b28ff85465e488323cf296982d44",
+      "semantic_nodes": 9,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T14:29:42Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    "telegram:@node_pool": {
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T14:29:42Z",
+      "fresh": false,
+      "competition_active": false,
+      "freshness_reason": "empty_source",
+      "duplicate_of": null,
+      "semantic_nodes": 0
+    },
+    "telegram:@SafeNetIR": {
+      "fingerprint": "573d05c3217e2ba7d6a985feeb65b1a7bddbfceb98403876161e741d7674d86e",
+      "semantic_nodes": 7,
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T14:29:42Z",
       "fresh": true,
       "competition_active": true,
@@ -3497,46 +3585,7 @@
     "telegram:@gozargahvpn": {
       "fingerprint": "8b6dc372881b6c5ef10f36f4261777e78d0fc9404269235d1b64962409a38b05",
       "semantic_nodes": 9,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T14:29:42Z",
-      "fresh": true,
-      "competition_active": true,
-      "freshness_reason": "within_window",
-      "duplicate_of": null
-    },
-    "telegram:@SafeNetIR": {
-      "fingerprint": "573d05c3217e2ba7d6a985feeb65b1a7bddbfceb98403876161e741d7674d86e",
-      "semantic_nodes": 7,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T14:29:42Z",
-      "fresh": true,
-      "competition_active": true,
-      "freshness_reason": "within_window",
-      "duplicate_of": null
-    },
-    "telegram:@node_pool": {
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T14:29:42Z",
-      "fresh": false,
-      "competition_active": false,
-      "freshness_reason": "empty_source",
-      "duplicate_of": null,
-      "semantic_nodes": 0
-    },
-    "telegram:@SvnTeam": {
-      "fingerprint": "72d6413d44dd570c46aa58e9b11b00927996b28ff85465e488323cf296982d44",
-      "semantic_nodes": 9,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T14:29:42Z",
-      "fresh": true,
-      "competition_active": true,
-      "freshness_reason": "within_window",
-      "duplicate_of": null
-    },
-    "telegram:@ai_duet": {
-      "fingerprint": "21e29130acacb8a6a1fa3582b8d5ed11625b05bd2f35417b84371bf878606acb",
-      "semantic_nodes": 6,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T14:29:42Z",
       "fresh": true,
       "competition_active": true,
@@ -3546,7 +3595,17 @@
     "telegram:@Argo_VPN1": {
       "fingerprint": "c0fedaa68bc81dcda5e3d553be30100789b3d21725c264f3ece84212af207d75",
       "semantic_nodes": 8,
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T14:29:42Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "within_window",
+      "duplicate_of": null
+    },
+    "telegram:@ai_duet": {
+      "fingerprint": "21e29130acacb8a6a1fa3582b8d5ed11625b05bd2f35417b84371bf878606acb",
+      "semantic_nodes": 6,
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T14:29:42Z",
       "fresh": true,
       "competition_active": true,
@@ -3554,7 +3613,7 @@
       "duplicate_of": null
     },
     "telegram:@ZibaNabz": {
-      "last_checked_at": "2026-09-06T22:35:47Z",
+      "last_checked_at": "2026-09-06T23:36:02Z",
       "last_changed_at": "2026-09-06T14:29:42Z",
       "fresh": false,
       "competition_active": false,
@@ -3562,21 +3621,11 @@
       "duplicate_of": null,
       "semantic_nodes": 0
     },
-    "telegram:@SiNAVM": {
-      "fingerprint": "af1b0448c0509f75835fbad439f31923289475c27b0ec5e8f3075e8133391262",
-      "semantic_nodes": 52,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T14:29:42Z",
-      "fresh": true,
-      "competition_active": true,
-      "freshness_reason": "within_window",
-      "duplicate_of": null
-    },
     "v2nodes": {
-      "fingerprint": "64170e74bc1872812b93aeda6b9fbe0f8f41f10900072d14a1c6d85d1cf773e0",
-      "semantic_nodes": 249,
-      "last_checked_at": "2026-09-06T22:35:47Z",
-      "last_changed_at": "2026-09-06T22:35:47Z",
+      "fingerprint": "73b2aade73bba59917a44ec79747a0e884274b2d2d7d562e2f4e257c41a48ad1",
+      "semantic_nodes": 246,
+      "last_checked_at": "2026-09-06T23:36:02Z",
+      "last_changed_at": "2026-09-06T23:36:02Z",
       "fresh": true,
       "competition_active": true,
       "freshness_reason": "changed",
