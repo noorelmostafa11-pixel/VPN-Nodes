@@ -155,18 +155,18 @@ def endpoint_from_uri(uri: str):
 
 
 def valid_uri(uri: str, protocol: str) -> bool:
-    if len(re.findall(r"(?:vless|vmess|trojan|ss)://", uri, re.I)) != 1:
-        return False
-    if protocol == "vmess":
-        return _decode_vmess_payload(uri) is not None
-    if protocol == "shadowsocks":
-        return _decode_ss_parts(uri) is not None
-    parsed = urlparse(uri)
     try:
+        if len(re.findall(r"(?:vless|vmess|trojan|ss)://", uri, re.I)) != 1:
+            return False
+        if protocol == "vmess":
+            return _decode_vmess_payload(uri) is not None
+        if protocol == "shadowsocks":
+            return _decode_ss_parts(uri) is not None
+        parsed = urlparse(uri)
         port = parsed.port
-    except ValueError:
+        return bool(parsed.hostname and port and parsed.username)
+    except (TypeError, ValueError, UnicodeError):
         return False
-    return bool(parsed.hostname and port and parsed.username)
 
 
 def dedup_key(uri: str) -> str:
@@ -190,13 +190,17 @@ def parse_lines(text: str, source_name: str, source_hint_country: str | None = N
         if not line or line.startswith(("#", "//", "proxies:", "proxy-groups:")):
             continue
         for uri in extract_uris(line):
-            protocol = protocol_from_uri(uri)
-            if not protocol or not valid_uri(uri, protocol):
+            try:
+                protocol = protocol_from_uri(uri)
+                if not protocol or not valid_uri(uri, protocol):
+                    continue
+                host, port, remark, _ = endpoint_from_uri(uri)
+                if not host or port not in ALLOWED_PORTS:
+                    continue
+                rows.append({"uri": uri, "protocol": protocol, "host": host, "port": port, "remark": remark, "country": "UNKNOWN", "source": source_name})
+            except (TypeError, ValueError, UnicodeError):
+                # A malformed node must never discard the remaining source file.
                 continue
-            host, port, remark, _ = endpoint_from_uri(uri)
-            if not host or port not in ALLOWED_PORTS:
-                continue
-            rows.append({"uri": uri, "protocol": protocol, "host": host, "port": port, "remark": remark, "country": "UNKNOWN", "source": source_name})
     return rows
 
 
