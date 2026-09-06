@@ -7,6 +7,7 @@ Public node catalog builder for the Android VPN client.
 ```text
 sources.json + Telegram + v2nodes
         -> parse / normalize / semantic deduplicate
+        -> source freshness competition (72 hours; always rechecked)
         -> TCP reachability on port 443 (512 workers)
         -> country resolution and latency ordering
         -> output/countries/<CC>.txt (backwards-compatible full feed)
@@ -42,6 +43,18 @@ Country order remains exactly the same as the latency-ranked full feed. Current
 Android clients download one signed 1,000-node shard at a time and continue
 to the next shard only when needed. Older clients can continue to use the full
 `output/countries/<CC>.txt` files.
+
+## Source freshness
+
+Every configured source is downloaded and checked on every run. A source whose
+semantic node set has not changed for more than 72 hours is temporarily excluded
+from the competition, but it is not forgotten or disabled. As soon as its node
+set changes, it automatically re-enters in that same run. When two sources are
+exact mirrors, only the first copy competes while both continue to be monitored.
+
+This policy changes only which candidates reach the existing catalog. Android
+URLs, country feeds, signed shard paths, protocol feeds, manifest schema,
+signature algorithm and catalog public key remain unchanged.
 
 ## Generated intermediates
 
