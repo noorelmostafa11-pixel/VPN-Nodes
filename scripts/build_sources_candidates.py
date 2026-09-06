@@ -8,6 +8,7 @@ from pathlib import Path
 
 import update_catalog as catalog
 from freev2raynodes_adapter import candidate_urls
+from publicvpnlist_adapter import collect_publicvpnlist
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCES = ROOT / "sources" / "sources.json"
@@ -46,6 +47,11 @@ def main() -> int:
     rows.extend(dynamic)
     health.append({"name": "freev2raynodes", "ok": True, "nodes": len(dynamic)})
     print(f"OK source freev2raynodes: {len(dynamic)}")
+
+    public = collect_publicvpnlist()
+    rows.extend(public)
+    health.append({"name": "PublicVPNList-api", "ok": True, "nodes": len(public)})
+    print(f"OK source PublicVPNList-api: {len(public)}")
 
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(json.dumps({
