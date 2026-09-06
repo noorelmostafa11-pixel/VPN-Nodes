@@ -9,6 +9,7 @@ from pathlib import Path
 import update_catalog as catalog
 from freev2raynodes_adapter import candidate_urls
 from html_v2ray_parser import collect_html_source
+from source_discovery import discover_source
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCES = ROOT / "sources" / "sources.json"
@@ -26,8 +27,7 @@ def collect_freev2raynodes():
     rows = []
     for url in candidate_urls():
         try:
-            item = {"name": "freev2raynodes", "url": url}
-            rows.extend(catalog.collect_source(item))
+            rows.extend(catalog.collect_source({"name": "freev2raynodes", "url": url}))
         except Exception:
             continue
     return rows
@@ -40,6 +40,13 @@ def collect_html_sources():
         started = time.perf_counter()
         try:
             found = collect_html_source(item["name"], item["url"])
+            if not found:
+                discovered = discover_source(item["name"], item["url"])
+                for endpoint in discovered.get("endpoints", []):
+                    try:
+                        found.extend(catalog.collect_source({"name": item["name"], "url": endpoint}))
+                    except Exception:
+                        continue
             rows.extend(found)
             health.append({"name": item["name"], "ok": True, "nodes": len(found),
                            "elapsed_ms": round((time.perf_counter()-started)*1000, 1)})
@@ -59,7 +66,6 @@ def main() -> int:
     for item in cfg.get("sources", []):
         if item.get("format") in SPECIAL_FORMATS:
             continue
-        started = time.perf_counter()
         try:
             found = catalog.collect_source(item)
             rows.extend(found)
@@ -78,12 +84,7 @@ def main() -> int:
     health.extend(html_health)
 
     OUT.parent.mkdir(parents=True, exist_ok=True)
-    OUT.write_text(json.dumps({
-        "generated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
-        "elapsed_ms": round((time.perf_counter()-started_all)*1000, 1),
-        "rows": rows,
-        "sources": health,
-    }, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    OUT.write_text(json.dumps({"generated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), "elapsed_ms": round((time.perf_counter()-started_all)*1000, 1), "rows": rows, "sources": health}, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(f"INFO sources_candidates={len(rows)}")
     return 0
 
