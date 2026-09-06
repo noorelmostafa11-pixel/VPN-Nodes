@@ -262,8 +262,8 @@ def publish_app_pool(
         "published_by_country": published_by_country,
         "country_names": country_names,
         "allowed_ports": sorted(catalog.ALLOWED_PORTS),
-        "policy": "tcp_liveness_only; Android Xray performs the final real-traffic check",
-        "ranking": "latency_ascending_only",
+        "health_policy": "TCP liveness only; Android Xray performs the final real-traffic check.",
+        "ranking_policy": "All published country nodes ordered by measured TCP latency ascending.",
         "country_policy": "all_resolved_tcp_alive_nodes",
         "country_resolution": country_result,
     }
