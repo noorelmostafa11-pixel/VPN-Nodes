@@ -1,9 +1,5 @@
 #!/usr/bin/env python3
-"""Build candidates from sources.json only.
-
-Telegram and v2nodes are intentionally excluded and have dedicated workflow
-steps. This script only collects/normalizes the ordinary public sources.
-"""
+"""Build candidates from public sources plus dynamic subscriptions."""
 from __future__ import annotations
 
 import json
@@ -11,11 +7,23 @@ import time
 from pathlib import Path
 
 import update_catalog as catalog
+from freev2raynodes_adapter import candidate_urls
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCES = ROOT / "sources" / "sources.json"
 OUT = ROOT / "output" / "metadata" / "sources_candidates.json"
 SPECIAL_FORMATS = {"telegram_catalog", "telegram_html", "v2nodes"}
+
+
+def collect_freev2raynodes():
+    rows = []
+    for url in candidate_urls():
+        try:
+            item = {"name": "freev2raynodes", "url": url}
+            rows.extend(catalog.collect_source(item))
+        except Exception:
+            continue
+    return rows
 
 
 def main() -> int:
@@ -39,6 +47,13 @@ def main() -> int:
                            "error": str(exc),
                            "elapsed_ms": round((time.perf_counter() - started) * 1000, 1)})
             print(f"WARN source {item['name']}: {exc}")
+
+    started = time.perf_counter()
+    dynamic = collect_freev2raynodes()
+    rows.extend(dynamic)
+    health.append({"name": "freev2raynodes", "ok": True, "nodes": len(dynamic),
+                   "elapsed_ms": round((time.perf_counter() - started) * 1000, 1)})
+    print(f"OK source freev2raynodes: {len(dynamic)}")
 
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(json.dumps({
