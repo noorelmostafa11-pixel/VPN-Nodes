@@ -91,6 +91,7 @@ def main() -> int:
         f"INFO source_freshness checked={freshness['sources_checked']} "
         f"active={freshness['active_sources']} stale={freshness['stale_sources']} "
         f"mirrors={freshness['duplicate_sources']} failed={freshness['failed_sources']} "
+        f"empty={freshness['empty_sources']} "
         f"included_nodes={freshness['included_nodes']}"
     )
 
