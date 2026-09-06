@@ -3,12 +3,16 @@
 
 from __future__ import annotations
 
+import base64
 import datetime
 import urllib.request
 
 
 BASE_URL = "https://clashxw.github.io/uploads"
 FILE_INDEXES = range(0, 20)
+
+
+PROTOCOLS = ("vless://", "vmess://", "trojan://", "ss://")
 
 
 def fetch_text(url: str) -> str:
@@ -32,31 +36,52 @@ def build_daily_urls() -> list[str]:
     ]
 
 
+def decode_base64(text: str) -> str:
+    try:
+        raw = "".join(text.split())
+        return base64.b64decode(raw + "==").decode("utf-8", errors="ignore")
+    except Exception:
+        return ""
+
+
 def extract_nodes(text: str) -> list[dict]:
     rows = []
     seen = set()
 
-    for line in text.splitlines():
-        line = line.strip()
-        if line.startswith(("vless://", "vmess://", "trojan://", "ss://")):
-            if line not in seen:
-                seen.add(line)
-                rows.append({
-                    "name": "ClashXW-Daily",
-                    "source": "clashxw-daily",
-                    "url": line,
-                })
+    candidates = [text, decode_base64(text)]
+
+    for content in candidates:
+        for line in content.splitlines():
+            line = line.strip()
+
+            if line.startswith(PROTOCOLS):
+                if line not in seen:
+                    seen.add(line)
+                    rows.append({
+                        "name": "ClashXW-Daily",
+                        "source": "clashxw-daily",
+                        "url": line,
+                    })
 
     return rows
 
 
 def collect_clashxw_daily() -> list[dict]:
     rows = []
+    seen = set()
 
     for url in build_daily_urls():
         try:
-            rows.extend(extract_nodes(fetch_text(url)))
-            print(f"OK source ClashXW-Daily: {url}")
+            found = extract_nodes(fetch_text(url))
+
+            for item in found:
+                if item["url"] not in seen:
+                    seen.add(item["url"])
+                    rows.append(item)
+
+            if found:
+                print(f"OK ClashXW file: {url} nodes={len(found)}")
+
         except Exception:
             continue
 
