@@ -2,11 +2,14 @@
 """FreeProxyDB API adapter.
 
 Collects V2Ray nodes from FreeProxyDB search API using pagination.
+Handles API rate limiting.
 """
 
 from __future__ import annotations
 
 import json
+import time
+import urllib.error
 import urllib.parse
 import urllib.request
 
@@ -21,23 +24,62 @@ PROTOCOLS = (
 )
 
 PAGE_SIZE = 100
-MAX_PAGES = 500
+MAX_PAGES = 5000
+
+PAGE_DELAY = 2
+PROTOCOL_DELAY = 15
+MAX_RETRIES = 4
 
 
 def fetch_json(url: str) -> dict:
-    req = urllib.request.Request(
-        url,
-        headers={
-            "Accept": "application/json",
-            "User-Agent": "VPN-Nodes-Catalog/1.0",
-        },
-    )
 
-    with urllib.request.urlopen(req, timeout=20) as response:
-        return json.loads(response.read().decode("utf-8"))
+    for attempt in range(1, MAX_RETRIES + 1):
+
+        req = urllib.request.Request(
+            url,
+            headers={
+                "Accept": "application/json",
+                "User-Agent": "VPN-Nodes-Catalog/1.0",
+            },
+        )
+
+        try:
+
+            with urllib.request.urlopen(
+                req,
+                timeout=20
+            ) as response:
+
+                return json.loads(
+                    response.read().decode("utf-8")
+                )
+
+
+        except urllib.error.HTTPError as exc:
+
+            if exc.code == 429:
+
+                wait = attempt * 10
+
+                print(
+                    f"WARN FreeProxyDB rate limit "
+                    f"retry {attempt}/{MAX_RETRIES} "
+                    f"after {wait}s"
+                )
+
+                time.sleep(wait)
+                continue
+
+            raise
+
+
+    raise RuntimeError(
+        "FreeProxyDB rate limit exceeded"
+    )
 
 
 def build_url(protocol: str, page: int) -> str:
+
     params = {
         "country": "",
         "protocol": protocol,
@@ -54,15 +96,9 @@ def build_url(protocol: str, page: int) -> str:
 
 
 def extract_uri(item) -> str:
-    """
-    Extract URI from FreeProxyDB API response.
-
-    Supports:
-    - Direct URI strings
-    - JSON objects with connect_string or URI fields
-    """
 
     if isinstance(item, str):
+
         value = item.strip()
 
         if value.startswith(
@@ -77,8 +113,10 @@ def extract_uri(item) -> str:
 
         return ""
 
+
     if not isinstance(item, dict):
         return ""
+
 
     for key in (
         "connect_string",
@@ -89,56 +127,73 @@ def extract_uri(item) -> str:
         "v2ray",
         "subscription",
     ):
+
         value = item.get(key)
 
         if isinstance(value, str) and "://" in value:
             return value.strip()
 
+
     return ""
 
 
 def extract_data(payload: dict) -> list:
-    """
-    Handle FreeProxyDB API structure:
 
-    {
-        "data": {
-            "total_count": ...,
-            "data": [...]
-        }
-    }
-    """
-
-    container = payload.get("data", [])
+    container = payload.get(
+        "data",
+        []
+    )
 
     if isinstance(container, dict):
-        return container.get("data", [])
+
+        return container.get(
+            "data",
+            []
+        )
+
 
     if isinstance(container, list):
         return container
+
 
     return []
 
 
 def fetch_protocol(protocol: str) -> list[dict]:
+
     rows = []
     seen = set()
 
-    for page in range(1, MAX_PAGES + 1):
+
+    for page in range(
+        1,
+        MAX_PAGES + 1
+    ):
 
         try:
+
             payload = fetch_json(
-                build_url(protocol, page)
+                build_url(
+                    protocol,
+                    page
+                )
             )
 
+
         except Exception as exc:
+
             print(
-                f"WARN FreeProxyDB-{protocol} page {page}: {exc}"
+                f"WARN FreeProxyDB-{protocol} "
+                f"page {page}: {exc}"
             )
+
             break
 
 
-        data = extract_data(payload)
+        data = extract_data(
+            payload
+        )
+
 
         if not data:
             break
@@ -146,15 +201,21 @@ def fetch_protocol(protocol: str) -> list[dict]:
 
         for item in data:
 
-            uri = extract_uri(item)
+            uri = extract_uri(
+                item
+            )
+
 
             if not uri:
                 continue
 
+
             if uri in seen:
                 continue
 
+
             seen.add(uri)
+
 
             rows.append(
                 {
@@ -167,13 +228,26 @@ def fetch_protocol(protocol: str) -> list[dict]:
             )
 
 
+        print(
+            f"FreeProxyDB-{protocol} "
+            f"page {page}: {len(data)}"
+        )
+
+
         if len(data) < PAGE_SIZE:
             break
 
 
+        time.sleep(
+            PAGE_DELAY
+        )
+
+
     print(
-        f"OK source FreeProxyDB-{protocol}: {len(rows)}"
+        f"OK source FreeProxyDB-{protocol}: "
+        f"{len(rows)}"
     )
+
 
     return rows
 
@@ -182,13 +256,24 @@ def collect_freeproxydb() -> list[dict]:
 
     rows = []
 
+
     for protocol in PROTOCOLS:
+
         rows.extend(
-            fetch_protocol(protocol)
+            fetch_protocol(
+                protocol
+            )
         )
 
+        time.sleep(
+            PROTOCOL_DELAY
+        )
+
+
     print(
-        f"OK source FreeProxyDB-api: {len(rows)}"
+        f"OK source FreeProxyDB-api: "
+        f"{len(rows)}"
     )
+
 
     return rows
