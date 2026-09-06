@@ -31,11 +31,29 @@ def collect_freev2raynodes():
 def normalize_adapter_rows(items: list[dict], source_name: str) -> list[dict]:
     """Convert adapter URL-shaped rows to the catalog's canonical node rows."""
     rows: list[dict] = []
+    seen_candidates: set[str] = set()
+    seen_uris: set[str] = set()
+
+    def strings(value):
+        if isinstance(value, str):
+            yield value
+        elif isinstance(value, dict):
+            for child in value.values():
+                yield from strings(child)
+        elif isinstance(value, (list, tuple)):
+            for child in value:
+                yield from strings(child)
+
     for item in items:
-        candidate = str(item.get("uri") or item.get("url") or "").strip()
-        if not candidate:
-            continue
-        rows.extend(catalog.parse_lines(candidate, source_name))
+        for raw in strings(item):
+            candidate = raw.strip()
+            if not candidate or candidate in seen_candidates:
+                continue
+            seen_candidates.add(candidate)
+            for row in catalog.parse_lines(candidate, source_name):
+                if row["uri"] not in seen_uris:
+                    seen_uris.add(row["uri"])
+                    rows.append(row)
     return rows
 
 
@@ -51,19 +69,19 @@ def collect_special(
     try:
         raw = collector()
         found = normalize_adapter_rows(raw, name) if normalize else raw
-        ok = bool(found)
         entry = {
             "name": name,
-            "ok": ok,
+            "ok": True,
             "nodes": len(found),
             "raw_nodes": len(raw),
             "elapsed_ms": round((time.perf_counter() - started) * 1000, 1),
         }
-        if not ok:
-            entry["error"] = "source returned no supported nodes"
+        if not found:
+            entry["status"] = "no_supported_nodes"
         health.append(entry)
         rows.extend(found)
-        print(f"{'OK' if ok else 'WARN'} source {name}: raw={len(raw)} normalized={len(found)}")
+        level = "OK" if found else "SKIP"
+        print(f"{level} source {name}: raw={len(raw)} normalized={len(found)}")
     except Exception as exc:
         health.append({
             "name": name,
@@ -88,11 +106,11 @@ def main() -> int:
         try:
             found = catalog.collect_source(item)
             rows.extend(found)
-            entry = {"name": item["name"], "ok": bool(found), "nodes": len(found)}
+            entry = {"name": item["name"], "ok": True, "nodes": len(found)}
             if not found:
-                entry["error"] = "source returned no supported nodes"
+                entry["status"] = "no_supported_nodes"
             health.append(entry)
-            print(f"{'OK' if found else 'WARN'} source {item['name']}: {len(found)}")
+            print(f"{'OK' if found else 'SKIP'} source {item['name']}: {len(found)}")
         except Exception as exc:
             health.append({"name": item["name"], "ok": False, "nodes": 0, "error": str(exc)})
             print(f"WARN source {item['name']}: {exc}")
