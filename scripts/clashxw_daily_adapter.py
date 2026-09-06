@@ -15,25 +15,31 @@ PROTOCOLS = ("vless://", "vmess://", "trojan://", "ss://")
 
 
 def fetch_text(url: str) -> str:
-    req = urllib.request.Request(url, headers={"User-Agent": "VPN-Nodes-Catalog/1.0"})
+    req = urllib.request.Request(
+        url,
+        headers={"User-Agent": "VPN-Nodes-Catalog/1.0"},
+    )
     with urllib.request.urlopen(req, timeout=20) as response:
         return response.read().decode("utf-8", errors="ignore")
 
 
 def build_daily_urls() -> list[str]:
-    now = datetime.datetime.utcnow()
-    date = now.strftime("%Y%m%d")
+    # ClashXW publishes files with the previous completed day.
+    day = datetime.datetime.utcnow() - datetime.timedelta(days=1)
+    year = day.strftime("%Y")
+    month = day.strftime("%m")
+    date = day.strftime("%Y%m%d")
+
     return [
-        f"{BASE_URL}/{now.strftime('%Y')}/{now.strftime('%m')}/{i}-{date}.txt"
-        for i in FILE_INDEXES
+        f"{BASE_URL}/{year}/{month}/{index}-{date}.txt"
+        for index in FILE_INDEXES
     ]
 
 
 def decode_base64(text: str) -> str:
     try:
         raw = "".join(text.split())
-        raw += "=" * (-len(raw) % 4)
-        return base64.b64decode(raw).decode("utf-8", errors="ignore")
+        return base64.b64decode(raw + "==").decode("utf-8", errors="ignore")
     except Exception:
         return ""
 
@@ -43,14 +49,13 @@ def extract_nodes(text: str) -> list[dict]:
     seen = set()
 
     for content in (text, decode_base64(text)):
-        for node in re.findall(r"(?:vless|vmess|trojan|ss)://[^\s]+", content):
-            node = node.strip()
-            if node not in seen:
-                seen.add(node)
+        for line in re.findall(r"(?:vless|vmess|trojan|ss)://[^\s]+", content):
+            if line not in seen:
+                seen.add(line)
                 rows.append({
                     "name": "ClashXW-Daily",
                     "source": "clashxw-daily",
-                    "url": node,
+                    "url": line,
                 })
 
     return rows
