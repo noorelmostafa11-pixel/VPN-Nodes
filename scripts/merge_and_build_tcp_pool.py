@@ -11,10 +11,13 @@ from pathlib import Path
 
 import build_tcp_pool as common
 import node_identity
+import source_freshness
 import update_catalog as catalog
 
 ROOT = Path(__file__).resolve().parents[1]
 META = ROOT / "output" / "metadata"
+SOURCE_FRESHNESS_STATE = META / "source_freshness.json"
+SOURCE_CONFIG = ROOT / "sources" / "sources.json"
 INPUTS = (
     META / "sources_candidates.json",
     META / "telegram_candidates.json",
@@ -72,6 +75,25 @@ def main() -> int:
         source_health.extend(health)
         print(f"INFO loaded {path.name}: rows={len(rows)}")
 
+    source_cfg = json.loads(SOURCE_CONFIG.read_text(encoding="utf-8"))
+    max_stale_hours = int(
+        source_cfg.get("freshness_policy", {}).get(
+            "max_unchanged_hours", source_freshness.DEFAULT_MAX_STALE_HOURS
+        )
+    )
+    all_rows, source_health, freshness = source_freshness.apply_source_freshness(
+        all_rows,
+        source_health,
+        SOURCE_FRESHNESS_STATE,
+        max_stale_hours=max_stale_hours,
+    )
+    print(
+        f"INFO source_freshness checked={freshness['sources_checked']} "
+        f"active={freshness['active_sources']} stale={freshness['stale_sources']} "
+        f"mirrors={freshness['duplicate_sources']} failed={freshness['failed_sources']} "
+        f"included_nodes={freshness['included_nodes']}"
+    )
+
     protocol_rows: list[dict] = []
     html_uri_normalized = 0
     insecure_plain_vless_removed = 0
@@ -107,6 +129,7 @@ def main() -> int:
     # Remove stale metadata from the abandoned transport-handshake publication path.
     (META / "transport_handshake.json").unlink(missing_ok=True)
 
+    compact_freshness = {key: value for key, value in freshness.items() if key != "sources"}
     tcp_payload = {
         "schema": 5,
         "generated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
@@ -120,6 +143,7 @@ def main() -> int:
         "tcp_workers": common.TCP_WORKERS,
         "allowed_ports": sorted(catalog.ALLOWED_PORTS),
         "source_failures": sum(1 for source in source_health if not source.get("ok")),
+        "source_freshness": compact_freshness,
         "sources": source_health,
         "nodes": tcp_checked,
         "country_order_policy": "latency_ascending_only",
@@ -129,7 +153,7 @@ def main() -> int:
         encoding="utf-8",
     )
 
-    meta = common.publish_app_pool(tcp_checked, source_health)
+    meta = common.publish_app_pool(tcp_checked, source_health, freshness)
     merged_payload = {
         "schema": 5,
         "generated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
@@ -141,6 +165,7 @@ def main() -> int:
         "html_uri_normalized": html_uri_normalized,
         "insecure_plain_vless_removed": insecure_plain_vless_removed,
         "tcp_reachable": len(tcp_checked),
+        "source_freshness": compact_freshness,
         "sources": source_health,
         "common_pool": meta,
     }
