@@ -1,15 +1,12 @@
 {
-  "version": 43,
+  "version": 44,
   "mode": "direct-public-sources",
+  "freshness_policy": {
+    "max_unchanged_hours": 72,
+    "recheck_excluded_sources": true,
+    "reactivate_on_semantic_change": true
+  },
   "sources": [
-    {
-      "name": "roosterkid-V2RAY",
-      "url": "https://raw.githubusercontent.com/roosterkid/openproxylist/main/V2RAY.txt"
-    },
-    {
-      "name": "roosterkid-V2RAY_BASE64",
-      "url": "https://raw.githubusercontent.com/roosterkid/openproxylist/main/V2RAY_BASE64.txt"
-    },
     {
       "name": "roosterkid-V2RAY_RAW",
       "url": "https://raw.githubusercontent.com/roosterkid/openproxylist/main/V2RAY_RAW.txt"
@@ -35,24 +32,12 @@
       "url": "https://raw.githubusercontent.com/mahdibland/V2RayAggregator/master/sub/sub_merge.txt"
     },
     {
-      "name": "mahdibland-sub_merge_base64",
-      "url": "https://raw.githubusercontent.com/mahdibland/V2RayAggregator/refs/heads/master/sub/sub_merge_base64.txt"
-    },
-    {
       "name": "hamedcode-port_443",
       "url": "https://raw.githubusercontent.com/hamedcode/port-based-v2ray-configs/main/sub/port_443.txt"
     },
     {
-      "name": "hamedcode-port_80",
-      "url": "https://raw.githubusercontent.com/hamedcode/port-based-v2ray-configs/main/sub/port_80.txt"
-    },
-    {
       "name": "F0rc3Run-Telegram",
       "url": "https://raw.githubusercontent.com/F0rc3Run/F0rc3Run/main/Special/Telegram.txt"
-    },
-    {
-      "name": "Baarcuda-top100-vless",
-      "url": "https://raw.githubusercontent.com/Baarcuda/vpn-configs/master/top100-vless.txt"
     },
     {
       "name": "Baarcuda-top100",
@@ -73,10 +58,6 @@
     {
       "name": "Au1rxx-v2ray-base64",
       "url": "https://raw.githubusercontent.com/Au1rxx/free-vpn-subscriptions/main/output/v2ray-base64.txt"
-    },
-    {
-      "name": "Epodonios-All_Configs_base64_Sub",
-      "url": "https://raw.githubusercontent.com/Epodonios/v2ray-configs/main/All_Configs_base64_Sub.txt"
     },
     {
       "name": "0xRadikal-configs_base64",
@@ -125,22 +106,6 @@
     {
       "name": "alexantSWE-All_Configs_Sub",
       "url": "https://raw.githubusercontent.com/alexantSWE/V2ray-Config/main/All_Configs_Sub.txt"
-    },
-    {
-      "name": "alexantSWE-vless",
-      "url": "https://raw.githubusercontent.com/alexantSWE/V2ray-Config/main/Splitted-By-Protocol/vless.txt"
-    },
-    {
-      "name": "alexantSWE-vmess",
-      "url": "https://raw.githubusercontent.com/alexantSWE/V2ray-Config/main/Splitted-By-Protocol/vmess.txt"
-    },
-    {
-      "name": "alexantSWE-trojan",
-      "url": "https://raw.githubusercontent.com/alexantSWE/V2ray-Config/main/Splitted-By-Protocol/trojan.txt"
-    },
-    {
-      "name": "alexantSWE-ss",
-      "url": "https://raw.githubusercontent.com/alexantSWE/V2ray-Config/main/Splitted-By-Protocol/ss.txt"
     },
     {
       "name": "morpheusadam-best",
@@ -219,44 +184,12 @@
       "url": "https://raw.githubusercontent.com/NiREvil/vless/main/vless"
     },
     {
-      "name": "svinakraft-ss",
-      "url": "https://vless.svinakraft.workers.dev/ss.txt",
-      "gitverse_fallback_urls": [
-        "https://gitverse.ru/api/repos/Nokls/FlareFeed/raw/branch/main/public/ss.txt"
-      ]
-    },
-    {
-      "name": "svinakraft-trojan",
-      "url": "https://vless.svinakraft.workers.dev/trojan.txt",
-      "gitverse_fallback_urls": [
-        "https://gitverse.ru/api/repos/Nokls/FlareFeed/raw/branch/main/public/trojan.txt"
-      ]
-    },
-    {
-      "name": "svinakraft-vless",
-      "url": "https://vless.svinakraft.workers.dev/vless.txt",
-      "gitverse_fallback_urls": [
-        "https://gitverse.ru/api/repos/Nokls/FlareFeed/raw/branch/main/public/vless.txt"
-      ]
-    },
-    {
-      "name": "svinakraft-vmess",
-      "url": "https://vless.svinakraft.workers.dev/vmess.txt",
-      "gitverse_fallback_urls": [
-        "https://gitverse.ru/api/repos/Nokls/FlareFeed/raw/branch/main/public/vmess.txt"
-      ]
-    },
-    {
       "name": "MahanKenway-Freedom-V2Ray-mix",
       "url": "https://raw.githubusercontent.com/MahanKenway/Freedom-V2Ray/refs/heads/main/configs/mix.txt"
     },
     {
       "name": "weoknow-dayupdate-1-z",
       "url": "https://weoknow.com/data/dayupdate/1/z.txt"
-    },
-    {
-      "name": "trojan-base64-source",
-      "url": "https://example.com/sub.txt"
     },
     {
       "name": "svinakraft-podpiska",
