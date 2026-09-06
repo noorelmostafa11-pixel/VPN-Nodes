@@ -1,5 +1,5 @@
 {
-  "version": 46,
+  "version": 47,
   "mode": "direct-public-sources",
   "freshness_policy": {
     "max_unchanged_hours": 72,
@@ -694,6 +694,26 @@
     {
       "name": "gitverse-aetrisvpn-black-list",
       "url": "https://gitverse.ru/api/repos/flaafix/AetrisVPN_Black_list/raw/branch/master/configs.txt"
+    },
+    {
+      "name": "rahi-eq3-all-configs",
+      "url": "https://rahi-eq3.pages.dev/api/configs?limit=all"
+    },
+    {
+      "name": "manifest-dpdns-v2ray",
+      "url": "https://manifest.dpdns.org/free/latest/v2ray.txt"
+    },
+    {
+      "name": "etoneya-subscription",
+      "url": "https://etoneya.su/1"
+    },
+    {
+      "name": "shadowmere-b64sub",
+      "url": "https://shadowmere.xyz/api/b64sub/"
+    },
+    {
+      "name": "robin-victoriacross",
+      "url": "https://robin.victoriacross.ir"
     }
   ]
 }
