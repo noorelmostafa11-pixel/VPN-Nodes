@@ -15,11 +15,11 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
         with:
-          fetch-depth: 0
+          fetch-depth: 1
 
-      - uses: actions/setup-python@v6
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
         with:
           python-version: '3.12'
           cache: 'pip'
@@ -46,8 +46,13 @@ jobs:
           V2NODES_RETRY_WORKERS: 20
           V2NODES_TIMEOUT: 25
           V2NODES_RETRY_TIMEOUT: 30
+          SOURCE_MAX_STALE_HOURS: 72
         run: |
           set -euo pipefail
+
+          if [ -s output/metadata/app_pool.json ]; then
+            cp output/metadata/app_pool.json /tmp/previous_app_pool.json
+          fi
 
           # Remove generated and abandoned outputs before rebuilding the catalog.
           # country_shards is regenerated from the same latency-ranked country order.
@@ -64,11 +69,16 @@ jobs:
           python tests/test_country_resolver.py
           python tests/test_node_identity.py
           python tests/test_gitverse_adapter.py
+          python tests/test_source_freshness.py
+          python tests/test_source_pipeline.py
+          python tests/test_catalog_regression.py
+          python tests/test_legacy_index.py
           python -m py_compile \
             scripts/update_catalog.py \
             scripts/gitverse_adapter.py \
             scripts/country_resolver.py \
             scripts/node_identity.py \
+            scripts/source_freshness.py \
             scripts/build_sources_candidates.py \
             scripts/build_telegram_candidates.py \
             scripts/build_v2nodes_candidates.py \
@@ -76,12 +86,14 @@ jobs:
             scripts/build_tcp_pool.py \
             scripts/merge_and_build_tcp_pool.py \
             scripts/verify_country_feeds.py \
+            scripts/verify_catalog_regression.py \
             scripts/sign_catalog.py
           python scripts/build_sources_candidates.py
           python scripts/build_telegram_candidates.py
           python scripts/build_v2nodes_candidates.py
           python scripts/merge_and_build_tcp_pool.py
           python scripts/verify_country_feeds.py
+          python scripts/verify_catalog_regression.py
 
       - name: Verify TCP-only app catalog
         run: |
@@ -111,6 +123,9 @@ jobs:
               raise SystemExit('published country shard count is empty')
           if 'transport_handshake' in data:
               raise SystemExit('transport handshake metadata must not gate publication')
+          freshness = data.get('source_freshness') or {}
+          if freshness.get('max_stale_hours') != 72:
+              raise SystemExit(f"unexpected source freshness window: {freshness}")
           print(
               f"OK TCP_ONLY published={data.get('published_total', 0)} "
               f"countries={data.get('published_country_nodes', 0)} "
@@ -122,7 +137,11 @@ jobs:
       - name: Build and sign catalog manifest
         env:
           CATALOG_SIGNING_PRIVATE_KEY_B64: ${{ secrets.CATALOG_SIGNING_PRIVATE_KEY_B64 }}
-        run: python scripts/sign_catalog.py
+          REQUIRE_CATALOG_SIGNATURE: '1'
+        run: |
+          set -euo pipefail
+          python scripts/sign_catalog.py
+          test -s output/metadata/catalog_manifest.sig
 
       - name: Restore previous catalog on failure
         if: failure()
