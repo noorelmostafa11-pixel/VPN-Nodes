@@ -1,125 +1,140 @@
 {
   "schema": 9,
-  "generated_at": "2026-08-30T03:14:47Z",
-  "tcp_reachable_total": 50010,
-  "xray_included": 2611,
-  "config_conversion_failed": 10,
+  "generated_at": "2026-09-06T14:31:28Z",
+  "tcp_reachable_total": 35093,
+  "xray_included": 0,
+  "config_conversion_failed": 0,
   "active": 0,
-  "backup": 13024,
+  "backup": 35093,
   "failed_after_core": 0,
   "healthy": 0,
-  "published_total": 13024,
-  "countries": 72,
+  "published_total": 35093,
+  "countries": 90,
   "published_by_country": {
     "AE": {
+      "active": 0,
+      "backup": 265,
+      "total": 265
+    },
+    "AF": {
+      "active": 0,
+      "backup": 1,
+      "total": 1
+    },
+    "AL": {
       "active": 0,
       "backup": 35,
       "total": 35
     },
-    "AF": {
-      "active": 0,
-      "backup": 2,
-      "total": 2
-    },
-    "AL": {
+    "AM": {
       "active": 0,
       "backup": 5,
       "total": 5
     },
-    "AM": {
+    "AQ": {
       "active": 0,
-      "backup": 8,
-      "total": 8
+      "backup": 1,
+      "total": 1
+    },
+    "AR": {
+      "active": 0,
+      "backup": 31,
+      "total": 31
     },
     "AT": {
       "active": 0,
-      "backup": 30,
-      "total": 30
+      "backup": 108,
+      "total": 108
     },
     "AU": {
       "active": 0,
-      "backup": 58,
-      "total": 58
+      "backup": 274,
+      "total": 274
     },
     "AZ": {
       "active": 0,
-      "backup": 2,
-      "total": 2
+      "backup": 3,
+      "total": 3
+    },
+    "BA": {
+      "active": 0,
+      "backup": 1,
+      "total": 1
     },
     "BE": {
       "active": 0,
-      "backup": 23,
-      "total": 23
-    },
-    "BF": {
-      "active": 0,
-      "backup": 1,
-      "total": 1
+      "backup": 50,
+      "total": 50
     },
     "BG": {
       "active": 0,
-      "backup": 22,
-      "total": 22
+      "backup": 98,
+      "total": 98
     },
     "BR": {
       "active": 0,
-      "backup": 16,
-      "total": 16
+      "backup": 45,
+      "total": 45
     },
     "BY": {
       "active": 0,
-      "backup": 2,
-      "total": 2
+      "backup": 11,
+      "total": 11
     },
     "BZ": {
       "active": 0,
-      "backup": 2,
-      "total": 2
+      "backup": 80,
+      "total": 80
     },
     "CA": {
       "active": 0,
-      "backup": 322,
-      "total": 322
+      "backup": 163,
+      "total": 163
     },
-    "CF": {
+    "CH": {
+      "active": 0,
+      "backup": 143,
+      "total": 143
+    },
+    "CL": {
+      "active": 0,
+      "backup": 3,
+      "total": 3
+    },
+    "CN": {
+      "active": 0,
+      "backup": 6,
+      "total": 6
+    },
+    "CO": {
       "active": 0,
       "backup": 1,
       "total": 1
     },
-    "CH": {
-      "active": 0,
-      "backup": 35,
-      "total": 35
-    },
-    "CN": {
-      "active": 0,
-      "backup": 8,
-      "total": 8
-    },
     "CR": {
       "active": 0,
-      "backup": 100,
-      "total": 100
+      "backup": 128,
+      "total": 128
     },
     "CY": {
       "active": 0,
-      "backup": 19,
-      "total": 19
+      "backup": 45,
+      "total": 45
     },
     "CZ": {
       "active": 0,
-      "backup": 38,
-      "total": 38
+      "backup": 102,
+      "total": 102
     },
     "DE": {
       "active": 0,
-      "backup": 198,
-      "total": 198
+      "backup": 1434,
+      "total": 1434
     },
     "DK": {
       "active": 0,
-      "backup": 6,
-      "total": 6
+      "backup": 9,
+      "total": 9
     },
     "DO": {
       "active": 0,
@@ -128,248 +143,323 @@
     },
     "EE": {
       "active": 0,
-      "backup": 49,
-      "total": 49
+      "backup": 195,
+      "total": 195
+    },
+    "EG": {
+      "active": 0,
+      "backup": 1,
+      "total": 1
     },
     "ES": {
       "active": 0,
-      "backup": 3,
-      "total": 3
+      "backup": 63,
+      "total": 63
     },
     "FI": {
       "active": 0,
-      "backup": 24,
-      "total": 24
+      "backup": 300,
+      "total": 300
     },
     "FR": {
       "active": 0,
-      "backup": 105,
-      "total": 105
+      "backup": 434,
+      "total": 434
     },
     "GB": {
       "active": 0,
-      "backup": 293,
-      "total": 293
+      "backup": 888,
+      "total": 888
+    },
+    "GE": {
+      "active": 0,
+      "backup": 10,
+      "total": 10
     },
     "GR": {
+      "active": 0,
+      "backup": 16,
+      "total": 16
+    },
+    "GT": {
       "active": 0,
       "backup": 1,
       "total": 1
     },
     "HK": {
       "active": 0,
-      "backup": 158,
-      "total": 158
+      "backup": 549,
+      "total": 549
     },
     "HR": {
       "active": 0,
-      "backup": 6,
-      "total": 6
+      "backup": 7,
+      "total": 7
     },
     "HU": {
       "active": 0,
-      "backup": 4,
-      "total": 4
+      "backup": 94,
+      "total": 94
     },
-    "IE": {
-      "active": 0,
-      "backup": 4,
-      "total": 4
-    },
-    "IL": {
+    "ID": {
       "active": 0,
       "backup": 3,
       "total": 3
     },
+    "IE": {
+      "active": 0,
+      "backup": 66,
+      "total": 66
+    },
+    "IL": {
+      "active": 0,
+      "backup": 14,
+      "total": 14
+    },
     "IM": {
       "active": 0,
-      "backup": 2,
-      "total": 2
+      "backup": 20,
+      "total": 20
     },
     "IN": {
       "active": 0,
-      "backup": 6,
-      "total": 6
+      "backup": 45,
+      "total": 45
     },
     "IQ": {
-      "active": 0,
-      "backup": 2,
-      "total": 2
-    },
-    "IR": {
-      "active": 0,
-      "backup": 408,
-      "total": 408
-    },
-    "IT": {
-      "active": 0,
-      "backup": 8,
-      "total": 8
-    },
-    "JO": {
-      "active": 0,
-      "backup": 2,
-      "total": 2
-    },
-    "JP": {
-      "active": 0,
-      "backup": 155,
-      "total": 155
-    },
-    "KR": {
-      "active": 0,
-      "backup": 57,
-      "total": 57
-    },
-    "KZ": {
-      "active": 0,
-      "backup": 21,
-      "total": 21
-    },
-    "LT": {
-      "active": 0,
-      "backup": 55,
-      "total": 55
-    },
-    "LU": {
-      "active": 0,
-      "backup": 23,
-      "total": 23
-    },
-    "LV": {
       "active": 0,
       "backup": 9,
       "total": 9
     },
-    "MD": {
+    "IR": {
+      "active": 0,
+      "backup": 209,
+      "total": 209
+    },
+    "IS": {
+      "active": 0,
+      "backup": 1,
+      "total": 1
+    },
+    "IT": {
+      "active": 0,
+      "backup": 56,
+      "total": 56
+    },
+    "JO": {
+      "active": 0,
+      "backup": 4,
+      "total": 4
+    },
+    "JP": {
+      "active": 0,
+      "backup": 697,
+      "total": 697
+    },
+    "KG": {
       "active": 0,
       "backup": 3,
       "total": 3
     },
-    "ME": {
+    "KR": {
+      "active": 0,
+      "backup": 512,
+      "total": 512
+    },
+    "KW": {
+      "active": 0,
+      "backup": 5,
+      "total": 5
+    },
+    "KZ": {
+      "active": 0,
+      "backup": 125,
+      "total": 125
+    },
+    "LT": {
+      "active": 0,
+      "backup": 124,
+      "total": 124
+    },
+    "LU": {
+      "active": 0,
+      "backup": 65,
+      "total": 65
+    },
+    "LV": {
+      "active": 0,
+      "backup": 86,
+      "total": 86
+    },
+    "MD": {
+      "active": 0,
+      "backup": 76,
+      "total": 76
+    },
+    "MH": {
       "active": 0,
       "backup": 2,
       "total": 2
     },
-    "MH": {
+    "MK": {
       "active": 0,
       "backup": 4,
       "total": 4
+    },
+    "MN": {
+      "active": 0,
+      "backup": 7,
+      "total": 7
+    },
+    "MO": {
+      "active": 0,
+      "backup": 2,
+      "total": 2
     },
     "MT": {
       "active": 0,
-      "backup": 1,
-      "total": 1
+      "backup": 5,
+      "total": 5
+    },
+    "MX": {
+      "active": 0,
+      "backup": 3,
+      "total": 3
     },
     "MY": {
       "active": 0,
-      "backup": 4,
-      "total": 4
-    },
-    "NG": {
-      "active": 0,
-      "backup": 1,
-      "total": 1
+      "backup": 11,
+      "total": 11
     },
     "NL": {
       "active": 0,
-      "backup": 320,
-      "total": 320
+      "backup": 1231,
+      "total": 1231
     },
     "NO": {
       "active": 0,
-      "backup": 4,
-      "total": 4
+      "backup": 93,
+      "total": 93
     },
     "NZ": {
       "active": 0,
       "backup": 17,
       "total": 17
     },
+    "PE": {
+      "active": 0,
+      "backup": 1,
+      "total": 1
+    },
     "PH": {
+      "active": 0,
+      "backup": 6,
+      "total": 6
+    },
+    "PK": {
+      "active": 0,
+      "backup": 3,
+      "total": 3
+    },
+    "PL": {
+      "active": 0,
+      "backup": 328,
+      "total": 328
+    },
+    "PT": {
       "active": 0,
       "backup": 2,
       "total": 2
     },
-    "PL": {
-      "active": 0,
-      "backup": 58,
-      "total": 58
-    },
     "RO": {
       "active": 0,
-      "backup": 33,
-      "total": 33
+      "backup": 61,
+      "total": 61
     },
     "RS": {
       "active": 0,
-      "backup": 1,
-      "total": 1
+      "backup": 65,
+      "total": 65
     },
     "RU": {
       "active": 0,
-      "backup": 196,
-      "total": 196
+      "backup": 1497,
+      "total": 1497
+    },
+    "SA": {
+      "active": 0,
+      "backup": 6,
+      "total": 6
     },
     "SC": {
       "active": 0,
-      "backup": 172,
-      "total": 172
+      "backup": 609,
+      "total": 609
     },
     "SE": {
       "active": 0,
-      "backup": 37,
-      "total": 37
+      "backup": 216,
+      "total": 216
     },
     "SG": {
       "active": 0,
-      "backup": 183,
-      "total": 183
+      "backup": 912,
+      "total": 912
     },
     "SI": {
       "active": 0,
-      "backup": 13,
-      "total": 13
+      "backup": 10,
+      "total": 10
     },
     "SK": {
       "active": 0,
-      "backup": 1,
-      "total": 1
+      "backup": 3,
+      "total": 3
     },
     "TH": {
       "active": 0,
-      "backup": 4,
-      "total": 4
+      "backup": 3,
+      "total": 3
     },
     "TR": {
       "active": 0,
-      "backup": 8,
-      "total": 8
+      "backup": 54,
+      "total": 54
     },
     "TW": {
       "active": 0,
-      "backup": 8,
-      "total": 8
+      "backup": 51,
+      "total": 51
     },
     "UA": {
       "active": 0,
-      "backup": 15,
-      "total": 15
+      "backup": 14,
+      "total": 14
     },
     "US": {
       "active": 0,
-      "backup": 9590,
-      "total": 9590
+      "backup": 22070,
+      "total": 22070
     },
-    "VN": {
+    "UZ": {
       "active": 0,
       "backup": 1,
       "total": 1
     },
+    "VG": {
+      "active": 0,
+      "backup": 10,
+      "total": 10
+    },
+    "VN": {
+      "active": 0,
+      "backup": 11,
+      "total": 11
+    },
     "ZA": {
       "active": 0,
-      "backup": 14,
-      "total": 14
+      "backup": 64,
+      "total": 64
     }
   },
   "country_names": {
@@ -377,19 +467,22 @@
     "AF": "Afghanistan",
     "AL": "Albania",
     "AM": "Armenia",
+    "AQ": "Antarctica",
+    "AR": "Argentina",
     "AT": "Austria",
     "AU": "Australia",
     "AZ": "Azerbaijan",
+    "BA": "Bosnia and Herzegovina",
     "BE": "Belgium",
-    "BF": "Burkina Faso",
     "BG": "Bulgaria",
     "BR": "Brazil",
     "BY": "Belarus",
     "BZ": "Belize",
     "CA": "Canada",
-    "CF": "Central African Republic",
     "CH": "Switzerland",
+    "CL": "Chile",
     "CN": "China",
+    "CO": "Colombia",
     "CR": "Costa Rica",
     "CY": "Cyprus",
     "CZ": "Czechia",
@@ -397,42 +490,55 @@
     "DK": "Denmark",
     "DO": "Dominican Republic",
     "EE": "Estonia",
+    "EG": "Egypt",
     "ES": "Spain",
     "FI": "Finland",
     "FR": "France",
     "GB": "United Kingdom",
+    "GE": "Georgia",
     "GR": "Greece",
+    "GT": "Guatemala",
     "HK": "Hong Kong",
     "HR": "Croatia",
     "HU": "Hungary",
+    "ID": "Indonesia",
     "IE": "Ireland",
     "IL": "Israel",
     "IM": "Isle of Man",
     "IN": "India",
     "IQ": "Iraq",
     "IR": "Iran, Islamic Republic of",
+    "IS": "Iceland",
     "IT": "Italy",
     "JO": "Jordan",
     "JP": "Japan",
+    "KG": "Kyrgyzstan",
     "KR": "Korea, Republic of",
+    "KW": "Kuwait",
     "KZ": "Kazakhstan",
     "LT": "Lithuania",
     "LU": "Luxembourg",
     "LV": "Latvia",
     "MD": "Moldova, Republic of",
-    "ME": "Montenegro",
     "MH": "Marshall Islands",
+    "MK": "North Macedonia",
+    "MN": "Mongolia",
+    "MO": "Macao",
     "MT": "Malta",
+    "MX": "Mexico",
     "MY": "Malaysia",
-    "NG": "Nigeria",
     "NL": "Netherlands",
     "NO": "Norway",
     "NZ": "New Zealand",
+    "PE": "Peru",
     "PH": "Philippines",
+    "PK": "Pakistan",
     "PL": "Poland",
+    "PT": "Portugal",
     "RO": "Romania",
     "RS": "Serbia",
     "RU": "Russian Federation",
+    "SA": "Saudi Arabia",
     "SC": "Seychelles",
     "SE": "Sweden",
     "SG": "Singapore",
@@ -443,23 +549,24 @@
     "TW": "Taiwan, Province of China",
     "UA": "Ukraine",
     "US": "United States",
+    "UZ": "Uzbekistan",
+    "VG": "Virgin Islands, British",
     "VN": "Viet Nam",
     "ZA": "South Africa"
   },
   "allowed_ports": [
-    80,
     443
   ],
-  "health_policy": "Core-driven real traffic: Xray SOCKS5 plus three HTTP probes (Microsoft 200, Google 204, Firefox 200). 3/3=ACTIVE, 1-2/3=BACKUP, 0/3=FAILED.",
-  "ranking_policy": "ACTIVE first by measured delay, then BACKUP by measured delay; country files preserve that order.",
-  "country_policy": "Automatic country resolution from successful nodes only; no fixed country allowlist.",
+  "health_policy": "TCP liveness only; Android Xray performs the final real-traffic check.",
+  "ranking_policy": "All published country nodes ordered by measured TCP latency ascending.",
+  "country_policy": "all_resolved_tcp_alive_nodes",
   "country_resolution": {
-    "hostname": 657,
-    "geoip_local": 8377,
-    "ip_geolocation": 8377,
-    "metadata_fallback": 4647,
-    "metadata_first": 4647,
-    "reclassified_existing": 4647,
+    "hostname": 2500,
+    "geoip_local": 35093,
+    "ip_geolocation": 35093,
+    "metadata_fallback": 0,
+    "metadata_first": 0,
+    "reclassified_existing": 0,
     "unknown": 0,
     "database": "/home/runner/work/VPN-Nodes/VPN-Nodes/data/GeoLite2-Country.mmdb",
     "database_loaded": true,
@@ -469,7 +576,7 @@
       "invalid_ip": 0,
       "other": 0,
       "dns_failure": 0,
-      "lookups": 8377
+      "lookups": 35093
     }
   }
 }
