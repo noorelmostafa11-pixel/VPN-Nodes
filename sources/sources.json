@@ -1,5 +1,5 @@
 {
-  "version": 45,
+  "version": 46,
   "mode": "direct-public-sources",
   "freshness_policy": {
     "max_unchanged_hours": 72,
@@ -633,6 +633,67 @@
     {
       "name": "zjfb-subcrawler",
       "url": "https://raw.githubusercontent.com/zjfb/SubCrawler/main/sub/share/all"
+    },
+    {
+      "name": "arg9244-v2r-subs-mix",
+      "url": "https://raw.githubusercontent.com/arg9244/V2R-Subs/master/subs/mix.txt"
+    },
+    {
+      "name": "shabane-kamaji-tested-merged",
+      "url": "https://raw.githubusercontent.com/shabane/kamaji/master/hub/self/tested/merged.txt"
+    },
+    {
+      "name": "huntx-all-sources",
+      "url": "https://raw.githubusercontent.com/AmirrezaFarnamTaheri/HUNTX/main/docs/artifacts/release/all_sources.npvt.raw.txt"
+    },
+    {
+      "name": "idtheo-cleanips-shield",
+      "url": "https://raw.githubusercontent.com/idtheo/V2Ray-CleanIPs-Servers/main/shield.txt"
+    },
+    {
+      "name": "igareck-russia-vless",
+      "url": "https://raw.githubusercontent.com/igareck/vpn-configs-for-russia/main/BLACK_VLESS_RUS.txt"
+    },
+    {
+      "name": "igareck-russia-ss-all",
+      "url": "https://raw.githubusercontent.com/igareck/vpn-configs-for-russia/main/BLACK_SS%2BAll_RUS.txt"
+    },
+    {
+      "name": "mehrdadmb2-v2ray-sub-mix",
+      "url": "https://raw.githubusercontent.com/mehrdadmb2/V2ray_Sub/main/Mix.txt"
+    },
+    {
+      "name": "arshiacomplus-v2rayextractor-mix",
+      "url": "https://raw.githubusercontent.com/arshiacomplus/v2rayExtractor/main/mix/sub.html"
+    },
+    {
+      "name": "v2rayconfigspool-v2ray-sub-tree",
+      "url": "https://api.github.com/repos/V2RAYCONFIGSPOOL/V2RAY_SUB/git/trees/main?recursive=1",
+      "format": "github_tree",
+      "owner": "V2RAYCONFIGSPOOL",
+      "repo": "V2RAY_SUB",
+      "ref": "main",
+      "path_regex": "^v2ray_configs_no[0-9]+\\.txt$"
+    },
+    {
+      "name": "firefoxmmx2-v2rayshare-subscription",
+      "url": "https://raw.githubusercontent.com/firefoxmmx2/v2rayshare_subcription/main/subscription/vray_sub.txt"
+    },
+    {
+      "name": "dorrin-v2ray-pool-russia",
+      "url": "https://raw.githubusercontent.com/dorrin-sot/V2RAY_CONFIGS_POOL-Processor/main/countries/Russia.txt"
+    },
+    {
+      "name": "heydarlaptop-v2ray-subscription",
+      "url": "https://raw.githubusercontent.com/heydarlaptop-sys/v2ray.subscription/master/configs.txt"
+    },
+    {
+      "name": "trm8g466d4-v2ray-sub",
+      "url": "https://raw.githubusercontent.com/trm8g466d4-source/v2ray-sub/main/v2ray_sub.txt"
+    },
+    {
+      "name": "gitverse-aetrisvpn-black-list",
+      "url": "https://gitverse.ru/api/repos/flaafix/AetrisVPN_Black_list/raw/branch/master/configs.txt"
     }
   ]
 }
