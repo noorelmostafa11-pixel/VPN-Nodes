@@ -28,10 +28,13 @@ PROTOCOLS = {"vless", "vmess", "trojan", "shadowsocks"}
 
 session = requests.Session()
 session.headers.update({"User-Agent": "Ahmed-VPN-Nodes/2.0 (+public-aggregator)"})
-if os.getenv("GITHUB_TOKEN"):
-    session.headers.update({"Authorization": f"Bearer {os.getenv('GITHUB_TOKEN')}"})
+GITHUB_TOKEN = os.getenv("GITHUB_TOKEN", "").strip()
 
 VMESS_DIAGNOSTICS = {"seen": 0, "decode_ok": 0, "decode_failed": 0}
+URI_RE = re.compile(
+    r"""(?:vless|vmess|trojan|ss)://(?:(?!(?:vless|vmess|trojan|ss)://)[^'"\s,<>\x60])+""",
+    re.IGNORECASE,
+)
 
 
 def fetch(url: str) -> bytes:
@@ -62,6 +65,44 @@ def maybe_decode(data: bytes) -> str:
 def protocol_from_uri(uri: str) -> str | None:
     scheme = uri.split(":", 1)[0].lower()
     return "shadowsocks" if scheme == "ss" else scheme if scheme in PROTOCOLS else None
+
+
+def extract_uris(text: str) -> list[str]:
+    """Extract every URI, including links concatenated without whitespace."""
+    return [match.group(0).strip() for match in URI_RE.finditer(text)]
+
+
+def _decode_ss_parts(uri: str):
+    raw = unquote(uri.split("://", 1)[1].split("#", 1)[0].strip())
+    raw = raw.split("?", 1)[0]
+    if "@" in raw:
+        userinfo, endpoint = raw.rsplit("@", 1)
+        if ":" not in userinfo:
+            try:
+                userinfo = base64.urlsafe_b64decode(
+                    userinfo + "=" * (-len(userinfo) % 4)
+                ).decode("utf-8", errors="strict")
+            except Exception:
+                return None
+    else:
+        try:
+            decoded = base64.urlsafe_b64decode(
+                raw + "=" * (-len(raw) % 4)
+            ).decode("utf-8", errors="strict")
+            userinfo, endpoint = decoded.rsplit("@", 1)
+        except Exception:
+            return None
+    if ":" not in userinfo:
+        return None
+    method, password = userinfo.split(":", 1)
+    parsed = urlparse("//" + endpoint)
+    try:
+        port = parsed.port
+    except ValueError:
+        return None
+    if not method.strip() or not password or not parsed.hostname or not port:
+        return None
+    return parsed.hostname, port, method.strip().lower(), password
 
 
 def _decode_vmess_payload(uri: str):
@@ -101,10 +142,31 @@ def endpoint_from_uri(uri: str):
                 VMESS_DIAGNOSTICS["decode_ok"] += 1
                 return decoded
             VMESS_DIAGNOSTICS["decode_failed"] += 1
+        if scheme == "ss":
+            decoded_ss = _decode_ss_parts(uri)
+            if decoded_ss:
+                host, port, _, _ = decoded_ss
+                parsed = urlparse(uri)
+                return host, port, unquote(parsed.fragment or ""), parse_qs(parsed.query)
         parsed = urlparse(uri)
         return parsed.hostname, parsed.port, unquote(parsed.fragment or ""), parse_qs(parsed.query)
     except Exception:
         return None, None, "", {}
+
+
+def valid_uri(uri: str, protocol: str) -> bool:
+    if len(re.findall(r"(?:vless|vmess|trojan|ss)://", uri, re.I)) != 1:
+        return False
+    if protocol == "vmess":
+        return _decode_vmess_payload(uri) is not None
+    if protocol == "shadowsocks":
+        return _decode_ss_parts(uri) is not None
+    parsed = urlparse(uri)
+    try:
+        port = parsed.port
+    except ValueError:
+        return False
+    return bool(parsed.hostname and port and parsed.username)
 
 
 def dedup_key(uri: str) -> str:
@@ -127,17 +189,14 @@ def parse_lines(text: str, source_name: str, source_hint_country: str | None = N
         line = line.strip().strip('"')
         if not line or line.startswith(("#", "//", "proxies:", "proxy-groups:")):
             continue
-        match = re.search(r'''(?:^|['"\s])((?:vless|vmess|trojan|ss)://[^'"\s,]+)''', line, re.I)
-        uri = match.group(1) if match else (line if re.match(r"^(?:vless|vmess|trojan|ss)://", line, re.I) else None)
-        if not uri:
-            continue
-        protocol = protocol_from_uri(uri)
-        if not protocol:
-            continue
-        host, port, remark, _ = endpoint_from_uri(uri)
-        if not host or port not in ALLOWED_PORTS:
-            continue
-        rows.append({"uri": uri, "protocol": protocol, "host": host, "port": port, "remark": remark, "country": "UNKNOWN", "source": source_name})
+        for uri in extract_uris(line):
+            protocol = protocol_from_uri(uri)
+            if not protocol or not valid_uri(uri, protocol):
+                continue
+            host, port, remark, _ = endpoint_from_uri(uri)
+            if not host or port not in ALLOWED_PORTS:
+                continue
+            rows.append({"uri": uri, "protocol": protocol, "host": host, "port": port, "remark": remark, "country": "UNKNOWN", "source": source_name})
     return rows
 
 
@@ -184,7 +243,11 @@ def parse_vpngate_csv(data: bytes, source_name: str) -> list[dict]:
 
 
 def github_api_json(url: str):
-    response = session.get(url, timeout=(CONNECT_TIMEOUT, READ_TIMEOUT))
+    parsed = urlparse(url)
+    headers = {}
+    if GITHUB_TOKEN and parsed.scheme == "https" and parsed.hostname == "api.github.com":
+        headers["Authorization"] = f"Bearer {GITHUB_TOKEN}"
+    response = session.get(url, headers=headers, timeout=(CONNECT_TIMEOUT, READ_TIMEOUT))
     response.raise_for_status()
     return response.json()
 
