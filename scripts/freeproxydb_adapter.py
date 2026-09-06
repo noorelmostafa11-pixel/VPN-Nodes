@@ -55,14 +55,11 @@ def build_url(protocol: str, page: int) -> str:
 
 def extract_uri(item) -> str:
     """
-    Supports:
-    1) Direct URI strings:
-       vless://...
-       vmess://...
-       trojan://...
-       ss://...
+    Extract URI from FreeProxyDB API response.
 
-    2) JSON objects containing URI fields.
+    Supports:
+    - Direct URI strings
+    - JSON objects with connect_string or URI fields
     """
 
     if isinstance(item, str):
@@ -84,6 +81,7 @@ def extract_uri(item) -> str:
         return ""
 
     for key in (
+        "connect_string",
         "uri",
         "config",
         "link",
@@ -97,6 +95,29 @@ def extract_uri(item) -> str:
             return value.strip()
 
     return ""
+
+
+def extract_data(payload: dict) -> list:
+    """
+    Handle FreeProxyDB API structure:
+
+    {
+        "data": {
+            "total_count": ...,
+            "data": [...]
+        }
+    }
+    """
+
+    container = payload.get("data", [])
+
+    if isinstance(container, dict):
+        return container.get("data", [])
+
+    if isinstance(container, list):
+        return container
+
+    return []
 
 
 def fetch_protocol(protocol: str) -> list[dict]:
@@ -117,7 +138,7 @@ def fetch_protocol(protocol: str) -> list[dict]:
             break
 
 
-        data = payload.get("data", [])
+        data = extract_data(payload)
 
         if not data:
             break
