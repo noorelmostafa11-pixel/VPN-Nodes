@@ -28,6 +28,54 @@ def collect_freev2raynodes():
     return rows
 
 
+def normalize_adapter_rows(items: list[dict], source_name: str) -> list[dict]:
+    """Convert adapter URL-shaped rows to the catalog's canonical node rows."""
+    rows: list[dict] = []
+    for item in items:
+        candidate = str(item.get("uri") or item.get("url") or "").strip()
+        if not candidate:
+            continue
+        rows.extend(catalog.parse_lines(candidate, source_name))
+    return rows
+
+
+def collect_special(
+    name: str,
+    collector,
+    rows: list[dict],
+    health: list[dict],
+    *,
+    normalize: bool = False,
+) -> None:
+    started = time.perf_counter()
+    try:
+        raw = collector()
+        found = normalize_adapter_rows(raw, name) if normalize else raw
+        ok = bool(found)
+        entry = {
+            "name": name,
+            "ok": ok,
+            "nodes": len(found),
+            "raw_nodes": len(raw),
+            "elapsed_ms": round((time.perf_counter() - started) * 1000, 1),
+        }
+        if not ok:
+            entry["error"] = "source returned no supported nodes"
+        health.append(entry)
+        rows.extend(found)
+        print(f"{'OK' if ok else 'WARN'} source {name}: raw={len(raw)} normalized={len(found)}")
+    except Exception as exc:
+        health.append({
+            "name": name,
+            "ok": False,
+            "nodes": 0,
+            "raw_nodes": 0,
+            "error": str(exc),
+            "elapsed_ms": round((time.perf_counter() - started) * 1000, 1),
+        })
+        print(f"WARN source {name}: {exc}")
+
+
 def main() -> int:
     cfg = json.loads(SOURCES.read_text(encoding="utf-8"))
     rows: list[dict] = []
@@ -40,30 +88,19 @@ def main() -> int:
         try:
             found = catalog.collect_source(item)
             rows.extend(found)
-            health.append({"name": item["name"], "ok": True, "nodes": len(found)})
-            print(f"OK source {item['name']}: {len(found)}")
+            entry = {"name": item["name"], "ok": bool(found), "nodes": len(found)}
+            if not found:
+                entry["error"] = "source returned no supported nodes"
+            health.append(entry)
+            print(f"{'OK' if found else 'WARN'} source {item['name']}: {len(found)}")
         except Exception as exc:
+            health.append({"name": item["name"], "ok": False, "nodes": 0, "error": str(exc)})
             print(f"WARN source {item['name']}: {exc}")
 
-    dynamic = collect_freev2raynodes()
-    rows.extend(dynamic)
-    health.append({"name": "freev2raynodes", "ok": True, "nodes": len(dynamic)})
-    print(f"OK source freev2raynodes: {len(dynamic)}")
-
-    public = collect_publicvpnlist()
-    rows.extend(public)
-    health.append({"name": "PublicVPNList-api", "ok": True, "nodes": len(public)})
-    print(f"OK source PublicVPNList-api: {len(public)}")
-
-    freeproxy = collect_freeproxydb()
-    rows.extend(freeproxy)
-    health.append({"name": "FreeProxyDB-api", "ok": True, "nodes": len(freeproxy)})
-    print(f"OK source FreeProxyDB-api: {len(freeproxy)}")
-
-    clashxw = collect_clashxw_daily()
-    rows.extend(clashxw)
-    health.append({"name": "ClashXW-Daily", "ok": True, "nodes": len(clashxw)})
-    print(f"OK source ClashXW-Daily: {len(clashxw)}")
+    collect_special("freev2raynodes", collect_freev2raynodes, rows, health)
+    collect_special("PublicVPNList-api", collect_publicvpnlist, rows, health, normalize=True)
+    collect_special("FreeProxyDB-api", collect_freeproxydb, rows, health, normalize=True)
+    collect_special("ClashXW-Daily", collect_clashxw_daily, rows, health, normalize=True)
 
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(json.dumps({
