@@ -1,5 +1,5 @@
 {
-  "version": 42,
+  "version": 43,
   "mode": "direct-public-sources",
   "sources": [
     {
@@ -220,19 +220,31 @@
     },
     {
       "name": "svinakraft-ss",
-      "url": "https://vless.svinakraft.workers.dev/ss.txt"
+      "url": "https://vless.svinakraft.workers.dev/ss.txt",
+      "gitverse_fallback_urls": [
+        "https://gitverse.ru/api/repos/Nokls/FlareFeed/raw/branch/main/public/ss.txt"
+      ]
     },
     {
       "name": "svinakraft-trojan",
-      "url": "https://vless.svinakraft.workers.dev/trojan.txt"
+      "url": "https://vless.svinakraft.workers.dev/trojan.txt",
+      "gitverse_fallback_urls": [
+        "https://gitverse.ru/api/repos/Nokls/FlareFeed/raw/branch/main/public/trojan.txt"
+      ]
     },
     {
       "name": "svinakraft-vless",
-      "url": "https://vless.svinakraft.workers.dev/vless.txt"
+      "url": "https://vless.svinakraft.workers.dev/vless.txt",
+      "gitverse_fallback_urls": [
+        "https://gitverse.ru/api/repos/Nokls/FlareFeed/raw/branch/main/public/vless.txt"
+      ]
     },
     {
       "name": "svinakraft-vmess",
-      "url": "https://vless.svinakraft.workers.dev/vmess.txt"
+      "url": "https://vless.svinakraft.workers.dev/vmess.txt",
+      "gitverse_fallback_urls": [
+        "https://gitverse.ru/api/repos/Nokls/FlareFeed/raw/branch/main/public/vmess.txt"
+      ]
     },
     {
       "name": "MahanKenway-Freedom-V2Ray-mix",
@@ -248,7 +260,10 @@
     },
     {
       "name": "svinakraft-podpiska",
-      "url": "https://vless.svinakraft.workers.dev/podpiska.txt"
+      "url": "https://vless.svinakraft.workers.dev/podpiska.txt",
+      "gitverse_fallback_urls": [
+        "https://gitverse.ru/api/repos/Nokls/FlareFeed/raw/branch/main/public/podpiska.txt"
+      ]
     },
     {
       "name": "alicivil-workers-sub",
