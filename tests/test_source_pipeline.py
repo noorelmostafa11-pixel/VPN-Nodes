@@ -28,6 +28,11 @@ VLESS_B = "vless://22222222-2222-2222-2222-222222222222@b.example:443?security=t
 rows = catalog.parse_lines(VLESS_A + VLESS_B, "joined")
 assert [row["host"] for row in rows] == ["a.example", "b.example"]
 
+# A single malformed bracketed endpoint previously aborted the whole source.
+malformed = "vless://33333333-3333-3333-3333-333333333333@[1.2.3.4]:443?security=tls"
+rows = catalog.parse_lines(malformed + "\n" + VLESS_A, "mixed-quality")
+assert len(rows) == 1 and rows[0]["host"] == "a.example"
+
 invalid_ss = "ss://not-a-cipher-password@ss.example:443#bad"
 valid_ss = "ss://aes-256-gcm:password@ss.example:443#good"
 assert catalog.parse_lines(invalid_ss, "ss") == []
@@ -45,6 +50,17 @@ builder.collect_special(
 assert len(special_rows) == 2
 assert all(row["source"] == "adapter" for row in special_rows)
 assert health[0]["raw_nodes"] == 2 and health[0]["nodes"] == 2
+
+nested_rows: list[dict] = []
+nested_health: list[dict] = []
+builder.collect_special(
+    "nested-adapter",
+    lambda: [{"url": "https://example.invalid/server/1", "metadata": {"links": [VLESS_A]}}],
+    nested_rows,
+    nested_health,
+    normalize=True,
+)
+assert len(nested_rows) == 1 and nested_health[0]["ok"] is True
 
 assert "Authorization" not in catalog.session.headers
 seen: list[tuple[str, dict]] = []
