@@ -11,6 +11,8 @@ from urllib.parse import unquote, urlparse, parse_qs
 
 import requests
 
+from gitverse_adapter import gitverse_fallback_urls
+
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "output"
 MAX_SOURCE_BYTES = 20_000_000
@@ -218,7 +220,7 @@ def collect_github_tree_source(item):
     return rows
 
 
-def collect_source(item):
+def _collect_source_once(item):
     fmt = item.get("format")
     if fmt == "github_api":
         return collect_github_api_source(item)
@@ -229,6 +231,34 @@ def collect_source(item):
     if item.get("kind") == "country_template":
         return []
     return parse_lines(fetch(item["url"]).decode("utf-8", errors="replace"), item["name"])
+
+
+def collect_source(item):
+    urls = [item["url"], *gitverse_fallback_urls(item)]
+    failures = []
+    successful_fetch = False
+
+    for index, url in enumerate(urls):
+        candidate = {**item, "url": url}
+        try:
+            rows = _collect_source_once(candidate)
+            successful_fetch = True
+        except Exception as exc:
+            failures.append(f"{url}: {exc}")
+            if index + 1 < len(urls):
+                print(f"WARN {item['name']}: primary failed; trying GitVerse fallback: {exc}")
+            continue
+
+        if rows:
+            if index:
+                print(f"INFO {item['name']}: GitVerse fallback active, nodes={len(rows)}")
+            return rows
+        if index + 1 < len(urls):
+            print(f"WARN {item['name']}: primary returned 0 supported nodes; trying GitVerse fallback")
+
+    if failures and not successful_fetch:
+        raise RuntimeError("; ".join(failures))
+    return []
 
 
 def load_previous_snapshot():
