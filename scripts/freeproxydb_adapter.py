@@ -24,10 +24,12 @@ PROTOCOLS = (
 )
 
 PAGE_SIZE = 100
-MAX_PAGES = 5000
+# The unauthenticated endpoint starts returning 429 after roughly 20 requests.
+# Share that budget across all four protocols instead of spending it on VLESS.
+MAX_PAGES = 5
 
 PAGE_DELAY = 2
-PROTOCOL_DELAY = 30
+PROTOCOL_DELAY = 10
 MAX_RETRIES = 4
 
 
