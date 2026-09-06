@@ -189,7 +189,11 @@ def apply_source_freshness(
         "duplicate_sources": sum(1 for state in current.values() if state.get("freshness_reason") == "exact_mirror"),
         "failed_sources": sum(
             1 for state in current.values()
-            if state.get("freshness_reason") in {"fetch_failed", "empty_source"}
+            if state.get("freshness_reason") == "fetch_failed"
+        ),
+        "empty_sources": sum(
+            1 for state in current.values()
+            if state.get("freshness_reason") == "empty_source"
         ),
         "input_nodes": len(rows),
         "included_nodes": len(filtered),
