@@ -6,14 +6,19 @@ import io
 import json
 import os
 import re
+import sys
 from pathlib import Path
 from urllib.parse import unquote, urlparse, parse_qs
 
 import requests
 
+SCRIPTS_DIR = Path(__file__).resolve().parent
+if str(SCRIPTS_DIR) not in sys.path:
+    sys.path.insert(0, str(SCRIPTS_DIR))
+
 from gitverse_adapter import gitverse_fallback_urls
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = SCRIPTS_DIR.parent
 OUT = ROOT / "output"
 MAX_SOURCE_BYTES = 20_000_000
 CONNECT_TIMEOUT = 1.5
