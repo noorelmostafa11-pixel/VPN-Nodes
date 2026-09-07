@@ -10,7 +10,6 @@ import urllib.request
 
 
 BASE_URL = "https://node.freeclashnode.com/uploads"
-FILE_INDEXES = range(0, 5)
 PROTOCOLS = ("vless://", "vmess://", "trojan://", "ss://")
 
 
@@ -24,12 +23,14 @@ def fetch_text(url: str) -> str:
 
 
 def build_daily_urls() -> list[str]:
-    # ClashXW publishes today's files.
-    date = datetime.datetime.utcnow().strftime("%Y%m%d")
+    day = datetime.datetime.utcnow()
+    year = day.strftime("%Y")
+    month = day.strftime("%m")
+    date = day.strftime("%Y%m%d")
 
     return [
-        f"{BASE_URL}/{index}-{date}.txt"
-        for index in FILE_INDEXES
+        f"{BASE_URL}/{year}/{month}/{index}-{date}.txt"
+        for index in range(0, 100)
     ]
 
 
