@@ -9,8 +9,8 @@ import re
 import urllib.request
 
 
-BASE_URL = "https://clashxw.github.io/uploads"
-FILE_INDEXES = range(0, 20)
+BASE_URL = "https://node.freeclashnode.com/uploads"
+FILE_INDEXES = range(0, 5)
 PROTOCOLS = ("vless://", "vmess://", "trojan://", "ss://")
 
 
@@ -24,14 +24,11 @@ def fetch_text(url: str) -> str:
 
 
 def build_daily_urls() -> list[str]:
-    # ClashXW publishes files with the previous completed day.
-    day = datetime.datetime.utcnow() - datetime.timedelta(days=1)
-    year = day.strftime("%Y")
-    month = day.strftime("%m")
-    date = day.strftime("%Y%m%d")
+    # ClashXW publishes today's files.
+    date = datetime.datetime.utcnow().strftime("%Y%m%d")
 
     return [
-        f"{BASE_URL}/{year}/{month}/{index}-{date}.txt"
+        f"{BASE_URL}/{index}-{date}.txt"
         for index in FILE_INDEXES
     ]
 
@@ -52,11 +49,13 @@ def extract_nodes(text: str) -> list[dict]:
         for line in re.findall(r"(?:vless|vmess|trojan|ss)://[^\s]+", content):
             if line not in seen:
                 seen.add(line)
-                rows.append({
-                    "name": "ClashXW-Daily",
-                    "source": "clashxw-daily",
-                    "url": line,
-                })
+                rows.append(
+                    {
+                        "name": "ClashXW-Daily",
+                        "source": "clashxw-daily",
+                        "url": line,
+                    }
+                )
 
     return rows
 
@@ -68,12 +67,15 @@ def collect_clashxw_daily() -> list[dict]:
     for url in build_daily_urls():
         try:
             found = extract_nodes(fetch_text(url))
+
             for item in found:
                 if item["url"] not in seen:
                     seen.add(item["url"])
                     rows.append(item)
+
             if found:
                 print(f"OK ClashXW file: {url} nodes={len(found)}")
+
         except Exception:
             continue
 
