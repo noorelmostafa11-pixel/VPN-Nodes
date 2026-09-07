@@ -15,6 +15,7 @@ from clashxw_daily_adapter import collect_clashxw_daily
 ROOT = Path(__file__).resolve().parents[1]
 SOURCES = ROOT / "sources" / "sources.json"
 OUT = ROOT / "output" / "metadata" / "sources_candidates.json"
+CLASHXW_CACHE = ROOT / "output" / "metadata" / "clashxw_daily_cache.json"
 SPECIAL_FORMATS = {"telegram_catalog", "telegram_html", "v2nodes"}
 
 
@@ -29,7 +30,6 @@ def collect_freev2raynodes():
 
 
 def normalize_adapter_rows(items: list[dict], source_name: str) -> list[dict]:
-    """Convert adapter URL-shaped rows to the catalog's canonical node rows."""
     rows: list[dict] = []
     seen_candidates: set[str] = set()
     seen_uris: set[str] = set()
@@ -57,18 +57,37 @@ def normalize_adapter_rows(items: list[dict], source_name: str) -> list[dict]:
     return rows
 
 
-def collect_special(
-    name: str,
-    collector,
-    rows: list[dict],
-    health: list[dict],
-    *,
-    normalize: bool = False,
-) -> None:
+def load_clashxw_cache() -> list[dict]:
+    if not CLASHXW_CACHE.is_file():
+        return []
+    try:
+        return json.loads(CLASHXW_CACHE.read_text(encoding="utf-8")).get("rows", [])
+    except Exception:
+        return []
+
+
+def save_clashxw_cache(rows: list[dict]) -> None:
+    CLASHXW_CACHE.parent.mkdir(parents=True, exist_ok=True)
+    CLASHXW_CACHE.write_text(
+        json.dumps({"rows": rows, "saved_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())}, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
+
+
+def collect_special(name: str, collector, rows: list[dict], health: list[dict], *, normalize: bool = False) -> None:
     started = time.perf_counter()
     try:
         raw = collector()
         found = normalize_adapter_rows(raw, name) if normalize else raw
+
+        if name == "ClashXW-Daily" and found:
+            save_clashxw_cache(found)
+        elif name == "ClashXW-Daily" and not found:
+            cached = load_clashxw_cache()
+            if cached:
+                found = cached
+                print(f"INFO source {name}: using cached previous version nodes={len(found)}")
+
         entry = {
             "name": name,
             "ok": True,
@@ -83,14 +102,7 @@ def collect_special(
         level = "OK" if found else "SKIP"
         print(f"{level} source {name}: raw={len(raw)} normalized={len(found)}")
     except Exception as exc:
-        health.append({
-            "name": name,
-            "ok": False,
-            "nodes": 0,
-            "raw_nodes": 0,
-            "error": str(exc),
-            "elapsed_ms": round((time.perf_counter() - started) * 1000, 1),
-        })
+        health.append({"name": name, "ok": False, "nodes": 0, "raw_nodes": 0, "error": str(exc), "elapsed_ms": round((time.perf_counter() - started) * 1000, 1)})
         print(f"WARN source {name}: {exc}")
 
 
@@ -106,14 +118,9 @@ def main() -> int:
         try:
             found = catalog.collect_source(item)
             rows.extend(found)
-            entry = {"name": item["name"], "ok": True, "nodes": len(found)}
-            if not found:
-                entry["status"] = "no_supported_nodes"
-            health.append(entry)
-            print(f"{'OK' if found else 'SKIP'} source {item['name']}: {len(found)}")
+            health.append({"name": item["name"], "ok": True, "nodes": len(found)})
         except Exception as exc:
             health.append({"name": item["name"], "ok": False, "nodes": 0, "error": str(exc)})
-            print(f"WARN source {item['name']}: {exc}")
 
     collect_special("freev2raynodes", collect_freev2raynodes, rows, health)
     collect_special("PublicVPNList-api", collect_publicvpnlist, rows, health, normalize=True)
