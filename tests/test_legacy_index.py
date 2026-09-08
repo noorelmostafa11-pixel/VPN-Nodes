@@ -47,7 +47,7 @@ with TemporaryDirectory() as tmp:
     legacy = json.loads((meta / "index.json").read_text(encoding="utf-8"))
     assert legacy["schema"] == 9
     assert legacy["published_total"] == app["published_total"] == 2
-    assert legacy["allowed_ports"] == [443]
+    assert legacy["allowed_ports"] == [80, 443]
     assert legacy["generated_at"] == app["generated_at"]
     assert "health_policy" in legacy and "ranking_policy" in legacy
     assert (build_tcp_pool.OUT / "countries" / "US.txt").is_file()
