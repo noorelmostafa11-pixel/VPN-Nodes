@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 import argparse
-import datetime as dt
 import os
 import re
 import sys
@@ -10,34 +9,20 @@ import threading
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
-from urllib.parse import parse_qs, parse_qsl, urlencode, urljoin, urlparse, urlunparse
+from urllib.parse import urljoin
 
 import requests
 from bs4 import BeautifulSoup
 
 BASE = "https://www.v2nodes.com/"
 UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/151 Safari/537.36"
-RECENT_WINDOW_HOURS = 24
 
 URI_RE = re.compile(
     r'(?P<uri>(?:vless|vmess|trojan|ss|ssconf)://[^\s<>"\'`]+)',
     re.IGNORECASE,
 )
-RELATIVE_AGE_RE = re.compile(
-    r"\b(?P<count>\d+|a|an|one)\s+(?P<unit>second|minute|hour|day|week|month|year)s?\s+ago\b",
-    re.IGNORECASE,
-)
-PAGE_OF_RE = re.compile(r"\b\d+\s+of\s+(?P<total>\d+)\b", re.IGNORECASE)
 
 thread_local = threading.local()
-
-
-def utc_now() -> dt.datetime:
-    return dt.datetime.now(dt.timezone.utc)
-
-
-def iso_utc(value: dt.datetime) -> str:
-    return value.astimezone(dt.timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z")
 
 
 def env_int(name: str, default: int, minimum: int, maximum: int) -> int:
@@ -108,212 +93,66 @@ def fetch(url: str, timeout: float = 25, attempts: int = 3) -> str:
     raise last_error
 
 
-def parse_relative_age(text: str) -> dt.timedelta | None:
-    lowered = " ".join(text.lower().split())
-    if "just now" in lowered:
-        return dt.timedelta(0)
-
-    match = RELATIVE_AGE_RE.search(lowered)
-    if not match:
-        return None
-
-    raw_count = match.group("count").lower()
-    count = 1 if raw_count in {"a", "an", "one"} else int(raw_count)
-    unit = match.group("unit").lower()
-    seconds_per_unit = {
-        "second": 1,
-        "minute": 60,
-        "hour": 3600,
-        "day": 86400,
-        "week": 7 * 86400,
-        "month": 30 * 86400,
-        "year": 365 * 86400,
-    }
-    return dt.timedelta(seconds=count * seconds_per_unit[unit])
-
-
-def parse_absolute_timestamp(raw: str) -> dt.datetime | None:
-    value = (raw or "").strip()
-    if not value:
-        return None
-
-    if re.fullmatch(r"\d{10,13}", value):
-        number = int(value)
-        if len(value) == 13:
-            number /= 1000
-        try:
-            return dt.datetime.fromtimestamp(number, tz=dt.timezone.utc)
-        except (OverflowError, OSError, ValueError):
-            return None
-
-    try:
-        parsed = dt.datetime.fromisoformat(value.replace("Z", "+00:00"))
-    except ValueError:
-        return None
-    if parsed.tzinfo is None:
-        parsed = parsed.replace(tzinfo=dt.timezone.utc)
-    return parsed.astimezone(dt.timezone.utc)
-
-
-def server_published_at(anchor, fetched_at: dt.datetime) -> dt.datetime | None:
-    """Read one server card's timestamp without leaking into neighboring cards."""
-    node = anchor
-    for _ in range(6):
-        node = getattr(node, "parent", None)
-        if node is None:
-            break
-
-        server_links = node.select('a[href*="/servers/"]')
-        if len(server_links) > 1:
-            break
-
-        time_tag = node.find("time")
-        if time_tag is not None:
-            for attr in ("datetime", "data-time", "data-timestamp"):
-                parsed = parse_absolute_timestamp(time_tag.get(attr, ""))
-                if parsed is not None:
-                    return parsed
-
-        age = parse_relative_age(node.get_text(" ", strip=True))
-        if age is not None:
-            return fetched_at - age
-
-    return None
-
-
-def extract_listing_server_records(
-    html: str,
-    fetched_at: dt.datetime,
-    start_url: str,
-) -> list[tuple[str, dt.datetime | None]]:
-    soup = BeautifulSoup(html, "html.parser")
-    seen: set[str] = set()
-    records: list[tuple[str, dt.datetime | None]] = []
-
-    for anchor in soup.select('a[href*="/servers/"]'):
-        href = anchor.get("href")
-        if not href:
-            continue
-        url = urljoin(start_url, href)
-        parsed = urlparse(url)
-        if parsed.scheme not in {"http", "https"} or parsed.netloc != urlparse(BASE).netloc:
-            continue
-        if "/servers/" not in parsed.path or url in seen:
-            continue
-        seen.add(url)
-        records.append((url, server_published_at(anchor, fetched_at)))
-
-    return records
-
-
-def discover_total_listing_pages(html: str, start_url: str) -> int:
-    soup = BeautifulSoup(html, "html.parser")
-    total = 1
-    expected_host = urlparse(start_url).netloc or urlparse(BASE).netloc
-
-    for anchor in soup.select("a[href]"):
-        href = anchor.get("href")
-        if not href:
-            continue
-        url = urljoin(start_url, href)
-        parsed = urlparse(url)
-        if parsed.netloc != expected_host or "/servers/" in parsed.path:
-            continue
-        values = parse_qs(parsed.query).get("page", [])
-        for value in values:
-            if value.isdigit():
-                total = max(total, int(value))
-
-    for match in PAGE_OF_RE.finditer(soup.get_text(" ", strip=True)):
-        total = max(total, int(match.group("total")))
-
-    return total
-
-
-def listing_page_url(start_url: str, page: int) -> str:
-    if page <= 1:
-        return start_url
-
-    parsed = urlparse(start_url)
-    query = dict(parse_qsl(parsed.query, keep_blank_values=True))
-    query["page"] = str(page)
-    return urlunparse(parsed._replace(query=urlencode(query)))
-
-
-def discover_recent_server_urls(
-    start_html: str,
-    limit: int,
-    start_url: str,
-    started_at: dt.datetime,
-    start_fetched_at: dt.datetime,
-    timeout: float,
-) -> tuple[list[str], dict[str, int | bool]]:
-    """Collect only server pages that were fresh at v2nodes collection start."""
-    cutoff = started_at - dt.timedelta(hours=RECENT_WINDOW_HOURS)
-    total_listing_pages = discover_total_listing_pages(start_html, start_url)
-
+def discover_server_urls(html: str, limit: int, start_url: str) -> list[str]:
+    """Collect every /servers/ URL visible in the site's crawled listing pages."""
     seen_servers: set[str] = set()
-    recent_servers: list[str] = []
-    listing_pages_scanned = 0
-    older_skipped = 0
-    undated_skipped = 0
-    stopped_at_boundary = False
+    servers: list[str] = []
+    listings: list[str] = [start_url]
+    seen_listings: set[str] = {start_url}
 
-    for page_number in range(1, total_listing_pages + 1):
-        if len(recent_servers) >= limit:
-            break
-
-        if page_number == 1:
-            page_html = start_html
-            fetched_at = start_fetched_at
-        else:
-            page_url = listing_page_url(start_url, page_number)
-            try:
-                page_html = fetch(page_url, timeout=timeout, attempts=3)
-                fetched_at = utc_now()
-            except Exception as exc:
-                print(f"WARN v2nodes listing page {page_number} failed: {exc}")
-                continue
-
-        listing_pages_scanned += 1
-        records = extract_listing_server_records(page_html, fetched_at, start_url)
-        page_recent = 0
-        page_older = 0
-        page_undated = 0
-
-        for url, published_at in records:
-            if url in seen_servers:
-                continue
+    def add_server(href: str) -> None:
+        url = urljoin(BASE, href)
+        if "/servers/" in url and url not in seen_servers:
             seen_servers.add(url)
+            servers.append(url)
 
-            if published_at is None:
-                page_undated += 1
-                undated_skipped += 1
+    def add_listing(href: str) -> None:
+        url = urljoin(BASE, href)
+        if url.startswith(BASE) and "/servers/" not in url and url not in seen_listings:
+            seen_listings.add(url)
+            listings.append(url)
+
+    soup = BeautifulSoup(html, "html.parser")
+    for a in soup.select("a[href]"):
+        href = a.get("href")
+        if not href:
+            continue
+        if "/servers/" in href:
+            add_server(href)
+        else:
+            url = urljoin(start_url, href)
+            if url.startswith(BASE):
+                add_listing(href)
+        if len(servers) >= limit:
+            return servers[:limit]
+
+    index = 0
+    while index < len(listings) and len(servers) < limit:
+        listing_url = listings[index]
+        index += 1
+        if listing_url == start_url:
+            page_html = html
+        else:
+            try:
+                page_html = fetch(listing_url)
+            except Exception:
                 continue
-            if published_at < cutoff:
-                page_older += 1
-                older_skipped += 1
+
+        page_soup = BeautifulSoup(page_html, "html.parser")
+        for a in page_soup.select("a[href]"):
+            href = a.get("href")
+            if not href:
                 continue
+            if "/servers/" in href:
+                add_server(href)
+                if len(servers) >= limit:
+                    break
+            else:
+                url = urljoin(listing_url, href)
+                if url.startswith(BASE):
+                    add_listing(href)
 
-            recent_servers.append(url)
-            page_recent += 1
-            if len(recent_servers) >= limit:
-                break
-
-        # Stop only after a whole dated page is beyond the cutoff. This avoids
-        # losing nodes on the mixed boundary page and tolerates minor card-order
-        # changes within one listing page.
-        if records and page_recent == 0 and page_older > 0 and page_undated == 0:
-            stopped_at_boundary = True
-            break
-
-    return recent_servers[:limit], {
-        "listing_pages_total": total_listing_pages,
-        "listing_pages_scanned": listing_pages_scanned,
-        "older_skipped": older_skipped,
-        "undated_skipped": undated_skipped,
-        "stopped_at_boundary": stopped_at_boundary,
-    }
+    return servers[:limit]
 
 
 def extract_uris(html: str) -> list[str]:
@@ -342,25 +181,14 @@ def process_page(url: str, timeout: float, attempts: int) -> tuple[str, list[str
 
 
 def collect(start_url: str = BASE, max_pages: int = 5000) -> list[str]:
-    """Collect only v2nodes proxy URIs fresh within 24h of this function start."""
-    started_at = utc_now()
-    cutoff = started_at - dt.timedelta(hours=RECENT_WINDOW_HOURS)
-
+    """Collect proxy URIs while retrying transient v2nodes failures gently."""
     primary_workers = env_int("V2NODES_WORKERS", 80, 1, 150)
     retry_workers = env_int("V2NODES_RETRY_WORKERS", 20, 1, 50)
     primary_timeout = env_float("V2NODES_TIMEOUT", 25.0, 5.0, 60.0)
     retry_timeout = env_float("V2NODES_RETRY_TIMEOUT", 30.0, 5.0, 90.0)
 
     start_html = fetch(start_url, timeout=primary_timeout, attempts=3)
-    start_fetched_at = utc_now()
-    pages, discovery = discover_recent_server_urls(
-        start_html,
-        max_pages,
-        start_url,
-        started_at,
-        start_fetched_at,
-        primary_timeout,
-    )
+    pages = discover_server_urls(start_html, max_pages, start_url)
 
     nodes: list[str] = []
     seen: set[str] = set()
@@ -375,21 +203,13 @@ def collect(start_url: str = BASE, max_pages: int = 5000) -> list[str]:
                 new += 1
         return new
 
-    print(f"INFO v2nodes started_at={iso_utc(started_at)} cutoff_24h={iso_utc(cutoff)}")
-    print(
-        f"INFO v2nodes listing_pages_total={discovery['listing_pages_total']} "
-        f"listing_pages_scanned={discovery['listing_pages_scanned']} "
-        f"recent_24h_server_pages={len(pages)} older_skipped={discovery['older_skipped']} "
-        f"undated_skipped={discovery['undated_skipped']} "
-        f"stopped_at_24h_boundary={str(discovery['stopped_at_boundary']).lower()}"
-    )
     print(
         f"INFO v2nodes pages={len(pages)} primary_workers={primary_workers} "
         f"retry_workers={retry_workers} primary_timeout_s={primary_timeout} retry_timeout_s={retry_timeout}"
     )
 
-    # First pass: one request per recent server page. Failed transient pages are
-    # deferred instead of retrying immediately while the site is already saturated.
+    # First pass: one request per page. Failed transient pages are deferred
+    # instead of retrying immediately while the site is already saturated.
     with ThreadPoolExecutor(max_workers=primary_workers) as pool:
         futures = [pool.submit(process_page, url, primary_timeout, 1) for url in pages]
 
@@ -426,34 +246,6 @@ def collect(start_url: str = BASE, max_pages: int = 5000) -> list[str]:
         f"INFO v2nodes retry_summary queued={len(retry_urls)} "
         f"recovered_pages={recovered_pages} remaining_failed={len(retry_urls) - recovered_pages}"
     )
-
-    # One final first-page read catches nodes published while this adapter was
-    # processing the initial snapshot. The original cutoff remains fixed.
-    late_arrivals: list[str] = []
-    known_server_pages = set(pages)
-    try:
-        late_html = fetch(start_url, timeout=primary_timeout, attempts=3)
-        late_fetched_at = utc_now()
-        for url, published_at in extract_listing_server_records(late_html, late_fetched_at, start_url):
-            if url in known_server_pages or published_at is None or published_at < cutoff:
-                continue
-            known_server_pages.add(url)
-            late_arrivals.append(url)
-    except Exception as exc:
-        print(f"WARN v2nodes late-arrival rescan failed: {exc}")
-
-    if late_arrivals:
-        with ThreadPoolExecutor(max_workers=min(primary_workers, len(late_arrivals))) as pool:
-            futures = [pool.submit(process_page, url, retry_timeout, 3) for url in late_arrivals]
-            for completed, future in enumerate(as_completed(futures), 1):
-                url, found, error = future.result()
-                if error is not None:
-                    print(f"[late {completed}/{len(late_arrivals)}] ERROR {url}: {error}")
-                    continue
-                new = add_found(found)
-                print(f"[late {completed}/{len(late_arrivals)}] {new} new node(s) <- {url}")
-
-    print(f"INFO v2nodes late_arrivals={len(late_arrivals)}")
     return nodes
 
 
