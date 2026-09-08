@@ -89,7 +89,9 @@ def test_fallback_after_empty_primary():
 
     def fake_fetch(url):
         calls.append(url)
-        return VLESS_80 if url == PRIMARY else VLESS_443
+        if url == PRIMARY:
+            return b""
+        return VLESS_443
 
     rows = run_with_fetch(fake_fetch)
     assert len(rows) == 1
