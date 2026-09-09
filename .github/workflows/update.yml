@@ -1,0 +1,394 @@
+name: Update node catalog
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: catalog-refresh-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          # Needed so the workflow can find the previous rolling-output
+          # commit/base if normal repository commits were added in between.
+          fetch-depth: 0
+
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+
+      - run: pip install -r requirements.txt
+
+      - name: Prepare local GeoLite2 database
+        run: |
+          set -euo pipefail
+          mkdir -p data
+
+          if [ ! -s data/GeoLite2-Country.mmdb ]; then
+            echo "GeoLite2 database is not committed yet; bootstrapping one local copy for this run."
+
+            curl --fail --location --silent --show-error \
+              'https://cdn.jsdelivr.net/npm/geolite2-country/GeoLite2-Country.mmdb.gz' \
+              --output /tmp/GeoLite2-Country.mmdb.gz
+
+            gzip -dc /tmp/GeoLite2-Country.mmdb.gz \
+              > data/GeoLite2-Country.mmdb
+          fi
+
+          test -s data/GeoLite2-Country.mmdb
+
+      - name: Collect nodes and build TCP-ranked country feeds
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          V2NODES_WORKERS: 80
+          V2NODES_RETRY_WORKERS: 20
+          V2NODES_TIMEOUT: 25
+          V2NODES_RETRY_TIMEOUT: 30
+          SOURCE_MAX_STALE_HOURS: 72
+        run: |
+          set -euo pipefail
+
+          if [ -s output/metadata/app_pool.json ]; then
+            cp output/metadata/app_pool.json /tmp/previous_app_pool.json
+          fi
+
+          # Remove generated and abandoned outputs before rebuilding the catalog.
+          # country_shards is regenerated from the same latency-ranked country order.
+          rm -rf \
+            output/country_shards \
+            output/active \
+            output/backup
+
+          rm -f \
+            output/metadata/transport_handshake.json \
+            output/metadata/real_delay.json \
+            output/metadata/core_driven_health.json \
+            output/metadata/staged_health.json \
+            output/metadata/xray_probe_experiment.json \
+            output/metadata/openvpn_candidates.json \
+            output/metadata/health.json
+
+          python tests/test_country_resolver.py
+          python tests/test_node_identity.py
+          python tests/test_gitverse_adapter.py
+          python tests/test_source_freshness.py
+          python tests/test_source_pipeline.py
+          python tests/test_share_daily_adapter.py
+          python tests/test_freeproxydb_adapter.py
+          python tests/test_catalog_regression.py
+          python tests/test_legacy_index.py
+
+          python -m py_compile \
+            scripts/update_catalog.py \
+            scripts/gitverse_adapter.py \
+            scripts/freev2raynodes_adapter.py \
+            scripts/publicvpnlist_adapter.py \
+            scripts/freeproxydb_adapter.py \
+            scripts/clashxw_daily_adapter.py \
+            scripts/share_daily_adapter.py \
+            scripts/country_resolver.py \
+            scripts/node_identity.py \
+            scripts/source_freshness.py \
+            scripts/build_sources_candidates.py \
+            scripts/build_telegram_candidates.py \
+            scripts/build_v2nodes_candidates.py \
+            scripts/v2nodes_adapter.py \
+            scripts/build_tcp_pool.py \
+            scripts/merge_and_build_tcp_pool.py \
+            scripts/verify_country_feeds.py \
+            scripts/verify_catalog_regression.py \
+            scripts/sign_catalog.py
+
+          python scripts/build_sources_candidates.py
+          python scripts/build_telegram_candidates.py
+          python scripts/build_v2nodes_candidates.py
+          python scripts/merge_and_build_tcp_pool.py
+          python scripts/verify_country_feeds.py
+          python scripts/verify_catalog_regression.py
+
+      - name: Verify TCP-only app catalog
+        run: |
+          set -euo pipefail
+
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          p = Path('output/metadata/app_pool.json')
+
+          if not p.is_file():
+              raise SystemExit('app_pool.json was not generated')
+
+          data = json.loads(p.read_text(encoding='utf-8'))
+
+          if data.get('mode') != 'tcp_liveness_only_android_final_xray_check':
+              raise SystemExit(
+                  f"unexpected app pool mode: {data.get('mode')}"
+              )
+
+          if data.get('final_runtime_test') != 'Android Xray + local HTTP health-check':
+              raise SystemExit('unexpected final runtime test marker')
+
+          if data.get('tcp_workers') != 512:
+              raise SystemExit(
+                  f"unexpected TCP worker count: {data.get('tcp_workers')}"
+              )
+
+          if data.get('allowed_ports') != [80, 443]:
+              raise SystemExit(
+                  f"unexpected allowed ports: {data.get('allowed_ports')}"
+              )
+
+          if data.get('country_order_policy') != 'latency_ascending_only':
+              raise SystemExit(
+                  f"unexpected country order policy: {data.get('country_order_policy')}"
+              )
+
+          if data.get('country_shard_size') != 1000:
+              raise SystemExit(
+                  f"unexpected country shard size: {data.get('country_shard_size')}"
+              )
+
+          if data.get('country_shards_generated') is not True:
+              raise SystemExit('country shards were not generated')
+
+          if int(data.get('published_country_shards') or 0) <= 0:
+              raise SystemExit('published country shard count is empty')
+
+          if 'transport_handshake' in data:
+              raise SystemExit(
+                  'transport handshake metadata must not gate publication'
+              )
+
+          freshness = data.get('source_freshness') or {}
+
+          if freshness.get('max_stale_hours') != 72:
+              raise SystemExit(
+                  f"unexpected source freshness window: {freshness}"
+              )
+
+          print(
+              f"OK TCP_ONLY published={data.get('published_total', 0)} "
+              f"countries={data.get('published_country_nodes', 0)} "
+              f"shards={data.get('published_country_shards', 0)} "
+              f"workers={data.get('tcp_workers')} "
+              f"order={data.get('country_order_policy')}"
+          )
+          PY
+
+      - name: Build and sign catalog manifest
+        env:
+          CATALOG_SIGNING_PRIVATE_KEY_B64: ${{ secrets.CATALOG_SIGNING_PRIVATE_KEY_B64 }}
+          REQUIRE_CATALOG_SIGNATURE: '1'
+        run: |
+          set -euo pipefail
+
+          python scripts/sign_catalog.py
+          test -s output/metadata/catalog_manifest.sig
+
+      - name: Restore previous catalog on failure
+        if: failure()
+        run: |
+          git checkout HEAD -- output/ || true
+
+      - name: Publish latest catalog snapshot
+        if: success()
+        run: |
+          set -euo pipefail
+
+          if [ "${GITHUB_REF_NAME}" != "main" ]; then
+            echo "Catalog publishing is allowed only from main; refusing to overwrite main from ${GITHUB_REF_NAME}."
+            exit 1
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email \
+            "41898282+github-actions[bot]@users.noreply.github.com"
+
+          #
+          # Rolling output design
+          #
+          # main always ends at:
+          #
+          #   BASE -> latest output
+          #
+          # The hourly output commit is replaced instead of accumulated.
+          # The previous output commit therefore becomes unreachable.
+          #
+          rolling_marker='[rolling-output]'
+
+          head_is_rolling=false
+
+          if git log -1 --pretty=%B HEAD |
+             grep -Fqx -- "${rolling_marker}"; then
+            head_is_rolling=true
+          fi
+
+          #
+          # Stage ONLY generated output.
+          #
+          # Deleted generated files are included because -A is used.
+          #
+          git add -A output
+
+          #
+          # If HEAD is already a rolling commit and output is byte-for-byte
+          # unchanged, there is nothing to publish.
+          #
+          if git diff --cached --quiet &&
+             [ "${head_is_rolling}" = "true" ]; then
+            echo "No catalog changes detected"
+            exit 0
+          fi
+
+          #
+          # Normal hourly case:
+          #
+          #     BASE -> OLD_OUTPUT
+          #
+          # becomes:
+          #
+          #     BASE -> NEW_OUTPUT
+          #
+          # OLD_OUTPUT is no longer referenced by main.
+          #
+          if [ "${head_is_rolling}" = "true" ] &&
+             git rev-parse --verify HEAD^ >/dev/null 2>&1; then
+
+            base_commit="$(git rev-parse HEAD^)"
+
+            echo "Reusing existing repository baseline ${base_commit}"
+
+          else
+
+            #
+            # First migration to rolling-output mode, or normal repository
+            # commits were added after the previous rolling output.
+            #
+            # Find the previous rolling output, if one exists. Its parent is
+            # the clean repository baseline and can remain in history.
+            #
+            previous_rolling="$(
+              git log \
+                --first-parent \
+                --format='%H' \
+                --grep='\[rolling-output\]' \
+                -n 1 \
+                HEAD \
+                || true
+            )"
+
+            baseline_parent=""
+
+            if [ -n "${previous_rolling}" ] &&
+               git rev-parse \
+                 --verify "${previous_rolling}^" \
+                 >/dev/null 2>&1; then
+
+              baseline_parent="$(
+                git rev-parse "${previous_rolling}^"
+              )"
+            fi
+
+            #
+            # Build a repository baseline containing the current repository
+            # state but NO output directory.
+            #
+            # This is done using a temporary Git index so the real working
+            # index containing the newly generated output is untouched.
+            #
+            baseline_index="$(mktemp)"
+            rm -f "${baseline_index}"
+
+            GIT_INDEX_FILE="${baseline_index}" \
+              git read-tree HEAD
+
+            GIT_INDEX_FILE="${baseline_index}" \
+              git rm \
+                -r \
+                -f \
+                --cached \
+                --ignore-unmatch \
+                output \
+                >/dev/null
+
+            baseline_tree="$(
+              GIT_INDEX_FILE="${baseline_index}" \
+                git write-tree
+            )"
+
+            rm -f "${baseline_index}"
+
+            #
+            # Keep baseline history when a previous clean baseline exists.
+            # On the first migration this intentionally creates the new clean
+            # root baseline without carrying historical output snapshots.
+            #
+            if [ -n "${baseline_parent}" ]; then
+
+              base_commit="$(
+                printf '%s\n' \
+                  'chore: refresh repository baseline' |
+                git commit-tree \
+                  "${baseline_tree}" \
+                  -p "${baseline_parent}"
+              )"
+
+            else
+
+              base_commit="$(
+                printf '%s\n' \
+                  'chore: establish repository baseline' |
+                git commit-tree \
+                  "${baseline_tree}"
+              )"
+
+            fi
+
+            echo "Created repository baseline ${base_commit}"
+          fi
+
+          #
+          # The real index contains:
+          #
+          # - current repository files
+          # - latest generated output
+          # - deleted old output entries
+          #
+          # Therefore this tree is the complete current repository state,
+          # while its parent BASE contains no output.
+          #
+          snapshot_tree="$(git write-tree)"
+
+          snapshot_commit="$(
+            printf '%s\n\n%s\n' \
+              'chore: refresh node catalog' \
+              "${rolling_marker}" |
+            git commit-tree \
+              "${snapshot_tree}" \
+              -p "${base_commit}"
+          )"
+
+          echo "Publishing rolling catalog ${snapshot_commit}"
+          echo "Baseline: ${base_commit}"
+
+          #
+          # Replace the previous rolling output commit.
+          #
+          # force-with-lease ensures we do not overwrite main if it changed
+          # since this workflow started.
+          #
+          git push \
+            --force-with-lease=refs/heads/main:${GITHUB_SHA} \
+            origin \
+            "${snapshot_commit}:refs/heads/main"
