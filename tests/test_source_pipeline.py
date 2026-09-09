@@ -38,6 +38,36 @@ valid_ss = "ss://aes-256-gcm:password@ss.example:443#good"
 assert catalog.parse_lines(invalid_ss, "ss") == []
 assert len(catalog.parse_lines(valid_ss, "ss")) == 1
 
+clash_yaml = """proxies:
+- name: supported-vless
+  type: vless
+  server: clash.example
+  port: 443
+  uuid: 44444444-4444-4444-4444-444444444444
+  tls: true
+  network: ws
+- name: unsupported-port
+  type: trojan
+  server: ignored.example
+  port: 8443
+  password: secret
+"""
+original_fetch = catalog.fetch
+try:
+    catalog.fetch = lambda _url: clash_yaml.encode("utf-8")
+    clash_rows = catalog.collect_source({
+        "name": "clash-fixture",
+        "url": "https://example.invalid/clash.yaml",
+        "format": "clash_yaml",
+    })
+finally:
+    catalog.fetch = original_fetch
+
+assert len(clash_rows) == 1
+assert clash_rows[0]["protocol"] == "vless"
+assert clash_rows[0]["host"] == "clash.example"
+assert clash_rows[0]["source"] == "clash-fixture"
+
 special_rows: list[dict] = []
 health: list[dict] = []
 builder.collect_special(

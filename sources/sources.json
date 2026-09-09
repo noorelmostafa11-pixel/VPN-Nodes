@@ -1,5 +1,5 @@
 {
-  "version": 50,
+  "version": 51,
   "mode": "direct-public-sources",
   "freshness_policy": {
     "max_unchanged_hours": 72,
@@ -762,6 +762,11 @@
     {
       "name": "miladtahanian-v2raycfgdumper-sub",
       "url": "https://raw.githubusercontent.com/miladtahanian/V2RayCFGDumper/refs/heads/main/sub.txt"
+    },
+    {
+      "name": "anaer-clash",
+      "url": "https://anaer.github.io/Sub/clash.yaml",
+      "format": "clash_yaml"
     }
   ]
 }

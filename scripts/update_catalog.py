@@ -17,6 +17,7 @@ if str(SCRIPTS_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPTS_DIR))
 
 from gitverse_adapter import gitverse_fallback_urls
+from share_daily_adapter import extract_nodes as extract_clash_nodes
 
 ROOT = SCRIPTS_DIR.parent
 OUT = ROOT / "output"
@@ -292,6 +293,12 @@ def collect_github_tree_source(item):
     return rows
 
 
+def parse_clash_yaml(data: bytes, source_name: str) -> list[dict]:
+    candidates = extract_clash_nodes(data.decode("utf-8", errors="replace"))
+    uris = [str(candidate.get("url") or "").strip() for candidate in candidates]
+    return parse_lines("\n".join(uri for uri in uris if uri), source_name)
+
+
 def _collect_source_once(item):
     fmt = item.get("format")
     if fmt == "github_api":
@@ -300,6 +307,8 @@ def _collect_source_once(item):
         return collect_github_tree_source(item)
     if fmt == "vpngate_csv":
         return parse_vpngate_csv(fetch(item["url"]), item["name"])
+    if fmt == "clash_yaml":
+        return parse_clash_yaml(fetch(item["url"]), item["name"])
     if item.get("kind") == "country_template":
         return []
     return parse_lines(fetch(item["url"]).decode("utf-8", errors="replace"), item["name"])
