@@ -12,6 +12,7 @@ from publicvpnlist_adapter import collect_publicvpnlist
 from freeproxydb_adapter import collect_freeproxydb
 from clashxw_daily_adapter import collect_clashxw_daily
 from share_daily_adapter import collect_share_daily
+from outlinekeys_adapter import collect_outlinekeys
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCES = ROOT / "sources" / "sources.json"
@@ -128,6 +129,7 @@ def main() -> int:
     collect_special("FreeProxyDB-api", collect_freeproxydb, rows, health, normalize=True)
     collect_special("ClashXW-Daily", collect_clashxw_daily, rows, health, normalize=True)
     collect_special("ShareDaily-Clash", collect_share_daily, rows, health, normalize=True)
+    collect_special("OutlineKeys-Daily", collect_outlinekeys, rows, health, normalize=True)
 
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(json.dumps({
