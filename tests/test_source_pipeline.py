@@ -123,4 +123,33 @@ finally:
 assert seen[0][1].get("Authorization") == "Bearer test-token"
 assert "Authorization" not in seen[1][1]
 
-print("OK source pipeline security and normalization")
+# Per-source headers are passed only when explicitly configured.
+source_header_calls = []
+original_fetch = catalog.fetch
+try:
+    def fake_source_fetch(url, headers=None):
+        source_header_calls.append((url, headers))
+        return VLESS_A.encode("utf-8")
+
+    catalog.fetch = fake_source_fetch
+    header_rows = catalog.collect_source({
+        "name": "header-fixture",
+        "url": "https://example.invalid/sub.txt",
+        "headers": {
+            "User-Agent": "Mozilla/5.0 test",
+            "Referer": "https://example.invalid/",
+        },
+    })
+finally:
+    catalog.fetch = original_fetch
+
+assert len(header_rows) == 1
+assert source_header_calls == [(
+    "https://example.invalid/sub.txt",
+    {
+        "User-Agent": "Mozilla/5.0 test",
+        "Referer": "https://example.invalid/",
+    },
+)]
+
+print("OK source pipeline security, normalization, and configured source headers")

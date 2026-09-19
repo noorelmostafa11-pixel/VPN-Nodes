@@ -38,8 +38,20 @@ URI_RE = re.compile(
 )
 
 
-def fetch(url: str) -> bytes:
-    response = session.get(url, timeout=(CONNECT_TIMEOUT, READ_TIMEOUT), stream=True)
+def fetch(url: str, headers: dict[str, str] | None = None) -> bytes:
+    if headers:
+        response = session.get(
+            url,
+            headers=headers,
+            timeout=(CONNECT_TIMEOUT, READ_TIMEOUT),
+            stream=True,
+        )
+    else:
+        response = session.get(
+            url,
+            timeout=(CONNECT_TIMEOUT, READ_TIMEOUT),
+            stream=True,
+        )
     response.raise_for_status()
     data = bytearray()
     for chunk in response.iter_content(8192):
@@ -305,13 +317,28 @@ def _collect_source_once(item):
         return collect_github_api_source(item)
     if fmt == "github_tree":
         return collect_github_tree_source(item)
+
+    configured_headers = item.get("headers") or {}
+    if not isinstance(configured_headers, dict):
+        raise ValueError(f"source headers must be an object: {item.get('name', 'UNKNOWN')}")
+    headers = {
+        str(key): str(value)
+        for key, value in configured_headers.items()
+        if str(key).strip() and str(value).strip()
+    }
+
+    def fetch_source() -> bytes:
+        if headers:
+            return fetch(item["url"], headers=headers)
+        return fetch(item["url"])
+
     if fmt == "vpngate_csv":
-        return parse_vpngate_csv(fetch(item["url"]), item["name"])
+        return parse_vpngate_csv(fetch_source(), item["name"])
     if fmt == "clash_yaml":
-        return parse_clash_yaml(fetch(item["url"]), item["name"])
+        return parse_clash_yaml(fetch_source(), item["name"])
     if item.get("kind") == "country_template":
         return []
-    return parse_lines(fetch(item["url"]).decode("utf-8", errors="replace"), item["name"])
+    return parse_lines(fetch_source().decode("utf-8", errors="replace"), item["name"])
 
 
 def collect_source(item):

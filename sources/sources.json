@@ -583,7 +583,7 @@
     },
     {
       "name": "sakazxc1400-creator-free-vpn-sub",
-      "url": "https://raw.githubusercontent.com/sakazxc1400-creator/free-vpn-sub/main/output/sub-full.txt"
+      "url": "https://raw.githubusercontent.com/sakazxc1400-creator/free-vpn-sub/gh-pages/sub-full.txt"
     },
     {
       "name": "sinavm-svm",
@@ -700,7 +700,12 @@
     },
     {
       "name": "shadowmere-b64sub",
-      "url": "https://shadowmere.xyz/api/b64sub/"
+      "url": "https://shadowmere.xyz/api/b64sub/",
+      "headers": {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Safari/537.36",
+        "Accept": "text/plain,*/*;q=0.9",
+        "Referer": "https://shadowmere.xyz/"
+      }
     },
     {
       "name": "robin-victoriacross",
