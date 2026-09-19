@@ -122,8 +122,11 @@ def main() -> int:
             found = catalog.collect_source(item)
             rows.extend(found)
             health.append({"name": item["name"], "ok": True, "nodes": len(found)})
+            level = "OK" if found else "SKIP"
+            print(f"{level} source {item['name']}: nodes={len(found)}")
         except Exception as exc:
             health.append({"name": item["name"], "ok": False, "nodes": 0, "error": str(exc)})
+            print(f"WARN source {item['name']}: {exc}")
 
     collect_special("freev2raynodes", collect_freev2raynodes, rows, health)
     collect_special("kort0881-vpn-checker-backend", collect_kort0881, rows, health)

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Merge collectors, remove duplicate URI remarks, then publish the TCP-only pool."""
+"""Merge collectors, remove duplicate connection identities, then publish the TCP-only pool."""
 from __future__ import annotations
 
 import asyncio
@@ -96,17 +96,20 @@ def main() -> int:
 
     protocol_rows: list[dict] = []
     seen_exact_uris: set[str] = set()
+    seen_literal_identities: set[str] = set()
     seen_uri_identities: set[str] = set()
     exact_uri_dedup_removed = 0
     remark_only_dedup_removed = 0
+    canonical_identity_dedup_removed = 0
     html_uri_normalized = 0
     insecure_plain_vless_removed = 0
     for original in all_rows:
         if str(original.get("protocol") or "").lower() == "openvpn":
             continue
 
-        # Preserve the existing HTML-entity repair. Duplicate identity is then
-        # literal URI text before the first '#'; the fragment is display-only.
+        # Preserve the existing HTML-entity repair. Identity ignores the
+        # display remark and conservatively canonicalizes only query spelling:
+        # key order/case and one layer of percent-encoding.
         raw_uri = str(original.get("uri") or "")
         clean_uri = html.unescape(raw_uri)
         if clean_uri != raw_uri:
@@ -117,9 +120,16 @@ def main() -> int:
             continue
         seen_exact_uris.add(clean_uri)
 
+        literal_identity = clean_uri.split("#", 1)[0]
+        literal_seen_before = literal_identity in seen_literal_identities
+        seen_literal_identities.add(literal_identity)
+
         uri_identity = catalog.dedup_key(clean_uri)
         if uri_identity in seen_uri_identities:
-            remark_only_dedup_removed += 1
+            if literal_seen_before:
+                remark_only_dedup_removed += 1
+            else:
+                canonical_identity_dedup_removed += 1
             continue
         seen_uri_identities.add(uri_identity)
 
@@ -134,6 +144,7 @@ def main() -> int:
         f"INFO merged={len(all_rows)} protocol_rows={len(protocol_rows)} "
         f"protocol_candidates={len(rows)} exact_uri_dedup_removed={exact_uri_dedup_removed} "
         f"remark_only_dedup_removed={remark_only_dedup_removed} "
+        f"canonical_identity_dedup_removed={canonical_identity_dedup_removed} "
         f"html_uri_normalized={html_uri_normalized} "
         f"insecure_plain_vless_removed={insecure_plain_vless_removed}"
     )
@@ -155,6 +166,7 @@ def main() -> int:
         "semantic_dedup_removed": 0,
         "exact_uri_dedup_removed": exact_uri_dedup_removed,
         "remark_only_dedup_removed": remark_only_dedup_removed,
+        "canonical_identity_dedup_removed": canonical_identity_dedup_removed,
         "html_uri_normalized": html_uri_normalized,
         "insecure_plain_vless_removed": insecure_plain_vless_removed,
         "tcp_reachable": len(tcp_checked),
@@ -182,6 +194,7 @@ def main() -> int:
         "semantic_dedup_removed": 0,
         "exact_uri_dedup_removed": exact_uri_dedup_removed,
         "remark_only_dedup_removed": remark_only_dedup_removed,
+        "canonical_identity_dedup_removed": canonical_identity_dedup_removed,
         "html_uri_normalized": html_uri_normalized,
         "insecure_plain_vless_removed": insecure_plain_vless_removed,
         "tcp_reachable": len(tcp_checked),

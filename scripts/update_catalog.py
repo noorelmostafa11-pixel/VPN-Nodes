@@ -18,6 +18,7 @@ if str(SCRIPTS_DIR) not in sys.path:
 
 from gitverse_adapter import gitverse_fallback_urls
 from share_daily_adapter import extract_nodes as extract_clash_nodes
+from node_identity import dedup_key as node_dedup_key
 
 ROOT = SCRIPTS_DIR.parent
 OUT = ROOT / "output"
@@ -171,8 +172,8 @@ def valid_uri(uri: str, protocol: str) -> bool:
 
 
 def dedup_key(uri: str) -> str:
-    """Literal URI identity excluding only the display remark after '#'."""
-    return uri.split("#", 1)[0]
+    """Return the shared conservative connection identity."""
+    return node_dedup_key(uri)
 
 
 def parse_lines(text: str, source_name: str, source_hint_country: str | None = None):
