@@ -54,7 +54,6 @@ jobs:
           V2NODES_RETRY_WORKERS: 20
           V2NODES_TIMEOUT: 25
           V2NODES_RETRY_TIMEOUT: 30
-          SOURCE_MAX_STALE_HOURS: 72
         run: |
           set -euo pipefail
 
@@ -174,9 +173,19 @@ jobs:
 
           freshness = data.get('source_freshness') or {}
 
-          if freshness.get('max_stale_hours') != 72:
+          if freshness.get('filtering_policy') != 'all_healthy_nonempty_sources':
               raise SystemExit(
-                  f"unexpected source freshness window: {freshness}"
+                  f"unexpected source inclusion policy: {freshness}"
+              )
+
+          if int(freshness.get('stale_sources') or 0) != 0:
+              raise SystemExit(
+                  f"stale source filtering must be disabled: {freshness}"
+              )
+
+          if int(freshness.get('duplicate_sources') or 0) != 0:
+              raise SystemExit(
+                  f"source mirror filtering must be disabled: {freshness}"
               )
 
           print(

@@ -17,7 +17,6 @@ import update_catalog as catalog
 ROOT = Path(__file__).resolve().parents[1]
 META = ROOT / "output" / "metadata"
 SOURCE_FRESHNESS_STATE = META / "source_freshness.json"
-SOURCE_CONFIG = ROOT / "sources" / "sources.json"
 INPUTS = (
     META / "sources_candidates.json",
     META / "telegram_candidates.json",
@@ -75,24 +74,18 @@ def main() -> int:
         source_health.extend(health)
         print(f"INFO loaded {path.name}: rows={len(rows)}")
 
-    source_cfg = json.loads(SOURCE_CONFIG.read_text(encoding="utf-8"))
-    max_stale_hours = int(
-        source_cfg.get("freshness_policy", {}).get(
-            "max_unchanged_hours", source_freshness.DEFAULT_MAX_STALE_HOURS
-        )
-    )
     all_rows, source_health, freshness = source_freshness.apply_source_freshness(
         all_rows,
         source_health,
         SOURCE_FRESHNESS_STATE,
-        max_stale_hours=max_stale_hours,
     )
     print(
         f"INFO source_freshness checked={freshness['sources_checked']} "
-        f"active={freshness['active_sources']} stale={freshness['stale_sources']} "
-        f"mirrors={freshness['duplicate_sources']} failed={freshness['failed_sources']} "
+        f"active={freshness['active_sources']} stale=0 mirrors=0 "
+        f"failed={freshness['failed_sources']} "
         f"empty={freshness['empty_sources']} "
-        f"included_nodes={freshness['included_nodes']}"
+        f"included_nodes={freshness['included_nodes']} "
+        f"policy={freshness['filtering_policy']}"
     )
 
     protocol_rows: list[dict] = []

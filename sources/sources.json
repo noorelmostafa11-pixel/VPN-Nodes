@@ -1,11 +1,6 @@
 {
   "version": 52,
   "mode": "direct-public-sources",
-  "freshness_policy": {
-    "max_unchanged_hours": 72,
-    "recheck_excluded_sources": true,
-    "reactivate_on_semantic_change": true
-  },
   "sources": [
     {
       "name": "roosterkid-V2RAY_RAW",

@@ -1,23 +1,20 @@
 #!/usr/bin/env python3
-"""Track semantic source freshness without stopping source monitoring.
+"""Track source content changes for diagnostics without filtering sources.
 
-Every source is collected on every run. A source is allowed to compete when its
-semantic node set changed within the configured window. Stale and exact-mirror
-sources stay monitored and automatically become eligible when their content
-changes.
+Every healthy, non-empty source is included on every run, regardless of how long
+its content has remained unchanged and regardless of whether another source has
+identical content. Source-level freshness and mirror status are observational
+only; node-level deduplication later in the pipeline removes duplicate nodes.
 """
 from __future__ import annotations
 
 import hashlib
 import json
-import os
 from collections import defaultdict
 from datetime import datetime, timezone
 from pathlib import Path
 
 import node_identity
-
-DEFAULT_MAX_STALE_HOURS = 72
 
 
 def _utc_now() -> datetime:
@@ -64,15 +61,15 @@ def apply_source_freshness(
     max_stale_hours: int | None = None,
     now: datetime | None = None,
 ) -> tuple[list[dict], list[dict], dict]:
-    """Return competing rows, annotated health, and persisted freshness state."""
-    current_time = (now or _utc_now()).astimezone(timezone.utc)
-    configured_hours = max_stale_hours
-    if configured_hours is None:
-        configured_hours = int(os.environ.get("SOURCE_MAX_STALE_HOURS", DEFAULT_MAX_STALE_HOURS))
-    if configured_hours < 1:
-        raise ValueError("SOURCE_MAX_STALE_HOURS must be at least 1")
+    """Include every healthy non-empty source and persist diagnostic state.
 
+    max_stale_hours is accepted only for backward compatibility with older
+    callers. It never filters a source.
+    """
+    _ = max_stale_hours
+    current_time = (now or _utc_now()).astimezone(timezone.utc)
     previous = _load_state(state_path)
+
     health_by_name: dict[str, dict] = {}
     health_order: list[str] = []
     for entry in health:
@@ -96,33 +93,35 @@ def apply_source_freshness(
     for name in rows_by_source:
         if name not in health_by_name:
             health_order.append(name)
-            health_by_name[name] = {"name": name, "ok": True, "nodes": len(rows_by_source[name])}
+            health_by_name[name] = {
+                "name": name,
+                "ok": True,
+                "nodes": len(rows_by_source[name]),
+            }
 
     current: dict[str, dict] = {}
     for name in health_order:
         entry = health_by_name[name]
         source_rows = rows_by_source.get(name, [])
         prior = previous.get(name, {}) if isinstance(previous.get(name), dict) else {}
-        ok = bool(entry.get("ok")) and bool(source_rows)
+        usable = bool(entry.get("ok")) and bool(source_rows)
 
-        if ok:
+        if usable:
             fingerprint, semantic_nodes = _fingerprint(source_rows)
             changed = fingerprint != str(prior.get("fingerprint") or "")
             if changed or not prior.get("last_changed_at"):
                 last_changed = current_time
             else:
                 last_changed = _parse_iso(prior.get("last_changed_at"), current_time)
-            age_hours = max(0.0, (current_time - last_changed).total_seconds() / 3600)
-            fresh = age_hours <= configured_hours
-            reason = "changed" if changed else ("within_window" if fresh else "unchanged_too_long")
+
             state = {
                 "fingerprint": fingerprint,
                 "semantic_nodes": semantic_nodes,
                 "last_checked_at": _iso(current_time),
                 "last_changed_at": _iso(last_changed),
-                "fresh": fresh,
-                "competition_active": fresh,
-                "freshness_reason": reason,
+                "fresh": True,
+                "competition_active": True,
+                "freshness_reason": "changed" if changed else "unchanged_included",
                 "duplicate_of": None,
             }
         else:
@@ -139,28 +138,12 @@ def apply_source_freshness(
             }
         current[name] = state
 
-    # Exact mirrors do not compete twice. The first healthy configured source is
-    # retained; every mirror is still checked and can re-enter when it diverges.
-    fingerprint_owner: dict[str, str] = {}
-    for name in health_order:
-        state = current[name]
-        fingerprint = str(state.get("fingerprint") or "")
-        if not state.get("competition_active") or not fingerprint:
-            continue
-        owner = fingerprint_owner.get(fingerprint)
-        if owner is None:
-            fingerprint_owner[fingerprint] = name
-            continue
-        state["competition_active"] = False
-        state["duplicate_of"] = owner
-        state["freshness_reason"] = "exact_mirror"
-
-    filtered: list[dict] = []
+    included: list[dict] = []
     included_by_source: dict[str, int] = defaultdict(int)
     for row in rows:
         name = canonical_source(row)
         if current.get(name, {}).get("competition_active"):
-            filtered.append(row)
+            included.append(row)
             included_by_source[name] += 1
 
     annotated_health: list[dict] = []
@@ -173,20 +156,27 @@ def apply_source_freshness(
             "competition_active": bool(state.get("competition_active")),
             "included_nodes": included_by_source.get(name, 0),
             "last_changed_at": state.get("last_changed_at"),
-            "age_hours": round(max(0.0, (current_time - last_changed).total_seconds() / 3600), 2),
+            "age_hours": round(
+                max(0.0, (current_time - last_changed).total_seconds() / 3600),
+                2,
+            ),
             "freshness_reason": state.get("freshness_reason"),
-            "duplicate_of": state.get("duplicate_of"),
+            "duplicate_of": None,
         }
         annotated_health.append(entry)
 
     summary = {
-        "schema": 1,
+        "schema": 2,
         "generated_at": _iso(current_time),
-        "max_stale_hours": configured_hours,
+        "filtering_policy": "all_healthy_nonempty_sources",
+        "max_stale_hours": None,
         "sources_checked": len(current),
-        "active_sources": sum(1 for state in current.values() if state.get("competition_active")),
-        "stale_sources": sum(1 for state in current.values() if state.get("freshness_reason") == "unchanged_too_long"),
-        "duplicate_sources": sum(1 for state in current.values() if state.get("freshness_reason") == "exact_mirror"),
+        "active_sources": sum(
+            1 for state in current.values()
+            if state.get("competition_active")
+        ),
+        "stale_sources": 0,
+        "duplicate_sources": 0,
         "failed_sources": sum(
             1 for state in current.values()
             if state.get("freshness_reason") == "fetch_failed"
@@ -196,9 +186,12 @@ def apply_source_freshness(
             if state.get("freshness_reason") == "empty_source"
         ),
         "input_nodes": len(rows),
-        "included_nodes": len(filtered),
+        "included_nodes": len(included),
         "sources": current,
     }
     state_path.parent.mkdir(parents=True, exist_ok=True)
-    state_path.write_text(json.dumps(summary, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    return filtered, annotated_health, summary
+    state_path.write_text(
+        json.dumps(summary, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
+    return included, annotated_health, summary
