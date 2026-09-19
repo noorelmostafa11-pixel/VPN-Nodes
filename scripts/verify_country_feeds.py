@@ -83,13 +83,13 @@ def main() -> int:
         total_shards += len(shards)
 
     print(
-        f"INFO country_feed_nodes={total} uri_identity_duplicates={duplicates} "
+        f"INFO country_feed_nodes={total} semantic_duplicates={duplicates} "
         f"files={len(files)} shards={total_shards} shard_size={shard_size}"
     )
     if duplicates:
         for example in examples:
             print(f"DUPLICATE {example}")
-        raise SystemExit(f"Found {duplicates} duplicate node URI identity/identities in country feeds")
+        raise SystemExit(f"Found {duplicates} semantic duplicate node(s) in country feeds")
     return 0
 
 

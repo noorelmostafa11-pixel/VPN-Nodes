@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Reject an implausibly small or internally inconsistent app catalog."""
+"""Reject an unexpectedly collapsed or internally inconsistent app catalog."""
 from __future__ import annotations
 
 import argparse
@@ -23,7 +23,7 @@ def verify(
     index_path: Path,
     *,
     minimum_nodes: int = 1000,
-    minimum_ratio: float = 0.0,
+    minimum_ratio: float = 0.5,
 ) -> None:
     current = _load(current_path)
     previous = _load(previous_path) if previous_path.is_file() else {}
@@ -35,12 +35,7 @@ def verify(
         raise ValueError(
             f"catalog collapsed below minimum: current={current_total} minimum={minimum_nodes}"
         )
-    if minimum_ratio < 0:
-        raise ValueError(f"minimum_ratio must be non-negative: {minimum_ratio}")
-    # Previous-run ratio gating is optional. A dedup-policy change can
-    # legitimately shrink the catalog sharply. Production disables this
-    # comparison while retaining the absolute floor and consistency checks.
-    if minimum_ratio > 0 and previous_total and current_total < int(previous_total * minimum_ratio):
+    if previous_total and current_total < int(previous_total * minimum_ratio):
         raise ValueError(
             f"catalog collapsed versus previous: current={current_total} "
             f"previous={previous_total} minimum_ratio={minimum_ratio}"
@@ -70,7 +65,7 @@ def main() -> int:
         args.current,
         args.index,
         minimum_nodes=int(os.environ.get("CATALOG_MIN_PUBLISHED_NODES", "1000")),
-        minimum_ratio=float(os.environ.get("CATALOG_MIN_PREVIOUS_RATIO", "0")),
+        minimum_ratio=float(os.environ.get("CATALOG_MIN_PREVIOUS_RATIO", "0.5")),
     )
     print("OK catalog regression guard")
     return 0

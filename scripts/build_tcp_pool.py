@@ -326,7 +326,7 @@ def main() -> None:
     ]
     unique: dict[str, dict] = {}
     for row in protocol_rows:
-        unique.setdefault(catalog.dedup_key(str(row["uri"])), row)
+        unique.setdefault(catalog.dedup_key(row["uri"]), row)
     rows = list(unique.values())
 
     print(

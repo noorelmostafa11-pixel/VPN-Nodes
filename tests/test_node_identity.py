@@ -14,61 +14,46 @@ def load_module(name: str, path: Path):
 
 identity = load_module("node_identity", ROOT / "scripts/node_identity.py")
 
+# Real-world duplicate seen in SG.txt: same VLESS/REALITY account and backend,
+# represented by three sources with cosmetic/default differences.
 base = (
     "vless://e3f0c894-0f76-4683-a751-6a93da8fd14d@206.206.78.36:443?"
     "type=tcp&security=reality&encryption=none&flow=xtls-rprx-vision&fp=chrome&"
     "pbk=UOLfRKeEoVxkp-APTF2OlvFkKSoiR2mWzUuhSWxcVmQ&sid=133a3f10a1581047&"
     "sni=www.cloudflare.com#SG"
 )
-
-# The remark is display-only and must not create a second node.
-variant_remark = base.replace("#SG", "#source-two")
-variant_empty_remark = base.replace("#SG", "#")
-variant_no_remark = base.split("#", 1)[0]
-for variant in (variant_remark, variant_empty_remark, variant_no_remark):
-    assert identity.dedup_key(base) == identity.dedup_key(variant)
-
-# Query order is spelling, not connection data.
-variant_order = base.replace(
-    "type=tcp&security=reality&encryption=none",
-    "encryption=none&security=reality&type=tcp",
+variant_fp = (
+    "vless://e3f0c894-0f76-4683-a751-6a93da8fd14d@206.206.78.36:443?"
+    "flow=xtls-rprx-vision&fp=random&pbk=UOLfRKeEoVxkp-APTF2OlvFkKSoiR2mWzUuhSWxcVmQ&"
+    "security=reality&sid=133a3f10a1581047&sni=www.cloudflare.com&type=tcp#source-two"
 )
-assert identity.dedup_key(base) == identity.dedup_key(variant_order)
-
-# Query-key case and one layer of percent-encoding are also spelling only.
-trojan_a = (
-    "trojan://humanity@212.183.88.136:443?"
-    "security=tls&sni=www.calmlunch.com&type=ws&Host=www.calmlunch.com&"
-    "path=%2Fassignment#source-a"
+variant_raw = (
+    "vless://e3f0c894-0f76-4683-a751-6a93da8fd14d@206.206.78.36:443?"
+    "flow=xtls-rprx-vision&fp=firefox&pbk=UOLfRKeEoVxkp-APTF2OlvFkKSoiR2mWzUuhSWxcVmQ&"
+    "security=reality&sid=133a3f10a1581047&sni=www.cloudflare.com&type=raw#source-three"
 )
-trojan_b = (
-    "trojan://humanity@212.183.88.136:443?"
-    "path=/assignment&host=www.calmlunch.com&type=ws&SNI=www.calmlunch.com&"
-    "SECURITY=tls#source-b"
-)
-assert identity.dedup_key(trojan_a) == identity.dedup_key(trojan_b)
 
-# Any real connection-data difference must remain distinct.
-variant_fp = base.replace("fp=chrome", "fp=firefox")
-variant_raw = base.replace("type=tcp", "type=raw")
-variant_sni = base.replace("www.cloudflare.com", "www.microsoft.com")
-variant_port = base.replace("@206.206.78.36:443", "@206.206.78.36:8443")
-variant_uuid = base.replace(
+assert identity.dedup_key(base) == identity.dedup_key(variant_fp)
+assert identity.dedup_key(base) == identity.dedup_key(variant_raw)
+
+# Different credentials must NOT be collapsed just because IP/port are equal.
+different_uuid = base.replace(
     "e3f0c894-0f76-4683-a751-6a93da8fd14d",
-    "adc11f30-e4cb-4985-bf5e-f9ded69c019f",
+    "11111111-1111-1111-1111-111111111111",
 )
-variant_protocol = base.replace("vless://", "trojan://")
-variant_added_parameter = base.replace("#SG", "&allowInsecure=0#SG")
+assert identity.dedup_key(base) != identity.dedup_key(different_uuid)
 
-for variant in (
-    variant_fp,
-    variant_raw,
-    variant_sni,
-    variant_port,
-    variant_uuid,
-    variant_protocol,
-    variant_added_parameter,
-):
-    assert identity.dedup_key(base) != identity.dedup_key(variant)
+# Different REALITY/TLS routing must remain distinct.
+different_sni = base.replace("www.cloudflare.com", "www.microsoft.com")
+assert identity.dedup_key(base) != identity.dedup_key(different_sni)
 
-print("Conservative connection identity tests: PASS")
+# WS path selects a backend and must remain significant.
+ws_a = "vless://00000000-0000-0000-0000-000000000000@example.com:443?type=ws&security=tls&host=edge.example&path=/a#one"
+ws_b = "vless://00000000-0000-0000-0000-000000000000@example.com:443?security=tls&type=websocket&host=edge.example&path=/b#two"
+assert identity.dedup_key(ws_a) != identity.dedup_key(ws_b)
+
+# Parameter order and remarks are cosmetic.
+ws_a_reordered = "vless://00000000-0000-0000-0000-000000000000@example.com:443?path=/a&host=edge.example&security=tls&type=websocket#another-source"
+assert identity.dedup_key(ws_a) == identity.dedup_key(ws_a_reordered)
+
+print("semantic node identity tests: PASS")

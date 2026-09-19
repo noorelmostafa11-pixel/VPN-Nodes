@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Merge collectors, remove duplicate connection identities, then publish the TCP-only pool."""
+"""Merge collectors, semantic-dedup, then publish the common TCP-only pool."""
 from __future__ import annotations
 
 import asyncio
@@ -10,6 +10,7 @@ import urllib.parse
 from pathlib import Path
 
 import build_tcp_pool as common
+import node_identity
 import source_freshness
 import update_catalog as catalog
 
@@ -95,56 +96,29 @@ def main() -> int:
     )
 
     protocol_rows: list[dict] = []
-    seen_exact_uris: set[str] = set()
-    seen_literal_identities: set[str] = set()
-    seen_uri_identities: set[str] = set()
-    exact_uri_dedup_removed = 0
-    remark_only_dedup_removed = 0
-    canonical_identity_dedup_removed = 0
     html_uri_normalized = 0
     insecure_plain_vless_removed = 0
     for original in all_rows:
         if str(original.get("protocol") or "").lower() == "openvpn":
             continue
-
-        # Preserve the existing HTML-entity repair. Identity ignores the
-        # display remark and conservatively canonicalizes only query spelling:
-        # key order/case and one layer of percent-encoding.
-        raw_uri = str(original.get("uri") or "")
+        raw_uri = str(original.get("uri") or "").strip()
         clean_uri = html.unescape(raw_uri)
         if clean_uri != raw_uri:
             html_uri_normalized += 1
-
-        if clean_uri in seen_exact_uris:
-            exact_uri_dedup_removed += 1
-            continue
-        seen_exact_uris.add(clean_uri)
-
-        literal_identity = clean_uri.split("#", 1)[0]
-        literal_seen_before = literal_identity in seen_literal_identities
-        seen_literal_identities.add(literal_identity)
-
-        uri_identity = catalog.dedup_key(clean_uri)
-        if uri_identity in seen_uri_identities:
-            if literal_seen_before:
-                remark_only_dedup_removed += 1
-            else:
-                canonical_identity_dedup_removed += 1
-            continue
-        seen_uri_identities.add(uri_identity)
-
         if is_insecure_plain_vless(clean_uri):
             insecure_plain_vless_removed += 1
             continue
         protocol_rows.append({**original, "uri": clean_uri})
 
-    rows = protocol_rows
+    unique: dict[str, dict] = {}
+    for row in protocol_rows:
+        unique.setdefault(node_identity.dedup_key(row["uri"]), row)
+    rows = list(unique.values())
+    semantic_dedup_removed = len(protocol_rows) - len(rows)
 
     print(
         f"INFO merged={len(all_rows)} protocol_rows={len(protocol_rows)} "
-        f"protocol_candidates={len(rows)} exact_uri_dedup_removed={exact_uri_dedup_removed} "
-        f"remark_only_dedup_removed={remark_only_dedup_removed} "
-        f"canonical_identity_dedup_removed={canonical_identity_dedup_removed} "
+        f"protocol_candidates={len(rows)} semantic_dedup_removed={semantic_dedup_removed} "
         f"html_uri_normalized={html_uri_normalized} "
         f"insecure_plain_vless_removed={insecure_plain_vless_removed}"
     )
@@ -163,10 +137,7 @@ def main() -> int:
         "total_parsed": len(all_rows),
         "protocol_rows": len(protocol_rows),
         "protocol_candidates": len(rows),
-        "semantic_dedup_removed": 0,
-        "exact_uri_dedup_removed": exact_uri_dedup_removed,
-        "remark_only_dedup_removed": remark_only_dedup_removed,
-        "canonical_identity_dedup_removed": canonical_identity_dedup_removed,
+        "semantic_dedup_removed": semantic_dedup_removed,
         "html_uri_normalized": html_uri_normalized,
         "insecure_plain_vless_removed": insecure_plain_vless_removed,
         "tcp_reachable": len(tcp_checked),
@@ -191,10 +162,7 @@ def main() -> int:
         "total_parsed": len(all_rows),
         "protocol_rows": len(protocol_rows),
         "protocol_candidates": len(rows),
-        "semantic_dedup_removed": 0,
-        "exact_uri_dedup_removed": exact_uri_dedup_removed,
-        "remark_only_dedup_removed": remark_only_dedup_removed,
-        "canonical_identity_dedup_removed": canonical_identity_dedup_removed,
+        "semantic_dedup_removed": semantic_dedup_removed,
         "html_uri_normalized": html_uri_normalized,
         "insecure_plain_vless_removed": insecure_plain_vless_removed,
         "tcp_reachable": len(tcp_checked),

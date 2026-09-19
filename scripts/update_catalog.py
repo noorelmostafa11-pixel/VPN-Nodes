@@ -18,7 +18,6 @@ if str(SCRIPTS_DIR) not in sys.path:
 
 from gitverse_adapter import gitverse_fallback_urls
 from share_daily_adapter import extract_nodes as extract_clash_nodes
-from node_identity import dedup_key as node_dedup_key
 
 ROOT = SCRIPTS_DIR.parent
 OUT = ROOT / "output"
@@ -172,8 +171,16 @@ def valid_uri(uri: str, protocol: str) -> bool:
 
 
 def dedup_key(uri: str) -> str:
-    """Return the shared conservative connection identity."""
-    return node_dedup_key(uri)
+    host, port, _, query = endpoint_from_uri(uri)
+    scheme = protocol_from_uri(uri) or ""
+    if not host or not port:
+        return uri
+    identity = [scheme, host.lower(), str(port)]
+    for key in ("uuid", "sid", "sni", "serverName", "path", "type", "security", "encryption", "method"):
+        value = query.get(key, [""])[0]
+        if value:
+            identity.append(f"{key}={value}")
+    return "|".join(identity)
 
 
 def parse_lines(text: str, source_name: str, source_hint_country: str | None = None):

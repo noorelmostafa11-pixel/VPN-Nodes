@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Track exact-URI source freshness without stopping source monitoring.
+"""Track semantic source freshness without stopping source monitoring.
 
 Every source is collected on every run. A source is allowed to compete when its
-exact URI set changed within the configured window. Stale and exact-mirror
+semantic node set changed within the configured window. Stale and exact-mirror
 sources stay monitored and automatically become eligible when their content
 changes.
 """
@@ -14,6 +14,8 @@ import os
 from collections import defaultdict
 from datetime import datetime, timezone
 from pathlib import Path
+
+import node_identity
 
 DEFAULT_MAX_STALE_HOURS = 72
 
@@ -35,13 +37,13 @@ def _parse_iso(value: object, fallback: datetime) -> datetime:
 
 
 def _fingerprint(rows: list[dict]) -> tuple[str, int]:
-    exact_uris = sorted({
-        str(row.get("uri") or "")
+    identities = sorted({
+        node_identity.dedup_key(str(row.get("uri") or ""))
         for row in rows
-        if str(row.get("uri") or "")
+        if str(row.get("uri") or "").strip()
     })
-    digest = hashlib.sha256("\n".join(exact_uris).encode("utf-8")).hexdigest()
-    return digest, len(exact_uris)
+    digest = hashlib.sha256("\n".join(identities).encode("utf-8")).hexdigest()
+    return digest, len(identities)
 
 
 def _load_state(path: Path) -> dict:
@@ -104,7 +106,7 @@ def apply_source_freshness(
         ok = bool(entry.get("ok")) and bool(source_rows)
 
         if ok:
-            fingerprint, exact_nodes = _fingerprint(source_rows)
+            fingerprint, semantic_nodes = _fingerprint(source_rows)
             changed = fingerprint != str(prior.get("fingerprint") or "")
             if changed or not prior.get("last_changed_at"):
                 last_changed = current_time
@@ -115,8 +117,7 @@ def apply_source_freshness(
             reason = "changed" if changed else ("within_window" if fresh else "unchanged_too_long")
             state = {
                 "fingerprint": fingerprint,
-                "exact_nodes": exact_nodes,
-                "semantic_nodes": exact_nodes,  # legacy metadata alias
+                "semantic_nodes": semantic_nodes,
                 "last_checked_at": _iso(current_time),
                 "last_changed_at": _iso(last_changed),
                 "fresh": fresh,
@@ -134,8 +135,7 @@ def apply_source_freshness(
                 "competition_active": False,
                 "freshness_reason": "fetch_failed" if not entry.get("ok") else "empty_source",
                 "duplicate_of": None,
-                "exact_nodes": int(prior.get("exact_nodes") or prior.get("semantic_nodes") or 0),
-                "semantic_nodes": int(prior.get("exact_nodes") or prior.get("semantic_nodes") or 0),
+                "semantic_nodes": int(prior.get("semantic_nodes") or 0),
             }
         current[name] = state
 
