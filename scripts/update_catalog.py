@@ -171,8 +171,8 @@ def valid_uri(uri: str, protocol: str) -> bool:
 
 
 def dedup_key(uri: str) -> str:
-    """Exact URI identity: different URI text must remain a separate node."""
-    return uri
+    """Literal URI identity excluding only the display remark after '#'."""
+    return uri.split("#", 1)[0]
 
 
 def parse_lines(text: str, source_name: str, source_hint_country: str | None = None):

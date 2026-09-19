@@ -6,6 +6,8 @@ import json
 from collections import defaultdict
 from pathlib import Path
 
+import node_identity
+
 ROOT = Path(__file__).resolve().parents[1]
 COUNTRIES = ROOT / "output" / "countries"
 COUNTRY_SHARDS = ROOT / "output" / "country_shards"
@@ -48,7 +50,7 @@ def main() -> int:
         per_key: defaultdict[str, int] = defaultdict(int)
         for uri in lines:
             total += 1
-            key = uri
+            key = node_identity.dedup_key(uri)
             per_key[key] += 1
             if key in seen:
                 duplicates += 1
@@ -81,13 +83,13 @@ def main() -> int:
         total_shards += len(shards)
 
     print(
-        f"INFO country_feed_nodes={total} exact_uri_duplicates={duplicates} "
+        f"INFO country_feed_nodes={total} uri_identity_duplicates={duplicates} "
         f"files={len(files)} shards={total_shards} shard_size={shard_size}"
     )
     if duplicates:
         for example in examples:
             print(f"DUPLICATE {example}")
-        raise SystemExit(f"Found {duplicates} exact URI duplicate node(s) in country feeds")
+        raise SystemExit(f"Found {duplicates} duplicate node URI identity/identities in country feeds")
     return 0
 
 

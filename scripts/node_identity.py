@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
-"""Exact URI identity for node deduplication.
+"""URI identity used for duplicate-node removal.
 
-Project policy: only text-identical URI strings are duplicates.
-No parameter reordering, default normalization, remark removal, transport
-normalization, or other semantic equivalence is applied.
+Project policy: the fragment after the first '#' is only a display remark and
+must not create a distinct node. Everything before '#' is compared literally:
+no parameter reordering, default normalization, transport normalization, or
+other semantic equivalence is applied.
 """
 from __future__ import annotations
 
 
 def dedup_key(uri: str) -> str:
-    """Return the URI unchanged so only exact URI matches deduplicate."""
-    return uri
+    """Return the URI before the first '#'; keep every other textual difference."""
+    return uri.split("#", 1)[0]

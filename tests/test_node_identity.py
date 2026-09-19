@@ -21,17 +21,23 @@ base = (
     "sni=www.cloudflare.com#SG"
 )
 
-assert identity.dedup_key(base) == identity.dedup_key(base)
-
-variant_fp = base.replace("fp=chrome", "fp=firefox")
+# The remark is display-only and must not create a second node.
 variant_remark = base.replace("#SG", "#source-two")
+variant_empty_remark = base.replace("#SG", "#")
+variant_no_remark = base.split("#", 1)[0]
+for variant in (variant_remark, variant_empty_remark, variant_no_remark):
+    assert identity.dedup_key(base) == identity.dedup_key(variant)
+
+# Any difference before '#' must remain distinct.
+variant_fp = base.replace("fp=chrome", "fp=firefox")
 variant_order = base.replace(
     "type=tcp&security=reality",
     "security=reality&type=tcp",
 )
 variant_raw = base.replace("type=tcp", "type=raw")
+variant_sni = base.replace("www.cloudflare.com", "www.microsoft.com")
 
-for variant in (variant_fp, variant_remark, variant_order, variant_raw):
+for variant in (variant_fp, variant_order, variant_raw, variant_sni):
     assert identity.dedup_key(base) != identity.dedup_key(variant)
 
-print("exact URI node identity tests: PASS")
+print("URI identity without remark tests: PASS")
