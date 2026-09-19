@@ -171,16 +171,8 @@ def valid_uri(uri: str, protocol: str) -> bool:
 
 
 def dedup_key(uri: str) -> str:
-    host, port, _, query = endpoint_from_uri(uri)
-    scheme = protocol_from_uri(uri) or ""
-    if not host or not port:
-        return uri
-    identity = [scheme, host.lower(), str(port)]
-    for key in ("uuid", "sid", "sni", "serverName", "path", "type", "security", "encryption", "method"):
-        value = query.get(key, [""])[0]
-        if value:
-            identity.append(f"{key}={value}")
-    return "|".join(identity)
+    """Exact URI identity: different URI text must remain a separate node."""
+    return uri
 
 
 def parse_lines(text: str, source_name: str, source_hint_country: str | None = None):

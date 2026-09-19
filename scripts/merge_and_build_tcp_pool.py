@@ -10,7 +10,6 @@ import urllib.parse
 from pathlib import Path
 
 import build_tcp_pool as common
-import node_identity
 import source_freshness
 import update_catalog as catalog
 
@@ -96,29 +95,36 @@ def main() -> int:
     )
 
     protocol_rows: list[dict] = []
+    seen_exact_uris: set[str] = set()
+    exact_uri_dedup_removed = 0
     html_uri_normalized = 0
     insecure_plain_vless_removed = 0
     for original in all_rows:
         if str(original.get("protocol") or "").lower() == "openvpn":
             continue
-        raw_uri = str(original.get("uri") or "").strip()
+
+        # Keep the existing HTML-entity repair, then deduplicate only
+        # exact resulting URI text. No semantic URI normalization is allowed.
+        raw_uri = str(original.get("uri") or "")
         clean_uri = html.unescape(raw_uri)
         if clean_uri != raw_uri:
             html_uri_normalized += 1
+
+        if clean_uri in seen_exact_uris:
+            exact_uri_dedup_removed += 1
+            continue
+        seen_exact_uris.add(clean_uri)
+
         if is_insecure_plain_vless(clean_uri):
             insecure_plain_vless_removed += 1
             continue
         protocol_rows.append({**original, "uri": clean_uri})
 
-    unique: dict[str, dict] = {}
-    for row in protocol_rows:
-        unique.setdefault(node_identity.dedup_key(row["uri"]), row)
-    rows = list(unique.values())
-    semantic_dedup_removed = len(protocol_rows) - len(rows)
+    rows = protocol_rows
 
     print(
         f"INFO merged={len(all_rows)} protocol_rows={len(protocol_rows)} "
-        f"protocol_candidates={len(rows)} semantic_dedup_removed={semantic_dedup_removed} "
+        f"protocol_candidates={len(rows)} exact_uri_dedup_removed={exact_uri_dedup_removed} "
         f"html_uri_normalized={html_uri_normalized} "
         f"insecure_plain_vless_removed={insecure_plain_vless_removed}"
     )
@@ -137,7 +143,8 @@ def main() -> int:
         "total_parsed": len(all_rows),
         "protocol_rows": len(protocol_rows),
         "protocol_candidates": len(rows),
-        "semantic_dedup_removed": semantic_dedup_removed,
+        "semantic_dedup_removed": 0,
+        "exact_uri_dedup_removed": exact_uri_dedup_removed,
         "html_uri_normalized": html_uri_normalized,
         "insecure_plain_vless_removed": insecure_plain_vless_removed,
         "tcp_reachable": len(tcp_checked),
@@ -162,7 +169,8 @@ def main() -> int:
         "total_parsed": len(all_rows),
         "protocol_rows": len(protocol_rows),
         "protocol_candidates": len(rows),
-        "semantic_dedup_removed": semantic_dedup_removed,
+        "semantic_dedup_removed": 0,
+        "exact_uri_dedup_removed": exact_uri_dedup_removed,
         "html_uri_normalized": html_uri_normalized,
         "insecure_plain_vless_removed": insecure_plain_vless_removed,
         "tcp_reachable": len(tcp_checked),
