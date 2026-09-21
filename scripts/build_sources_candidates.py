@@ -8,7 +8,6 @@ from pathlib import Path
 
 import update_catalog as catalog
 from freev2raynodes_adapter import candidate_urls
-from publicvpnlist_adapter import collect_publicvpnlist
 from freeproxydb_adapter import collect_freeproxydb
 from clashxw_daily_adapter import collect_clashxw_daily
 from share_daily_adapter import collect_share_daily
@@ -130,7 +129,6 @@ def main() -> int:
 
     collect_special("freev2raynodes", collect_freev2raynodes, rows, health)
     collect_special("kort0881-vpn-checker-backend", collect_kort0881, rows, health)
-    collect_special("PublicVPNList-api", collect_publicvpnlist, rows, health, normalize=True)
     collect_special("FreeProxyDB-api", collect_freeproxydb, rows, health, normalize=True)
     collect_special("ClashXW-Daily", collect_clashxw_daily, rows, health, normalize=True)
     collect_special("ShareDaily-Clash", collect_share_daily, rows, health, normalize=True)
