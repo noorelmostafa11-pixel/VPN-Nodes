@@ -47,16 +47,20 @@ WORKERS = 40
 HTTP_TIMEOUT = 12.0
 
 # One verified HTTPS response through each node's Xray SOCKS port.
-# Public-repository integration: the real HTTPS target is supplied only at
-# runtime through a GitHub Actions secret.  No production endpoint is embedded
-# in the repository.  This changes configuration delivery only; tester/parser
-# behavior is unchanged.
+# The primary Google target is supplied only at runtime through a GitHub Actions
+# secret.  Microsoft is a public fallback and is tried only after the primary
+# target fails, so nodes that pass Google incur no extra request or runner time.
 REAL_PING_URL = (
     os.environ.get("VPN_TEST_URL", "").strip()
     or os.environ.get("VPN_REAL_PING_URL", "").strip()
 )
+MICROSOFT_FALLBACK_URL = "https://www.microsoft.com/robots.txt"
 REAL_PING_TARGETS = (
     (REAL_PING_URL, float(os.environ.get("VPN_REAL_PING_GOOGLE_TIMEOUT", "9"))),
+    (
+        MICROSOFT_FALLBACK_URL,
+        float(os.environ.get("VPN_REAL_PING_MICROSOFT_TIMEOUT", "5")),
+    ),
 )
 REAL_PING_PAGE_SIZE = int(os.environ.get("VPN_REAL_PING_PAGE_SIZE", "1000"))
 REAL_PING_ISOLATION_CONCURRENCY = int(os.environ.get("VPN_REAL_PING_ISOLATION_CONCURRENCY", "5"))

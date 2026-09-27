@@ -261,7 +261,7 @@ def _real_ping_target(socks_port: int, url: str, timeout: float) -> int:
 
 
 def v2rayn_real_ping(node: Node, socks_port: int) -> TestResult:
-    """One real HTTPS response is enough; production has one Google-owned target."""
+    """One real HTTPS response is enough; try Google, then Microsoft on failure."""
     response_time: int | None = None
     target_errors: list[str] = []
     for url, timeout in REAL_PING_TARGETS:

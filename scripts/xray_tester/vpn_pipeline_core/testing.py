@@ -33,7 +33,7 @@ def run_protocol_role(
 
     log(
         f"[{role.upper()}:{protocol}] Parsing {len(indexed_nodes):,} nodes "
-        "for Xray single HTTPS response (engine-first; one configured target)"
+        "for Xray single HTTPS response (engine-first; Microsoft fallback on Google failure)"
     )
 
     for global_index, raw in indexed_nodes:
