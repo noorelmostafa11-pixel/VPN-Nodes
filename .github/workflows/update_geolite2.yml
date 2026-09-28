@@ -3,7 +3,7 @@ name: Update GeoLite2 Country database
 on:
   workflow_dispatch:
   schedule:
-    - cron: '17 4 1,15 * *'
+    - cron: '17 4 * * 2,5'
 
 permissions:
   contents: write

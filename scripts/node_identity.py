@@ -1,189 +1,102 @@
 #!/usr/bin/env python3
-"""Semantic node identity used to remove source/cosmetic duplicates safely.
+"""Connection-equivalent node identity for pre-Xray deduplication.
 
-Credentials remain part of the identity.  This deliberately does not merge two
-accounts that merely share an IP/port.  It does normalize representation details
-that do not create a different server config, such as tcp vs raw, parameter order,
-remarks, client fingerprint and explicit vs omitted VLESS encryption=none.
+Two source URIs are duplicates only when the production parser turns them into
+exactly the same connection data that the Xray engine will use. Cosmetic source
+differences (remarks, query ordering, supported aliases/defaults) therefore
+collapse naturally, while any field that changes the generated Xray connection
+settings remains distinct.
+
+If a source cannot be parsed, no semantic guess is made: only the exact cleaned
+raw string can deduplicate with another identical malformed source.
 """
 from __future__ import annotations
 
-import base64
+import html
 import json
+import sys
 import urllib.parse
+from pathlib import Path
+from typing import Any
+
+ROOT = Path(__file__).resolve().parents[1]
+TESTER_ROOT = ROOT / "scripts" / "xray_tester"
+if str(TESTER_ROOT) not in sys.path:
+    sys.path.insert(0, str(TESTER_ROOT))
+
+from vpn_pipeline_core.parsers import PARSERS  # noqa: E402
+
+SCHEME_TO_PROTOCOL = {
+    "vless": "vless",
+    "vmess": "vmess",
+    "trojan": "trojan",
+    "ss": "ss",
+}
 
 
-def _b64decode(value: str) -> bytes:
-    value = value.strip().replace("-", "+").replace("_", "/")
-    return base64.b64decode(value + "=" * (-len(value) % 4), validate=False)
+def _canonical_json(value: Any) -> str:
+    return json.dumps(
+        value,
+        ensure_ascii=False,
+        sort_keys=True,
+        separators=(",", ":"),
+    )
 
 
-def _first(query: dict[str, list[str]], *keys: str, default: str = "") -> str:
-    for key in keys:
-        values = query.get(key)
-        if values:
-            return urllib.parse.unquote(str(values[0])).strip()
-    return default
+def _clean_source(uri: str) -> str:
+    # The collector already performs the same HTML-entity cleanup before
+    # deduplication. Keep it here too so direct callers get identical behavior.
+    return html.unescape(str(uri).strip())
 
 
-def _network(value: str) -> str:
-    value = (value or "").strip().lower()
+def _raw_fallback(clean: str) -> str:
+    # Parser failures are never merged by interpretation. This preserves every
+    # non-identical malformed/unsupported source for Xray/parser judgement.
+    return "raw:" + clean
+
+
+def connection_payload(uri: str) -> dict[str, Any] | None:
+    """Return the exact connection-relevant Node fields consumed by Xray.
+
+    None means the production parser could not represent the source. Callers
+    must then fall back to exact-raw identity instead of guessing equivalence.
+    """
+    clean = _clean_source(uri)
+    try:
+        scheme = urllib.parse.urlsplit(clean).scheme.lower()
+        protocol = SCHEME_TO_PROTOCOL.get(scheme)
+        if protocol is None:
+            return None
+        node = PARSERS[protocol](clean, 0, "")
+    except Exception:
+        return None
+
+    # xray_engine.make_xray_config() builds the outbound connection solely from
+    # these fields. Runtime-only tags, local inbound ports, e-mail labels and
+    # mux scaffolding are deliberately excluded because they do not identify
+    # the remote node connection.
     return {
-        "": "tcp",
-        "raw": "tcp",
-        "websocket": "ws",
-        "http-upgrade": "httpupgrade",
-        "splithttp": "xhttp",
-    }.get(value, value)
+        "protocol": node.protocol,
+        "host": str(node.host).lower(),
+        "port": int(node.port),
+        "outbound_settings": node.outbound_settings,
+        "stream_settings": node.stream_settings,
+    }
 
 
-def _security(value: str, scheme: str) -> str:
-    value = (value or "").strip().lower()
-    if scheme == "trojan" and value in ("", "none"):
-        return "tls"
-    if value in ("", "none", "false", "0"):
-        return "none"
-    return value
+def dedup_key_with_status(uri: str) -> tuple[str, bool]:
+    """Return (identity, parser_proven).
 
-
-def _decode_vmess(uri: str) -> dict:
-    payload = urllib.parse.unquote(uri.split("vmess://", 1)[1].split("#", 1)[0].strip())
-    obj = json.loads(_b64decode(payload).decode("utf-8-sig"))
-    if not isinstance(obj, dict):
-        raise ValueError("invalid-vmess")
-    return obj
-
-
-def _ss_parts(uri: str) -> tuple[str, str, int]:
-    raw = uri.split("ss://", 1)[1].split("#", 1)[0]
-    raw = raw.split("?", 1)[0]
-    if "@" in raw:
-        userinfo, hp = raw.rsplit("@", 1)
-        try:
-            decoded = _b64decode(userinfo).decode("utf-8")
-            if ":" in decoded:
-                userinfo = decoded
-            else:
-                userinfo = urllib.parse.unquote(userinfo)
-        except Exception:
-            userinfo = urllib.parse.unquote(userinfo)
-    else:
-        decoded = _b64decode(raw).decode("utf-8")
-        userinfo, hp = decoded.rsplit("@", 1)
-    parsed = urllib.parse.urlsplit("//" + hp)
-    host = (parsed.hostname or "").lower()
-    port = int(parsed.port or 0)
-    if ":" in userinfo:
-        method, password = userinfo.split(":", 1)
-        credential = f"{method.strip().lower()}:{password}"
-    else:
-        credential = userinfo
-    return credential, host, port
+    parser_proven=True means two equal keys are guaranteed to generate the same
+    production Xray connection data. False means exact-raw fallback was used.
+    """
+    clean = _clean_source(uri)
+    payload = connection_payload(clean)
+    if payload is None:
+        return _raw_fallback(clean), False
+    return "xray:" + _canonical_json(payload), True
 
 
 def dedup_key(uri: str) -> str:
-    """Return one normalized identity for the same usable node configuration."""
-    clean = uri.replace("&amp;", "&").strip()
-    scheme = urllib.parse.urlsplit(clean).scheme.lower()
-    if scheme == "ss":
-        scheme = "shadowsocks"
-
-    if scheme == "vmess":
-        try:
-            obj = _decode_vmess(clean)
-            host = str(obj.get("add") or obj.get("address") or "").strip().lower()
-            port = int(obj.get("port") or 0)
-            credential = str(obj.get("id") or "").strip()
-            network = _network(str(obj.get("net") or "tcp"))
-            security = _security(str(obj.get("tls") or ""), "vmess")
-            query = {
-                "sni": [str(obj.get("sni") or "")],
-                "host": [str(obj.get("host") or "")],
-                "path": [str(obj.get("path") or "")],
-                "serviceName": [str(obj.get("serviceName") or obj.get("service_name") or "")],
-                "alterId": [str(obj.get("aid") or 0)],
-                "encryption": [str(obj.get("scy") or "auto")],
-            }
-        except Exception:
-            return clean.split("#", 1)[0]
-    elif scheme == "shadowsocks":
-        try:
-            credential, host, port = _ss_parts(clean)
-        except Exception:
-            return clean.split("#", 1)[0]
-        network = "tcp"
-        security = "none"
-        query = {}
-    else:
-        try:
-            parsed = urllib.parse.urlsplit(clean)
-            host = (parsed.hostname or "").strip().lower()
-            port = int(parsed.port or 0)
-            credential = urllib.parse.unquote(parsed.username or "").strip()
-            query = urllib.parse.parse_qs(parsed.query, keep_blank_values=True)
-            network = _network(_first(query, "type", "net", default="tcp"))
-            security = _security(_first(query, "security", "tls"), scheme)
-        except Exception:
-            return clean.split("#", 1)[0]
-
-    if not scheme or not host or not port:
-        return clean.split("#", 1)[0]
-
-    identity = [scheme, host, str(port)]
-    if credential:
-        identity.append(f"credential={credential}")
-    identity.extend((f"network={network}", f"security={security}"))
-
-    # SNI can select a different TLS/REALITY backend and must remain significant.
-    sni = _first(query, "sni", "serverName", "servername").lower()
-    if sni:
-        identity.append(f"sni={sni}")
-
-    if scheme == "vmess":
-        alter_id = _first(query, "alterId", default="0") or "0"
-        cipher = (_first(query, "encryption", default="auto") or "auto").lower()
-        identity.extend((f"alterId={alter_id}", f"cipher={cipher}"))
-
-    if security == "reality":
-        pbk = _first(query, "pbk", "publicKey")
-        sid = _first(query, "sid", "shortId").lower()
-        flow = _first(query, "flow").lower()
-        if pbk:
-            identity.append(f"pbk={pbk}")
-        if sid:
-            identity.append(f"sid={sid}")
-        if flow:
-            identity.append(f"flow={flow}")
-
-    # These fields can select different backends on multiplexed/CDN transports.
-    if network in {"ws", "httpupgrade", "xhttp", "http", "h2", "grpc"}:
-        transport_host = _first(query, "host").lower()
-        if transport_host:
-            identity.append(f"host={transport_host}")
-
-    if network in {"ws", "httpupgrade", "xhttp", "http", "h2"}:
-        path = _first(query, "path", default="/") or "/"
-        if not path.startswith("/"):
-            path = "/" + path
-        identity.append(f"path={path}")
-
-    if network == "grpc":
-        service = _first(query, "serviceName", "service_name")
-        authority = _first(query, "authority").lower()
-        if service:
-            identity.append(f"service={service}")
-        if authority:
-            identity.append(f"authority={authority}")
-
-    if network == "xhttp":
-        mode = _first(query, "mode").lower()
-        if mode:
-            identity.append(f"mode={mode}")
-
-    # VLESS encryption defaults to none. Explicit/omitted forms are equivalent.
-    if scheme == "vless":
-        encryption = (_first(query, "encryption", default="none") or "none").lower()
-        if encryption != "none":
-            identity.append(f"encryption={encryption}")
-
-    return "|".join(identity)
+    """Return the safe pre-Xray duplicate identity for one source URI."""
+    return dedup_key_with_status(uri)[0]

@@ -1,12 +1,11 @@
 #!/usr/bin/env python3
-"""Merge collectors, semantic-dedup, then publish the common TCP-only pool."""
+"""Merge collectors, connection-equivalent dedup, then publish the TCP-only pool."""
 from __future__ import annotations
 
 import asyncio
 import html
 import json
 import time
-import urllib.parse
 from pathlib import Path
 
 import build_tcp_pool as common
@@ -24,38 +23,54 @@ INPUTS = (
 )
 
 
-
-def is_insecure_plain_vless(uri: str) -> bool:
-    """True only when VLESS has neither transport security nor VLESS Encryption."""
+def _endpoint_key(row: dict) -> tuple[str, int] | None:
+    host = str(row.get("host") or "").strip().lower()
     try:
-        parsed = urllib.parse.urlsplit(uri)
-        if parsed.scheme.lower() != "vless":
-            return False
-        query = {
-            key.lower(): values
-            for key, values in urllib.parse.parse_qs(
-                parsed.query,
-                keep_blank_values=True,
-            ).items()
-        }
-
-        def first(*keys: str) -> str:
-            for key in keys:
-                values = query.get(key.lower())
-                if values:
-                    return str(values[0]).strip()
-            return ""
-
-        security = (first("security", "tls") or "none").lower()
-        encryption = (first("encryption") or "none").lower()
-        has_reality_key = bool(first("pbk", "publicKey"))
-        return (
-            not has_reality_key
-            and security in {"none", "false", "0"}
-            and encryption == "none"
-        )
+        port = int(row.get("port") or 0)
     except (TypeError, ValueError):
-        return False
+        return None
+    if not host or port <= 0 or port > 65535:
+        return None
+    return host, port
+
+
+async def run_tcp_checks_by_endpoint(rows: list[dict]) -> tuple[list[dict], int, int]:
+    """Probe TCP once per host:port, then map liveness back to every config."""
+    endpoint_rows: dict[tuple[str, int], dict] = {}
+    for row in rows:
+        endpoint = _endpoint_key(row)
+        if endpoint is None:
+            continue
+        endpoint_rows.setdefault(
+            endpoint,
+            {"host": endpoint[0], "port": endpoint[1]},
+        )
+
+    checked_endpoints = await common.run_tcp_checks(list(endpoint_rows.values()))
+    reachable: dict[tuple[str, int], dict] = {}
+    for endpoint_row in checked_endpoints:
+        endpoint = _endpoint_key(endpoint_row)
+        if endpoint is not None:
+            reachable[endpoint] = endpoint_row
+
+    checked_configs: list[dict] = []
+    for row in rows:
+        endpoint = _endpoint_key(row)
+        if endpoint is None:
+            continue
+        endpoint_result = reachable.get(endpoint)
+        if endpoint_result is None:
+            continue
+        checked_configs.append({
+            **row,
+            "latency_ms": endpoint_result["latency_ms"],
+            "liveness": endpoint_result.get("liveness", "ALIVE"),
+            "country": endpoint_result.get("country", "UNKNOWN"),
+            "country_resolution": endpoint_result.get("country_resolution", "pending"),
+        })
+
+    return checked_configs, len(endpoint_rows), len(reachable)
+
 
 
 def load_rows(path: Path) -> tuple[list[dict], list[dict]]:
@@ -90,7 +105,6 @@ def main() -> int:
 
     protocol_rows: list[dict] = []
     html_uri_normalized = 0
-    insecure_plain_vless_removed = 0
     for original in all_rows:
         if str(original.get("protocol") or "").lower() == "openvpn":
             continue
@@ -98,26 +112,31 @@ def main() -> int:
         clean_uri = html.unescape(raw_uri)
         if clean_uri != raw_uri:
             html_uri_normalized += 1
-        if is_insecure_plain_vless(clean_uri):
-            insecure_plain_vless_removed += 1
-            continue
         protocol_rows.append({**original, "uri": clean_uri})
 
     unique: dict[str, dict] = {}
     for row in protocol_rows:
         unique.setdefault(node_identity.dedup_key(row["uri"]), row)
     rows = list(unique.values())
-    semantic_dedup_removed = len(protocol_rows) - len(rows)
+    connection_dedup_removed = len(protocol_rows) - len(rows)
 
     print(
         f"INFO merged={len(all_rows)} protocol_rows={len(protocol_rows)} "
-        f"protocol_candidates={len(rows)} semantic_dedup_removed={semantic_dedup_removed} "
-        f"html_uri_normalized={html_uri_normalized} "
-        f"insecure_plain_vless_removed={insecure_plain_vless_removed}"
+        f"protocol_candidates={len(rows)} connection_dedup_removed={connection_dedup_removed} "
+        f"dedup_mode=xray_connection_equivalent "
+        f"html_uri_normalized={html_uri_normalized}"
     )
 
-    tcp_checked = asyncio.run(common.run_tcp_checks(rows))
-    print(f"INFO tcp_reachable={len(tcp_checked)} tcp_dead={len(rows) - len(tcp_checked)}")
+    tcp_checked, tcp_unique_endpoints, tcp_reachable_endpoints = asyncio.run(
+        run_tcp_checks_by_endpoint(rows)
+    )
+    print(
+        f"INFO tcp_unique_endpoints={tcp_unique_endpoints} "
+        f"tcp_reachable_endpoints={tcp_reachable_endpoints} "
+        f"tcp_dead_endpoints={tcp_unique_endpoints - tcp_reachable_endpoints} "
+        f"tcp_reachable_configs={len(tcp_checked)} "
+        f"tcp_dead_configs={len(rows) - len(tcp_checked)}"
+    )
 
     META.mkdir(parents=True, exist_ok=True)
     # Remove stale metadata from the abandoned transport-handshake publication path.
@@ -130,9 +149,14 @@ def main() -> int:
         "total_parsed": len(all_rows),
         "protocol_rows": len(protocol_rows),
         "protocol_candidates": len(rows),
-        "semantic_dedup_removed": semantic_dedup_removed,
+        "dedup_mode": "xray_connection_equivalent",
+        "connection_dedup_removed": connection_dedup_removed,
+        "semantic_dedup_removed": connection_dedup_removed,
         "html_uri_normalized": html_uri_normalized,
-        "insecure_plain_vless_removed": insecure_plain_vless_removed,
+        "tcp_probe_mode": "one_probe_per_host_port",
+        "tcp_unique_endpoints": tcp_unique_endpoints,
+        "tcp_reachable_endpoints": tcp_reachable_endpoints,
+        "tcp_dead_endpoints": tcp_unique_endpoints - tcp_reachable_endpoints,
         "tcp_reachable": len(tcp_checked),
         "tcp_workers": common.TCP_WORKERS,
         "allowed_ports": sorted(catalog.ALLOWED_PORTS),
@@ -155,9 +179,14 @@ def main() -> int:
         "total_parsed": len(all_rows),
         "protocol_rows": len(protocol_rows),
         "protocol_candidates": len(rows),
-        "semantic_dedup_removed": semantic_dedup_removed,
+        "dedup_mode": "xray_connection_equivalent",
+        "connection_dedup_removed": connection_dedup_removed,
+        "semantic_dedup_removed": connection_dedup_removed,
         "html_uri_normalized": html_uri_normalized,
-        "insecure_plain_vless_removed": insecure_plain_vless_removed,
+        "tcp_probe_mode": "one_probe_per_host_port",
+        "tcp_unique_endpoints": tcp_unique_endpoints,
+        "tcp_reachable_endpoints": tcp_reachable_endpoints,
+        "tcp_dead_endpoints": tcp_unique_endpoints - tcp_reachable_endpoints,
         "tcp_reachable": len(tcp_checked),
         "source_freshness": compact_freshness,
         "sources": source_health,

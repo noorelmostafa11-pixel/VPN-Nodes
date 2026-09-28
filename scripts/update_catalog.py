@@ -119,6 +119,25 @@ def _decode_ss_parts(uri: str):
 
 
 def _decode_vmess_payload(uri: str):
+    # Modern Xray share links use vmess://UUID@host:port?... .  Keep the raw
+    # URI unchanged here; later merge normalization owns HTML entity cleanup.
+    parsed = urlparse(uri)
+    try:
+        modern_port = parsed.port
+    except ValueError:
+        modern_port = None
+    if parsed.username is not None and parsed.hostname and modern_port:
+        user_id = unquote(parsed.username).strip()
+        if not user_id:
+            return None
+        return (
+            parsed.hostname,
+            modern_port,
+            unquote(parsed.fragment or ""),
+            parse_qs(parsed.query),
+        )
+
+    # Legacy vmess://BASE64(JSON) remains supported.
     payload = unquote(uri.split("://", 1)[1].split("#", 1)[0].strip())
     if not payload:
         return None

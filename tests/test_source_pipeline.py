@@ -38,6 +38,34 @@ valid_ss = "ss://aes-256-gcm:password@ss.example:443#good"
 assert catalog.parse_lines(invalid_ss, "ss") == []
 assert len(catalog.parse_lines(valid_ss, "ss")) == 1
 
+modern_vmess = (
+    "vmess://55555555-5555-5555-5555-555555555555@vmess.example:443"
+    "?encryption=auto&security=tls&type=ws&host=cdn.example&path=%2Fws#modern"
+)
+modern_rows = catalog.parse_lines(modern_vmess, "modern-vmess")
+assert len(modern_rows) == 1
+assert modern_rows[0]["protocol"] == "vmess"
+assert modern_rows[0]["host"] == "vmess.example"
+assert modern_rows[0]["port"] == 443
+assert modern_rows[0]["uri"] == modern_vmess
+
+modern_vmess_html = (
+    "vmess://66666666-6666-6666-6666-666666666666@html.example:443"
+    "?encryption=auto&amp;host=cdn.example&amp;path=%2Fws"
+    "&amp;security=tls&amp;type=ws#html"
+)
+html_rows = catalog.parse_lines(modern_vmess_html, "modern-vmess-html")
+assert len(html_rows) == 1
+assert html_rows[0]["host"] == "html.example"
+assert html_rows[0]["port"] == 443
+assert html_rows[0]["uri"] == modern_vmess_html
+
+modern_vmess_wrong_port = (
+    "vmess://77777777-7777-7777-7777-777777777777@ignored.example:8443"
+    "?encryption=auto&security=tls&type=ws#ignored"
+)
+assert catalog.parse_lines(modern_vmess_wrong_port, "modern-vmess-port") == []
+
 clash_yaml = """proxies:
 - name: supported-vless
   type: vless

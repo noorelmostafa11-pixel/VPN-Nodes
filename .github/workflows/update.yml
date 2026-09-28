@@ -31,6 +31,8 @@ jobs:
         run: |
           set -euo pipefail
           python -m py_compile \
+            scripts/node_identity.py \
+            scripts/merge_and_build_tcp_pool.py \
             scripts/xray_matrix/build_tcp_candidates.py \
             scripts/xray_matrix/run_shard.py \
             scripts/xray_matrix/finalize_catalog.py \
@@ -63,6 +65,7 @@ jobs:
             output/metadata/health.json
 
           python tests/test_node_identity.py
+          python tests/test_shared_tcp_endpoint.py
           python tests/test_gitverse_adapter.py
           python tests/test_source_freshness.py
           python tests/test_source_pipeline.py
