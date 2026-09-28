@@ -56,8 +56,9 @@ REAL_PING_URL = (
 )
 MICROSOFT_FALLBACK_URL = "https://www.microsoft.com/robots.txt"
 REAL_PING_TARGETS = (
-    (REAL_PING_URL, float(os.environ.get("VPN_REAL_PING_GOOGLE_TIMEOUT", "9"))),
+    ("google", REAL_PING_URL, float(os.environ.get("VPN_REAL_PING_GOOGLE_TIMEOUT", "9"))),
     (
+        "microsoft",
         MICROSOFT_FALLBACK_URL,
         float(os.environ.get("VPN_REAL_PING_MICROSOFT_TIMEOUT", "5")),
     ),

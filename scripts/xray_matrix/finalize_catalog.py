@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Merge ten Xray shards and publish a signed-catalog-ready output tree.
+"""Merge fifteen Xray shards and publish a signed-catalog-ready output tree.
 
 Country authority order is strict:
 1. Country returned through the working node by the private country endpoint.
@@ -30,6 +30,8 @@ import country_resolver  # noqa: E402
 PROTOCOL_ORDER = ("vless", "vmess", "trojan", "ss")
 PUBLIC_PROTOCOL = {"vless": "vless", "vmess": "vmess", "trojan": "trojan", "shadowsocks": "ss"}
 PROTOCOL_FILENAME = {"vless": "vless.txt", "vmess": "vmess.txt", "trojan": "trojan.txt", "ss": "shadowsocks.txt"}
+MATRIX_SHARDS = 15
+WORKERS_PER_RUNNER = 40
 COUNTRY_SHARD_SIZE = 1000
 COUNTRY_SHARD_MAX_BYTES = 4 * 1024 * 1024
 
@@ -86,21 +88,29 @@ def main() -> int:
 
     summary_paths = sorted(args.results_root.rglob("summary.json"))
     working_paths = sorted(args.results_root.rglob("working.jsonl"))
-    if len(summary_paths) != 10 or len(working_paths) != 10:
+    if len(summary_paths) != MATRIX_SHARDS or len(working_paths) != MATRIX_SHARDS:
         raise SystemExit(
-            f"Expected exactly 10 shard artifacts, got summaries={len(summary_paths)} working={len(working_paths)}"
+            f"Expected exactly {MATRIX_SHARDS} shard artifacts, "
+            f"got summaries={len(summary_paths)} working={len(working_paths)}"
         )
 
     summaries = [read_json(path) for path in summary_paths]
     shard_ids = sorted(int(item.get("shard", -1)) for item in summaries)
-    if shard_ids != list(range(10)):
+    if shard_ids != list(range(MATRIX_SHARDS)):
         raise SystemExit(f"Shard coverage mismatch: {shard_ids}")
-    if any(int(item.get("shards", 0)) != 10 or int(item.get("workers", 0)) != 40 for item in summaries):
+    if any(
+        int(item.get("shards", 0)) != MATRIX_SHARDS
+        or int(item.get("workers", 0)) != WORKERS_PER_RUNNER
+        for item in summaries
+    ):
         raise SystemExit("Unexpected matrix size or tester worker count")
 
     tested_by_protocol = Counter()
     assigned_by_protocol = Counter()
     working_summary_by_protocol = Counter()
+    success_endpoints_by_protocol: dict[str, Counter] = {
+        p: Counter() for p in PROTOCOL_ORDER
+    }
     failure_stages: dict[str, Counter] = {p: Counter() for p in PROTOCOL_ORDER}
     for summary in summaries:
         protocols = summary.get("protocols")
@@ -113,6 +123,14 @@ def main() -> int:
             assigned_by_protocol[protocol] += int(row.get("assigned", -1))
             tested_by_protocol[protocol] += int(row.get("tested", -1))
             working_summary_by_protocol[protocol] += int(row.get("working", -1))
+            endpoint_counts = row.get("success_endpoints") or {}
+            if not isinstance(endpoint_counts, dict):
+                raise SystemExit(f"Invalid {protocol} success endpoint summary")
+            for endpoint, count in endpoint_counts.items():
+                endpoint = str(endpoint)
+                if endpoint not in {"google", "microsoft"}:
+                    raise SystemExit(f"Unexpected success endpoint: {endpoint!r}")
+                success_endpoints_by_protocol[protocol][endpoint] += int(count)
             failure_stages[protocol].update(row.get("failure_stages") or {})
 
     for protocol in PROTOCOL_ORDER:
@@ -122,6 +140,8 @@ def main() -> int:
                 f"Incomplete matrix coverage for {protocol}: expected={expected} "
                 f"assigned={assigned_by_protocol[protocol]} tested={tested_by_protocol[protocol]}"
             )
+        if sum(success_endpoints_by_protocol[protocol].values()) != working_summary_by_protocol[protocol]:
+            raise SystemExit(f"Success endpoint summary mismatch for {protocol}")
 
     working: list[dict] = []
     identities: set[tuple[str, int]] = set()
@@ -135,8 +155,13 @@ def main() -> int:
             protocol = str(row.get("protocol") or "").lower()
             index = int(row.get("index", -1))
             shard = int(row.get("shard", -1))
-            if protocol not in PROTOCOL_ORDER or index < 0 or shard != index % 10:
+            if protocol not in PROTOCOL_ORDER or index < 0 or shard != index % MATRIX_SHARDS:
                 raise SystemExit(f"Invalid working identity: {protocol}/{index}/shard={shard}")
+            success_endpoint = str(row.get("success_endpoint") or "")
+            if success_endpoint not in {"google", "microsoft"}:
+                raise SystemExit(
+                    f"Invalid success endpoint for {protocol}/{index}: {success_endpoint!r}"
+                )
             identity = (protocol, index)
             if identity in identities:
                 raise SystemExit(f"Duplicate working identity: {protocol}/{index}")
@@ -156,12 +181,19 @@ def main() -> int:
             working.append(row)
 
     actual_working = Counter(str(row["protocol"]) for row in working)
+    actual_success_endpoints: dict[str, Counter] = {
+        p: Counter() for p in PROTOCOL_ORDER
+    }
+    for row in working:
+        actual_success_endpoints[str(row["protocol"])][str(row["success_endpoint"])] += 1
     for protocol in PROTOCOL_ORDER:
         if actual_working[protocol] != working_summary_by_protocol[protocol]:
             raise SystemExit(
                 f"Working artifact mismatch for {protocol}: "
                 f"summary={working_summary_by_protocol[protocol]} rows={actual_working[protocol]}"
             )
+        if actual_success_endpoints[protocol] != success_endpoints_by_protocol[protocol]:
+            raise SystemExit(f"Success endpoint artifact mismatch for {protocol}")
     if not working:
         raise SystemExit("Refusing to publish an empty Xray-verified catalog")
 
@@ -287,6 +319,12 @@ def main() -> int:
         encoding="utf-8",
     )
 
+    success_endpoint_totals = Counter()
+    for protocol in PROTOCOL_ORDER:
+        success_endpoint_totals.update(success_endpoints_by_protocol[protocol])
+    if sum(success_endpoint_totals.values()) != xray_working_total:
+        raise SystemExit("Global success endpoint accounting mismatch")
+
     test_summary = {}
     for protocol in PROTOCOL_ORDER:
         tested = tested_by_protocol[protocol]
@@ -296,6 +334,7 @@ def main() -> int:
             "tested": tested,
             "working": succeeded,
             "failed": tested - succeeded,
+            "success_endpoints": dict(sorted(success_endpoints_by_protocol[protocol].items())),
             "published_after_exact_dedup": protocol_counts[protocol],
             "failure_stages": dict(sorted(failure_stages[protocol].items())),
         }
@@ -305,10 +344,10 @@ def main() -> int:
         "generated_at": generated_at,
         "mode": "xray_26_9_9_real_https_verified",
         "liveness_test": "existing public TCP pool followed by server-identical Xray real HTTPS test",
-        "final_runtime_test": "Xray 26.9.9 + one verified HTTPS response",
-        "xray_matrix_shards": 10,
-        "xray_workers_per_runner": 40,
-        "xray_total_concurrency": 400,
+        "final_runtime_test": "Xray 26.9.9 + Google primary / Microsoft fallback HTTPS response",
+        "xray_matrix_shards": MATRIX_SHARDS,
+        "xray_workers_per_runner": WORKERS_PER_RUNNER,
+        "xray_total_concurrency": MATRIX_SHARDS * WORKERS_PER_RUNNER,
         "country_policy": "endpoint_first; GeoLite2 only for successful XX",
         "country_shard_size": COUNTRY_SHARD_SIZE,
         "country_shards_generated": True,
@@ -316,6 +355,7 @@ def main() -> int:
         "tcp_reachable_total": len(candidate_rows),
         "xray_tested_total": sum(tested_by_protocol.values()),
         "xray_working_total": xray_working_total,
+        "xray_success_endpoints": dict(sorted(success_endpoint_totals.items())),
         "exact_duplicate_raw_removed_after_xray": exact_duplicates_removed,
         "endpoint_country_assigned": endpoint_assigned,
         "geoip_xx_fallback": geoip_summary,
@@ -356,6 +396,7 @@ def main() -> int:
         "health_policy": "Xray 26.9.9 real HTTPS success required before publication.",
         "country_policy": "country endpoint first; GeoLite2 fallback only for successful XX nodes",
         "geoip_xx_fallback": geoip_summary,
+        "xray_success_endpoints": dict(sorted(success_endpoint_totals.items())),
         "test_summary": test_summary,
     }
     (metadata / "index.json").write_text(
@@ -366,6 +407,8 @@ def main() -> int:
     print(
         f"OK FINAL tested={sum(tested_by_protocol.values())} xray_working={xray_working_total} "
         f"published={total} exact_duplicates_removed={exact_duplicates_removed} "
+        f"google={success_endpoint_totals['google']} "
+        f"microsoft={success_endpoint_totals['microsoft']} "
         f"endpoint_country={endpoint_assigned} xx_geoip_attempted={len(xx_rows)} "
         f"xx_geoip_classified={classified} xx_remaining={len(xx_rows)-classified} "
         f"countries={len(country_groups)} shards={published_shards}"

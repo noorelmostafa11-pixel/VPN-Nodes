@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Run one of ten GitHub matrix shards with the server-identical tester core."""
+"""Run one of fifteen GitHub matrix shards with the server-identical tester core."""
 from __future__ import annotations
 
 import argparse
@@ -35,11 +35,11 @@ def main() -> int:
     parser.add_argument("--input", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--shard", type=int, required=True)
-    parser.add_argument("--shards", type=int, default=10)
+    parser.add_argument("--shards", type=int, default=15)
     args = parser.parse_args()
 
-    if args.shards != 10:
-        raise SystemExit("Production GitHub matrix is fixed at exactly 10 shards")
+    if args.shards != 15:
+        raise SystemExit("Production GitHub matrix is fixed at exactly 15 shards")
     if args.shard < 0 or args.shard >= args.shards:
         raise SystemExit("Invalid shard index")
 
@@ -97,12 +97,17 @@ def main() -> int:
 
         failures = Counter(r.stage for r in results if not r.ok)
         working = [r for r in results if r.ok]
+        success_endpoints = Counter(r.success_endpoint or "unknown" for r in working)
+        unexpected_endpoints = set(success_endpoints) - {"google", "microsoft"}
+        if unexpected_endpoints:
+            raise SystemExit(f"Unexpected success endpoint labels: {sorted(unexpected_endpoints)}")
         summary["protocols"][protocol] = {
             "source_total": len(all_protocol_rows),
             "assigned": len(assigned),
             "tested": len(results),
             "working": len(working),
             "failed": len(results) - len(working),
+            "success_endpoints": dict(sorted(success_endpoints.items())),
             "failure_stages": dict(sorted(failures.items())),
         }
 
@@ -127,9 +132,15 @@ def main() -> int:
     )
     total_tested = sum(v["tested"] for v in summary["protocols"].values())
     total_working = sum(v["working"] for v in summary["protocols"].values())
+    total_endpoints = Counter()
+    for row in summary["protocols"].values():
+        total_endpoints.update(row["success_endpoints"])
+    if sum(total_endpoints.values()) != total_working:
+        raise SystemExit("Success endpoint accounting mismatch")
     print(
         f"OK shard={args.shard}/{args.shards} tested={total_tested} "
-        f"working={total_working} workers={config.WORKERS}"
+        f"working={total_working} workers={config.WORKERS} "
+        f"google={total_endpoints['google']} microsoft={total_endpoints['microsoft']}"
     )
     return 0
 

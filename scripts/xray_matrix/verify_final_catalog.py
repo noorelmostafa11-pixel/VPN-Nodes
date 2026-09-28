@@ -27,12 +27,12 @@ def main() -> int:
 
     if app.get("mode") != "xray_26_9_9_real_https_verified":
         raise SystemExit(f"unexpected mode: {app.get('mode')}")
-    if int(app.get("xray_matrix_shards") or 0) != 10:
-        raise SystemExit("matrix must contain exactly 10 shards")
+    if int(app.get("xray_matrix_shards") or 0) != 15:
+        raise SystemExit("matrix must contain exactly 15 shards")
     if int(app.get("xray_workers_per_runner") or 0) != 40:
         raise SystemExit("each runner must use exactly 40 workers")
-    if int(app.get("xray_total_concurrency") or 0) != 400:
-        raise SystemExit("total Xray concurrency must be 400")
+    if int(app.get("xray_total_concurrency") or 0) != 600:
+        raise SystemExit("total Xray concurrency must be 600")
     if app.get("country_policy") != "endpoint_first; GeoLite2 only for successful XX":
         raise SystemExit("unexpected country policy")
 
@@ -47,6 +47,27 @@ def main() -> int:
         raise SystemExit("legacy index published_total mismatch")
     if index.get("generated_at") != app.get("generated_at"):
         raise SystemExit("legacy index generated_at mismatch")
+
+    endpoint_counts = app.get("xray_success_endpoints") or {}
+    if not isinstance(endpoint_counts, dict):
+        raise SystemExit("invalid xray_success_endpoints")
+    unexpected_endpoints = set(endpoint_counts) - {"google", "microsoft"}
+    if unexpected_endpoints:
+        raise SystemExit(f"unexpected success endpoints: {sorted(unexpected_endpoints)}")
+    google_success = int(endpoint_counts.get("google") or 0)
+    microsoft_success = int(endpoint_counts.get("microsoft") or 0)
+    xray_working = int(app.get("xray_working_total") or 0)
+    if google_success + microsoft_success != xray_working:
+        raise SystemExit("success endpoint totals do not match xray_working_total")
+    if (index.get("xray_success_endpoints") or {}) != endpoint_counts:
+        raise SystemExit("legacy index success endpoint totals mismatch")
+
+    for protocol, row in (app.get("test_summary") or {}).items():
+        if not isinstance(row, dict):
+            raise SystemExit(f"invalid test summary for {protocol}")
+        protocol_endpoints = row.get("success_endpoints") or {}
+        if sum(int(v) for v in protocol_endpoints.values()) != int(row.get("working") or 0):
+            raise SystemExit(f"protocol success endpoint accounting mismatch: {protocol}")
 
     country_meta = {str(x.get("code") or "").upper(): x for x in countries.get("countries", [])}
     country_files = sorted((OUT / "countries").glob("*.txt"))
@@ -118,6 +139,7 @@ def main() -> int:
     print(
         f"OK FINAL_CATALOG tested={tested} published={published} "
         f"countries={len(country_files)} shards={shard_total} "
+        f"google={google_success} microsoft={microsoft_success} "
         f"geoip_xx_attempted={attempted} geoip_xx_unresolved={unresolved}"
     )
     return 0

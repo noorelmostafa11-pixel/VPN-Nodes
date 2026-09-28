@@ -50,3 +50,5 @@ class TestResult:
     source_raw: str = ""
     repair_strategy: str = ""
     real_delay_proven: bool = False
+    # Exact HTTPS target that proved this node: google or microsoft.
+    success_endpoint: str = ""

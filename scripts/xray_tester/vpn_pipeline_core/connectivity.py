@@ -263,10 +263,12 @@ def _real_ping_target(socks_port: int, url: str, timeout: float) -> int:
 def v2rayn_real_ping(node: Node, socks_port: int) -> TestResult:
     """One real HTTPS response is enough; try Google, then Microsoft on failure."""
     response_time: int | None = None
+    success_endpoint = ""
     target_errors: list[str] = []
-    for url, timeout in REAL_PING_TARGETS:
+    for endpoint_name, url, timeout in REAL_PING_TARGETS:
         try:
             response_time = _real_ping_target(socks_port, url, timeout)
+            success_endpoint = endpoint_name
             break
         except Exception as exc:
             # Do not leak the secret test endpoint through exception text in
@@ -299,4 +301,5 @@ def v2rayn_real_ping(node: Node, socks_port: int) -> TestResult:
         http204_ms=float(response_time),
         country=country,
         country_error=country_error,
+        success_endpoint=success_endpoint,
     )

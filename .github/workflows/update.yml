@@ -95,9 +95,9 @@ jobs:
     timeout-minutes: 300
     strategy:
       fail-fast: false
-      max-parallel: 10
+      max-parallel: 15
       matrix:
-        shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+        shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
 
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
@@ -137,7 +137,7 @@ jobs:
             --input /tmp/xray-candidates/xray_candidates.json \
             --output "/tmp/xray-shard-${{ matrix.shard }}" \
             --shard "${{ matrix.shard }}" \
-            --shards 10
+            --shards 15
 
       - name: Upload Xray shard result
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
@@ -170,7 +170,7 @@ jobs:
           name: xray-candidates
           path: /tmp/xray-candidates
 
-      - name: Download all ten Xray shard results
+      - name: Download all fifteen Xray shard results
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
           pattern: xray-shard-*
