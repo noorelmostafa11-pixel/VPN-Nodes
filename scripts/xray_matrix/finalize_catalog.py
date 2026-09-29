@@ -3,15 +3,19 @@
 
 Country authority order is strict:
 1. Country returned through the working node by the private country endpoint.
-2. ONLY when that value is XX, local GeoLite2 is used as a fallback.
-3. If GeoLite2 cannot classify it, XX is preserved.
+2. For successful XX nodes, use the observed exit IP (private response or
+   backup IP endpoint) with local GeoLite2.
+3. If there is no classified exit IP, preserve XX. The entry host is not the
+   exit address and must not be used to guess its country.
 
 The public repository's old all-node country resolver is intentionally not run.
 """
 from __future__ import annotations
 
 import argparse
+import ipaddress
 import json
+import math
 import re
 import shutil
 import sys
@@ -49,15 +53,30 @@ def write_lines(path: Path, values: list[str]) -> None:
 
 
 def fallback_country_for_xx(row: dict) -> str:
-    host = str(row.get("host") or "").strip().strip("[]")
-    if not host:
+    try:
+        exit_ip = ipaddress.ip_address(str(row.get("exit_ip") or "").strip())
+    except ValueError:
         return "XX"
-    ip = country_resolver.resolve_ip(host)
-    if not ip:
+    if not exit_ip.is_global:
         return "XX"
-    code = country_resolver.country_from_ip(ip)
+    code = country_resolver.country_from_ip(str(exit_ip))
     value = str(code or "").upper()
     return value if re.fullmatch(r"[A-Z]{2}", value) else "XX"
+
+
+def country_sort_key(row: dict) -> tuple[float, str, str, str]:
+    try:
+        delay = float(row.get("http204_ms"))
+    except (TypeError, ValueError):
+        delay = math.inf
+    if delay <= 0 or not math.isfinite(delay):
+        delay = math.inf
+    return (
+        delay,
+        str(row.get("protocol") or ""),
+        str(row.get("candidate_source") or ""),
+        str(row.get("raw") or ""),
+    )
 
 
 def main() -> int:
@@ -173,9 +192,8 @@ def main() -> int:
             if candidate is None:
                 raise SystemExit(f"Working identity missing from candidates: {protocol}/{index}")
             row["country"] = country
-            # Preserve the public repository's established per-country ordering:
-            # measured TCP latency ascending, with the same deterministic
-            # tie-break fields used by build_tcp_pool.publish_app_pool().
+            # Keep source details as deterministic tie breakers; country files
+            # are ordered by the verified HTTPS delay, not the TCP precheck.
             row["candidate_latency_ms"] = candidate.get("latency_ms")
             row["candidate_source"] = str(candidate.get("source") or "")
             working.append(row)
@@ -197,8 +215,9 @@ def main() -> int:
     if not working:
         raise SystemExit("Refusing to publish an empty Xray-verified catalog")
 
-    # Endpoint country is authoritative.  GeoLite2 sees ONLY successful XX rows.
+    # GeoLite2 sees only observed exit IPs of successful XX rows.
     xx_rows = [row for row in working if str(row.get("country") or "XX").upper() == "XX"]
+    exit_ip_available = sum(bool(str(row.get("exit_ip") or "")) for row in xx_rows)
     classified = 0
     if xx_rows:
         with ThreadPoolExecutor(max_workers=64) as pool:
@@ -211,6 +230,8 @@ def main() -> int:
         "provider": "GeoLite2-Country",
         "scope": "working_xx_only",
         "attempted": len(xx_rows),
+        "exit_ip_available": exit_ip_available,
+        "exit_ip_missing": len(xx_rows) - exit_ip_available,
         "classified": classified,
         "unresolved": len(xx_rows) - classified,
     }
@@ -270,12 +291,7 @@ def main() -> int:
     published_shards = 0
     for country in sorted(country_groups):
         rows = country_groups[country]
-        rows.sort(key=lambda row: (
-            float(row.get("candidate_latency_ms") if row.get("candidate_latency_ms") is not None else 10**9),
-            str(row.get("protocol") or ""),
-            str(row.get("candidate_source") or ""),
-            str(row.get("raw") or ""),
-        ))
+        rows.sort(key=country_sort_key)
         uris = [str(row["raw"]) for row in rows]
         write_lines(output / "countries" / f"{country}.txt", uris)
         shard_dir = output / "country_shards" / country
@@ -348,7 +364,7 @@ def main() -> int:
         "xray_matrix_shards": MATRIX_SHARDS,
         "xray_workers_per_runner": WORKERS_PER_RUNNER,
         "xray_total_concurrency": MATRIX_SHARDS * WORKERS_PER_RUNNER,
-        "country_policy": "endpoint_first; GeoLite2 only for successful XX",
+        "country_policy": "endpoint_first; exit_ip GeoLite2 only for successful XX",
         "country_shard_size": COUNTRY_SHARD_SIZE,
         "country_shards_generated": True,
         "published_country_shards": published_shards,
@@ -394,7 +410,7 @@ def main() -> int:
         },
         "country_names": {item["code"]: item["name"] for item in countries_meta},
         "health_policy": "Xray 26.9.9 real HTTPS success required before publication.",
-        "country_policy": "country endpoint first; GeoLite2 fallback only for successful XX nodes",
+        "country_policy": "country endpoint first; exit IP GeoLite2 only for successful XX nodes",
         "geoip_xx_fallback": geoip_summary,
         "xray_success_endpoints": dict(sorted(success_endpoint_totals.items())),
         "test_summary": test_summary,
@@ -410,6 +426,7 @@ def main() -> int:
         f"google={success_endpoint_totals['google']} "
         f"microsoft={success_endpoint_totals['microsoft']} "
         f"endpoint_country={endpoint_assigned} xx_geoip_attempted={len(xx_rows)} "
+        f"xx_exit_ip_available={exit_ip_available} "
         f"xx_geoip_classified={classified} xx_remaining={len(xx_rows)-classified} "
         f"countries={len(country_groups)} shards={published_shards}"
     )

@@ -91,9 +91,10 @@ def _https_read_limited(
     max_bytes: int,
     *,
     max_redirects: int = 3,
+    request_timeout: float = HTTP_TIMEOUT,
 ) -> tuple[int, bytes]:
     current_url = url
-    for _ in range(max_redirects + 1):
+    for redirect_count in range(max_redirects + 1):
         parsed = urllib.parse.urlsplit(current_url)
         if parsed.scheme.lower() != "https":
             raise ValueError("Only HTTPS metadata endpoints are supported")
@@ -107,11 +108,11 @@ def _https_read_limited(
 
         raw_sock = tls_sock = None
         try:
-            raw_sock = socks_connect(socks_port, host, port, timeout=HTTP_TIMEOUT)
+            raw_sock = socks_connect(socks_port, host, port, timeout=request_timeout)
             context = ssl.create_default_context()
             tls_sock = context.wrap_socket(raw_sock, server_hostname=host)
             raw_sock = None
-            tls_sock.settimeout(HTTP_TIMEOUT)
+            tls_sock.settimeout(request_timeout)
             request = (
                 f"GET {target} HTTP/1.1\r\n"
                 f"Host: {host}\r\n"
@@ -122,9 +123,8 @@ def _https_read_limited(
             tls_sock.sendall(request.encode("ascii"))
             response = http.client.HTTPResponse(tls_sock, method="GET")
             response.begin()
-            if response.status in (301, 302, 303, 307, 308):
+            if response.status in (301, 302, 303, 307, 308) and redirect_count < max_redirects:
                 location = response.getheader("Location")
-                response.read()
                 if location:
                     current_url = urllib.parse.urljoin(current_url, location)
                     continue
@@ -140,35 +140,65 @@ def _https_read_limited(
     raise RuntimeError("Too many metadata redirects")
 
 
-def lookup_country(socks_port: int) -> tuple[str, str]:
+def _public_ip(value: object) -> str:
+    try:
+        address = ipaddress.ip_address(str(value or "").strip())
+    except ValueError:
+        return ""
+    return str(address) if address.is_global else ""
+
+
+def lookup_country(socks_port: int) -> tuple[str, str, str]:
     if not config.COUNTRY_URL:
-        return "XX", "COUNTRY_URL not configured"
+        return "XX", "COUNTRY_URL not configured", ""
     try:
         status, body = _https_read_limited(socks_port, config.COUNTRY_URL, 512)
         if status not in (200, 206):
-            return "XX", f"country endpoint HTTP {status}"
+            return "XX", f"country endpoint HTTP {status}", ""
         raw_text = body.decode("utf-8", errors="ignore").strip()
+        exit_ip = ""
 
-        if "{" in raw_text and "}" in raw_text:
+        if raw_text.startswith("{"):
             try:
                 obj = json.loads(raw_text)
                 if isinstance(obj, dict):
+                    exit_ip = _public_ip(obj.get("ip"))
                     for key in ("country", "country_code", "countryCode", "country_iso", "cc"):
                         value = str(obj.get(key) or "").strip().upper()
                         if re.fullmatch(r"[A-Z]{2}", value):
-                            return value, ""
+                            return value, "", exit_ip
             except Exception:
                 pass
+            return "XX", "invalid country response", exit_ip
 
         clean_text = raw_text.replace('"', "").replace("'", "").strip().upper()
         if re.fullmatch(r"[A-Z]{2}", clean_text):
-            return clean_text, ""
+            return clean_text, "", exit_ip
         match = re.search(r"\b([A-Z]{2})\b", clean_text)
         if match:
-            return match.group(1), ""
-        return "XX", f"invalid country response: {raw_text[:32]!r}"
+            return match.group(1), "", exit_ip
+        return "XX", f"invalid country response: {raw_text[:32]!r}", exit_ip
     except Exception as exc:
-        return "XX", f"{type(exc).__name__}: {exc}"
+        return "XX", f"{type(exc).__name__}: {exc}", ""
+
+
+def lookup_exit_ip(socks_port: int) -> tuple[str, str]:
+    try:
+        status, body = _https_read_limited(
+            socks_port, config.COUNTRY_EXIT_URL, 128,
+            max_redirects=0, request_timeout=config.COUNTRY_EXIT_TIMEOUT,
+        )
+        if status != 200:
+            return "", f"exit endpoint HTTP {status}"
+        response = json.loads(body.decode("utf-8"))
+        if not isinstance(response, dict):
+            return "", "invalid exit endpoint response"
+        exit_ip = _public_ip(response.get("ip"))
+        if not exit_ip:
+            return "", "invalid exit address"
+        return exit_ip, ""
+    except Exception as exc:
+        return "", f"{type(exc).__name__}: {exc}"
 
 
 def _remaining_timeout(deadline: float, maximum: float | None = None) -> float:
@@ -288,7 +318,11 @@ def v2rayn_real_ping(node: Node, socks_port: int) -> TestResult:
             " | ".join(target_errors) or "No Real Delay target succeeded",
         )
 
-    country, country_error = lookup_country(socks_port)
+    country, country_error, exit_ip = lookup_country(socks_port)
+    if country == "XX" and not exit_ip:
+        exit_ip, exit_error = lookup_exit_ip(socks_port)
+        if exit_error:
+            country_error = "; ".join(filter(None, (country_error, exit_error)))
     return TestResult(
         protocol=node.protocol,
         index=node.index,
@@ -302,4 +336,5 @@ def v2rayn_real_ping(node: Node, socks_port: int) -> TestResult:
         country=country,
         country_error=country_error,
         success_endpoint=success_endpoint,
+        exit_ip=exit_ip if country == "XX" else "",
     )

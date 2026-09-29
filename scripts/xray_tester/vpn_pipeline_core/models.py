@@ -52,3 +52,6 @@ class TestResult:
     real_delay_proven: bool = False
     # Exact HTTPS target that proved this node: google or microsoft.
     success_endpoint: str = ""
+    # Public exit address observed through this node, only when the country
+    # endpoint could not supply a country. The publisher resolves it locally.
+    exit_ip: str = ""

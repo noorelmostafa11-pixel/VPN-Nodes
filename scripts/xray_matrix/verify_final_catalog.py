@@ -33,7 +33,7 @@ def main() -> int:
         raise SystemExit("each runner must use exactly 40 workers")
     if int(app.get("xray_total_concurrency") or 0) != 600:
         raise SystemExit("total Xray concurrency must be 600")
-    if app.get("country_policy") != "endpoint_first; GeoLite2 only for successful XX":
+    if app.get("country_policy") != "endpoint_first; exit_ip GeoLite2 only for successful XX":
         raise SystemExit("unexpected country policy")
 
     tested = int(app.get("xray_tested_total") or 0)
@@ -135,6 +135,8 @@ def main() -> int:
     unresolved = int(geo.get("unresolved") or 0)
     if attempted != classified + unresolved:
         raise SystemExit("GeoIP fallback accounting mismatch")
+    if attempted != int(geo.get("exit_ip_available") or 0) + int(geo.get("exit_ip_missing") or 0):
+        raise SystemExit("exit IP fallback accounting mismatch")
 
     print(
         f"OK FINAL_CATALOG tested={tested} published={published} "

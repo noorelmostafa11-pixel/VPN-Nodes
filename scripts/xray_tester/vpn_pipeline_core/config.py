@@ -45,6 +45,8 @@ XRAY_WINDOWS = Path(r"C:\Users\admin\Downloads\v2rayN-windows-64\bin\xray\xray.e
 # Xray startup/probe work.
 WORKERS = 40
 HTTP_TIMEOUT = 12.0
+COUNTRY_EXIT_URL = "https://api64.ipify.org?format=json"
+COUNTRY_EXIT_TIMEOUT = 5.0
 
 # One verified HTTPS response through each node's Xray SOCKS port.
 # The primary Google target is supplied only at runtime through a GitHub Actions
