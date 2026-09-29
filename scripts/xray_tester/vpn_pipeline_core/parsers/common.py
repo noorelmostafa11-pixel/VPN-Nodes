@@ -389,7 +389,12 @@ def build_stream_settings(
             tls["pinnedPeerCertSha256"] = pcs
         if vcn:
             tls["verifyPeerCertByName"] = vcn
-        # Xray 26.9.9 removed allowInsecure; v2rayN does not emit it.
+        # Preserve the source option in the first Xray attempt.  If this core
+        # rejects it, the repair path may test a separate explicit share link.
+        if allow_insecure is True or (
+            allow_insecure is not None and allow_insecure is not False
+        ):
+            tls["allowInsecure"] = allow_insecure
         stream["tlsSettings"] = tls
         return stream, allow_insecure is True, sni, tuple(alpn), udp_prefilter_bypass
 
