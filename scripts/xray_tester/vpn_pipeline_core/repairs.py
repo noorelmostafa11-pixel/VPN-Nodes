@@ -11,6 +11,7 @@ from .models import TestResult
 from .source import protocol_uri_body
 from .parsers.common import (
     _normalize_xhttp_integral_numbers,
+    _parse_xray_bool,
     _recover_json_plus_whitespace,
     _valid_reality_short_id,
     b64decode_loose,
@@ -527,6 +528,98 @@ def compose_repair_candidate(protocol: str, source_raw: str) -> tuple[str, str] 
     return current, "+".join(applied)
 
 
+_TLS_QUERY_ALIASES = (
+    "allowinsecure", "allow_insecure", "allow-insecure", "insecure",
+    "skip-cert-verify", "skip_cert_verify",
+)
+_TLS_LEGACY_VMESS_ALIASES = ("allowInsecure", "insecure", "skip-cert-verify")
+
+
+def _malformed_finalmask(value: Any) -> bool:
+    if isinstance(value, str):
+        try:
+            value = json_loads_unique(value)
+        except (ValueError, UnicodeError):
+            return True
+    return not isinstance(value, dict)
+
+
+def _repair_rejected_core_fields(result: TestResult) -> tuple[str, str] | None:
+    """Derive one explicit link for fields that this Xray run rejected."""
+    reason = (result.error or "").lower()
+    removed_tls = (
+        "allowinsecure" in reason and "has been removed" in reason
+    ) or (
+        "streamsettings.tlssettings.allowinsecure" in reason
+        and "cannot unmarshal" in reason
+    )
+    rejected_mask = "streamsettings.finalmask" in reason and "cannot unmarshal" in reason
+    if not (removed_tls or rejected_mask):
+        return None
+
+    source_raw = result.raw
+    if result.protocol == "vmess" and not _is_modern_vmess_share(source_raw):
+        _, body = protocol_uri_body("vmess", source_raw)
+        payload, sep, fragment = body.partition("#")
+        try:
+            obj = json_loads_unique(b64decode_loose(payload).decode("utf-8-sig"))
+        except (ValueError, UnicodeError, binascii.Error):
+            return None
+        if not isinstance(obj, dict):
+            return None
+        changes: list[str] = []
+        tls_value = next((obj[k] for k in _TLS_LEGACY_VMESS_ALIASES if k in obj), None)
+        tls_is_active = str(obj.get("tls") or "").lower() in ("tls", "1", "true", "on")
+        if removed_tls or (rejected_mask and tls_is_active and _parse_xray_bool(tls_value) is True):
+            removed = [k for k in _TLS_LEGACY_VMESS_ALIASES if k in obj]
+            if removed:
+                for key in removed:
+                    del obj[key]
+                changes.append("omit_removed_tls_override")
+        mask_keys = [k for k in ("fm", "finalmask") if k in obj]
+        if mask_keys and (rejected_mask or any(_malformed_finalmask(obj[k]) for k in mask_keys)):
+            for key in mask_keys:
+                del obj[key]
+            changes.append("omit_rejected_finalmask")
+        if not changes:
+            return None
+        encoded = base64.urlsafe_b64encode(
+            json.dumps(obj, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
+        ).decode("ascii").rstrip("=")
+        return "vmess://" + encoded + ("#" + fragment if sep else ""), "+".join(changes)
+
+    if result.protocol not in ("vless", "trojan", "vmess", "ss"):
+        return None
+    try:
+        q = parse_query(urllib.parse.urlsplit(source_raw).query)
+    except ValueError:
+        return None
+    changes: dict[str, str | None] = {}
+    strategies: list[str] = []
+    tls_value = qfirst(q, *_TLS_QUERY_ALIASES)
+    security = qfirst(
+        q, "security", "tls", default="tls" if result.protocol == "trojan" else "none"
+    )
+    if removed_tls or (
+        rejected_mask and security.lower() == "tls" and _parse_xray_bool(tls_value) is True
+    ):
+        for key in _TLS_QUERY_ALIASES:
+            if key in q:
+                changes[key] = None
+        if changes:
+            strategies.append("omit_removed_tls_override")
+    mask_keys = [key for key in ("fm", "finalmask") if key in q]
+    if mask_keys and (
+        rejected_mask or any(_malformed_finalmask(qfirst(q, key)) for key in mask_keys)
+    ):
+        for key in mask_keys:
+            changes[key] = None
+        strategies.append("omit_rejected_finalmask")
+    if not changes:
+        return None
+    return _replace_share_query(source_raw, changes), "+".join(strategies)
+
+
 def repair_candidate_for_failure(result: TestResult) -> tuple[str, str] | None:
     """Return one fully-composed, non-guessing repair for a source/config failure.
 
@@ -537,5 +630,7 @@ def repair_candidate_for_failure(result: TestResult) -> tuple[str, str] | None:
     """
     if result.stage not in ("source_invalid", "unsupported"):
         return None
+    core_repair = _repair_rejected_core_fields(result)
+    if core_repair is not None:
+        return core_repair
     return compose_repair_candidate(result.protocol, result.raw)
-
