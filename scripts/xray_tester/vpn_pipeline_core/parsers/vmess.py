@@ -45,9 +45,14 @@ def parse_vmess(raw: str, index: int, _probe_url: str) -> Node:
         if not user_id:
             raise ValueError("VMess missing id")
         q = parse_query(modern_url.query)
-        alter_id = _require_representable_alter_id(
-            qfirst(q, "aid", "alterid") if qhas(q, "aid", "alterid") else 0
-        )
+        raw_alter_id_values = [
+            q[k][0]
+            for k in ("aid", "alterid")
+            if q.get(k)
+        ]
+        for value in raw_alter_id_values:
+            _require_representable_alter_id(value)
+        alter_id = 0
         stream, insecure, sni, alpn, udp_bypass = stream_from_query(
             host, q, default_security="none"
         )

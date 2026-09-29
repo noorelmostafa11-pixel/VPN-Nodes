@@ -73,8 +73,10 @@ assert identity.dedup_key(ws_a) != identity.dedup_key(different_fp)
 different_alpn = ws_a.replace("fp=chrome", "fp=chrome&alpn=h2")
 assert identity.dedup_key(ws_a) != identity.dedup_key(different_alpn)
 
+# Xray 26.9.9 removed allowInsecure, and the production Xray config does not
+# emit it, so this source-only flag must not create a distinct connection identity.
 different_insecure = ws_a.replace("fp=chrome", "fp=chrome&allowInsecure=1")
-assert identity.dedup_key(ws_a) != identity.dedup_key(different_insecure)
+assert identity.dedup_key(ws_a) == identity.dedup_key(different_insecure)
 
 different_sni = ws_a.replace("fp=chrome", "fp=chrome&sni=tls.example")
 assert identity.dedup_key(ws_a) != identity.dedup_key(different_sni)

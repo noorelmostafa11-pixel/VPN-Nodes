@@ -33,7 +33,7 @@ def main() -> int:
         raise SystemExit("each runner must use exactly 40 workers")
     if int(app.get("xray_total_concurrency") or 0) != 600:
         raise SystemExit("total Xray concurrency must be 600")
-    if app.get("country_policy") != "endpoint_first; GeoLite2 only for successful XX":
+    if app.get("country_policy") != "endpoint_first; exit_ip GeoLite2 only for successful XX":
         raise SystemExit("unexpected country policy")
 
     tested = int(app.get("xray_tested_total") or 0)
@@ -59,6 +59,10 @@ def main() -> int:
     xray_working = int(app.get("xray_working_total") or 0)
     if google_success + microsoft_success != xray_working:
         raise SystemExit("success endpoint totals do not match xray_working_total")
+    exact_removed = int(app.get("exact_duplicate_raw_removed_after_xray") or 0)
+    before_fragment_removed = int(app.get("literal_before_fragment_duplicate_raw_removed_after_xray") or 0)
+    if xray_working != published + exact_removed + before_fragment_removed:
+        raise SystemExit("published/deduplicated working count mismatch")
     if (index.get("xray_success_endpoints") or {}) != endpoint_counts:
         raise SystemExit("legacy index success endpoint totals mismatch")
 
@@ -106,6 +110,9 @@ def main() -> int:
         raise SystemExit(f"country total mismatch: {country_total}/{published}")
     if len(country_raw) != len(set(country_raw)):
         raise SystemExit("exact duplicate raw node found in country publication")
+    before_fragments = [raw.partition("#")[0] for raw in country_raw]
+    if len(before_fragments) != len(set(before_fragments)):
+        raise SystemExit("duplicate literal before-# link found in country publication")
 
     protocol_files = {
         "vless": OUT / "protocols" / "vless.txt",
@@ -135,6 +142,8 @@ def main() -> int:
     unresolved = int(geo.get("unresolved") or 0)
     if attempted != classified + unresolved:
         raise SystemExit("GeoIP fallback accounting mismatch")
+    if attempted != int(geo.get("exit_ip_available") or 0) + int(geo.get("exit_ip_missing") or 0):
+        raise SystemExit("exit IP fallback accounting mismatch")
 
     print(
         f"OK FINAL_CATALOG tested={tested} published={published} "
