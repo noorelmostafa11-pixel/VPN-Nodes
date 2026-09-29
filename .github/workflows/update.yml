@@ -69,6 +69,7 @@ jobs:
           python tests/test_gitverse_adapter.py
           python tests/test_source_freshness.py
           python tests/test_source_pipeline.py
+          python -m unittest discover -s tests -p 'test_xray_rejected_field_recovery.py'
           python tests/test_kort0881_adapter.py
           python tests/test_share_daily_adapter.py
           python tests/test_freeproxydb_adapter.py
