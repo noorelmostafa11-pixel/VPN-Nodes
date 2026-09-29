@@ -64,23 +64,34 @@ _VLESS_SEMICOLON_RECOVERY_KEYS = {
     "ech-config-list",
 }
 
-def _replace_share_query(uri: str, changes: dict[str, str | None]) -> str:
-    """Change only named query fields, retaining all remaining decoded values."""
-    url = urllib.parse.urlsplit(uri)
-    seen: set[str] = set()
-    query_items: list[tuple[str, str]] = []
-    for key, value in urllib.parse.parse_qsl(url.query, keep_blank_values=True):
-        normalized = key.lower()
-        if normalized in changes:
-            if normalized not in seen and changes[normalized] is not None:
-                query_items.append((key, changes[normalized]))
-            seen.add(normalized)
+def _replace_share_query(source_raw: str, changes: dict[str, str | None]) -> str:
+    url = urllib.parse.urlsplit(source_raw)
+    if not url.query and not changes:
+        return source_raw
+    parts = url.query.split('&') if url.query else []
+    out_parts = []
+    change_keys = {k.lower(): v for k, v in changes.items()}
+    seen = set()
+    for part in parts:
+        if not part:
+            continue
+        if '=' in part:
+            rkey, rval = part.split('=', 1)
         else:
-            query_items.append((key, value))
-    for key, value in changes.items():
-        if key not in seen and value is not None:
-            query_items.append((key, value))
-    return urllib.parse.urlunsplit(url._replace(query=urllib.parse.urlencode(query_items)))
+            rkey, rval = part, ''
+        klower = urllib.parse.unquote(rkey).lower()
+        if klower in change_keys:
+            nval = change_keys[klower]
+            if nval is not None and klower not in seen:
+                out_parts.append(f"{rkey}={urllib.parse.quote(nval, safe='')}")
+                seen.add(klower)
+        else:
+            out_parts.append(part)
+    for klower, nval in change_keys.items():
+        if nval is not None and klower not in seen:
+            out_parts.append(f"{urllib.parse.quote(klower, safe='')}={urllib.parse.quote(nval, safe='')}")
+    new_query = '&'.join(out_parts)
+    return urllib.parse.urlunsplit((url.scheme, url.netloc, url.path, new_query, url.fragment))
 
 def _repair_vless_semicolon_query(uri: str) -> str | None:
     """Repair the observed ';key' REALITY query corruption as an explicit URI."""
@@ -97,20 +108,30 @@ def _repair_vless_semicolon_query(uri: str) -> str | None:
     ):
         return None
 
+    parts = url.query.split('&') if url.query else []
     changed = False
-    query_items: list[tuple[str, str]] = []
-    for key, value in parsed:
-        clean = key.lstrip(";")
-        if key.startswith(";") and clean.lower() in _VLESS_SEMICOLON_RECOVERY_KEYS:
-            query_items.append((clean, value))
-            changed = True
+    out_parts = []
+    for part in parts:
+        if not part:
+            continue
+        if '=' in part:
+            rkey, rval = part.split('=', 1)
         else:
-            query_items.append((key, value))
+            rkey, rval = part, ''
+        klower = urllib.parse.unquote(rkey).lower()
+        if klower.startswith(';'):
+            clean = klower.lstrip(';')
+            if clean in _VLESS_SEMICOLON_RECOVERY_KEYS:
+                new_key = urllib.parse.quote(urllib.parse.unquote(rkey).lstrip(';'), safe='')
+                out_parts.append(f"{new_key}={rval}")
+                changed = True
+                continue
+        out_parts.append(part)
+
     if not changed:
         return None
-    repaired = urllib.parse.urlunsplit(
-        url._replace(query=urllib.parse.urlencode(query_items))
-    )
+    new_query = '&'.join(out_parts)
+    repaired = urllib.parse.urlunsplit((url.scheme, url.netloc, url.path, new_query, url.fragment))
     repaired_q = parse_query(urllib.parse.urlsplit(repaired).query)
     if not qfirst(repaired_q, "pbk", "publickey", "public-key"):
         return None
@@ -183,7 +204,7 @@ def _repair_xhttp_extra_value(text: str) -> tuple[Any, str] | None:
     return None
 
 def _query_repair_options(protocol: str, source_raw: str) -> dict[str, str]:
-    """Repairs shared stream-query corruption without changing protocol data."""
+    """Generates compatibility-derived candidates or repairs shared stream-query corruption."""
     options: dict[str, str] = {}
     url = urllib.parse.urlsplit(source_raw)
     q = parse_query(url.query)
@@ -192,6 +213,22 @@ def _query_repair_options(protocol: str, source_raw: str) -> dict[str, str]:
     # unrelated native stream fields when an explicit plugin is present.
     if protocol == "ss" and qfirst(q, "plugin"):
         return options
+
+    if protocol == "vmess":
+        aid_keys = [k for k in ("aid", "alterid") if q.get(k)]
+        if aid_keys:
+            has_invalid = False
+            has_non_zero = False
+            for k in aid_keys:
+                try:
+                    if int(q[k][0].strip(), 10) != 0:
+                        has_non_zero = True
+                except ValueError:
+                    has_invalid = True
+            if has_non_zero and not has_invalid:
+                options["vmess_force_alterid_0"] = _replace_share_query(
+                    source_raw, {k: "0" for k in aid_keys}
+                )
 
     if protocol == "vless":
         semicolon_repair = _repair_vless_semicolon_query(source_raw)
@@ -284,6 +321,25 @@ def repair_uri_options(protocol: str, source_raw: str) -> dict[str, str]:
                 json.dumps(modified, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
             ).decode("ascii").rstrip("=")
             options[strategy] = "vmess://" + encoded + ("#" + fragment if sep else "")
+
+        aid_keys = [k for k in ("aid", "alterId") if k in obj]
+        if aid_keys:
+            has_invalid = False
+            has_non_zero = False
+            for k in aid_keys:
+                try:
+                    if int(str(obj[k]).strip(), 10) != 0:
+                        has_non_zero = True
+                except ValueError:
+                    has_invalid = True
+            if has_non_zero and not has_invalid:
+                modified = dict(obj)
+                for k in aid_keys:
+                    modified[k] = 0
+                encoded = base64.urlsafe_b64encode(
+                    json.dumps(modified, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
+                ).decode("ascii").rstrip("=")
+                options["vmess_force_alterid_0"] = "vmess://" + encoded + ("#" + fragment if sep else "")
 
         if "extra" in obj:
             extra = obj.get("extra")
@@ -482,3 +538,4 @@ def repair_candidate_for_failure(result: TestResult) -> tuple[str, str] | None:
     if result.stage not in ("source_invalid", "unsupported"):
         return None
     return compose_repair_candidate(result.protocol, result.raw)
+
