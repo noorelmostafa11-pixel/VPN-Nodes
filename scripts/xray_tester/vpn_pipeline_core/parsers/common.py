@@ -27,35 +27,20 @@ _XHTTP_INTEGER_FIELDS = frozenset({
 
 
 def parse_query(query: str) -> dict[str, list[str]]:
-    """Parse one share-link query without silently collapsing repeated fields.
-
-    The old implementation used ``parse_qs`` and later selected the first value.
-    That made ``type=ws&type=grpc`` look like a normal WebSocket node.  A
-    repeated field is ambiguous source data, so reject it instead of inventing
-    one interpretation.  Lookups remain case-insensitive for compatibility with
-    public feeds, but case variants of the same field are also treated as a
-    duplicate rather than merged.
-    """
     output: dict[str, list[str]] = {}
-    for raw_key, value in urllib.parse.parse_qsl(query, keep_blank_values=True):
-        key = raw_key.lower()
-        if key in output:
-            raise ValueError(f"Duplicate query field: {raw_key}")
-        output[key] = [value]
+    for part in query.split("&"):
+        if not part or "=" not in part:
+            continue
+        raw_key, raw_value = part.split("=", 1)
+        key = urllib.parse.unquote(raw_key).lower()
+        value = urllib.parse.unquote(raw_value)
+        if key not in output:
+            output[key] = [value]
     return output
 
 
 def json_loads_unique(text: str) -> Any:
-    """Decode JSON without silently accepting duplicate object member names."""
-    def unique_object(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
-        output: dict[str, Any] = {}
-        for key, value in pairs:
-            if key in output:
-                raise ValueError(f"Invalid JSON duplicate field: {key}")
-            output[key] = value
-        return output
-
-    return json.loads(text, object_pairs_hook=unique_object)
+    return json.loads(text)
 
 
 def qfirst(q: dict[str, list[str]], *keys: str, default: str = "") -> str:
@@ -404,10 +389,7 @@ def build_stream_settings(
             tls["pinnedPeerCertSha256"] = pcs
         if vcn:
             tls["verifyPeerCertByName"] = vcn
-        if allow_insecure is True or (
-            allow_insecure is not None and allow_insecure is not False
-        ):
-            tls["allowInsecure"] = allow_insecure
+        # Xray 26.9.9 removed allowInsecure; v2rayN does not emit it.
         stream["tlsSettings"] = tls
         return stream, allow_insecure is True, sni, tuple(alpn), udp_prefilter_bypass
 
