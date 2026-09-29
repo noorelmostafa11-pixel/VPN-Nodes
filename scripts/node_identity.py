@@ -55,6 +55,28 @@ def _raw_fallback(clean: str) -> str:
     return "raw:" + clean
 
 
+def _effective_stream_settings(stream_settings: dict[str, Any]) -> dict[str, Any]:
+    """Ignore an explicit no-op RAW header when comparing Xray connections.
+
+    Xray's RAW header type `none` creates a pass-through authenticator, so it
+    produces the same connection as omitting rawSettings altogether.  Copy the
+    parsed settings instead of changing the node that will be tested by Xray.
+    Do not generalize this to other headers or security settings.
+    """
+    raw_settings = stream_settings.get("rawSettings")
+    header = raw_settings.get("header") if isinstance(raw_settings, dict) else None
+    if (
+        isinstance(raw_settings, dict)
+        and set(raw_settings) == {"header"}
+        and isinstance(header, dict)
+        and set(header) == {"type"}
+        and isinstance(header["type"], str)
+        and header["type"].lower() == "none"
+    ):
+        return {key: value for key, value in stream_settings.items() if key != "rawSettings"}
+    return stream_settings
+
+
 def connection_payload(uri: str) -> dict[str, Any] | None:
     """Return the exact connection-relevant Node fields consumed by Xray.
 
@@ -80,7 +102,7 @@ def connection_payload(uri: str) -> dict[str, Any] | None:
         "host": str(node.host).lower(),
         "port": int(node.port),
         "outbound_settings": node.outbound_settings,
-        "stream_settings": node.stream_settings,
+        "stream_settings": _effective_stream_settings(node.stream_settings),
     }
 
 

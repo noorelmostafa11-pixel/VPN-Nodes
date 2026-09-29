@@ -25,6 +25,10 @@ ws_a_reordered = (
     "path=/a&fp=chrome&host=edge.example&security=tls&type=websocket#source-two"
 )
 assert identity.dedup_key(ws_a) == identity.dedup_key(ws_a_reordered)
+# RAW-only header options have no effect on a WebSocket transport.
+assert identity.dedup_key(ws_a) == identity.dedup_key(
+    ws_a.replace("type=ws&", "type=ws&headerType=none&")
+)
 
 # Explicit VLESS encryption=none and its omitted default generate the same
 # production outbound settings.
@@ -58,6 +62,7 @@ assert identity.dedup_key(ws_a) != identity.dedup_key(different_port)
 
 different_path = ws_a.replace("path=/a", "path=/b")
 assert identity.dedup_key(ws_a) != identity.dedup_key(different_path)
+assert identity.dedup_key(ws_a) != identity.dedup_key(ws_a.replace("path=/a", "path=/a%20"))
 
 different_transport_host = ws_a.replace("host=edge.example", "host=other.example")
 assert identity.dedup_key(ws_a) != identity.dedup_key(different_transport_host)
@@ -88,7 +93,19 @@ reality_reordered = (
     "fp=chrome&flow=xtls-rprx-vision&security=reality&type=raw#two"
 )
 assert identity.dedup_key(reality) == identity.dedup_key(reality_reordered)
+# Xray's explicit RAW header type `none` passes the connection through just
+# like an omitted rawSettings field, even when the share-link name differs.
+reality_noop = reality_reordered.replace("type=raw#two", "type=tcp&headerType=none#three")
+assert identity.dedup_key(reality) == identity.dedup_key(reality_noop)
+assert identity.dedup_key(reality) == identity.dedup_key(
+    reality_noop.replace("headerType=none", "headerType=None")
+)
+assert identity.dedup_key(reality) != identity.dedup_key(
+    reality_noop.replace("headerType=none", "headerType=http")
+)
 assert identity.dedup_key(reality) != identity.dedup_key(reality.replace("fp=chrome", "fp=firefox"))
+assert identity.dedup_key(reality) != identity.dedup_key(reality.replace("fp=chrome", "fp=random"))
+assert identity.dedup_key(reality) != identity.dedup_key(reality.replace("fp=chrome", "fp="))
 assert identity.dedup_key(reality) != identity.dedup_key(reality.replace("sid=133a3f10a1581047", "sid=223a3f10a1581047"))
 assert identity.dedup_key(reality) != identity.dedup_key(reality.replace("flow=xtls-rprx-vision", "flow="))
 assert identity.dedup_key(reality) != identity.dedup_key(reality.replace(
