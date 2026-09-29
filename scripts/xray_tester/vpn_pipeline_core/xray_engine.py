@@ -197,6 +197,13 @@ def stop_xray(process: subprocess.Popen | None) -> None:
 def classify_xray_config_failure(error: str) -> str:
     """Classify one isolated Xray rejection without hiding unknown program bugs."""
     reason = (error or "").lower()
+    # A share link can carry a malformed finalmask value.  Its JSON string
+    # reaches Xray unchanged, which then reports the exact source field that
+    # cannot be decoded.  This is a source/config failure, not a worker bug.
+    if "streamsettings.finalmask" in reason and "cannot unmarshal" in reason:
+        return "source_invalid"
+    if "streamsettings.tlssettings.allowinsecure" in reason and "cannot unmarshal" in reason:
+        return "source_invalid"
     if any(marker in reason for marker in _XRAY_SOURCE_INVALID_MARKERS):
         return "source_invalid"
     if "mkcp-aes128gcm" in reason and "unknown config id" in reason:
