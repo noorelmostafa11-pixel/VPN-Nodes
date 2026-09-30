@@ -33,7 +33,7 @@ def main() -> int:
         raise SystemExit("each runner must use exactly 40 workers")
     if int(app.get("xray_total_concurrency") or 0) != 600:
         raise SystemExit("total Xray concurrency must be 600")
-    if app.get("country_policy") != "endpoint_first; exit_ip GeoLite2 only for successful XX":
+    if app.get("country_policy") != "endpoint_first; exit_ip GeoLite2 then entry_host GeoLite2 for XX":
         raise SystemExit("unexpected country policy")
 
     tested = int(app.get("xray_tested_total") or 0)
@@ -144,6 +144,15 @@ def main() -> int:
         raise SystemExit("GeoIP fallback accounting mismatch")
     if attempted != int(geo.get("exit_ip_available") or 0) + int(geo.get("exit_ip_missing") or 0):
         raise SystemExit("exit IP fallback accounting mismatch")
+    exit_classified = int(geo.get("exit_ip_classified") or 0)
+    entry_attempted = int(geo.get("entry_host_attempted") or 0)
+    entry_classified = int(geo.get("entry_host_classified") or 0)
+    if not (0 <= exit_classified <= int(geo.get("exit_ip_available") or 0)):
+        raise SystemExit("exit IP GeoIP classification mismatch")
+    if not (0 <= entry_classified <= entry_attempted <= attempted):
+        raise SystemExit("entry host GeoIP fallback accounting mismatch")
+    if classified != exit_classified + entry_classified:
+        raise SystemExit("GeoIP classification sources do not sum to classified")
 
     print(
         f"OK FINAL_CATALOG tested={tested} published={published} "

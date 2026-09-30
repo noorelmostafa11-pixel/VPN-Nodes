@@ -5,8 +5,9 @@ Country authority order is strict:
 1. Country returned through the working node by the private country endpoint.
 2. For successful XX nodes, use the observed exit IP (private response or
    backup IP endpoint) with local GeoLite2.
-3. If there is no classified exit IP, preserve XX. The entry host is not the
-   exit address and must not be used to guess its country.
+3. If the exit IP cannot be classified, retain the former GeoLite2 lookup of
+   the entry host as a last resort. Its location may differ from the exit.
+4. If neither GeoLite2 lookup succeeds, preserve XX.
 
 The public repository's old all-node country resolver is intentionally not run.
 """
@@ -52,16 +53,27 @@ def write_lines(path: Path, values: list[str]) -> None:
     path.write_text("\n".join(values) + ("\n" if values else ""), encoding="utf-8")
 
 
-def fallback_country_for_xx(row: dict) -> str:
+def fallback_country_for_xx(row: dict) -> tuple[str, str]:
     try:
         exit_ip = ipaddress.ip_address(str(row.get("exit_ip") or "").strip())
     except ValueError:
-        return "XX"
-    if not exit_ip.is_global:
-        return "XX"
-    code = country_resolver.country_from_ip(str(exit_ip))
-    value = str(code or "").upper()
-    return value if re.fullmatch(r"[A-Z]{2}", value) else "XX"
+        exit_ip = None
+    if exit_ip is not None and exit_ip.is_global:
+        code = country_resolver.country_from_ip(str(exit_ip))
+        value = str(code or "").upper()
+        if re.fullmatch(r"[A-Z]{2}", value) and value != "XX":
+            return value, "exit_ip"
+
+    host = str(row.get("host") or "").strip().strip("[]")
+    if host:
+        ip = country_resolver.resolve_ip(host)
+        if ip:
+            code = country_resolver.country_from_ip(ip)
+            value = str(code or "").upper()
+            if re.fullmatch(r"[A-Z]{2}", value) and value != "XX":
+                return value, "entry_host"
+        return "XX", "entry_host"
+    return "XX", "unresolved"
 
 
 def country_sort_key(row: dict) -> tuple[float, str, str, str]:
@@ -241,23 +253,35 @@ def main() -> int:
     if not working:
         raise SystemExit("Refusing to publish an empty Xray-verified catalog")
 
-    # GeoLite2 sees only observed exit IPs of successful XX rows.
+    # Restore the previous entry-host lookup only when no exit IP is classified.
     xx_rows = [row for row in working if str(row.get("country") or "XX").upper() == "XX"]
     exit_ip_available = sum(bool(str(row.get("exit_ip") or "")) for row in xx_rows)
     classified = 0
+    exit_ip_classified = 0
+    entry_host_attempted = 0
+    entry_host_classified = 0
     if xx_rows:
         with ThreadPoolExecutor(max_workers=64) as pool:
-            fallback_codes = list(pool.map(fallback_country_for_xx, xx_rows))
-        for row, code in zip(xx_rows, fallback_codes):
+            fallback_results = list(pool.map(fallback_country_for_xx, xx_rows))
+        for row, (code, source) in zip(xx_rows, fallback_results):
+            if source == "entry_host":
+                entry_host_attempted += 1
             if code != "XX":
                 row["country"] = code
                 classified += 1
+                if source == "exit_ip":
+                    exit_ip_classified += 1
+                else:
+                    entry_host_classified += 1
     geoip_summary = {
         "provider": "GeoLite2-Country",
         "scope": "working_xx_only",
         "attempted": len(xx_rows),
         "exit_ip_available": exit_ip_available,
         "exit_ip_missing": len(xx_rows) - exit_ip_available,
+        "exit_ip_classified": exit_ip_classified,
+        "entry_host_attempted": entry_host_attempted,
+        "entry_host_classified": entry_host_classified,
         "classified": classified,
         "unresolved": len(xx_rows) - classified,
     }
@@ -380,7 +404,7 @@ def main() -> int:
         "xray_matrix_shards": MATRIX_SHARDS,
         "xray_workers_per_runner": WORKERS_PER_RUNNER,
         "xray_total_concurrency": MATRIX_SHARDS * WORKERS_PER_RUNNER,
-        "country_policy": "endpoint_first; exit_ip GeoLite2 only for successful XX",
+        "country_policy": "endpoint_first; exit_ip GeoLite2 then entry_host GeoLite2 for XX",
         "country_shard_size": COUNTRY_SHARD_SIZE,
         "country_shards_generated": True,
         "published_country_shards": published_shards,
@@ -427,7 +451,7 @@ def main() -> int:
         },
         "country_names": {item["code"]: item["name"] for item in countries_meta},
         "health_policy": "Xray 26.9.9 real HTTPS success required before publication.",
-        "country_policy": "country endpoint first; exit IP GeoLite2 only for successful XX nodes",
+        "country_policy": "country endpoint first; exit IP GeoLite2 then entry host GeoLite2 for XX nodes",
         "geoip_xx_fallback": geoip_summary,
         "xray_success_endpoints": dict(sorted(success_endpoint_totals.items())),
         "test_summary": test_summary,
@@ -445,6 +469,9 @@ def main() -> int:
         f"microsoft={success_endpoint_totals['microsoft']} "
         f"endpoint_country={endpoint_assigned} xx_geoip_attempted={len(xx_rows)} "
         f"xx_exit_ip_available={exit_ip_available} "
+        f"xx_exit_ip_classified={exit_ip_classified} "
+        f"xx_entry_host_attempted={entry_host_attempted} "
+        f"xx_entry_host_classified={entry_host_classified} "
         f"xx_geoip_classified={classified} xx_remaining={len(xx_rows)-classified} "
         f"countries={len(country_groups)} shards={published_shards}"
     )

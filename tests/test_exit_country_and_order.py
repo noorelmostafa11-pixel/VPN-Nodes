@@ -70,6 +70,30 @@ class ExitCountryAndOrderTests(unittest.TestCase):
         self.assertEqual((result.country, result.exit_ip), ("XX", "8.8.8.8"))
         self.assertEqual(len(calls), 1)
 
+    def test_geoip_uses_exit_before_entry_and_restores_entry_fallback(self):
+        def country(ip):
+            return {"8.8.8.8": "US", "9.9.9.9": "DE"}.get(ip)
+
+        with mock.patch.object(finalize_catalog.country_resolver, "resolve_ip", return_value="9.9.9.9") as resolve, \
+             mock.patch.object(finalize_catalog.country_resolver, "country_from_ip", side_effect=country):
+            self.assertEqual(
+                finalize_catalog.fallback_country_for_xx({"exit_ip": "8.8.8.8", "host": "entry.example"}),
+                ("US", "exit_ip"),
+            )
+            resolve.assert_not_called()
+            self.assertEqual(
+                finalize_catalog.fallback_country_for_xx({"exit_ip": "", "host": "entry.example"}),
+                ("DE", "entry_host"),
+            )
+            resolve.assert_called_once_with("entry.example")
+
+    def test_unresolved_entry_remains_xx(self):
+        with mock.patch.object(finalize_catalog.country_resolver, "resolve_ip", return_value=None):
+            self.assertEqual(
+                finalize_catalog.fallback_country_for_xx({"exit_ip": "", "host": "entry.example"}),
+                ("XX", "entry_host"),
+            )
+
     def test_literal_before_fragment_keeps_distinct_spellings(self):
         base = "vless://u@one.example:443?type=ws&path=%2Fws"
         rows = [
@@ -130,11 +154,12 @@ class ExitCountryAndOrderTests(unittest.TestCase):
                     "--results-root", str(results), "--source-freshness", str(source_freshness)]
             with mock.patch.object(finalize_catalog, "ROOT", root), \
                  mock.patch.object(finalize_catalog, "COUNTRY_SHARD_SIZE", 1), \
-                 mock.patch.object(finalize_catalog.country_resolver, "country_from_ip", return_value="US") as geo, \
-                 mock.patch.object(finalize_catalog.country_resolver, "resolve_ip", side_effect=AssertionError("entry host used")), \
+                 mock.patch.object(finalize_catalog.country_resolver, "country_from_ip", side_effect=lambda ip: {"8.8.8.8": "US", "9.9.9.9": "DE"}.get(ip)) as geo, \
+                 mock.patch.object(finalize_catalog.country_resolver, "resolve_ip", return_value="9.9.9.9") as resolve, \
                  mock.patch.object(sys, "argv", argv):
                 self.assertEqual(finalize_catalog.main(), 0)
-            geo.assert_called_once_with("8.8.8.8")
+            self.assertCountEqual(geo.call_args_list, [mock.call("8.8.8.8"), mock.call("9.9.9.9")])
+            resolve.assert_called_once_with("1.1.1.1")
 
             def contents(path):
                 return path.read_text(encoding="utf-8").splitlines()
@@ -143,7 +168,7 @@ class ExitCountryAndOrderTests(unittest.TestCase):
             self.assertEqual(contents(out / "countries" / "US.txt"), ["vless://fast", "vless://slow"])
             self.assertEqual(contents(out / "country_shards" / "US" / "000.txt"), ["vless://fast"])
             self.assertEqual(contents(out / "country_shards" / "US" / "001.txt"), ["vless://slow"])
-            self.assertEqual(contents(out / "countries" / "XX.txt"), ["vless://unknown"])
+            self.assertEqual(contents(out / "countries" / "DE.txt"), ["vless://unknown"])
             self.assertEqual(contents(out / "protocols" / "vless.txt"),
                              ["vless://slow", "vless://fast", "vless://unknown"])
             app = json.loads((out / "metadata" / "app_pool.json").read_text(encoding="utf-8"))
@@ -154,7 +179,8 @@ class ExitCountryAndOrderTests(unittest.TestCase):
             self.assertEqual(app["geoip_xx_fallback"], {
                 "provider": "GeoLite2-Country", "scope": "working_xx_only",
                 "attempted": 2, "exit_ip_available": 1, "exit_ip_missing": 1,
-                "classified": 1, "unresolved": 1,
+                "exit_ip_classified": 1, "entry_host_attempted": 1,
+                "entry_host_classified": 1, "classified": 2, "unresolved": 0,
             })
             with mock.patch.object(verify_final_catalog, "OUT", out), \
                  mock.patch.object(verify_final_catalog, "META", out / "metadata"):

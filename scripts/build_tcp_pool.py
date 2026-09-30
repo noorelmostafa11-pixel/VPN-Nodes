@@ -18,7 +18,7 @@ import update_catalog as catalog
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "output"
 SOURCES = ROOT / "sources" / "sources.json"
-TCP_TIMEOUT = float(catalog.CONNECT_TIMEOUT)
+TCP_TIMEOUT = 3.0
 TCP_WORKERS = 512
 COUNTRY_SHARD_SIZE = int(os.environ.get("COUNTRY_SHARD_SIZE", "1000"))
 COUNTRY_SHARD_MAX_BYTES = 4 * 1024 * 1024
