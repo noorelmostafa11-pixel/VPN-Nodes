@@ -29,7 +29,7 @@ def _endpoint_key(row: dict) -> tuple[str, int] | None:
         port = int(row.get("port") or 0)
     except (TypeError, ValueError):
         return None
-    if not host or port <= 0 or port > 65535:
+    if not host or port not in catalog.ALLOWED_PORTS:
         return None
     return host, port
 
@@ -107,6 +107,8 @@ def main() -> int:
     html_uri_normalized = 0
     for original in all_rows:
         if str(original.get("protocol") or "").lower() == "openvpn":
+            continue
+        if _endpoint_key(original) is None:
             continue
         raw_uri = str(original.get("uri") or "").strip()
         clean_uri = html.unescape(raw_uri)

@@ -73,15 +73,14 @@ checked, unique_endpoints, reachable_endpoints = asyncio.run(
     merge.run_tcp_checks_by_endpoint(rows)
 )
 
-assert unique_endpoints == 2
+assert unique_endpoints == 1
 assert reachable_endpoints == 1
-assert len(probed) == 2
+assert len(probed) == 1
 assert {
     (str(row["host"]).lower(), int(row["port"]))
     for row in probed
 } == {
     ("alive.example", 443),
-    ("dead.example", 80),
 }
 
 assert [row["uri"] for row in checked] == [

@@ -12,7 +12,7 @@ import yaml
 
 
 SOURCE_URL = "https://raw.githubusercontent.com/share-daily/node/main/clash.yaml"
-ALLOWED_PORTS = {80, 443}
+ALLOWED_PORTS = {443}
 SUPPORTED_TYPES = {"vless", "vmess", "trojan", "ss"}
 MAX_BYTES = 2_000_000
 

@@ -28,7 +28,7 @@ proxies:
   - name: vmess-ws
     type: vmess
     server: vmess.example
-    port: 80
+    port: 443
     uuid: 22222222-2222-2222-2222-222222222222
     alterId: 0
     cipher: auto
@@ -54,6 +54,11 @@ proxies:
     port: 443
     cipher: aes-256-gcm
     password: pass
+  - name: blocked-80
+    type: vless
+    server: blocked80.example
+    port: 80
+    uuid: 55555555-5555-5555-5555-555555555555
   - name: wrong-port
     type: vless
     server: wrong.example
@@ -85,7 +90,7 @@ vmess = next(uri for uri in uris if uri.startswith("vmess://"))
 payload = vmess.split("://", 1)[1]
 decoded = json.loads(base64.b64decode(payload).decode("utf-8"))
 assert decoded["add"] == "vmess.example"
-assert decoded["port"] == "80"
+assert decoded["port"] == "443"
 assert decoded["net"] == "ws"
 assert decoded["path"] == "/ws"
 assert decoded["host"] == "cdn.example"
@@ -109,6 +114,7 @@ decoded_userinfo = base64.urlsafe_b64decode(
 assert decoded_userinfo == "aes-256-gcm:pass"
 
 assert not any("wrong.example" in uri for uri in uris)
+assert not any("blocked80.example" in uri for uri in uris)
 assert not any("http.example" in uri for uri in uris)
 
 normalized = []
@@ -121,6 +127,7 @@ assert {row["protocol"] for row in normalized} == {
     "trojan",
     "shadowsocks",
 }
-assert {row["port"] for row in normalized} <= {80, 443}
+assert {row["port"] for row in normalized} == {443}
+assert catalog.parse_lines("trojan://pw@blocked.example:80#blocked", "port-policy") == []
 
 print("OK share-daily Clash adapter")
