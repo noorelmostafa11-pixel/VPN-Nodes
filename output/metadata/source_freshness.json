@@ -1,0 +1,4927 @@
+{
+  "schema": 2,
+  "generated_at": "2026-10-11T00:19:36Z",
+  "filtering_policy": "all_healthy_nonempty_sources",
+  "max_stale_hours": null,
+  "sources_checked": 492,
+  "active_sources": 462,
+  "stale_sources": 0,
+  "duplicate_sources": 0,
+  "failed_sources": 5,
+  "empty_sources": 25,
+  "input_nodes": 542585,
+  "included_nodes": 542585,
+  "sources": {
+    "roosterkid-V2RAY_RAW": {
+      "fingerprint": "916837304fb567726301734f5d44361b46f4637c4cc5f693aafa7619543f305e",
+      "semantic_nodes": 100,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "MatinGhanbari-ss": {
+      "fingerprint": "d8f6b63e194393bbd9d2cd0e04b2e09dcf4a0afb9bfc40ec2b1cff3ed4e9387c",
+      "semantic_nodes": 91,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "MatinGhanbari-trojan": {
+      "fingerprint": "b57cc288ab7b5cbc2a02a337c3c4ea70d07b7e05dfba90127aa43c28c361f0af",
+      "semantic_nodes": 136,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "MatinGhanbari-vless": {
+      "fingerprint": "64e289b82ce7938349905517faadca4803c8512c34387c993cec47b3134bd4aa",
+      "semantic_nodes": 152,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "MatinGhanbari-vmess": {
+      "fingerprint": "c2980aa3aba253f04c5c99f0bbcc7f30381754ee4378a38eece006b6635eab10",
+      "semantic_nodes": 866,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "mahdibland-sub_merge": {
+      "fingerprint": "b0448dd9ca9ba699f62b7027a7c15bae6b97a945d519c5070597cc7ad5d2e71d",
+      "semantic_nodes": 1283,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-10T12:13:43Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "hamedcode-port_443": {
+      "fingerprint": "369876e20d0d3ebe4df2ca654df854e83f67d191572dc160fd6e2efd43f5bc2d",
+      "semantic_nodes": 3361,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "F0rc3Run-Telegram": {
+      "fingerprint": "9203101ff06ff4771b48d7c2b0cdf7969bac92be23b038002a3a6db9f5106434",
+      "semantic_nodes": 193,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "Baarcuda-top100": {
+      "fingerprint": "aa52d8f676c6b7f8c903508d431963d6c6e62420fa858dbb677cbb267e0148f7",
+      "semantic_nodes": 41,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "Alirewa-V2ray-Configs": {
+      "fingerprint": "bd6967917e77954b2f806376987d5d2f8b0248c6448088baa8c6ee436ff7c92e",
+      "semantic_nodes": 794,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "Epodonios-All_Configs_Sub": {
+      "fingerprint": "9e0330ca893f2e5ad8e201705a503d7430918f5876ac7f5e87de634e39f20ad0",
+      "semantic_nodes": 2385,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "sakha1370-all_valid_proxies": {
+      "fingerprint": "f7c279a29dedc9918f035240287d67f6dd774a8b3b32f6d2a5acb1b99c43bc00",
+      "semantic_nodes": 2676,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "Au1rxx-v2ray-base64": {
+      "fingerprint": "d9d9f8ee21cd89c6f32dfd45e395e0cd1342fe0b2f06e957c05d8a94251f27e4",
+      "semantic_nodes": 521,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "0xRadikal-configs_base64": {
+      "fingerprint": "6f1a3661c0cb47eafc6ff045f09ae3b88b393ec9e363a61e313efcf608594ba0",
+      "semantic_nodes": 6394,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "SoliSpirit-all_configs": {
+      "fingerprint": "1231975f14c05db0c67fee5e88a064ac742a36908b3189cd0e1a52d2aaa216e8",
+      "semantic_nodes": 3392,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "Danialsamadi-AllConfigsSub": {
+      "fingerprint": "20787b6de4ec2ba88dbe6f04eff30f07ca9ff9aaf78baa5b4e31c9623c6bed62",
+      "semantic_nodes": 346,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "ebrasha-all_extracted_configs": {
+      "fingerprint": "2bf28c407d26a3656bb04558a0b47f401d9926293248373e57eb0f80df251b4e",
+      "semantic_nodes": 5782,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "Delta-Kronecker-all_configs": {
+      "fingerprint": "e091707e9c7900e1d86bef07343c9bb24a9f94d2e52f18ec1e002f7f9f41fb62",
+      "semantic_nodes": 3581,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-10T12:13:43Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "mfuu-FreeProxies-sub": {
+      "fingerprint": "c9322848faffd7b15510ed20cc4761aa135dc8a36f1271b93d6b6659802263aa",
+      "semantic_nodes": 157,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "mheidari98-.proxy": {
+      "fingerprint": "bba61818992339c6df58a9c7aa70f087a89fe84c1b4dde756e0a3277017fe71a",
+      "semantic_nodes": 7899,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "rasool083-v2ray-sub": {
+      "fingerprint": "1ba77a0c79708b313bfd1ec2379b269c90c8eee6f6bc66212df90b372f57ee5b",
+      "semantic_nodes": 7560,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "teknovpnhub-servers": {
+      "fingerprint": "256018b727a073af397343afe0f776a6e6217f6252cd18d22024026e5e4694a1",
+      "semantic_nodes": 30,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-05T12:08:45Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "rtwo2-everything": {
+      "fingerprint": "19243964319263cd0403f31b114709708751e8c881506f3e69f98534dac429c5",
+      "semantic_nodes": 27193,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "Pawdroid-Free-servers": {
+      "fingerprint": "3c3f7812cb4c1a4e10d0db3616f0ebbca1b860c05b96d00cc4651d41309079f9",
+      "semantic_nodes": 5,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "alexantSWE-All_Configs_Sub": {
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-06T12:24:17Z",
+      "fresh": false,
+      "competition_active": false,
+      "freshness_reason": "fetch_failed",
+      "duplicate_of": null,
+      "semantic_nodes": 0
+    },
+    "morpheusadam-best": {
+      "fingerprint": "1aa51789425f30f0aa2f0773b21476db3df0d18e23bcbfe4fb2291e4bd4dccda",
+      "semantic_nodes": 1009,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "morpheusadam-vless": {
+      "fingerprint": "7898a803d2074a0048edad4cc11a87744b7386de0b0f58292bbcb7ebee373fdb",
+      "semantic_nodes": 12194,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "morpheusadam-reality": {
+      "fingerprint": "8fe6f3d86b0d24d6ab4522aed77c9d59cbd3bb3e7c23b181bcdd08b2bc70ab84",
+      "semantic_nodes": 4679,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "morpheusadam-iran": {
+      "fingerprint": "25ae777884241f462a730169e97f41c5e7b7282c32a670e00b76f3f4459a922e",
+      "semantic_nodes": 1529,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "V2RayRoot-vless": {
+      "fingerprint": "949b8c49421e33068aee96b10038ab796e71ee643d1c1207a9c7261e9eef2d9f",
+      "semantic_nodes": 108,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-05T12:08:45Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "V2RayRoot-vmess": {
+      "fingerprint": "a3e1f5357f9a54a704ea881ff0cf45cfb1bb4217d70bec0ce931c80fcb816d1c",
+      "semantic_nodes": 4,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-05T12:08:45Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "V2RayRoot-trojan": {
+      "fingerprint": "6dacbe6d4b8bd74831571e8e66e4146c3924eb297458fd7c7b190c35ad8c344b",
+      "semantic_nodes": 21,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-05T12:08:45Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "V2RayRoot-shadowsocks": {
+      "fingerprint": "310d8fb2ece7afe7ad49b77b19303c5193038d168d2ae204b70149775d90fff6",
+      "semantic_nodes": 8,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-09-28T12:09:48Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "barry-far-All_Configs_Sub": {
+      "fingerprint": "608003ece83e457bf054d8357beca7c3a5ef21c1ceff9ac154c9b63d60ea6a21",
+      "semantic_nodes": 2370,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "MohammadBahemmat-all_servers": {
+      "fingerprint": "dbbc3ba3d8f1c9a7c3826623913bc0178dc643e936e67d6cc47cef66007ab69f",
+      "semantic_nodes": 262,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "ConfigJo-main": {
+      "fingerprint": "82365dd803c08a494a22fb2060f8f45fa972dc2e52dbf8900718625436421aa2",
+      "semantic_nodes": 75,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "anonymouskeys-all": {
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-06T12:24:17Z",
+      "fresh": false,
+      "competition_active": false,
+      "freshness_reason": "fetch_failed",
+      "duplicate_of": null,
+      "semantic_nodes": 0
+    },
+    "iboxz-mix": {
+      "fingerprint": "bafb455d0bfc654e8436790b2940f0c83c38e3675df98e8dfe29d87f2802e6e0",
+      "semantic_nodes": 132,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "fengfp-All_Configs_Sub": {
+      "fingerprint": "66f839c1e0de1e2e078cbf88dcb95b5d72bebe866a2f75bff0065744fd6248ef",
+      "semantic_nodes": 1274,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-05T12:08:45Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "nexus-nodes-all": {
+      "fingerprint": "bd833474fba2e8b1cc3149e96577efdb902695267f49462e04b595e0746f18f1",
+      "semantic_nodes": 1049,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "10Dream-telegram-tls": {
+      "fingerprint": "2e010234af9361e6d5fd62394bcfbbf231e321834bf044120adee35765522d38",
+      "semantic_nodes": 1610,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-10T12:13:43Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "luxxuria-harvester-speed_tested": {
+      "fingerprint": "9565dd1d1f604a920e53f54d50cd621590f073e975253576dbaf096fc277f700",
+      "semantic_nodes": 45,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "luxxuria-harvester-top_600": {
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-06T12:24:17Z",
+      "fresh": false,
+      "competition_active": false,
+      "freshness_reason": "fetch_failed",
+      "duplicate_of": null,
+      "semantic_nodes": 0
+    },
+    "NiREvil-SSTime": {
+      "fingerprint": "a3e3aa3c93741bd8ae16aea356035711bd8dea11184d1beb87c1765def2e1bde",
+      "semantic_nodes": 22,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-05T12:08:45Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "MahanKenway-Freedom-V2Ray-mix": {
+      "fingerprint": "21d5528dd07bb03b1b63e21f835246e20b75f8f72f12ed0a1e2eb8fd6bfa9ea4",
+      "semantic_nodes": 884,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "weoknow-dayupdate-1-z": {
+      "fingerprint": "f456964099784fd7048f08a12ad69109cf33c4094001f029645fe503bc7a5137",
+      "semantic_nodes": 246,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-09-29T12:10:20Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "svinakraft-podpiska": {
+      "fingerprint": "d019af8f65799958d206d826c6dddcf5e2b65cf3f5075694c700c3cc6286042b",
+      "semantic_nodes": 60,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "alicivil-workers-sub": {
+      "fingerprint": "b5b87ba937a2ec04c62ec4958ba0d1a1fb6515033d0aa87d75608b9ce369235e",
+      "semantic_nodes": 113,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "xrayvip-free": {
+      "fingerprint": "957f9157724f270757476890bb0294614f0e76a7bb64d07b26562c778e6eec5d",
+      "semantic_nodes": 16,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "trojanvmess-cmcm-b64": {
+      "fingerprint": "c66525fe04f346649122c3baa87a8f6d4a7879427f6cd1755d8369d17c9e5839",
+      "semantic_nodes": 1450,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "igareck-WHITE-CIDR-RU-all": {
+      "fingerprint": "2ebef768f4f4013d855252f6da0154939de481ecbcd1282fbadfee9afd7c5142",
+      "semantic_nodes": 35,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "xiaoji235-airport-free": {
+      "fingerprint": "a3e86e234dce5b24659dd1fc3813f98f5ffe10d38c15273e3b55dac3d4a43234",
+      "semantic_nodes": 14,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-09-28T12:09:48Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "dfantomasd-myvpn-subscription": {
+      "fingerprint": "c3416dbe0d3816af827d98f0c07f899b2f982effc34fde35209d20524b0ed604",
+      "semantic_nodes": 10,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "ruk1ng001-freesub": {
+      "fingerprint": "e1d756319470825d949239d91b806d315896208c2bdb2931ccedce6da848b14e",
+      "semantic_nodes": 8,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "limilco-v2r": {
+      "fingerprint": "5beb664652ed310eca5ee04b04c252d044983f46b2fb8078fa61f60655f58116",
+      "semantic_nodes": 3421,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-10T12:13:43Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "maskkost93-kizyak-vpn-4.0": {
+      "fingerprint": "72befb13451fa5aff943f74fbe102f5701b80926606acfc312d694be671ffa2d",
+      "semantic_nodes": 30,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "0xabolfazl-pyroconfig": {
+      "fingerprint": "b6befbf2d0e2d022b2e6192f10f4378b6c61983981624dcde00f223e9b3ef9cc",
+      "semantic_nodes": 83,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "10ium-scrapeandcategorize": {
+      "fingerprint": "cf08ad0a985316b2ffdc893a0bdae29100a4cbf504204f6f7673bda4b0704b08",
+      "semantic_nodes": 1842,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-10T12:13:43Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "10ium-v2hub3": {
+      "fingerprint": "439f86f7249edffb0fe41ac648c50eee36b5682f1a37250a7c8be2396f2fcbbe",
+      "semantic_nodes": 1048,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "10ium-v2ray-config": {
+      "fingerprint": "98b2a73b402da539b7486d10a6d8b654891b7eb99adf1ec733aba34f33e9b024",
+      "semantic_nodes": 12920,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "10ium-base64-encoder": {
+      "fingerprint": "06486b44f2dc68b6186678c4ff4538983f75918e0fe72e33777a45b804b268c8",
+      "semantic_nodes": 1968,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-10T12:13:43Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "3inker-v2ray-subscription": {
+      "fingerprint": "c711433771e6144cbc818e35c0e66f8389a6d91736a13a1d802f05a2155fbeba",
+      "semantic_nodes": 186,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "4n0nymou3-multi-proxy-config-fetcher": {
+      "fingerprint": "190a0f873cb1a359aa69f314594eea437da68cb79e4eafff82f442192428a474",
+      "semantic_nodes": 29,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "aliilapro-v2rayng-config": {
+      "fingerprint": "aaefe07dc8c3231914ff159197c78bb6373b797abc8de7dcdaea06859f41ec0b",
+      "semantic_nodes": 1002,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "argh94-proxy-list": {
+      "fingerprint": "01365385464cb0caaf4146009c46b67d01ddd761647fb26dc339650e10dfdfa7",
+      "semantic_nodes": 797,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "argh94-v2rayautoconfig": {
+      "fingerprint": "ba98227403f3421bbdecbf344345b3c959f251af2f0e05b1bd77ae6077a32544",
+      "semantic_nodes": 4770,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "arianlavi-rebeldevconfig": {
+      "fingerprint": "ff802830bdf39bd3e1b193421816af3d520ebd59b12204414312d7092514dcb8",
+      "semantic_nodes": 29,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "blackkillrt-config_for_v2ray": {
+      "fingerprint": "e73393aa61025fa19995932fa34a98bcdb255ccec632dc2d9b7b0d6410ae93e8",
+      "semantic_nodes": 59,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "captchaq-vless-servers": {
+      "fingerprint": "e3616687ca670663505efa9a8e19facee0971115048b72d2aea71737acb800d5",
+      "semantic_nodes": 35,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "created-by-telegram-eag1e_yt": {
+      "fingerprint": "28d6353a104aa6f1706f259c6550ac48044d34570b3343be83e6eeb60e1842d0",
+      "semantic_nodes": 50,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-10T12:13:43Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "dukemehdi-freelist-v2ray-configs": {
+      "fingerprint": "049a05b0a12428363a51048bd574aebec99092fea01d0e628d799935e359a7b7",
+      "semantic_nodes": 5950,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "farid-karimi-config-collector": {
+      "fingerprint": "8619fd8a7a86dd13c1fc103597a1071bf42f136a0e183e959d2ed6d67b79f9a3",
+      "semantic_nodes": 32,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "firmfox-proxify": {
+      "fingerprint": "47d7de396f485014cc63a10db9333467ce89fdd6011437cffa0c712a14c4ba0e",
+      "semantic_nodes": 47,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "freedom-guard-builder-freedom-finder": {
+      "fingerprint": "d5b9660a7a9be6612da450bd792371eb51133e4cfae8281cef77fb5241f259d4",
+      "semantic_nodes": 157,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-10T12:13:43Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "hidashimora-free-vpn-anti-rkn": {
+      "fingerprint": "27f154066de26a00f25b6f77879e9c400f6ca10dd78b9886937505b151e8ada9",
+      "semantic_nodes": 4,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-08T00:08:08Z",
+      "fresh": false,
+      "competition_active": false,
+      "freshness_reason": "empty_source",
+      "duplicate_of": null
+    },
+    "lalatinahub-mineral": {
+      "fingerprint": "940353436bfc562f0331db7b1e94f86fefedc47bff79f5d30b96e19b464fa6be",
+      "semantic_nodes": 767,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-05T12:08:45Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "leilaomi-automergepublicnodes-optimized": {
+      "fingerprint": "e9a1181c855743d1fcb8fb093104a21ab4e3aa6174eb1166fddbc68be8a3e953",
+      "semantic_nodes": 10635,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "mahankenway-pusheen-v2ray": {
+      "fingerprint": "c1e6f9a92016abfae1bbe90481494e5d82a5cfcd8056225dec263c2f99dc636c",
+      "semantic_nodes": 35,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "mahdi0024-proxycollector": {
+      "fingerprint": "590f95943ac79232daaa5009171659d8f8e56602356c88940c178332b54eb1c6",
+      "semantic_nodes": 7,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "meret2019-vless-subscription": {
+      "fingerprint": "d5141f1c4bf728e5d20ef5fc24c785cdc5341b6edaf0cea445d073f256c2a948",
+      "semantic_nodes": 121,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "mhditaheri-v2raycollector": {
+      "fingerprint": "42d6072646b9628016d60f40675af03dc334cd88e47868ee1ae8135a7cd95107",
+      "semantic_nodes": 192,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "mhditaheri-v2raycollector_py": {
+      "fingerprint": "398a28ff53981fb8386496d70e8bb9729f6179c2d0c004c7ac093bd6b762f705",
+      "semantic_nodes": 231,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "mohsenreyhani-vless-subscriptions": {
+      "fingerprint": "5599852214149ccef811019ba8689fc248cacc8ea4f20b00c3e0bf351e327ea9",
+      "semantic_nodes": 79,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "mokafela-config-finder": {
+      "fingerprint": "4194059b21c0a314f2aa357d84752e32fb0aa060e7c657f90247e3bba14bb9c6",
+      "semantic_nodes": 26,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "mosifree-free2config": {
+      "fingerprint": "4ee055c2ebce331128050213cfc2ce147c97fb67c70cb1915fabcb63ba9cdfe9",
+      "semantic_nodes": 105,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "mrabolfazlnorouzi-iran-configs": {
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-09-06T14:29:42Z",
+      "fresh": false,
+      "competition_active": false,
+      "freshness_reason": "empty_source",
+      "duplicate_of": null,
+      "semantic_nodes": 0,
+      "exact_nodes": 0
+    },
+    "mustafabaqer-vestranet-nodes": {
+      "fingerprint": "0b6d833a52085a587641c66d636232ec5d29413ff8a8c8f13a69d07f94a10ff9",
+      "semantic_nodes": 1274,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "nima-monajjemy-v2ray-configs-nofolter": {
+      "fingerprint": "5c3352d5fe3e23c664e602b97f458af4c92e05021e09a513af23b150b4023433",
+      "semantic_nodes": 74,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "nima-monajjemy-v2ray-configs": {
+      "fingerprint": "ff43f99d3513e966e60ecae690abd8685be696ef69f561003c1488b5e93c3dba",
+      "semantic_nodes": 30,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "pasimand-v2ray-config-agg": {
+      "fingerprint": "b02188c59d722bf13f0a9a34cca348832275ffcde001b88168c21197781d6acd",
+      "semantic_nodes": 157,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "planaslii-vira-v2ray-configs": {
+      "fingerprint": "82cd44b936fa59f780be6d6c09f90761a3ac6bac5c3588be407255d54da5d159",
+      "semantic_nodes": 16,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "shadowexception-vpn": {
+      "fingerprint": "d378b60ff66fd12739a0ef6a9fb56f49ac9552ef4a028c1b1e8240d04afed4fc",
+      "semantic_nodes": 70,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-05T12:08:45Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "shatakvpn-configforge-v2ray": {
+      "fingerprint": "e8cbbe1ab70011df2671e99b9bb51d97ac696b370a673a8c777ac6d29cc41ca0",
+      "semantic_nodes": 96,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "solispirit-solvpn": {
+      "fingerprint": "74182ad6eb7de937d2d40e93d56e48f6e853dd0d7ef809e7593a9f709c7d10e1",
+      "semantic_nodes": 23,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-10T12:13:43Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "surfboardv2ray-tgparse": {
+      "fingerprint": "e3b2dce40580f09e7f1749e160abf98d1a9c965ee7fb1c3331fc0dc2e47f255e",
+      "semantic_nodes": 1813,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "thecrowcreature-v2rayextractor": {
+      "fingerprint": "554dde19c5e092198437ee51ffcfce303c3d1ad7f4c1f18d2d9c2a238cdebc7a",
+      "semantic_nodes": 12644,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "void-anonymity-v.o.i.d-vpn_bypass": {
+      "fingerprint": "adb15254cef1489a6a7b3c851a95cd18fff1f1c55de43c2ecd637d7e0e6d0b02",
+      "semantic_nodes": 515,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "vovaplusexp-p-configs": {
+      "fingerprint": "4b50fb9ecefd74c1fc58c5237fa30e777a6ab7bd4e00942039d4fedd6f2ddfc0",
+      "semantic_nodes": 31,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "wlget-v2ray_configs_64": {
+      "fingerprint": "20c1e3df38ad9a778f2a91ece20dcac3de3ac9f211bfb5013e3f3e4d5d5b5307",
+      "semantic_nodes": 4,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "yawstar-proxy-hunter": {
+      "fingerprint": "71176a8e0158a7dca2de357d03c3c265160598bca8981a47a85b377209e0af3a",
+      "semantic_nodes": 157,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "zendanteam-ss44-sub": {
+      "fingerprint": "c8bf20bd1845d390fd103ccb0885ea06b067b91fbc9364b20a5663f844d7e206",
+      "semantic_nodes": 48,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "acymz-autovpn": {
+      "fingerprint": "a6b54fc5ea2b69fa9d392311711d5412f6563cfd0e3640dc028508e1f4d00c42",
+      "semantic_nodes": 236,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "aishervin-subfine": {
+      "fingerprint": "1d6613fa65af6e5ef7d8602519dbcf6546c2b797fde46bbdb2e2afe703ac2228",
+      "semantic_nodes": 316,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "amir-reza-bijandi-v2ray-configs": {
+      "fingerprint": "efca9c01ea018ae9f704e723850977da39a57fc7906f26ee125667388e9be64e",
+      "semantic_nodes": 109,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-10T00:09:10Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "amirkma-proxykma": {
+      "fingerprint": "f268ed4af2d827f0abf68631a6c97267c828d25e8bc8a0f1d1bf621a66d66356",
+      "semantic_nodes": 126,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "arahmani6991-cyber-v2ray-configs": {
+      "fingerprint": "dc1c62d56f99121eabdfc1ba38639cdbf2c8d96b66d0ae1eeec4b1b020a518a6",
+      "semantic_nodes": 3441,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-05T12:08:45Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "asgharkapk-sub-config-extractor": {
+      "fingerprint": "06f5dc0f77e03b3bf81f8d803acc8a97856d9ba74fbbdaa16552aff0933d3b58",
+      "semantic_nodes": 16,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-08T00:08:08Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "awesome-vpn-awesome-vpn": {
+      "fingerprint": "b6a8cd6c408e441d653aa1a22c53a763cbace1c80b42e1d10e6e4331cb5a6b76",
+      "semantic_nodes": 23,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-10T12:13:43Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "balochscript-free-vpn-configs": {
+      "fingerprint": "5130a5dc2e7088a14a84fb266d3344414fdbf079777a8d3826f3cf5ec1e45255",
+      "semantic_nodes": 39,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "crackbest-v2ray-config": {
+      "fingerprint": "3e7472359c2dea7b1fea469433f37e1a1552cb8656fe1eca9896b4d77de42bf0",
+      "semantic_nodes": 204,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "damiryuldashbaev-oss-vless-de-subscription": {
+      "fingerprint": "82f9cf5f9e37cd4d1a95814206e5bdd60186c025e49a48ce49e771a8a85b7621",
+      "semantic_nodes": 1,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-10T12:13:43Z",
+      "fresh": false,
+      "competition_active": false,
+      "freshness_reason": "empty_source",
+      "duplicate_of": null
+    },
+    "electron-v2ray-telegram-config-dumpr": {
+      "fingerprint": "5a6250ef98762fcf42d7ef3727ae7c38086f1c388e6797b7f5f95741dd863918",
+      "semantic_nodes": 44,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "ermaozi-get_subscribe": {
+      "fingerprint": "34b5df895ee84df6520f9a63681f3e9426c88aaec88d06828f615d635bee7ec5",
+      "semantic_nodes": 27,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "free18-v2ray": {
+      "fingerprint": "114ed096d3eaf2735939aabfa90c0246c42bd8d9cbc04501b2e4a830067bbc21",
+      "semantic_nodes": 97,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-10T12:13:43Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "freenodess-freenodess": {
+      "fingerprint": "f3223a0cd348211f0f23476337cbff6f5fe9ef7bd2445e0a026804e39f550ed3",
+      "semantic_nodes": 497,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "gbcwror-v2ray-tester": {
+      "fingerprint": "b16c3dbf585e93a9bf47d9975341eeb47ce7c2303f765a0a4e0d568086e68bdc",
+      "semantic_nodes": 133,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "hamedp-71-sub_checker_creator": {
+      "fingerprint": "67a762c4fcb82bcb63f372a922f0d33cb23ba2403e27ac6a0f5bb84ab32b4f68",
+      "semantic_nodes": 597,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-09T12:10:22Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "heliataromi-confighub": {
+      "fingerprint": "e8646a01665c43885a1e119ae1e01486ed69fd56c8693bc4717f447f108b2794",
+      "semantic_nodes": 855,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "hello-world-1989-cn-news": {
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-09-06T14:29:42Z",
+      "fresh": false,
+      "competition_active": false,
+      "freshness_reason": "empty_source",
+      "duplicate_of": null,
+      "semantic_nodes": 0,
+      "exact_nodes": 0
+    },
+    "hiztin-vless-po-gribi": {
+      "fingerprint": "2370a936334b0e2075966b7ff5936377e24084f0f40d4b9ee892d73d6b9e39ce",
+      "semantic_nodes": 90,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "iampedii-whitedns-sub": {
+      "fingerprint": "5441dcf672790a5349042674f3a21d422026f51ffe3a474b7958f525ba488473",
+      "semantic_nodes": 137,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "itsyebekhe-psg": {
+      "fingerprint": "e17c025685cebd21808ac33d416d39b3cb4d92d83cb61f5bd01b7379cba1ec44",
+      "semantic_nodes": 134,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "jafarm83-configv2ray": {
+      "fingerprint": "a12399bf5f132c070f8b94f37d0ad62915a237dd83ceebec45ca47129699d262",
+      "semantic_nodes": 8,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "kasesm-free-config": {
+      "fingerprint": "baf21512ea29567770261032ab29a432a99089eb2a2b8c7185ded165d6709564",
+      "semantic_nodes": 575,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "komoterdon-free-sub": {
+      "fingerprint": "4ab70bc37baf0cb88b8a238422dfed557fe0b959823a298685fd8d5db5b026ee",
+      "semantic_nodes": 209,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "kooker-freesubscheck": {
+      "fingerprint": "52d78fd1b3397dd56d11c77299d86e27033af0f7857d094ed08bb98ed92d9a08",
+      "semantic_nodes": 1,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-09T12:10:22Z",
+      "fresh": false,
+      "competition_active": false,
+      "freshness_reason": "empty_source",
+      "duplicate_of": null
+    },
+    "liketolivefree-kobabi": {
+      "fingerprint": "f39d64a3a8d6c1d6f2767ecfa102a0af4cdd85e760a51b7bc692a76222f97f09",
+      "semantic_nodes": 135,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-10T00:09:10Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "longlon-v2ray-config": {
+      "fingerprint": "e1b9671f6b7af97fa649d7f40013c0ff5e82020389f0ddcbecb02f6b3b78c695",
+      "semantic_nodes": 60,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "mahsanet-mahsafreeconfig": {
+      "fingerprint": "e8e8234a49c475d96e8a9b4f7084470a097a61e061944c434ca7e2c6a1a34aa0",
+      "semantic_nodes": 9,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "mehrtat-vless-collector": {
+      "fingerprint": "c6a4442d68a4208041dfe5ac107e76581f4ad6eeb77e6e054dec5aaadab6a297",
+      "semantic_nodes": 211,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "miladtahanian-config-collector": {
+      "fingerprint": "91cc9b4f77529fbd5e4f087fc29e30edceb097b9051274adae743b25238f4915",
+      "semantic_nodes": 205,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "mohamadfg-dev-telegram-v2ray-configs-collector": {
+      "fingerprint": "a77bcfd66353c31c2a797fc264c93d3b7d0834c9e524ee6623931bb7eb9d32a1",
+      "semantic_nodes": 117,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "mohammmdmdmkdmewof-v2rayconfigsforyou": {
+      "fingerprint": "aad7d87e37d2a1a59f521f6d8bd65142dfe7afb5b740269da77dfdd50850cd8a",
+      "semantic_nodes": 215,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "momimamadrar-config_v2ray": {
+      "fingerprint": "685d79a0899c90e25cb02c0d2dbda270c13daa7405c8a6bd097768848b87e17a",
+      "semantic_nodes": 273,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "myominn062-svg-mk-studio-vpn-service": {
+      "fingerprint": "5c1e90c3c5ea231b9cdb7b14afe74ebea2f828ffcb7113391f09a969eb574ddc",
+      "semantic_nodes": 18511,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "nyeinkokoaung404-v2ray-configs": {
+      "fingerprint": "99644418dd112eaae6d1db1a92d682914cd8b96fec8e18fa6eee7921c30364b1",
+      "semantic_nodes": 1150,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "patterniha-free-configs": {
+      "fingerprint": "99ffef23b8ad30b70d83e665459fa814b6e411207a9b470e1ceaae80607839b5",
+      "semantic_nodes": 114,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "peasoft-nomorewalls": {
+      "fingerprint": "1c1ed46278c3f13ed37c976a8d8f9ccb5ba2c7f4d98acf75159dcff931f1ac8b",
+      "semantic_nodes": 216,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "penhandev-autoaivpn": {
+      "fingerprint": "2e976408f97fda4eeb71238819e7bb48aabc2d98a2a6ddcae24f28d34e73c966",
+      "semantic_nodes": 900,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "pog7x-vpn-configs": {
+      "fingerprint": "114ed096d3eaf2735939aabfa90c0246c42bd8d9cbc04501b2e4a830067bbc21",
+      "semantic_nodes": 97,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-10T12:13:43Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "ramram33-ram-v2ray-configs": {
+      "fingerprint": "eb6d0fe9e22f474482b19c80e7e05bb4d20e6e94d3a90620035e8c73bf513734",
+      "semantic_nodes": 144,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "rango-cfs-newcollector": {
+      "fingerprint": "2c61778d03fe26a879a95cfe689403b8bb217bbd034cfa10d699a4b952c00c47",
+      "semantic_nodes": 92,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "sakazxc1400-creator-free-vpn-sub": {
+      "fingerprint": "ba9c8eaa8b5dc5fcb78ac2a070dd33afc21616bed59725ec64cf25f0ff3bcafe",
+      "semantic_nodes": 5977,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-05T12:08:45Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "sinavm-svm": {
+      "fingerprint": "e01ccecc67f1ec383deefbd64db3073ecfba78f5cdef9cdec32eec19ff03e2e3",
+      "semantic_nodes": 8,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "ssrsub-ssr": {
+      "fingerprint": "8688eb78645aef2c0282827cde33018da7dd3def50c9f806b550974eb53f7da0",
+      "semantic_nodes": 18,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-10T12:13:43Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "thealiiakbarii-ai-vcc": {
+      "fingerprint": "87c85c3bb9a86f686e57c31554364021da6ca8d6245c463d01b24faa9e2804dc",
+      "semantic_nodes": 5786,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "ts-sf-fly": {
+      "fingerprint": "40bd6fc6f2c4bafc375319db859933015543951b4e72b12f9d9444c1baa49263",
+      "semantic_nodes": 62,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "wuqb2i4f-xray-config-toolkit": {
+      "fingerprint": "af4d893fb1c36e45cc784e6f6ad9a5b33b6e17168e616814c9e90fbfbef14b5b",
+      "semantic_nodes": 113,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "yitong2333-proxy-minging": {
+      "fingerprint": "3cf9f7eccba7059d6b12e750f5f6ed18f5eb8a929768d917dd111e55123ee20b",
+      "semantic_nodes": 2905,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "youfoundamin-v2raycollector": {
+      "fingerprint": "a4336e9616b18067f745005e2c83c1a8fbdbfc6977be6afd6b9fc8615f91e048",
+      "semantic_nodes": 1328,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "zhuhaiuk-free-nodes": {
+      "fingerprint": "02aaef46ee78ea0c3bcc961e9abdeb89505106b298ccd99e260154f40656c724",
+      "semantic_nodes": 2,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "zieng2-wl": {
+      "fingerprint": "a95cffff1765d64be4bf823982e8c141399e72252c47b0a08d7013a8184535cf",
+      "semantic_nodes": 54,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "zjfb-subcrawler": {
+      "fingerprint": "9e2851455ad473236d74b5a1dc7ce8e2eef7f99e4245e42f580b478585003320",
+      "semantic_nodes": 29,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-10T12:13:43Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "arg9244-v2r-subs-mix": {
+      "fingerprint": "ad16230661d76386feeed66ac6230cf68c5259b897e1623cefc0b2eec74f2b01",
+      "semantic_nodes": 12167,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-10T12:13:43Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "shabane-kamaji-tested-merged": {
+      "fingerprint": "aff8694f8e91e33d70fd41ae8dbbd0165543ec115cc00738a9376530cbc0d134",
+      "semantic_nodes": 999,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-10T12:13:43Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "huntx-all-sources": {
+      "fingerprint": "87c34146d5a76a2f0f292784dc776e0f6a8fb62ee30d646e6021d6fed18f489f",
+      "semantic_nodes": 763,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-05T12:08:45Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "idtheo-cleanips-shield": {
+      "fingerprint": "dd1414554e3668093abc469f07f9445a7a28187fefae1c2535efa44f627b4349",
+      "semantic_nodes": 2,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-08T00:08:08Z",
+      "fresh": false,
+      "competition_active": false,
+      "freshness_reason": "empty_source",
+      "duplicate_of": null
+    },
+    "igareck-russia-vless": {
+      "fingerprint": "8f257c84c342bd2b342904db945e5fd0d3a8715fb741ab0f62374ece038b8601",
+      "semantic_nodes": 111,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "igareck-russia-ss-all": {
+      "fingerprint": "b6c040e2f06cf9bdbee3ec7b320716edcb5280675f47e383ee2c45005988e7ed",
+      "semantic_nodes": 1,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "mehrdadmb2-v2ray-sub-mix": {
+      "fingerprint": "33547acd965e0dd7c0ecb5b40427b11105e02998da438a32db261d74ebb505fb",
+      "semantic_nodes": 65,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-10T12:13:43Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "arshiacomplus-v2rayextractor-mix": {
+      "fingerprint": "5f3a75cc24a9b9350d6af91a893b6343eee96e39f28b49262f273787a1f2f02f",
+      "semantic_nodes": 76,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-05T12:08:45Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "v2rayconfigspool-v2ray-sub-tree": {
+      "fingerprint": "a1f1733fba95578e9ed4c9ee3ec42d8eb54128e9b62f47a510cf8c01a38489ef",
+      "semantic_nodes": 55,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-05T12:08:45Z",
+      "fresh": false,
+      "competition_active": false,
+      "freshness_reason": "fetch_failed",
+      "duplicate_of": null
+    },
+    "firefoxmmx2-v2rayshare-subscription": {
+      "fingerprint": "a3e86e234dce5b24659dd1fc3813f98f5ffe10d38c15273e3b55dac3d4a43234",
+      "semantic_nodes": 14,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-09-28T12:09:48Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "heydarlaptop-v2ray-subscription": {
+      "fingerprint": "7987b5d0d645bd6f6bbac8e6dfc31777cc258987c4acb440e5c94d3852adab8b",
+      "semantic_nodes": 265,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-05T12:08:45Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "trm8g466d4-v2ray-sub": {
+      "fingerprint": "0e1c454e2a981922b1481d66a7017026544151a369ddc28019cf3e8397ec46e0",
+      "semantic_nodes": 1,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-10T12:13:43Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "gitverse-aetrisvpn-black-list": {
+      "fingerprint": "ce1aac1b3bb266d6a17347488086346527a70f04059608f9ae19cd0b6bfbe11e",
+      "semantic_nodes": 147,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-06T00:12:58Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "rahi-eq3-all-configs": {
+      "fingerprint": "6e0419457fb27c68ed3a978ac47febe14886014a5a1af9d85198035141fa9c5c",
+      "semantic_nodes": 37,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "manifest-dpdns-v2ray": {
+      "fingerprint": "977c6df32f43dc130ae4119759268c2c3a6dad69e7adc2f13d74acb5b5db471e",
+      "semantic_nodes": 58,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "etoneya-subscription": {
+      "fingerprint": "27884c50f743253f08cae0738da3e90071b6f79805453020a7a18378d0927251",
+      "semantic_nodes": 1734,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "shadowmere-b64sub": {
+      "fingerprint": "838f8b3196d474b69d32c7a6c79ff57022e43342d5bc8e9f2c29d08982066c85",
+      "semantic_nodes": 38,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "robin-victoriacross": {
+      "fingerprint": "4b7d19b6a5792698d0e55345bbf08b81ed4fae9c41ac49d054e62f24fcb81d42",
+      "semantic_nodes": 326,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "whoahaow-rjsxrd-bypass-all": {
+      "fingerprint": "72aacf5c603e6fc36554139d0e0c4586affd3aa8c6f29abc77672308e5173423",
+      "semantic_nodes": 294,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "Ilyacom4ik-free-v2ray-2026": {
+      "fingerprint": "d0af06bf78d0eee79c0da14b9d888d08740cc4b9b1face577f9a7b2a7a4a618b",
+      "semantic_nodes": 2671,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "T3stAcc-V2Ray-All_Configs_Base64": {
+      "fingerprint": "f4544ec3e6fd228ae6743207cf8219bb1997823b0bd56b042fcc863737d84d6a",
+      "semantic_nodes": 365,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "ZOHAIB_V2ray": {
+      "fingerprint": "75f86abf7543b507071bb91ac29677ae4bfe69c9127bae4a7cabe3ac613b5fe1",
+      "semantic_nodes": 530,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "chengaopan-AutoMergePublicNodes-list_raw": {
+      "fingerprint": "1c1ed46278c3f13ed37c976a8d8f9ccb5ba2c7f4d98acf75159dcff931f1ac8b",
+      "semantic_nodes": 216,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "banyunxiaoxi-sub-base64": {
+      "fingerprint": "f27af16ecbc449a39edf50212a9bc91830812958af20f06121a7814943f18ab1",
+      "semantic_nodes": 69,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "free-nodes-v2rayfree-sub": {
+      "fingerprint": "fd5653763fd9188029c8374cddd5e9a7fbc5331915fd30b2bc90eec703abbdf9",
+      "semantic_nodes": 195,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "ahmadjeddi-v2raycfgdumper-sub": {
+      "fingerprint": "682fdff1bd4fd51dbe67c0c2e6e467a324a4fafed17842bf35263b998f6d9b86",
+      "semantic_nodes": 22,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "flat447-v2ray-lists-black": {
+      "fingerprint": "e9a2e6702bc968b551f0148e9a13d957152911e8e646519f6248db6c81539dd7",
+      "semantic_nodes": 69,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "flat447-v2ray-lists-white": {
+      "fingerprint": "8ca92cb87bf3ea3634e6fa1b806a268f73d58c14253ad02c4c2465221e97948a",
+      "semantic_nodes": 21,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "snakem982-proxypool-v2ray": {
+      "fingerprint": "d9ac7894998f8704f2abc50facb9c812de22baee58730953569f5cf90f816b01",
+      "semantic_nodes": 24,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "miladtahanian-v2raycfgdumper-sub": {
+      "fingerprint": "9b078ea6a999740e906ec72054cd02cee6080725c2f878afb92783c55da0e1d8",
+      "semantic_nodes": 167,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "anaer-clash": {
+      "fingerprint": "ad5b8d46de188c189b99f32146cfb61fcb54cb69a198a394e65900115d128371",
+      "semantic_nodes": 223,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "syavar-speedtest-tinkoff": {
+      "fingerprint": "e465647eaf4a5c4f19a1789d67c0abe6c7f716fd4258d276dbab9bcdd64a74ef",
+      "semantic_nodes": 1,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-09-29T12:10:20Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "syavar-mddc-tinkoff": {
+      "fingerprint": "d65387a59d849963037bcc06b9af37b1f329c2e9d5912fe4031bd26ff65a0b1d",
+      "semantic_nodes": 1,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-09-29T12:10:20Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "syavar-css-rbxcdn": {
+      "fingerprint": "154ec46a4734cdf5c640bacf9a9de5f24d11fd140e5545771dc0899298142d68",
+      "semantic_nodes": 1,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-09-29T12:10:20Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "syavar-whatsapp": {
+      "fingerprint": "bb514bef0b4d44bb12deb60f91acac3dd9c5cbf8b4c77baa9bdd5cd8955a8f1d",
+      "semantic_nodes": 1,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-09-29T12:10:20Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "syavar-alfabank": {
+      "fingerprint": "700057878f168e3355527ed89d1c6e488d142fc93ab0bed28a1ee4864a6f699a",
+      "semantic_nodes": 1,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-09-29T12:10:20Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "syavar-google": {
+      "fingerprint": "769871efe3cba0f60c4a36b4a488f3e79bc608a0ae34f4fe307375cf57e8539f",
+      "semantic_nodes": 1,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-09-29T12:10:20Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "syavar-vk": {
+      "fingerprint": "0b801bdcedc00765e15c0ee519df57fea4b8ec9dfde570fd42fdc0c9b4f539b6",
+      "semantic_nodes": 1,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-09-29T12:10:20Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "syavar-telegram": {
+      "fingerprint": "9d27bbee00807e045dc23599fe8f3402840c66cd0b4bdd23fa01ded1e28c7d33",
+      "semantic_nodes": 1,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-09-29T12:10:20Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "pornnewbee-free-vless": {
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-09-26T08:54:47Z",
+      "fresh": false,
+      "competition_active": false,
+      "freshness_reason": "empty_source",
+      "duplicate_of": null,
+      "semantic_nodes": 0
+    },
+    "idolvpn-vless": {
+      "fingerprint": "780cf1271eccc5ab440999bccf476c72e21471e65482cee1da260fab44174e68",
+      "semantic_nodes": 5,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "idolvpn-vmess": {
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-06T12:24:17Z",
+      "fresh": false,
+      "competition_active": false,
+      "freshness_reason": "fetch_failed",
+      "duplicate_of": null,
+      "semantic_nodes": 0
+    },
+    "idolvpn-trojan": {
+      "fingerprint": "220bd9872608541d0c834d0838d120c6fa0a17157e28e95bdfe85aa9dc3a9598",
+      "semantic_nodes": 11,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "idolvpn-ss": {
+      "fingerprint": "b98a0457adf96406396aa0116cb69a37322bfd4dedecb778513ac9ec5285a9db",
+      "semantic_nodes": 4,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "jagger235711-mixed": {
+      "fingerprint": "43ee17b2ac6a30efd70510b14c32d4afbdcdee421ba3e34bb8043c19e5cbccf5",
+      "semantic_nodes": 2976,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-10T12:13:43Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "mohammadaz2-all": {
+      "fingerprint": "aad7d87e37d2a1a59f521f6d8bd65142dfe7afb5b740269da77dfdd50850cd8a",
+      "semantic_nodes": 215,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "lalatinahub-latinasub-nodes": {
+      "fingerprint": "217a2b4a193664535d09f891655114050a79d037919c563f3796720da121e5ab",
+      "semantic_nodes": 74,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "romaxa55-megav-all": {
+      "fingerprint": "28e661d3dfe0bb124ddfdf2ec60bb0335860d37c9d17e1436549cf32866c2f25",
+      "semantic_nodes": 5,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "zxcursedzxc0721-vless": {
+      "fingerprint": "d7c38e29258b8288ac5494aa2976aca7a2e0eebd443a5d5e2e356f651f2af5ed",
+      "semantic_nodes": 1183,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "problemthecode-sylphnet": {
+      "fingerprint": "0d0a1124a61913e5bf078a54b0b58269653c812932deda0d4ae3e502de0ac947",
+      "semantic_nodes": 36,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-05T12:08:45Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "ishalumi-proxy-node-collector": {
+      "fingerprint": "f1f9588cba026a98f0c9612e891910bc3c50a0423070db90a2b8fe42457b2087",
+      "semantic_nodes": 125,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "yafeisun-v2raynode": {
+      "fingerprint": "87cdeabac94d7acef065275513cef8ad8c0c53d1db4dbf23fe6730081330e28f",
+      "semantic_nodes": 782,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "denchic-xray-checked": {
+      "fingerprint": "aa0d981576ab9b73993658fd816cef6af8384cf8b247f3d72ba51ff3657db917",
+      "semantic_nodes": 181,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "wenxig-free-nodes-sub": {
+      "fingerprint": "d047b9cddae50cba7aca01bac109eb8d638c5abe5705b0b4df48845ff62849e8",
+      "semantic_nodes": 1,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-09T00:08:55Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "zhangdunlong-free-v2ray-nodes": {
+      "fingerprint": "49bc2035f137586798f192ccf1c1c862d49d474b56771d3f450c37b94a8e53de",
+      "semantic_nodes": 16,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "vorz1k-v2box-1": {
+      "fingerprint": "3ef51fd3ff95ab71aaab82aeb894c0262f81e0316d896bfdec50a46f8b21f592",
+      "semantic_nodes": 1,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-01T00:09:23Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "vorz1k-v2box-2": {
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-09-26T08:54:47Z",
+      "fresh": false,
+      "competition_active": false,
+      "freshness_reason": "empty_source",
+      "duplicate_of": null,
+      "semantic_nodes": 0
+    },
+    "vorz1k-v2box-3": {
+      "fingerprint": "3ef51fd3ff95ab71aaab82aeb894c0262f81e0316d896bfdec50a46f8b21f592",
+      "semantic_nodes": 1,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-01T00:09:23Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "kort0881-vless": {
+      "fingerprint": "a97682f5e700e61ddcb4d5caa99015971ab012cdeda422537c692840000b7a31",
+      "semantic_nodes": 6950,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "kort0881-vmess": {
+      "fingerprint": "46b5b5f9e30e99ebd4da454be41a8881a29736c9dc6a901dcfb04f283b63a3f6",
+      "semantic_nodes": 3,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "kort0881-trojan": {
+      "fingerprint": "f2a0689f64822871c76ad02615d50afce0945bef72b2c15693d5e67fa56df31c",
+      "semantic_nodes": 2612,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "kort0881-ss": {
+      "fingerprint": "9e825338fc4410a0dfb71dde57c240650d8df6d509c3632490539110fea6defb",
+      "semantic_nodes": 243,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "nikita29a-freeproxylist-tree": {
+      "fingerprint": "63f7bf229af63157f6558ed332ac395658099bb3ef3b60ce8059ecde3761c612",
+      "semantic_nodes": 37191,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "10ium-v2raycollector-vless": {
+      "fingerprint": "721fbf8bc9166def7b1e086accf4a608fe0c6e11ba92c200a0ced433c9a2ce84",
+      "semantic_nodes": 8340,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-10T12:13:43Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "10ium-v2raycollector-vmess": {
+      "fingerprint": "b3d0f0e13db03b4df971d10647361c0f4c372df631516362a06ed00282a51aec",
+      "semantic_nodes": 941,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-10T12:13:43Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "10ium-v2raycollector-trojan": {
+      "fingerprint": "e09e9a4a860bc3af80d0b54d26125cdfb84c796729a017b9f21c9a1b5ea63af9",
+      "semantic_nodes": 1602,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-10T12:13:43Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "10ium-v2raycollector-ss": {
+      "fingerprint": "88a906bd5194dd8d13935d6bd8a29b535af5b89aa95257ae7c08009243d7cd48",
+      "semantic_nodes": 365,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-10T12:13:43Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "10ium-v2raycollector-mixed": {
+      "fingerprint": "c23128348463d235e7dc6eb3a2db4b6ef64dba2ba967a91a26d78192f5d81a8d",
+      "semantic_nodes": 1732,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-10T12:13:43Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "10ium-v2raycollectorlite-vless": {
+      "fingerprint": "56e9038c0105ec2145bba806f20bc902c5e3ef23702da4bc7a99b29449ad555f",
+      "semantic_nodes": 1138,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "10ium-v2raycollectorlite-vmess": {
+      "fingerprint": "32baf9d78fef59ad2140a83f077cc3feb71c8431bde64ebb39fcb36e651bdf5a",
+      "semantic_nodes": 58,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "10ium-v2raycollectorlite-trojan": {
+      "fingerprint": "28d75aab900e6a1bcdc884d6b89cafa5081b923d5661e88165a301d830b16bd7",
+      "semantic_nodes": 453,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "10ium-v2raycollectorlite-ss": {
+      "fingerprint": "d70cb7aac453ef370058ef8e76ec634eabd3473c70f302573663c3882853f193",
+      "semantic_nodes": 92,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "10ium-v2raycollectorlite-mixed": {
+      "fingerprint": "a532fd63a07688dd2704d6bd174de91f58d1bac90669e35768b9a00225723d94",
+      "semantic_nodes": 1858,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "hadidastangoo-telegramv2rayextractor": {
+      "fingerprint": "dfb7a844bda08621bdda9c8791bfb6c042b418b437ccb3938e8e45cb5b1c15f9",
+      "semantic_nodes": 33,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "sakha1370-v2raycollector-vless": {
+      "fingerprint": "22c41808acbf0af9b551f70070e7e0cc963c4826071eb4ac834b10b9e9ce406a",
+      "semantic_nodes": 349,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "sakha1370-v2raycollector-vmess": {
+      "fingerprint": "a25e646685e0d3d11b24203c27754dd9e1acfc463c24e77a12e17cd0f85b0f73",
+      "semantic_nodes": 46,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "sakha1370-v2raycollector-trojan": {
+      "fingerprint": "be825d777de5f71c4b74eae7402ce551c2ffc15cf1170e44412915c6a9fcc354",
+      "semantic_nodes": 345,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "sakha1370-v2raycollector-ss": {
+      "fingerprint": "3abb993924315d3f9193d4718893db8b2dc610a262196c15dae7fc5a03cc2558",
+      "semantic_nodes": 582,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "vpnineh-vless": {
+      "fingerprint": "e343542f0e6dd6ab0bf6b77b333bc6c791339747cdff9bf2aa361ee5796b940a",
+      "semantic_nodes": 1428,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-10T12:13:43Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "vpnineh-vmess": {
+      "fingerprint": "82e88f71df587940d1ac5cd1734d635fe0e656272ad130cab8c1147d1349892c",
+      "semantic_nodes": 922,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-10T12:13:43Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "vpnineh-trojan": {
+      "fingerprint": "c6c5fec135c152b09aae812a3c501bd2da3906db22aa359cd3270175bc140b25",
+      "semantic_nodes": 327,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-10T12:13:43Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "vpnineh-shadowsocks": {
+      "fingerprint": "ffd1cb23e60cac91c3c5a2799bf730cd60d3c975b4beae40f5e4aa6336715f9d",
+      "semantic_nodes": 200,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-10T12:13:43Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "kaveh-ahangar-vless": {
+      "fingerprint": "e91f2b4ccb7f33bea89d764b5253b3675a8ec693644d28ea0bec09b27964f9f7",
+      "semantic_nodes": 469,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "kaveh-ahangar-vmess": {
+      "fingerprint": "ebe8a8803ce0fb24b9cd39752f31268efcaf200082e54a2697e0eac853962a51",
+      "semantic_nodes": 31,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "kaveh-ahangar-trojan": {
+      "fingerprint": "dae060043612dab6094229bcda123053193df52ed2e7e050f99a011efe3d0f56",
+      "semantic_nodes": 71,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "kaveh-ahangar-ss": {
+      "fingerprint": "dc4462a0e72c7dc7fc41bd2442fe6bc9dace23966dedba53ac53a006f9e37af9",
+      "semantic_nodes": 14,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "kaveh-ahangar-mixed": {
+      "fingerprint": "ba79e3a7ab99322cf3d8f9ebbd1f34e686925a48354c8250d492ba26e4f8b2b0",
+      "semantic_nodes": 32,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-10T12:13:43Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "justvisiting992-vless": {
+      "fingerprint": "d73967b7e8e5cb4c289feac38f3436ac8c05292ecc7d8e9edb235da886912bdc",
+      "semantic_nodes": 115,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "justvisiting992-vmess": {
+      "fingerprint": "9405a639a883cf6723ddd33bf615b5b7733e0a6d81b08c9624c7b8afe290e4db",
+      "semantic_nodes": 64,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "justvisiting992-trojan": {
+      "fingerprint": "fbcce378335c83e3c603be4375f042484a10c1a9b4e4b8523bd212b78e9ba47d",
+      "semantic_nodes": 180,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "justvisiting992-ss": {
+      "fingerprint": "2464727df7ac7d3effd1c2b40584895b35d92acaf2f9898606cf7912947228f3",
+      "semantic_nodes": 38,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "justvisiting992-mixed": {
+      "fingerprint": "4e308680362425655be77425cdaf23ba0df34de45622e8555634c6757a89b5e9",
+      "semantic_nodes": 434,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "use4free-vless": {
+      "fingerprint": "f62dc263ed2669bef8a12eb044ab083c617fb144ce523627d65eaeaf16fcc71b",
+      "semantic_nodes": 473,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "use4free-vmess": {
+      "fingerprint": "903d083fc05e13584d78697381892f7707cd2eb96a801bc60515c6192a41e8c8",
+      "semantic_nodes": 34,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "use4free-trojan": {
+      "fingerprint": "0f2a30d3f927812add93d388f3ee046d37b17c4ee60a113e8e934e234a62411d",
+      "semantic_nodes": 65,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "use4free-ss": {
+      "fingerprint": "2643e7db90cd619f58c550bb643558929a367077e84f8256f1a287ae95236351",
+      "semantic_nodes": 13,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "use4free-mixed": {
+      "fingerprint": "ba79e3a7ab99322cf3d8f9ebbd1f34e686925a48354c8250d492ba26e4f8b2b0",
+      "semantic_nodes": 32,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-10T12:13:43Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "alisaadat-vless": {
+      "fingerprint": "a21ed74a72de6db25e1332859d1dd791998d50845bb7d25dab91e4e9aa02ec08",
+      "semantic_nodes": 1194,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "alisaadat-vmess": {
+      "fingerprint": "c113153171c613d705527682d6d5adaf380f17864b32249650b2786226383d01",
+      "semantic_nodes": 61,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "alisaadat-trojan": {
+      "fingerprint": "9a37b6db9177129abce6d11619a0a61690b60f153c895792122b98fe504a4b17",
+      "semantic_nodes": 261,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "alisaadat-ss": {
+      "fingerprint": "2f2abdbac33ac475319c269de36e962938452ec3e7e5df1f520abc05ccca3ba6",
+      "semantic_nodes": 75,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "alisaadat-mixed": {
+      "fingerprint": "58607021e6b07f460decb2050612fe36e8dfe3eb24ede1f5259b0c8b304b327c",
+      "semantic_nodes": 42,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "rohamnv-vless": {
+      "fingerprint": "0fb1f8b2b4a14f1a102ca63102a8c71cc82da052b38b25880c11af9302556e2d",
+      "semantic_nodes": 1141,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "rohamnv-vmess": {
+      "fingerprint": "c113153171c613d705527682d6d5adaf380f17864b32249650b2786226383d01",
+      "semantic_nodes": 61,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "rohamnv-trojan": {
+      "fingerprint": "9a37b6db9177129abce6d11619a0a61690b60f153c895792122b98fe504a4b17",
+      "semantic_nodes": 261,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "rohamnv-ss": {
+      "fingerprint": "2f2abdbac33ac475319c269de36e962938452ec3e7e5df1f520abc05ccca3ba6",
+      "semantic_nodes": 75,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "rohamnv-mixed": {
+      "fingerprint": "c13f88571fc37a359025f328750d82c876adf9c2f3974ee2699644e82540f771",
+      "semantic_nodes": 40,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "morawd-vless": {
+      "fingerprint": "5577cdd812c8d243358be80e96d78377ff9e670434eb96a78db95341caaf8f6b",
+      "semantic_nodes": 995,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "morawd-vmess": {
+      "fingerprint": "cfa11a44286430339b2a7730a9c832f9e2380793ba245af1e88dab5538d2cc88",
+      "semantic_nodes": 57,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "morawd-trojan": {
+      "fingerprint": "516423ae19e61c3bd277d32d54e31f5821e85acc377de827715758f7219fcac5",
+      "semantic_nodes": 232,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "morawd-ss": {
+      "fingerprint": "3a2285d4bca1692d6610502509a43ccb43e19e57aea44df333c8dc0009b38e84",
+      "semantic_nodes": 76,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "morawd-mixed": {
+      "fingerprint": "49ac3920ed4c540b41e25f2e4fa9554604ae33522ff597daa906af2cf9047c9f",
+      "semantic_nodes": 41,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "skillfulelectro-all-configs": {
+      "fingerprint": "e1627eff38434de8b03bded4203289b2472b45955521502e9c9cecc4ca90ae6d",
+      "semantic_nodes": 294,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-05T12:08:45Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "3yed61-vmess": {
+      "fingerprint": "ee5e3caea127d95de94f6b6533a6a476d9041cdb5b4818000c807b28921c3849",
+      "semantic_nodes": 19,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "shahbbbb-v2ray-collector": {
+      "fingerprint": "d2de0c2e7ebff343f22f9b7d9a76eb1a082fb85698d1d794cb429766ce263cdd",
+      "semantic_nodes": 105,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "ramintabriz-trojan": {
+      "fingerprint": "795afd9e0a6809659b4fbfc1ede28d21ab278b0bc61c5907dcdcab5ee3c11408",
+      "semantic_nodes": 1265,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-05T12:08:45Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "ramintabriz-shadowsocks": {
+      "fingerprint": "f656f9796cc1df0ec9d998bbc8a4973ad966693669f8cd7e23d00151649156dc",
+      "semantic_nodes": 923,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-05T12:08:45Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "freenodebiz-all": {
+      "fingerprint": "3b7fde0b6b88d85d9776cf6fda82436126409fa67e0436b1cf18d8cba420e4bd",
+      "semantic_nodes": 17,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "3000S-HTTP-sNSub-vless": {
+      "fingerprint": "97300b1dc5a324b4ddb0a4da4aa522ddf842c4fbbbb000cee0fdb438bddd1d20",
+      "semantic_nodes": 10243,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "MaxFreudDrethe-VCC-all": {
+      "fingerprint": "87c85c3bb9a86f686e57c31554364021da6ca8d6245c463d01b24faa9e2804dc",
+      "semantic_nodes": 5786,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "luckylukam-tel-fetch1-configs": {
+      "fingerprint": "ad9dab6a8e123f891d387282c049f49a06fcf6cd8e49bd3a02dbf9897ffbd0e5",
+      "semantic_nodes": 118,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "danilog28-V2ray_Configs-V2rayMHMD_TI": {
+      "fingerprint": "c6556297855eb3298959bed2fca51e8687da7d2fd966ca62c1d7d47826c49385",
+      "semantic_nodes": 45,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-10T12:13:43Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "rekt0ro-ProxyRift-all": {
+      "fingerprint": "4ac9fd60964cc4bdeed58d21391af69f4cf1ab3825bcc6deb90eca8c2ed19adc",
+      "semantic_nodes": 1692,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "ssavnayt-AWCFG-CONFIG-LIST-Configs-AUTO": {
+      "fingerprint": "1b41f10f62f609ff4cd295d8b9e1f98f4f4e96a12f8f6fddcb3b7c663f46f994",
+      "semantic_nodes": 293,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-04T12:38:13Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "fifthidea-sub-V2rayBaaz": {
+      "fingerprint": "e7e68ea51c7286ab0656da1f910ab0f880d7d2002eb297db934b11f6ac2b1d98",
+      "semantic_nodes": 100,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "svinakraft-maker-FlareFeed-vless": {
+      "fingerprint": "7a00ded1706e2b3789fd735b6e943cba826e840effb5c840fe95c72803ef2b36",
+      "semantic_nodes": 28,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "zhaoligui0512-free-nodes-free-nodes": {
+      "fingerprint": "115ce789137a2bdddfe0e76979806a0ea75fbb7711cd824908ba0ff698d3678e",
+      "semantic_nodes": 3,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-05T12:08:45Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "RichTiTAN-V2rayTested-working_configs": {
+      "fingerprint": "6b296c85cd8cb1e7b85d4471f038126540186a9e857be487ea675eed651b4875",
+      "semantic_nodes": 57,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "kort0881-vpn-aggregator-ss_sub": {
+      "fingerprint": "fe1a30ddf3424b823439d6f8f4f19207984fbd53fa672b4bc59ca7a0a98374ad",
+      "semantic_nodes": 728,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "ssnn20012001-bot-v2ray-sub-nodes": {
+      "fingerprint": "9902e96f08cbb59371bf8046c3fc2c2e2be32fec3773a21f04159a94cee50bbd",
+      "semantic_nodes": 1694,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "nukcrow-black-crow-sub1": {
+      "fingerprint": "4950cdc99836d51387a8f7d313c3c633959e83c03046d8cfd64898f6e893e287",
+      "semantic_nodes": 1286,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "bin1site1-V2rayFree-config": {
+      "fingerprint": "fc7b446fadecfa12269a954de765b62e723fb35f49fc8016215cdcf83094b726",
+      "semantic_nodes": 27,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "vincent20240707-free-v2ray-nodes-nodes": {
+      "fingerprint": "53d53cae79f752c3807ed19ff38a6ff0a0005f50da995afc49e25fe2a9468450",
+      "semantic_nodes": 8,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-09T12:10:22Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "harrys-png-V2raycfg-sub": {
+      "fingerprint": "4263b636765ce5c4310d6b39cae5f8c3c745ade66455d12953dc14824ef2492b",
+      "semantic_nodes": 21,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-05T12:08:45Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "CB-X2-Jun-Free-v2ray-node-node": {
+      "fingerprint": "ed6854839eebccfdde4fe0e490fc050d8f039bd289faca4c94b50e75ddf6a5ba",
+      "semantic_nodes": 8,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-05T12:08:45Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "jackrun123-v2ray_configs-all": {
+      "fingerprint": "777c9604b3e054eee261bf38038ed13bbf5ccb634702927a52f76996375d75a5",
+      "semantic_nodes": 259,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-06T12:24:17Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "LoneKingCode-free-proxy-db-all": {
+      "fingerprint": "b5f9c25d0880bdbac5c671b8455740075aa85c074fe990d8c0574c9c75d42191",
+      "semantic_nodes": 48,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-10T00:09:10Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "dmeshechkov-vpn-subscriptions-full_subscription": {
+      "fingerprint": "b0f2724857620658450c18d1fe70663de118b6b28d4dada2995e710599816065",
+      "semantic_nodes": 85,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-06T12:24:17Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "Mojtaba1423-My-Clean-Configs-m_configs": {
+      "fingerprint": "ba297f4799d97f059e8c6a74ba58f965e418405ea0ed21bcce8376a23c7d95b8",
+      "semantic_nodes": 115,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "hamzawih0-zorVPN-ZorVPN-all": {
+      "fingerprint": "21c453c4d3e6749765bb8f6cf915e0d6537be71f46309054aa03b7206de30af0",
+      "semantic_nodes": 37,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "AkitaFI-config-0108e992_vmess": {
+      "fingerprint": "06aa7fe1d644ac2986939771cc827272eda4057142405db471b96439dda084d8",
+      "semantic_nodes": 26,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-06T12:24:17Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "zxcpocemu-dot-vpn-sub-sub_plain": {
+      "fingerprint": "b8068991117fbe456e5dfd6eb4b10eda80fd7b4975a9dde368627681aa3fb9dc",
+      "semantic_nodes": 150,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-06T12:24:17Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "tglaoshiji-nodeshare-v2ray": {
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-06T12:24:17Z",
+      "fresh": false,
+      "competition_active": false,
+      "freshness_reason": "empty_source",
+      "duplicate_of": null,
+      "semantic_nodes": 0
+    },
+    "gslege-CloudflareIP-Vless": {
+      "fingerprint": "3927f39c696fd23329b3bc95eac85e2dfe5eadeffbe0965272e437625db130cf",
+      "semantic_nodes": 20,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "marshall888666-free_clash_subscribe-v2ray": {
+      "fingerprint": "7626f9d939c0b24efde7576a3353033cb0a7a4e974b3e2aeafdb68d97e5a98c4",
+      "semantic_nodes": 4,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-06T12:24:17Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "freev2raynodes": {
+      "fingerprint": "49f6a13280c8d75ae33e0340e155bb0b614b63d28295142dae0b7d740a53d805",
+      "semantic_nodes": 2556,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "kort0881-vpn-checker-backend": {
+      "fingerprint": "7e7ea2474be521644a9bf78f1f3d78c1bf744709c99348748cb93123f5b64687",
+      "semantic_nodes": 23168,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "FreeProxyDB-api": {
+      "fingerprint": "049cb8d4c43e97b526326e53f72409b472c9e34e8ef0be1f07bd3713b6824be5",
+      "semantic_nodes": 960,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "ClashXW-Daily": {
+      "fingerprint": "4e5a5c5cdf79268b2780dd9e9095cea506bfc34e7ab9a7bcec96cfa5987a0e8a",
+      "semantic_nodes": 1332,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "ShareDaily-Clash": {
+      "fingerprint": "932a6dda6cbdac9c9a3c0557ef1c908bb8c931cea55e4043dd5e122c0d526e9a",
+      "semantic_nodes": 1,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "OutlineKeys-Daily": {
+      "fingerprint": "ab5a28dcaa4d46c51e9057571bfe58fc297904785ae82de66390774e22915a6a",
+      "semantic_nodes": 44,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "telegram:@tootffarangi": {
+      "fingerprint": "e1ddefb3ae8cba697501e0c0b4af61bbc5e283875418053971485b1c64e892e6",
+      "semantic_nodes": 130,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "telegram:@vpnine1": {
+      "fingerprint": "874902261b93c4097405f7fe37e7afefc49db22f9eb5cc354809f073ef65562a",
+      "semantic_nodes": 205,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "telegram:@proxy_mtm": {
+      "fingerprint": "0c56ba4646483414f9ffa3afee9ae1cf7cf6508e364613048eec6d0228df8278",
+      "semantic_nodes": 245,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-10T12:13:43Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "telegram:@meliproxyy": {
+      "fingerprint": "373bf8f9668603e45064d295ec6ace9560852ec90d04c5dec2b66ec683963818",
+      "semantic_nodes": 355,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "telegram:@free_vpn_ch": {
+      "fingerprint": "da918f2ecb0d457e5799a3a2b051b32b08ff95c2bdf24762e06cdaf2c0150142",
+      "semantic_nodes": 196,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-05T12:08:45Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "telegram:@v2ray1_ng": {
+      "fingerprint": "477484e0e0dd3ef10610eb803e5becf9956ed3739095d70e22cb37aa1e101d7a",
+      "semantic_nodes": 215,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "telegram:@soskeynet": {
+      "fingerprint": "b2ad2ab5de994a4062b45e9d38dfad453a72b23aa97f7e1289a85f6db43a0677",
+      "semantic_nodes": 267,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "telegram:@soskeynets": {
+      "fingerprint": "ce807850f987fbbf923939cab3c7197b760997cc793b0480e84ac6ebfaa6ffa8",
+      "semantic_nodes": 217,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-05T12:08:45Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "telegram:@v2ray_ng": {
+      "fingerprint": "cfb34409ccd5549bd58b3410930f8ebe237404eadb2f43d3b0a80f36047f00f9",
+      "semantic_nodes": 222,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-10T12:13:43Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "telegram:@v2rayng3": {
+      "fingerprint": "a10b3191f3cb5a78d69451f1557d731b707e0080694803b8578213129a8b00b6",
+      "semantic_nodes": 181,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-10T12:13:43Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "telegram:@v2ray313": {
+      "fingerprint": "94905094247ba85a61f951e61dbcd06cc98082947e1fea32f656a1a83869fbc5",
+      "semantic_nodes": 247,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-10T12:13:43Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "telegram:@v2rayng_fast": {
+      "fingerprint": "6b8ce0bd7637bea48fed85b6aa52bee1cc9790658412c75b0efba6e4a5f23812",
+      "semantic_nodes": 117,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "telegram:@oneclickvpnkeys": {
+      "fingerprint": "ebe10bf1c30467f29d65c24e6ad9f2181dcb88e7dbb0d0045c0849446dcd1184",
+      "semantic_nodes": 200,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "telegram:@Farah_VPN": {
+      "fingerprint": "15fa3e21bad47da29fb4dda460abb0521353c16ef4503a84766f16cc73658bee",
+      "semantic_nodes": 252,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "telegram:@clashv8": {
+      "fingerprint": "952422817dcb8a5ff070c9446f8f2c068d62b9ce1d5bb50bc208328c585b9ef1",
+      "semantic_nodes": 117,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "telegram:@daily_configs": {
+      "fingerprint": "30af856531ecb6e36789cf1184395b4e072d2dbdf17821b555ed632cd7b592e4",
+      "semantic_nodes": 225,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "telegram:@configv2rayng": {
+      "fingerprint": "8f3c6f1fd7e43cf06a0407275aff36e505141d593fbc28fd238167afdbce5c28",
+      "semantic_nodes": 14,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-10T12:13:43Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "telegram:@netghjlkj": {
+      "fingerprint": "bda0f58db4f50f8250313ca79138830c7c1a783ba27ef133d662ef7c36987e23",
+      "semantic_nodes": 145,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "telegram:@mtmvpn": {
+      "fingerprint": "0c56ba4646483414f9ffa3afee9ae1cf7cf6508e364613048eec6d0228df8278",
+      "semantic_nodes": 245,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-10T12:13:43Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "telegram:@leviconfigs": {
+      "fingerprint": "094af52af63ac52fdc2459e12c9d9af0d5f58ba46e8f25383ba32e50bc18a80f",
+      "semantic_nodes": 154,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-05T12:08:45Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "telegram:@bisto4_service": {
+      "fingerprint": "31fd239b0a4efec683c0a4a8cb84a14533fbaa843749897d882513a5214cad6d",
+      "semantic_nodes": 103,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-05T12:08:45Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "telegram:@mehrosaboran": {
+      "fingerprint": "6576bfe1076bd7cb8653e0d91dd14a5dc415dd09ab393922b0e564984e686281",
+      "semantic_nodes": 164,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "telegram:@irconfiig": {
+      "fingerprint": "13db6ba43bea853d26187ee68b3f08fad6af13cb08fcdf7559d2877fbaf4e545",
+      "semantic_nodes": 137,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-05T12:08:45Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "telegram:@prrofile_purple": {
+      "fingerprint": "c32fcb4ec0c62e7ef57e115bcc5395eae34873dfd182c0c9e168f4b69832b823",
+      "semantic_nodes": 157,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "telegram:@farazv2ray": {
+      "fingerprint": "71b523822ab9f0dd6d17b85ff30ae7dfbe2dd1c20365f2ad20bb9e1b64e35d8f",
+      "semantic_nodes": 129,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "telegram:@configprxy": {
+      "fingerprint": "6d4ac21306a959595bf76e1d426fa61ffff1ffd5220aefe94a74eadcad0f78d3",
+      "semantic_nodes": 118,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-05T12:08:45Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "telegram:@Outline_Vpn": {
+      "fingerprint": "868a05834f693e79f2b8b4653f4360f00457f2221c175070db522c622fd978e5",
+      "semantic_nodes": 98,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "telegram:@bored_vpn": {
+      "fingerprint": "364ea2c93c8b58770e7e5e7623cadb3edba8557ff03efa9c006c79ef0201d8b5",
+      "semantic_nodes": 150,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "telegram:@ppal03": {
+      "fingerprint": "70da704460ce1858ba7b10c26b7de07ea4f4971f1f6501dec6bb6ab663346996",
+      "semantic_nodes": 120,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-05T12:08:45Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "telegram:@v2raysaman": {
+      "fingerprint": "717ebe2329e528e749ee2888f8335d5b76e391a909ae647d65ceedc5df4a12a1",
+      "semantic_nodes": 218,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "telegram:@masterserver1": {
+      "fingerprint": "967abea7349ba939e1fcc364132e49b636947d1b2bfb85e3cfb775befafdedc4",
+      "semantic_nodes": 162,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-09T00:08:55Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "telegram:@vpnsal": {
+      "fingerprint": "a1f68961351e52bb55addca0a80820b7bd6305553905eea86824002f3405459b",
+      "semantic_nodes": 113,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "telegram:@vmesskhodam": {
+      "fingerprint": "9b3a655b01f7d97c42e10ae16157574ad44022b40111d379cb8d64fb29ba229c",
+      "semantic_nodes": 86,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "telegram:@v2raybaaz": {
+      "fingerprint": "80d2f95d4b1de00411bea7c7fe19f6388fb3f4ac9966343f5529686bc0deff30",
+      "semantic_nodes": 83,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "telegram:@tehranargo": {
+      "fingerprint": "90f43c97cb622c3f1f7aaf4f115b362111a472814a78a953c79842ec31e820fc",
+      "semantic_nodes": 70,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "telegram:@hex_proxy": {
+      "fingerprint": "91e7737fd802e9b3769ceb0ca5adf50c6419acdeaad449ba402a4d703a5af43a",
+      "semantic_nodes": 97,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "telegram:@fastkanfig": {
+      "fingerprint": "1ad6e0840ba5391f00c221975a174f9a1e151ca895ee0c6351b885aacba1f770",
+      "semantic_nodes": 70,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-05T12:08:45Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "telegram:@kafing_2": {
+      "fingerprint": "cefea072d15a8d7e086ec54de5f1a172ae632610f430dd7dca490857502f903b",
+      "semantic_nodes": 80,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-05T12:08:45Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "telegram:@DailyV2RY": {
+      "fingerprint": "4c3958174b09b3befc58f59502d55801587a0ce9073d001fa593948f102666d2",
+      "semantic_nodes": 28,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-05T12:08:45Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "telegram:@b2hub": {
+      "fingerprint": "8e5680a6539ff474b92249342a781d297c19968b364a00286df8e171bb7bcf51",
+      "semantic_nodes": 103,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "telegram:@freenettir": {
+      "fingerprint": "3586b3fff964b941949b9db7606a3cf0acf198f0ad8f532a112f1382361b34df",
+      "semantic_nodes": 93,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "telegram:@GH_v2rayng": {
+      "fingerprint": "bdc69e97f440fb86142f88718492cbc09be2f4d8b8859b7a11eb4ab17b6642da",
+      "semantic_nodes": 157,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "telegram:@erfanandroid": {
+      "fingerprint": "f0bf95afb0e0fb3175c5ec35959c872c6e2bf1692c1e84025f89c8920330c795",
+      "semantic_nodes": 84,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "telegram:@appsooner": {
+      "fingerprint": "4a27d07996e8003979868b0eb3d67972b794932fb75c67f855dd468be137bca4",
+      "semantic_nodes": 95,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-05T12:08:45Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "telegram:@v2ray_phoenix": {
+      "fingerprint": "646ce1a0ae76526f3a61396c23172fb5a311b19a600be1ab3113d69bd0594b99",
+      "semantic_nodes": 182,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "telegram:@filembad": {
+      "fingerprint": "b1975c7c477d69ab8b4be44a4c204673b1046846ca0066b74fa23f32186d61ed",
+      "semantic_nodes": 62,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "telegram:@vistav2ray": {
+      "fingerprint": "ec9e761b578e7d568df7eeef8261ec82187a20df8b622abe132150f18fc902e2",
+      "semantic_nodes": 103,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "telegram:@nofiltering2": {
+      "fingerprint": "7232db37b76f8155a83562ca5b4f4d3fe6b3267ed5cdb986002ace278a003f0f",
+      "semantic_nodes": 122,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-07T00:12:46Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "telegram:@V2rayConfigList": {
+      "fingerprint": "a71571ac24cc861f12ce1a575f888ec3cd8bcba1b681c87ca2f988e9773c512b",
+      "semantic_nodes": 36,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "telegram:@father_vpn": {
+      "fingerprint": "0b425f2c705b405423532c6733b74504089433b3ad1caaf5b1efb407fa7be55e",
+      "semantic_nodes": 81,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-05T12:08:45Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "telegram:@nexus_panell": {
+      "fingerprint": "4623c70fa60135485a4355290d5f7831c98eb7426bdc8b1dc4c3acde16495c40",
+      "semantic_nodes": 74,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "telegram:@arshiavpn12": {
+      "fingerprint": "de1137913047a6ae9e953ae7324d4236fab232c745a1aedb5ac574c8e96435b5",
+      "semantic_nodes": 68,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-05T12:08:45Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "telegram:@vless_vmess": {
+      "fingerprint": "68b55f2211c5e0bac9090b1c0a9d385d8f196c8aa87bd1d5b73f0d8938a275f2",
+      "semantic_nodes": 48,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-05T12:08:45Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "telegram:@hopev2ray": {
+      "fingerprint": "a2c4adc8f16636071cd209f808f0038be2cdd71b3ecaded1962fcc9638ead5dd",
+      "semantic_nodes": 82,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-05T12:08:45Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "telegram:@ap_ir6": {
+      "fingerprint": "a20026e7c7c4facb29896bcfaad14c997c7bb25c89e2c76f3b138115c44ad50d",
+      "semantic_nodes": 47,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-08T00:08:08Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "telegram:@v2ray_free_conf": {
+      "fingerprint": "e6ae38d31f5f57377fe0a3f8e5a922ccb82d4cb6613c2d6fe0901053fb4ee539",
+      "semantic_nodes": 33,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "telegram:@canfingV2rayNG": {
+      "fingerprint": "fabf38e483abdfa85101f05f20c834ed91c020e5d885dc78a872b9183df0281e",
+      "semantic_nodes": 88,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-05T12:08:45Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "telegram:@isvvpn": {
+      "fingerprint": "810ebcf7927114b6a3381009529d273ee8a35eeea9ba5064272a99294fc6e8d3",
+      "semantic_nodes": 91,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-08T00:08:08Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "telegram:@bigsmoke_config": {
+      "fingerprint": "fd0d39617fc6f7b81dff4773226204b0ce1fede76688d6dea55f6b2b96da4a42",
+      "semantic_nodes": 118,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-10T00:09:10Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "telegram:@vpnfail_v2ray": {
+      "fingerprint": "f2350cf0fc738059f85effc3fef472c84ac3e75866df7c6e071ed236d35df350",
+      "semantic_nodes": 33,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "telegram:@V2RAYROZ": {
+      "fingerprint": "bcf61a0dd2e21dcc6ed92376c31bc2afa52d9625f8a0f84407b8976446fbba6e",
+      "semantic_nodes": 99,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "telegram:@migavpnpro": {
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-09-06T14:29:42Z",
+      "fresh": false,
+      "competition_active": false,
+      "freshness_reason": "empty_source",
+      "duplicate_of": null,
+      "semantic_nodes": 0,
+      "exact_nodes": 0
+    },
+    "telegram:@vpnowl": {
+      "fingerprint": "7c8d92ba29b89660aa0587235b4a01d81fa1255f56f5aa2decf5253b8a199170",
+      "semantic_nodes": 76,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-05T12:08:45Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "telegram:@azadmarz": {
+      "fingerprint": "060090e62240208981829e3fb8a20daa1ee03dd47cf30e13508c773d5f696dbb",
+      "semantic_nodes": 41,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-05T00:14:48Z",
+      "fresh": false,
+      "competition_active": false,
+      "freshness_reason": "empty_source",
+      "duplicate_of": null
+    },
+    "telegram:@azarbayjab1": {
+      "fingerprint": "9d6f33e4ff9da339bd7c6595b5b29a1ec0c4a35c378ffcb0e2753b58a9002b5d",
+      "semantic_nodes": 55,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-05T12:08:45Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "telegram:@freakconfig": {
+      "fingerprint": "6b99d5cf67d5d47014bbdfce5a326d00ba02075df549485357bd1e3cf31b9c85",
+      "semantic_nodes": 56,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "telegram:@hope_net": {
+      "fingerprint": "1a0d51da550adf5478f2373f819acf2118d339e603aaade4dcf5a1f288d09c9d",
+      "semantic_nodes": 22,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-05T12:08:45Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "telegram:@hibyevpnn": {
+      "fingerprint": "eea683d0e7a81209f7d818731b8833110f1b27ac6e1043b6d30c0e4a813bc00c",
+      "semantic_nodes": 65,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-05T12:08:45Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "telegram:@confiig_hub": {
+      "fingerprint": "c0ef4f9f2a05db4d8847a27180025314c39e902590cae6774cb17a7a96281b97",
+      "semantic_nodes": 70,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-05T12:08:45Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "telegram:@icv2ray": {
+      "fingerprint": "1e793fdcfc65f890b95dece73a5b6b939bbbd8d3946e6eddeab45bc3d3bdaefd",
+      "semantic_nodes": 117,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "telegram:@kurdconfig": {
+      "fingerprint": "d1598b8452c766db1187dbc41eda54e6ce415c1e028104bbae533e802923ae8a",
+      "semantic_nodes": 112,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "telegram:@prisonvpnc": {
+      "fingerprint": "ec7ed10a5292cb7dbabb150e41ac764ddb2a6254fd69730cb242620e02620237",
+      "semantic_nodes": 76,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "telegram:@v2xnet": {
+      "fingerprint": "576226a75eb8dc9f553a1a18342ff40f38a804333a7f43d899bea56cebc1819a",
+      "semantic_nodes": 69,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-10T00:09:10Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "telegram:@customvpnserver": {
+      "fingerprint": "1a9f5d52b1820a13df8af80cfaa58bf1c8bd4b0002e43d0f00785c3eea20126f",
+      "semantic_nodes": 57,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-05T12:08:45Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "telegram:@freedomofinfor": {
+      "fingerprint": "076d6eb2ac7aebb3dd327b947ad447362a564cb55ea949b3004a69275344d0ef",
+      "semantic_nodes": 45,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-05T12:08:45Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "telegram:@cxrolvpn": {
+      "fingerprint": "f8c7cdf0d5cf8d4c424419395ecc25bcda6625df47c8335cba3341d49349196b",
+      "semantic_nodes": 38,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-05T12:08:45Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "telegram:@express_freevpn": {
+      "fingerprint": "313bbe322740397ee833ffbcfae21f898f7654a233668b0cca1ff6b0c385435f",
+      "semantic_nodes": 73,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "telegram:@configfori": {
+      "fingerprint": "f4f10fd39c35d18aef308b3355da03c215c03226ecd2bcd37f230dcfbf5426bd",
+      "semantic_nodes": 49,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-05T12:08:45Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "telegram:@v2ray_alpha": {
+      "fingerprint": "500fb2b04962cf4e6ef5b9a8255da0102c8b2491b2cc7ddae0a625caeb2fda57",
+      "semantic_nodes": 75,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "telegram:@fhkllvjkll": {
+      "fingerprint": "4e2e5a4c9f05dacc071a07b1d1258cb5d625d6921f9d6e1befc59e61065d0a85",
+      "semantic_nodes": 38,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-05T12:08:45Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "telegram:@alpha_v2rayip": {
+      "fingerprint": "4a87ca8401d23562cb99301ce92f769134e61ca87c9f5676234e533617f4c1a2",
+      "semantic_nodes": 59,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "telegram:@V2rayi_net": {
+      "fingerprint": "54b19e428067b97c5751e1f52a5b1f6a27ce3ec66a6b5287fe58d2fbccb947e2",
+      "semantic_nodes": 49,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-05T12:08:45Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "telegram:@capoit": {
+      "fingerprint": "d75e8e1fae4abf8f21762a2283e3f4b06591bfba1f5395506d17fecd1471b65b",
+      "semantic_nodes": 52,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-10T00:09:10Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "telegram:@V2rayNGX": {
+      "fingerprint": "2c0bc3608f3ad7d8565933624cb6e76baab9f28d8bbed0a481c50a852e4084ce",
+      "semantic_nodes": 36,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-10T12:13:43Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "telegram:@marambashi": {
+      "fingerprint": "9f7629a7b9bdef776557bc50ed8eb13436ab65e2a1505af3f843fe79e0e01466",
+      "semantic_nodes": 63,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "telegram:@azarakhsh_proxy": {
+      "fingerprint": "56a9aa8b969664b712a0aa2850d75045286ddbc1cf956e84562d1c3238f2185b",
+      "semantic_nodes": 41,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-05T12:08:45Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "telegram:@config7x": {
+      "fingerprint": "514d1ec69b91860f5589fe0deca3af97e2a13b3447bcc8942dada0985dc08bf9",
+      "semantic_nodes": 62,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "telegram:@irdusti": {
+      "fingerprint": "bd62af9a636a6089668a6f5782b41b52229800a9d95b636a0918afaf425e4755",
+      "semantic_nodes": 82,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "telegram:@inetchnl": {
+      "fingerprint": "7f2c4f313fe15c19dfd2b64bd690d9d998f720733e14c0c1ab16fc0debdd0277",
+      "semantic_nodes": 22,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-06T00:12:58Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "telegram:@hesarweb": {
+      "fingerprint": "f74efdf736cb6c2a1ba28514a067d3ed8e0916159262c27d94cac1545b13a849",
+      "semantic_nodes": 26,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "telegram:@outline_ir": {
+      "fingerprint": "8776b8376bf96477b7af421a74672d909ef9f53058aeefaada094cc191f484c2",
+      "semantic_nodes": 41,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-10T12:13:43Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "telegram:@freeonlinevpn": {
+      "fingerprint": "01f9fc6d10fadfae7e4f3802cc10179e0a1b60159e8fc5f0a09913596135263b",
+      "semantic_nodes": 22,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-05T12:08:45Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "telegram:@vpnbaz": {
+      "fingerprint": "e5505595fd5c94e02faaba987bb3350176e486b18937e6d2febadc1ca43c4691",
+      "semantic_nodes": 21,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "telegram:@vmess_ir": {
+      "fingerprint": "d17fc8da5ad31afc9e7aeae68243a1e77dcf09f39e076e559fb6d883406609fe",
+      "semantic_nodes": 37,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "telegram:@selinc": {
+      "fingerprint": "a80d619a7593a04014088dddb6549ee73d1056119241e56f50601aa695e8fa7d",
+      "semantic_nodes": 21,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-06T00:12:58Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "telegram:@iran_v2ray1": {
+      "fingerprint": "1da03391c9bb698f40f0ca2b7aeff900e93f3f2c9aec5571a0f395a045aa33b8",
+      "semantic_nodes": 78,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "telegram:@networld_vpn": {
+      "fingerprint": "408cf48b9730dd39c45febecb4132ac91bcfb82e071c216f0ec1289a8ad3d595",
+      "semantic_nodes": 75,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-10T12:13:43Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "telegram:@filtershekan_channel": {
+      "fingerprint": "1b3070c6569fa0f46277cd9d698881860bb39e83c60b02520791042545d8b1e6",
+      "semantic_nodes": 26,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-05T12:08:45Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "telegram:@vpn_ioss": {
+      "fingerprint": "ee5e34f86d849d2a05acf3fe39db8def1b9f7e88ce1b24975056ac1e188c6f51",
+      "semantic_nodes": 13,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "telegram:@sylphnet": {
+      "fingerprint": "1bc7de7f352f2cdfc7b2cdad81ab2de80cb068b792c4e9bb5e29ca90c500e188",
+      "semantic_nodes": 11,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-05T12:08:45Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "telegram:@mftizi": {
+      "fingerprint": "9ac5e0a4d125e7b8bfebfb0799e0bae733d0ad845536b632aceb3788d2f4a9f4",
+      "semantic_nodes": 12,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-05T12:08:45Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "telegram:@napsternetvirani": {
+      "fingerprint": "3eb49564eee1901ab4e9070167b0368449ed3c5f9afb50a453a20317ac5199f1",
+      "semantic_nodes": 39,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "telegram:@ProxyMtpVPN": {
+      "fingerprint": "a2880afead66aa2d9eb2cbeb8b379ad2bd2a268c505c6269f90fbe72fc3f9de9",
+      "semantic_nodes": 61,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "telegram:@V2ray_Team": {
+      "fingerprint": "a024d7ffcab0fa9a18996b7c90e135b9e6965cbd3256a46ad7ecff76f666a3e1",
+      "semantic_nodes": 27,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-05T12:08:45Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "telegram:@eliv2ray": {
+      "fingerprint": "710393ec50104428d8d27883e9041ddd53d3b417a8dde659e23c9afe009b1ce0",
+      "semantic_nodes": 18,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-05T12:08:45Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "telegram:@bigavpn": {
+      "fingerprint": "2e0546aa9fdb4c7cd8b7c6d4acef1930b239b57721bdc3b708ac27ff3ae9a75f",
+      "semantic_nodes": 31,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "telegram:@ShadowProxy66": {
+      "fingerprint": "9b82f29a92d32cf323fef7e0d8545f94d7ed607649a9d66015d1886f8e90ccb9",
+      "semantic_nodes": 20,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-09T12:10:22Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "telegram:@ansooyefilter": {
+      "fingerprint": "01cab627871f2b8be755e9da89482d8c2c4bf225d09c2ef9a6f75d22b92cdc17",
+      "semantic_nodes": 31,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-09-29T12:10:20Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "telegram:@lent_gc": {
+      "fingerprint": "7905865412c1908e9d334a26d0816ede302854fb633a887d093931230a6df57c",
+      "semantic_nodes": 72,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "telegram:@DeamNet_proxy": {
+      "fingerprint": "7e89d27d6b915adc598c5acaefd4464580003293d603176cd7d2ab62053bb1a7",
+      "semantic_nodes": 30,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-10T12:13:43Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "telegram:@lockey_vpn": {
+      "fingerprint": "3fdf8e89b3064e3dc65fceb324176b9e6d358ba69fe7c6b719c725f64dfaa953",
+      "semantic_nodes": 27,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-05T12:08:45Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "telegram:@v2ray_outlineir": {
+      "fingerprint": "dee32c23c3d5f9d889470471f2d0f937ed727487733038ed5c9385f016fba120",
+      "semantic_nodes": 19,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-05T12:08:45Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "telegram:@freeland8": {
+      "fingerprint": "5293fb24e16c5f79542fc9fe5c43fb56edc3a875dc88f5ff7f3741d41ff0784e",
+      "semantic_nodes": 13,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "telegram:@cnetvpn": {
+      "fingerprint": "d6048604d83607694a77a864e4c41274c0b9c9c27854059c80d61fc0e54569f1",
+      "semantic_nodes": 27,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-09-30T12:11:15Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "telegram:@v2ray_configs_pool": {
+      "fingerprint": "793d12e0ab8e20f3d7ce592f219416f4e12ff3218cfcc6836a34fca17ef5d0a2",
+      "semantic_nodes": 18,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-08T00:08:08Z",
+      "fresh": false,
+      "competition_active": false,
+      "freshness_reason": "empty_source",
+      "duplicate_of": null
+    },
+    "telegram:@atovpn": {
+      "fingerprint": "b8ecb3781ada1aeddebe153c23d85dfa86b4a39397de0828612106c1a8d83dbc",
+      "semantic_nodes": 20,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-10T00:09:10Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "telegram:@freeconfigsplus": {
+      "fingerprint": "81a5a1b50ec2b0c070f94bfe670754dad7c36bf71300b9baedc7909f910eaca1",
+      "semantic_nodes": 21,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-05T12:08:45Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "telegram:@evay_vpn": {
+      "fingerprint": "015cafcf6bb45a2f33bfdc99385d6f7a8023adb5f4c9c47893252060be04462f",
+      "semantic_nodes": 17,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "telegram:@vpncostumer": {
+      "fingerprint": "9c60dc24a2a698fc27a9118cf2cefdfd80c77f9e8bc072d29070f1a9e32b16c4",
+      "semantic_nodes": 20,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-05T12:08:45Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "telegram:@VmessProtocol": {
+      "fingerprint": "edb56b4a2eeffeeb475ea046b4c6fa71023f1e9744152ca91a02b3120a990b3d",
+      "semantic_nodes": 17,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-09T00:08:55Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "telegram:@free4allVPN": {
+      "fingerprint": "f100ca2677da109c0bd7785d9af985b0623090d4785c1ff5f2876a2dea681454",
+      "semantic_nodes": 23,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-05T12:08:45Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "telegram:@cfox_server": {
+      "fingerprint": "886653eeb19fdce76fa883600bab38e617ed2df7a8e326e84356a175017b1018",
+      "semantic_nodes": 239,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-08T00:08:08Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "telegram:@vegaas_vpn": {
+      "fingerprint": "b2476fbba40a2c14ca0bfbfb66c9ba1e035877b36b955a18926400d23f34e5b6",
+      "semantic_nodes": 37,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "telegram:@zdyz2": {
+      "fingerprint": "67b910a24ea9c7ec908e246a725deac57d1136bda5d5801747b35ed068ee16e9",
+      "semantic_nodes": 19,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "telegram:@sil3nt_network": {
+      "fingerprint": "3c1a4baaf4f6aa96a96f76bc8ac50b82f9f7a71e2c9b4413cd8afa14d25f1da5",
+      "semantic_nodes": 4,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-03T12:07:29Z",
+      "fresh": false,
+      "competition_active": false,
+      "freshness_reason": "empty_source",
+      "duplicate_of": null
+    },
+    "telegram:@FalconPolV2rayNG": {
+      "fingerprint": "d6f6f5403d702d37fa5f92065ba5cbfd54c7d2b7eb130ba58ea0a508687c7de7",
+      "semantic_nodes": 7,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-05T12:08:45Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "telegram:@SafeNet_Server": {
+      "fingerprint": "c8b383af8b834ae59f1750e5dc1ecd41de6f5d3c4a4dd2d8e6b6df31d12005d6",
+      "semantic_nodes": 20,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-09-29T12:10:20Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "telegram:@expressvpn_420": {
+      "fingerprint": "af41a2ef687ea025168410d4fb6ee2ec773ba394ab6b0231e79400a3876f9c07",
+      "semantic_nodes": 34,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-06T12:24:17Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "telegram:@ConfigsHUB": {
+      "fingerprint": "35ea0cfa08e47a14545df81a61e262956da821b787925fffbcfd29485e48bc53",
+      "semantic_nodes": 13,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-10T00:09:10Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "telegram:@freeconfigforyou": {
+      "fingerprint": "9a4ce8839ec012c8568a4f354f60526b26930c3031b00ae0cad298e0a3d33086",
+      "semantic_nodes": 17,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-08T00:08:08Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "telegram:@mainv2ray": {
+      "fingerprint": "ef745b68beb58e851bccf7b21744916e800b92c9138637585126da55655900c5",
+      "semantic_nodes": 23,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "telegram:@confing_v2rayy": {
+      "fingerprint": "00b53c5a63b338af76632d4d1b00019091ff7e39de5012e2c333bbe10a711c1d",
+      "semantic_nodes": 18,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-06T00:12:58Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "telegram:@spdnet": {
+      "fingerprint": "abcd820df784994c011570e27e0362f3c342825556d1d128e5af94492aebf641",
+      "semantic_nodes": 14,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-10T00:09:10Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "telegram:@v2raymelliii": {
+      "fingerprint": "76d7866d6ba858564b0d6d18bdfece8c422d06340e88004281e8d778bbd4b917",
+      "semantic_nodes": 56,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "telegram:@vpn_mafia": {
+      "fingerprint": "034776c72189f7ad91f03edd72c79679a7f6c3091d16ae647d91df1b2d2ca2f3",
+      "semantic_nodes": 30,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-05T12:08:45Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "telegram:@netmellianti": {
+      "fingerprint": "c2d04c3be67b15cb823111502d58ba09662dae0e5047c0524b90ff621340d262",
+      "semantic_nodes": 19,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-05T12:08:45Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "telegram:@surfboardv2ray": {
+      "fingerprint": "9f486b09bada5160663fd776ed80a3d3537673a2042edd48796025ac631f9bf7",
+      "semantic_nodes": 59,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "telegram:@flyv2ray": {
+      "fingerprint": "598dca003da07fd36c19abe0ba9cbb769d82f4a744c6b99eac6d3815bbce56ce",
+      "semantic_nodes": 11,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-10T00:09:10Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "telegram:@vpnserverrr": {
+      "fingerprint": "e2fcfdc13fe8828fe5eec946f4141063c9bf59ab23231d2241b310fb70a9f191",
+      "semantic_nodes": 22,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-09T12:10:22Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "telegram:@nufilter": {
+      "fingerprint": "eb920fbe25641aea378ba0535ff1aa43160590f4a8fe5f8ad78bb887530ba009",
+      "semantic_nodes": 14,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-05T12:08:45Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "telegram:@namiraconfigs": {
+      "fingerprint": "23daedef60ef33a753b121af5360960c936cab453e2ca422878f5685f2cc4fb3",
+      "semantic_nodes": 15,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-05T12:08:45Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "telegram:@ShadowsocksM": {
+      "fingerprint": "ef1a17e564798a943a9c525fb62e43c15af5a8c7f681b82c6d180cf5bc3cadcb",
+      "semantic_nodes": 51,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-05T12:08:45Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "telegram:@free_conf_iran": {
+      "fingerprint": "b715f7de5f54d430fc3ee92521ed247694cdc17e1bd2dd6fdb45509ad66ccdaa",
+      "semantic_nodes": 14,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-05T12:08:45Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "telegram:@webshecan": {
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-09-06T14:29:42Z",
+      "fresh": false,
+      "competition_active": false,
+      "freshness_reason": "empty_source",
+      "duplicate_of": null,
+      "semantic_nodes": 0,
+      "exact_nodes": 0
+    },
+    "telegram:@V2All": {
+      "fingerprint": "f7d14a00146682378586eb44959c3ba1afef9da0f6d639e109875498499f113c",
+      "semantic_nodes": 27,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "telegram:@alfred_config": {
+      "fingerprint": "b62e6ac3b41acb0e021bec2437f6eaa0c533a71333f624e9a4f65bd06d1da050",
+      "semantic_nodes": 17,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-05T12:08:45Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "telegram:@ghand_sheken": {
+      "fingerprint": "5f4af11ab282f308f9d1afe141f9961c1ffdfae5b25215661cfaa37c5bc505c7",
+      "semantic_nodes": 22,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-09T12:10:22Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "telegram:@ProxyPJ": {
+      "fingerprint": "36fa8e98e6e890cf6cc30f73992ca45d5bfbd408001d73a408aa1222ece95deb",
+      "semantic_nodes": 16,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-09-10T15:03:46Z",
+      "fresh": false,
+      "competition_active": false,
+      "freshness_reason": "empty_source",
+      "duplicate_of": null,
+      "exact_nodes": 16
+    },
+    "telegram:@FreeV2rays": {
+      "fingerprint": "668ce108318c9642399235b0c44888f154ec21ef2f332742d07f832604fd155c",
+      "semantic_nodes": 18,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-05T12:08:45Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "telegram:@kingofilter": {
+      "fingerprint": "9dc44b80999b0f18b8496b60e5c66372a239f2ae8d7f05505803f59f7081502f",
+      "semantic_nodes": 17,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "telegram:@arv2ray": {
+      "fingerprint": "e73f60dfe793523816c850a2d8671cf615867c37f6559533a13b644df1cdd635",
+      "semantic_nodes": 19,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-05T12:08:45Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "telegram:@fnet00": {
+      "fingerprint": "8f67500260feabce772fe0cb715f2a85f65bb3bdf36f8b4a06b1e489026fb361",
+      "semantic_nodes": 17,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-09-29T00:10:50Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "telegram:@musiclovers85": {
+      "fingerprint": "90668e8336f2269e0a187b42d573f1bdf9d7fd6977b8a087f6cc66f2c9a924fa",
+      "semantic_nodes": 1,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-09T00:08:55Z",
+      "fresh": false,
+      "competition_active": false,
+      "freshness_reason": "empty_source",
+      "duplicate_of": null
+    },
+    "telegram:@V2Graphy": {
+      "fingerprint": "b2d3e4fcff30ed14bc3c4b742488444558d88a8bab2fe7787b9548a01b0eb3b5",
+      "semantic_nodes": 8,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-05T12:08:45Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "telegram:@azaranv2ray": {
+      "fingerprint": "0431aed013c77fae687ace5e12e5c525382160cf4da178dbc9ea5f578083357c",
+      "semantic_nodes": 22,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "telegram:@vpn_mikey": {
+      "fingerprint": "aba7fe170d4b127504b54ef506573bedb8a7070e2d2b3d7d55c159817e84915e",
+      "semantic_nodes": 8,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-05T12:08:45Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "telegram:@jkvpn": {
+      "fingerprint": "15a41ea600c95edfda35662b64aad78682bce731e3ac4a68925ee820dca0cf35",
+      "semantic_nodes": 16,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "telegram:@subgift": {
+      "fingerprint": "06154326a9791336405f9697c60a3b4389c5fe4a9f6bc1fd5ad73af978274f8d",
+      "semantic_nodes": 12,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-06T00:12:58Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "telegram:@hollowcon": {
+      "fingerprint": "06339f8ee3483ef1d0d276cfae9e38ae909c9f4387a102b56217d3bf5b47055d",
+      "semantic_nodes": 13,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-09-28T12:09:48Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "telegram:@v2ray_spatial": {
+      "fingerprint": "4217fae5b23e4a2f97049b03963d4cd75be16400b9204f77544bd0dd8de0460a",
+      "semantic_nodes": 5,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-09T12:10:22Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "telegram:@v2rayng_ip": {
+      "fingerprint": "bbd5f76888d21e46102c24c2c7de6bd5e3dd186f533e8e45b1bd3ee1f319fb48",
+      "semantic_nodes": 1,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-09-28T12:09:48Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "telegram:@socks5tobefree": {
+      "fingerprint": "f1f499fc457189aecfb5ec313137e65a1a817785319928e9a9711e6ed63225db",
+      "semantic_nodes": 15,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-09-28T12:09:48Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "telegram:@v2ryng01": {
+      "fingerprint": "61c10b170c23d91b8271679d731f0dbdccd78e54dfe824489d50c27ed17e42f3",
+      "semantic_nodes": 3,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-05T12:08:45Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "telegram:@nim_vpn_ir": {
+      "fingerprint": "57a16a0488064bfcd6e100779380abfba61815cc5bfe6b051b3e63d0a72d88b5",
+      "semantic_nodes": 1,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-05T12:08:45Z",
+      "fresh": false,
+      "competition_active": false,
+      "freshness_reason": "empty_source",
+      "duplicate_of": null
+    },
+    "telegram:@Parsashonam": {
+      "fingerprint": "caecfebad0bc0d21f9b15c668ea04051cab748cce2524d1480e25d03c768eee3",
+      "semantic_nodes": 15,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-09-28T12:09:48Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "telegram:@node_pool": {
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-09-06T14:29:42Z",
+      "fresh": false,
+      "competition_active": false,
+      "freshness_reason": "empty_source",
+      "duplicate_of": null,
+      "semantic_nodes": 0,
+      "exact_nodes": 0
+    },
+    "telegram:@ehsawn8": {
+      "fingerprint": "971ec820a2b5f35add41549a4ca852a4a72a56ee4a39e2de99dfda1c98a8f15e",
+      "semantic_nodes": 2,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-05T12:08:45Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "telegram:@i10vpn": {
+      "fingerprint": "76c06fef3521f16c3c32938a5b9a469a9c36d20c376a49daeac2c2b37f89b300",
+      "semantic_nodes": 105,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-10T12:13:43Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "telegram:@SiNAVM": {
+      "fingerprint": "2e62a7c5640faa4d66e7565d7ac63652d780a85a51b324c6e487265f5f0dd7c1",
+      "semantic_nodes": 63,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-08T00:08:08Z",
+      "fresh": false,
+      "competition_active": false,
+      "freshness_reason": "empty_source",
+      "duplicate_of": null
+    },
+    "telegram:@amvng": {
+      "fingerprint": "378c1cfd718485044e17ed8eafcd7fa93b588eba724294cede07adab462516f7",
+      "semantic_nodes": 10,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-05T12:08:45Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "telegram:@ConfigsDuke": {
+      "fingerprint": "912269c078836ed15cbdeccc1886ee296995016d6e37b82313fb4a2616a90e66",
+      "semantic_nodes": 1,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-09-29T00:10:50Z",
+      "fresh": false,
+      "competition_active": false,
+      "freshness_reason": "empty_source",
+      "duplicate_of": null
+    },
+    "telegram:@rokervpn": {
+      "fingerprint": "6a78fb13928deb7a107ff1d2a6d551759d26aa038437dcf0a3a5d70ab0715fc1",
+      "semantic_nodes": 10,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-09-28T12:09:48Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "telegram:@ViPVpn_v2ray": {
+      "fingerprint": "a4204640c4b99465132f4230731b03c4d5b09ea4e81c09591d4181b5a70c193c",
+      "semantic_nodes": 11,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-05T12:08:45Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "telegram:@viraconfigs": {
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-09-26T09:45:47Z",
+      "fresh": false,
+      "competition_active": false,
+      "freshness_reason": "empty_source",
+      "duplicate_of": null,
+      "semantic_nodes": 0
+    },
+    "telegram:@atlas_v2vpn": {
+      "fingerprint": "6e76e877eb49cee70c2b6632ae383d984e0914161089403710e5b35eee3726cd",
+      "semantic_nodes": 26,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "telegram:@Joker_v2ray_configs": {
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-09-26T09:45:47Z",
+      "fresh": false,
+      "competition_active": false,
+      "freshness_reason": "empty_source",
+      "duplicate_of": null,
+      "semantic_nodes": 0
+    },
+    "telegram:@gozargahazad": {
+      "fingerprint": "a7d21bb5d3232d3cd6255961f2d56fa3889ab07004d4cd13107bbc5ef0bc353f",
+      "semantic_nodes": 18,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-10T00:09:10Z",
+      "fresh": false,
+      "competition_active": false,
+      "freshness_reason": "empty_source",
+      "duplicate_of": null
+    },
+    "telegram:@V2RAY_VMESS_free": {
+      "fingerprint": "4618f87eed686fbd02255c88b5e3e78d3f4554f425628c2dc8ec132220cc53a1",
+      "semantic_nodes": 10,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-05T12:08:45Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "telegram:@privatevpns": {
+      "fingerprint": "b9ef347df003800fd1af47a0b521331aca43ab31e54c683284068332eec89a87",
+      "semantic_nodes": 1,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-09-29T00:10:50Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "telegram:@gozargahvpn": {
+      "fingerprint": "5b51c665f2150eb068808ece45dd461b02a696ea8931fdd6fa77c99931be012a",
+      "semantic_nodes": 11,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-05T12:08:45Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "telegram:@SvnTeam": {
+      "fingerprint": "063d7ee869016cbd13a9db71ad4cee2b8b3759ead51acce22479e93b5b7061ec",
+      "semantic_nodes": 9,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-05T12:08:45Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "telegram:@SafeNetIR": {
+      "fingerprint": "a169640180fea2145a7231c769cb5dca6468363a3d613c5dc0ad6b92061eb9ce",
+      "semantic_nodes": 7,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-05T12:08:45Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "telegram:@rjsxrd": {
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-09-26T09:45:47Z",
+      "fresh": false,
+      "competition_active": false,
+      "freshness_reason": "empty_source",
+      "duplicate_of": null,
+      "semantic_nodes": 0
+    },
+    "telegram:@ai_duet": {
+      "fingerprint": "ed2b9b2342876ee0155e0fa719c9b8137dfd4eb205154dc68d451894b47db259",
+      "semantic_nodes": 6,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-05T12:08:45Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "unchanged_included",
+      "duplicate_of": null
+    },
+    "telegram:@Argo_VPN1": {
+      "fingerprint": "045e396ea689aa38aa4f1109fb9d11b64d37c6d016952c802b1bb44979f2b75a",
+      "semantic_nodes": 5,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "telegram:@bizfreenode": {
+      "fingerprint": "279a9a72fb5d010a59b076aaf5e77f37718dbdd2bd39bc789660550f21b169c6",
+      "semantic_nodes": 28,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    },
+    "telegram:@ZibaNabz": {
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-09-06T14:29:42Z",
+      "fresh": false,
+      "competition_active": false,
+      "freshness_reason": "empty_source",
+      "duplicate_of": null,
+      "semantic_nodes": 0,
+      "exact_nodes": 0
+    },
+    "v2nodes": {
+      "fingerprint": "8d54ff5313720e47d2169788ed9f29a07afb5608d187d296a62ffa86956ca4fc",
+      "semantic_nodes": 325,
+      "last_checked_at": "2026-10-11T00:19:36Z",
+      "last_changed_at": "2026-10-11T00:19:36Z",
+      "fresh": true,
+      "competition_active": true,
+      "freshness_reason": "changed",
+      "duplicate_of": null
+    }
+  }
+}
