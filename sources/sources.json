@@ -1,5 +1,5 @@
 {
-  "version": 60,
+  "version": 61,
   "mode": "direct-public-sources",
   "sources": [
     {
@@ -99,10 +99,6 @@
       "url": "https://raw.githubusercontent.com/Pawdroid/Free-servers/main/sub"
     },
     {
-      "name": "alexantSWE-All_Configs_Sub",
-      "url": "https://raw.githubusercontent.com/alexantSWE/V2ray-Config/main/All_Configs_Sub.txt"
-    },
-    {
       "name": "morpheusadam-best",
       "url": "https://raw.githubusercontent.com/morpheusadam/v2ray-config/main/subs/bundles/best.txt"
     },
@@ -147,10 +143,6 @@
       "url": "https://raw.githubusercontent.com/R3ZARAHIMI/tg-v2ray-configs-every2h/main/Config_jo.txt"
     },
     {
-      "name": "anonymouskeys-all",
-      "url": "https://raw.githubusercontent.com/anonymouskeys/Free-configs-/refs/heads/main/output/all.txt"
-    },
-    {
       "name": "iboxz-mix",
       "url": "https://raw.githubusercontent.com/iboxz/free-v2ray-collector/main/main/mix.txt"
     },
@@ -169,10 +161,6 @@
     {
       "name": "luxxuria-harvester-speed_tested",
       "url": "https://raw.githubusercontent.com/luxxuria/harvester/main/speed_tested.txt"
-    },
-    {
-      "name": "luxxuria-harvester-top_600",
-      "url": "https://raw.githubusercontent.com/luxxuria/harvester/main/top_600.txt"
     },
     {
       "name": "NiREvil-SSTime",
@@ -650,15 +638,6 @@
       "url": "https://raw.githubusercontent.com/arshiacomplus/v2rayExtractor/main/mix/sub.html"
     },
     {
-      "name": "v2rayconfigspool-v2ray-sub-tree",
-      "url": "https://api.github.com/repos/V2RAYCONFIGSPOOL/V2RAY_SUB/git/trees/main?recursive=1",
-      "format": "github_tree",
-      "owner": "V2RAYCONFIGSPOOL",
-      "repo": "V2RAY_SUB",
-      "ref": "main",
-      "path_regex": "^v2ray_configs_no[0-9]+\\.txt$"
-    },
-    {
       "name": "firefoxmmx2-v2rayshare-subscription",
       "url": "https://raw.githubusercontent.com/firefoxmmx2/v2rayshare_subcription/main/subscription/vray_sub.txt"
     },
@@ -788,16 +767,8 @@
       "url": "https://raw.githubusercontent.com/Idolvpn/Automate-V2ray-Config-Collector/main/configs/vless.txt"
     },
     {
-      "name": "idolvpn-vmess",
-      "url": "https://raw.githubusercontent.com/Idolvpn/Automate-V2ray-Config-Collector/main/configs/vmess.txt"
-    },
-    {
       "name": "idolvpn-trojan",
       "url": "https://raw.githubusercontent.com/Idolvpn/Automate-V2ray-Config-Collector/main/configs/trojan.txt"
-    },
-    {
-      "name": "idolvpn-ss",
-      "url": "https://raw.githubusercontent.com/Idolvpn/Automate-V2ray-Config-Collector/main/configs/ss.txt"
     },
     {
       "name": "jagger235711-mixed",
@@ -1207,6 +1178,14 @@
     {
       "name": "marshall888666-free_clash_subscribe-v2ray",
       "url": "https://raw.githubusercontent.com/marshall888666/free_clash_subscribe/main/subscribe/v2ray.txt"
+    },
+    {
+      "name": "yuanxiawan-freevless-valid_vless_configs",
+      "url": "https://raw.githubusercontent.com/yuanxiawan/freevless/main/results/valid_vless_configs.txt"
+    },
+    {
+      "name": "skxxxkx666-freeport-manifest-v2ray",
+      "url": "https://raw.githubusercontent.com/skxxxkx666/freeport-manifest/main/public/free/20260729/v2ray.txt"
     }
   ]
 }
