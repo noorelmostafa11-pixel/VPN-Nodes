@@ -1,0 +1,354 @@
+{
+  "schema": 10,
+  "generated_at": "2026-10-17T13:17:49Z",
+  "tcp_reachable_total": 67006,
+  "xray_included": 3692,
+  "config_conversion_failed": 3773,
+  "active": 0,
+  "backup": 3692,
+  "failed_after_core": 63314,
+  "healthy": 3692,
+  "published_total": 3692,
+  "countries": 42,
+  "published_by_country": {
+    "AE": {
+      "active": 0,
+      "backup": 9,
+      "total": 9
+    },
+    "AT": {
+      "active": 0,
+      "backup": 2,
+      "total": 2
+    },
+    "AU": {
+      "active": 0,
+      "backup": 6,
+      "total": 6
+    },
+    "BG": {
+      "active": 0,
+      "backup": 88,
+      "total": 88
+    },
+    "BY": {
+      "active": 0,
+      "backup": 2,
+      "total": 2
+    },
+    "CA": {
+      "active": 0,
+      "backup": 20,
+      "total": 20
+    },
+    "CH": {
+      "active": 0,
+      "backup": 4,
+      "total": 4
+    },
+    "CL": {
+      "active": 0,
+      "backup": 8,
+      "total": 8
+    },
+    "CZ": {
+      "active": 0,
+      "backup": 6,
+      "total": 6
+    },
+    "DE": {
+      "active": 0,
+      "backup": 223,
+      "total": 223
+    },
+    "EE": {
+      "active": 0,
+      "backup": 27,
+      "total": 27
+    },
+    "ES": {
+      "active": 0,
+      "backup": 29,
+      "total": 29
+    },
+    "FI": {
+      "active": 0,
+      "backup": 171,
+      "total": 171
+    },
+    "FR": {
+      "active": 0,
+      "backup": 158,
+      "total": 158
+    },
+    "GB": {
+      "active": 0,
+      "backup": 26,
+      "total": 26
+    },
+    "HK": {
+      "active": 0,
+      "backup": 149,
+      "total": 149
+    },
+    "HU": {
+      "active": 0,
+      "backup": 8,
+      "total": 8
+    },
+    "IL": {
+      "active": 0,
+      "backup": 4,
+      "total": 4
+    },
+    "IN": {
+      "active": 0,
+      "backup": 4,
+      "total": 4
+    },
+    "IT": {
+      "active": 0,
+      "backup": 14,
+      "total": 14
+    },
+    "JP": {
+      "active": 0,
+      "backup": 215,
+      "total": 215
+    },
+    "KR": {
+      "active": 0,
+      "backup": 29,
+      "total": 29
+    },
+    "LT": {
+      "active": 0,
+      "backup": 5,
+      "total": 5
+    },
+    "LV": {
+      "active": 0,
+      "backup": 15,
+      "total": 15
+    },
+    "MD": {
+      "active": 0,
+      "backup": 101,
+      "total": 101
+    },
+    "MY": {
+      "active": 0,
+      "backup": 2,
+      "total": 2
+    },
+    "NL": {
+      "active": 0,
+      "backup": 710,
+      "total": 710
+    },
+    "OM": {
+      "active": 0,
+      "backup": 1,
+      "total": 1
+    },
+    "PA": {
+      "active": 0,
+      "backup": 6,
+      "total": 6
+    },
+    "PL": {
+      "active": 0,
+      "backup": 127,
+      "total": 127
+    },
+    "RO": {
+      "active": 0,
+      "backup": 16,
+      "total": 16
+    },
+    "RS": {
+      "active": 0,
+      "backup": 114,
+      "total": 114
+    },
+    "RU": {
+      "active": 0,
+      "backup": 91,
+      "total": 91
+    },
+    "SC": {
+      "active": 0,
+      "backup": 1,
+      "total": 1
+    },
+    "SE": {
+      "active": 0,
+      "backup": 11,
+      "total": 11
+    },
+    "SG": {
+      "active": 0,
+      "backup": 135,
+      "total": 135
+    },
+    "TH": {
+      "active": 0,
+      "backup": 9,
+      "total": 9
+    },
+    "TR": {
+      "active": 0,
+      "backup": 22,
+      "total": 22
+    },
+    "TW": {
+      "active": 0,
+      "backup": 3,
+      "total": 3
+    },
+    "US": {
+      "active": 0,
+      "backup": 1113,
+      "total": 1113
+    },
+    "VN": {
+      "active": 0,
+      "backup": 5,
+      "total": 5
+    },
+    "ZA": {
+      "active": 0,
+      "backup": 3,
+      "total": 3
+    }
+  },
+  "country_names": {
+    "AE": "United Arab Emirates",
+    "AT": "Austria",
+    "AU": "Australia",
+    "BG": "Bulgaria",
+    "BY": "Belarus",
+    "CA": "Canada",
+    "CH": "Switzerland",
+    "CL": "Chile",
+    "CZ": "Czechia",
+    "DE": "Germany",
+    "EE": "Estonia",
+    "ES": "Spain",
+    "FI": "Finland",
+    "FR": "France",
+    "GB": "United Kingdom",
+    "HK": "Hong Kong",
+    "HU": "Hungary",
+    "IL": "Israel",
+    "IN": "India",
+    "IT": "Italy",
+    "JP": "Japan",
+    "KR": "Korea, Republic of",
+    "LT": "Lithuania",
+    "LV": "Latvia",
+    "MD": "Moldova, Republic of",
+    "MY": "Malaysia",
+    "NL": "Netherlands",
+    "OM": "Oman",
+    "PA": "Panama",
+    "PL": "Poland",
+    "RO": "Romania",
+    "RS": "Serbia",
+    "RU": "Russian Federation",
+    "SC": "Seychelles",
+    "SE": "Sweden",
+    "SG": "Singapore",
+    "TH": "Thailand",
+    "TR": "Türkiye",
+    "TW": "Taiwan, Province of China",
+    "US": "United States",
+    "VN": "Viet Nam",
+    "ZA": "South Africa"
+  },
+  "health_policy": "Xray 26.9.9 real HTTPS success required before publication.",
+  "country_policy": "country endpoint first; exit IP GeoLite2 then entry host GeoLite2 for XX nodes",
+  "geoip_xx_fallback": {
+    "provider": "GeoLite2-Country",
+    "scope": "working_xx_only",
+    "attempted": 596,
+    "exit_ip_available": 471,
+    "exit_ip_missing": 125,
+    "exit_ip_classified": 471,
+    "entry_host_attempted": 125,
+    "entry_host_classified": 125,
+    "classified": 596,
+    "unresolved": 0
+  },
+  "xray_success_endpoints": {
+    "google": 3616,
+    "microsoft": 78
+  },
+  "test_summary": {
+    "vless": {
+      "source_total": 50179,
+      "tested": 50179,
+      "working": 2804,
+      "failed": 47375,
+      "success_endpoints": {
+        "google": 2762,
+        "microsoft": 42
+      },
+      "published_after_exact_dedup": 2802,
+      "failure_stages": {
+        "connectivity": 43673,
+        "internal_error": 320,
+        "source_invalid": 2877,
+        "unsupported": 505
+      }
+    },
+    "vmess": {
+      "source_total": 4199,
+      "tested": 4199,
+      "working": 145,
+      "failed": 4054,
+      "success_endpoints": {
+        "google": 140,
+        "microsoft": 5
+      },
+      "published_after_exact_dedup": 145,
+      "failure_stages": {
+        "connectivity": 4046,
+        "unsupported": 8
+      }
+    },
+    "trojan": {
+      "source_total": 11984,
+      "tested": 11984,
+      "working": 697,
+      "failed": 11287,
+      "success_endpoints": {
+        "google": 669,
+        "microsoft": 28
+      },
+      "published_after_exact_dedup": 697,
+      "failure_stages": {
+        "connectivity": 10824,
+        "internal_error": 285,
+        "source_invalid": 169,
+        "unsupported": 9
+      }
+    },
+    "ss": {
+      "source_total": 644,
+      "tested": 644,
+      "working": 48,
+      "failed": 596,
+      "success_endpoints": {
+        "google": 45,
+        "microsoft": 3
+      },
+      "published_after_exact_dedup": 48,
+      "failure_stages": {
+        "connectivity": 391,
+        "source_invalid": 203,
+        "unsupported": 2
+      }
+    }
+  }
+}
