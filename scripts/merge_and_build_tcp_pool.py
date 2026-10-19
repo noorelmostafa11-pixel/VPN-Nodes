@@ -73,17 +73,10 @@ async def run_tcp_checks_by_endpoint(rows: list[dict]) -> tuple[list[dict], int,
 
 
 async def run_core_prefilter(rows: list[dict]) -> tuple[list[dict], int, int, int]:
-    udp = {row["uri"] for row in rows if uses_udp_transport(row["uri"])}
-    tcp = [row for row in rows if row["uri"] not in udp]
+    # UDP transport candidates are excluded before the shared TCP precheck.
+    tcp = [row for row in rows if not uses_udp_transport(row["uri"])]
     checked, endpoints, alive = await run_tcp_checks_by_endpoint(tcp) if tcp else ([], 0, 0)
-    reachable = {row["uri"]: row for row in checked}
-    selected = []
-    for row in rows:
-        if row["uri"] in udp:
-            selected.append({**row, "liveness": "UDP_CORE_PENDING", "latency_ms": None})
-        elif row["uri"] in reachable:
-            selected.append(reachable[row["uri"]])
-    return selected, endpoints, alive, len(udp)
+    return checked, endpoints, alive, 0
 
 
 
@@ -149,8 +142,8 @@ def main(*, core_candidates: bool = False) -> int:
     )
 
     if core_candidates:
-        # Keep the cheap shared endpoint check for TCP; UDP transports go to
-        # the core without requiring a TCP listener on their server port.
+        # Keep the shared TCP endpoint check and exclude UDP transports.
+        # The owned core still makes the final connectivity decision.
         tcp_checked, tcp_unique_endpoints, tcp_reachable_endpoints, udp_bypassed = asyncio.run(run_core_prefilter(rows))
     else:
         udp_bypassed = 0
