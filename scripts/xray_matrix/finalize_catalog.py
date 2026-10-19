@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Merge fifteen Xray shards and publish a signed-catalog-ready output tree.
+"""Merge owned-core shards and publish a signed-catalog-ready output tree.
 
 Country authority order is strict:
 1. Country returned through the working node by the private country endpoint.
@@ -31,12 +31,13 @@ if str(SCRIPTS) not in sys.path:
     sys.path.insert(0, str(SCRIPTS))
 
 import country_resolver  # noqa: E402
+from owned_core import (MATRIX_SHARDS, WORKERS, SUCCESS_ENDPOINTS,
+                        digest, validate_manifest)  # noqa: E402
 
 PROTOCOL_ORDER = ("vless", "vmess", "trojan", "ss")
 PUBLIC_PROTOCOL = {"vless": "vless", "vmess": "vmess", "trojan": "trojan", "shadowsocks": "ss"}
 PROTOCOL_FILENAME = {"vless": "vless.txt", "vmess": "vmess.txt", "trojan": "trojan.txt", "ss": "shadowsocks.txt"}
-MATRIX_SHARDS = 15
-WORKERS_PER_RUNNER = 40
+WORKERS_PER_RUNNER = WORKERS
 COUNTRY_SHARD_SIZE = 1000
 COUNTRY_SHARD_MAX_BYTES = 4 * 1024 * 1024
 
@@ -129,6 +130,10 @@ def main() -> int:
     candidate_rows = candidates.get("nodes")
     if not isinstance(candidate_rows, list) or not candidate_rows:
         raise SystemExit("Candidate pool is empty or invalid")
+    tcp_reachable = int(candidates.get("tcp_reachable", len(candidate_rows)))
+    udp_bypassed = int(candidates.get("udp_precheck_bypassed", 0))
+    if tcp_reachable < 0 or udp_bypassed < 0 or tcp_reachable + udp_bypassed != len(candidate_rows):
+        raise SystemExit("TCP/UDP candidate accounting mismatch")
 
     expected_by_protocol = Counter()
     candidates_by_identity: dict[tuple[str, int], dict] = {}
@@ -143,7 +148,8 @@ def main() -> int:
         expected_by_protocol[protocol] += 1
         candidates_by_identity[(protocol, protocol_index)] = row
 
-    summary_paths = sorted(args.results_root.rglob("summary.json"))
+    summary_paths = sorted(p for p in args.results_root.rglob("summary.json")
+                           if (p.parent / "working.jsonl").is_file())
     working_paths = sorted(args.results_root.rglob("working.jsonl"))
     if len(summary_paths) != MATRIX_SHARDS or len(working_paths) != MATRIX_SHARDS:
         raise SystemExit(
@@ -152,6 +158,11 @@ def main() -> int:
         )
 
     summaries = [read_json(path) for path in summary_paths]
+    core_manifest = summaries[0].get("core") or {}
+    validate_manifest(core_manifest)
+    if any(item.get("core") != core_manifest or item.get("candidates_sha256") != digest(args.candidates)
+           or item.get("schema") != 2 for item in summaries):
+        raise SystemExit("Shard core provenance/candidate snapshot mismatch")
     shard_ids = sorted(int(item.get("shard", -1)) for item in summaries)
     if shard_ids != list(range(MATRIX_SHARDS)):
         raise SystemExit(f"Shard coverage mismatch: {shard_ids}")
@@ -177,6 +188,11 @@ def main() -> int:
             row = protocols.get(protocol)
             if not isinstance(row, dict):
                 raise SystemExit(f"Missing {protocol} shard summary")
+            expected_assigned = len(range(int(summary["shard"]), expected_by_protocol[protocol], MATRIX_SHARDS))
+            if (row.get("assigned") != expected_assigned or row.get("tested") != expected_assigned
+                    or not 0 <= int(row.get("working", -1)) <= expected_assigned
+                    or row.get("failed") != expected_assigned - int(row.get("working", -1))):
+                raise SystemExit("Per-shard protocol coverage mismatch")
             assigned_by_protocol[protocol] += int(row.get("assigned", -1))
             tested_by_protocol[protocol] += int(row.get("tested", -1))
             working_summary_by_protocol[protocol] += int(row.get("working", -1))
@@ -185,7 +201,7 @@ def main() -> int:
                 raise SystemExit(f"Invalid {protocol} success endpoint summary")
             for endpoint, count in endpoint_counts.items():
                 endpoint = str(endpoint)
-                if endpoint not in {"google", "microsoft"}:
+                if endpoint not in SUCCESS_ENDPOINTS:
                     raise SystemExit(f"Unexpected success endpoint: {endpoint!r}")
                 success_endpoints_by_protocol[protocol][endpoint] += int(count)
             failure_stages[protocol].update(row.get("failure_stages") or {})
@@ -215,7 +231,7 @@ def main() -> int:
             if protocol not in PROTOCOL_ORDER or index < 0 or shard != index % MATRIX_SHARDS:
                 raise SystemExit(f"Invalid working identity: {protocol}/{index}/shard={shard}")
             success_endpoint = str(row.get("success_endpoint") or "")
-            if success_endpoint not in {"google", "microsoft"}:
+            if success_endpoint not in SUCCESS_ENDPOINTS:
                 raise SystemExit(
                     f"Invalid success endpoint for {protocol}/{index}: {success_endpoint!r}"
                 )
@@ -229,6 +245,8 @@ def main() -> int:
             candidate = candidates_by_identity.get(identity)
             if candidate is None:
                 raise SystemExit(f"Working identity missing from candidates: {protocol}/{index}")
+            if row.get("raw") != candidate.get("uri"):
+                raise SystemExit("Working link differs from the source link tested by the core")
             row["country"] = country
             # Keep source details as deterministic tie breakers; country files
             # are ordered by the verified HTTPS delay, not the TCP precheck.
@@ -398,9 +416,13 @@ def main() -> int:
     app_pool = {
         "schema": 23,
         "generated_at": generated_at,
-        "mode": "xray_26_9_9_real_https_verified",
-        "liveness_test": "existing public TCP pool followed by server-identical Xray real HTTPS test",
-        "final_runtime_test": "Xray 26.9.9 + Google primary / Microsoft fallback HTTPS response",
+        "mode": "vpn_core_real_https_verified",
+        "liveness_test": "shared TCP endpoint precheck; UDP transports bypass TCP; owned-core nodecheck for final proof",
+        "tcp_precheck_applied": True,
+        "udp_precheck_bypassed": udp_bypassed,
+        "candidate_total": len(candidate_rows),
+        "final_runtime_test": "VPN-Core-Test nodecheck; multiple authenticated HTTPS targets; HTTP 200-599",
+        "core": core_manifest,
         "xray_matrix_shards": MATRIX_SHARDS,
         "xray_workers_per_runner": WORKERS_PER_RUNNER,
         "xray_total_concurrency": MATRIX_SHARDS * WORKERS_PER_RUNNER,
@@ -408,7 +430,7 @@ def main() -> int:
         "country_shard_size": COUNTRY_SHARD_SIZE,
         "country_shards_generated": True,
         "published_country_shards": published_shards,
-        "tcp_reachable_total": len(candidate_rows),
+        "tcp_reachable_total": tcp_reachable,
         "xray_tested_total": sum(tested_by_protocol.values()),
         "xray_working_total": xray_working_total,
         "xray_success_endpoints": dict(sorted(success_endpoint_totals.items())),
@@ -433,7 +455,9 @@ def main() -> int:
     legacy_index = {
         "schema": 10,
         "generated_at": generated_at,
-        "tcp_reachable_total": len(candidate_rows),
+        "tcp_reachable_total": tcp_reachable,
+        "udp_precheck_bypassed": udp_bypassed,
+        "candidate_total": len(candidate_rows),
         "xray_included": total,
         "config_conversion_failed": sum(
             failure_stages[p].get("source_invalid", 0) + failure_stages[p].get("unsupported", 0)
@@ -450,7 +474,8 @@ def main() -> int:
             for country, count in country_counts.items()
         },
         "country_names": {item["code"]: item["name"] for item in countries_meta},
-        "health_policy": "Xray 26.9.9 real HTTPS success required before publication.",
+        "health_policy": "Owned VPN-Core-Test authenticated HTTPS response required before publication.",
+        "core": core_manifest,
         "country_policy": "country endpoint first; exit IP GeoLite2 then entry host GeoLite2 for XX nodes",
         "geoip_xx_fallback": geoip_summary,
         "xray_success_endpoints": dict(sorted(success_endpoint_totals.items())),

@@ -9,8 +9,8 @@ import time
 from pathlib import Path
 
 import build_tcp_pool as common
-import node_identity
 import source_freshness
+from core_tcp_filter import uses_udp_transport
 import update_catalog as catalog
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -72,6 +72,20 @@ async def run_tcp_checks_by_endpoint(rows: list[dict]) -> tuple[list[dict], int,
     return checked_configs, len(endpoint_rows), len(reachable)
 
 
+async def run_core_prefilter(rows: list[dict]) -> tuple[list[dict], int, int, int]:
+    udp = {row["uri"] for row in rows if uses_udp_transport(row["uri"])}
+    tcp = [row for row in rows if row["uri"] not in udp]
+    checked, endpoints, alive = await run_tcp_checks_by_endpoint(tcp) if tcp else ([], 0, 0)
+    reachable = {row["uri"]: row for row in checked}
+    selected = []
+    for row in rows:
+        if row["uri"] in udp:
+            selected.append({**row, "liveness": "UDP_CORE_PENDING", "latency_ms": None})
+        elif row["uri"] in reachable:
+            selected.append(reachable[row["uri"]])
+    return selected, endpoints, alive, len(udp)
+
+
 
 def load_rows(path: Path) -> tuple[list[dict], list[dict]]:
     if not path.is_file():
@@ -80,7 +94,7 @@ def load_rows(path: Path) -> tuple[list[dict], list[dict]]:
     return list(payload.get("rows", [])), list(payload.get("sources", payload.get("channels", [])))
 
 
-def main() -> int:
+def main(*, core_candidates: bool = False) -> int:
     all_rows: list[dict] = []
     source_health: list[dict] = []
     for path in INPUTS:
@@ -117,28 +131,43 @@ def main() -> int:
         protocol_rows.append({**original, "uri": clean_uri})
 
     unique: dict[str, dict] = {}
+    if not core_candidates:
+        import node_identity
     for row in protocol_rows:
-        unique.setdefault(node_identity.dedup_key(row["uri"]), row)
+        # The owned core is the connection-settings authority. Legacy Python
+        # parser equivalence must not collapse a newly supported core option.
+        key = row["uri"].partition("#")[0] if core_candidates else node_identity.dedup_key(row["uri"])
+        unique.setdefault(key, row)
     rows = list(unique.values())
     connection_dedup_removed = len(protocol_rows) - len(rows)
 
     print(
         f"INFO merged={len(all_rows)} protocol_rows={len(protocol_rows)} "
         f"protocol_candidates={len(rows)} connection_dedup_removed={connection_dedup_removed} "
-        f"dedup_mode=xray_connection_equivalent "
+        f"dedup_mode={'literal_before_fragment' if core_candidates else 'xray_connection_equivalent'} "
         f"html_uri_normalized={html_uri_normalized}"
     )
 
-    tcp_checked, tcp_unique_endpoints, tcp_reachable_endpoints = asyncio.run(
-        run_tcp_checks_by_endpoint(rows)
-    )
-    print(
-        f"INFO tcp_unique_endpoints={tcp_unique_endpoints} "
-        f"tcp_reachable_endpoints={tcp_reachable_endpoints} "
-        f"tcp_dead_endpoints={tcp_unique_endpoints - tcp_reachable_endpoints} "
-        f"tcp_reachable_configs={len(tcp_checked)} "
-        f"tcp_dead_configs={len(rows) - len(tcp_checked)}"
-    )
+    if core_candidates:
+        # Keep the cheap shared endpoint check for TCP; UDP transports go to
+        # the core without requiring a TCP listener on their server port.
+        tcp_checked, tcp_unique_endpoints, tcp_reachable_endpoints, udp_bypassed = asyncio.run(run_core_prefilter(rows))
+    else:
+        udp_bypassed = 0
+        tcp_checked, tcp_unique_endpoints, tcp_reachable_endpoints = asyncio.run(
+            run_tcp_checks_by_endpoint(rows)
+        )
+    if core_candidates:
+        print(f"INFO core_candidates={len(tcp_checked)} tcp_passed={len(tcp_checked)-udp_bypassed} "
+                  f"tcp_dropped={len(rows)-len(tcp_checked)} udp_bypassed={udp_bypassed}")
+    else:
+        print(
+            f"INFO tcp_unique_endpoints={tcp_unique_endpoints} "
+            f"tcp_reachable_endpoints={tcp_reachable_endpoints} "
+            f"tcp_dead_endpoints={tcp_unique_endpoints - tcp_reachable_endpoints} "
+            f"tcp_reachable_configs={len(tcp_checked)} "
+            f"tcp_dead_configs={len(rows) - len(tcp_checked)}"
+        )
 
     META.mkdir(parents=True, exist_ok=True)
     # Remove stale metadata from the abandoned transport-handshake publication path.
@@ -146,20 +175,24 @@ def main() -> int:
 
     compact_freshness = {key: value for key, value in freshness.items() if key != "sources"}
     tcp_payload = {
+        "tcp_precheck_applied": True,
+        "udp_precheck_bypassed": udp_bypassed,
+        "candidate_total": len(tcp_checked),
+        "candidate_stage": "core_pending" if core_candidates else "tcp_checked",
         "schema": 5,
         "generated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
         "total_parsed": len(all_rows),
         "protocol_rows": len(protocol_rows),
         "protocol_candidates": len(rows),
-        "dedup_mode": "xray_connection_equivalent",
+        "dedup_mode": "literal_before_fragment" if core_candidates else "xray_connection_equivalent",
         "connection_dedup_removed": connection_dedup_removed,
-        "semantic_dedup_removed": connection_dedup_removed,
+        "semantic_dedup_removed": 0 if core_candidates else connection_dedup_removed,
         "html_uri_normalized": html_uri_normalized,
         "tcp_probe_mode": "one_probe_per_host_port",
         "tcp_unique_endpoints": tcp_unique_endpoints,
         "tcp_reachable_endpoints": tcp_reachable_endpoints,
         "tcp_dead_endpoints": tcp_unique_endpoints - tcp_reachable_endpoints,
-        "tcp_reachable": len(tcp_checked),
+        "tcp_reachable": len(tcp_checked) - udp_bypassed,
         "tcp_workers": common.TCP_WORKERS,
         "allowed_ports": sorted(catalog.ALLOWED_PORTS),
         "source_failures": sum(1 for source in source_health if not source.get("ok")),
@@ -177,19 +210,21 @@ def main() -> int:
     merged_payload = {
         "schema": 5,
         "generated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
-        "mode": "tcp_only_android_final_xray_check",
+        "mode": "owned_core_pending" if core_candidates else "tcp_only_android_final_xray_check",
+        "candidate_total": len(tcp_checked),
+        "udp_precheck_bypassed": udp_bypassed,
         "total_parsed": len(all_rows),
         "protocol_rows": len(protocol_rows),
         "protocol_candidates": len(rows),
-        "dedup_mode": "xray_connection_equivalent",
+        "dedup_mode": "literal_before_fragment" if core_candidates else "xray_connection_equivalent",
         "connection_dedup_removed": connection_dedup_removed,
-        "semantic_dedup_removed": connection_dedup_removed,
+        "semantic_dedup_removed": 0 if core_candidates else connection_dedup_removed,
         "html_uri_normalized": html_uri_normalized,
         "tcp_probe_mode": "one_probe_per_host_port",
         "tcp_unique_endpoints": tcp_unique_endpoints,
         "tcp_reachable_endpoints": tcp_reachable_endpoints,
         "tcp_dead_endpoints": tcp_unique_endpoints - tcp_reachable_endpoints,
-        "tcp_reachable": len(tcp_checked),
+        "tcp_reachable": len(tcp_checked) - udp_bypassed,
         "source_freshness": compact_freshness,
         "sources": source_health,
         "common_pool": meta,
@@ -198,10 +233,13 @@ def main() -> int:
         json.dumps(merged_payload, ensure_ascii=False, indent=2) + "\n",
         encoding="utf-8",
     )
-    print(
-        f"INFO published_tcp_only={meta.get('published_total', 0)} "
-        f"order=latency_ascending_only android_final_xray=true"
-    )
+    if core_candidates:
+        print(f"INFO publication_deferred_to_owned_core candidates={len(rows)}")
+    else:
+        print(
+            f"INFO published_tcp_only={meta.get('published_total', 0)} "
+            f"order=latency_ascending_only android_final_xray=true"
+        )
     return 0
 
 

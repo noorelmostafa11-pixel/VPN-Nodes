@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-"""Build the existing public TCP candidate pool without country publication.
+"""Build the current source snapshot for the owned core without publication.
 
 This intentionally reuses the repository's current collectors, source freshness,
-semantic selection, and TCP liveness code.  The only intercepted call is
-publish_app_pool(), because country resolution/publication must happen only
-after the server-identical Xray real-HTTPS test.
+endpoint policy and freshness. Core mode uses literal deduplication and keeps
+the shared TCP precheck, bypassing it only for UDP transport hints.
+Country publication is deferred until after the actual core connectivity test.
 """
 from __future__ import annotations
 
@@ -40,7 +40,7 @@ def _defer_publication(rows: list[dict], source_health: list[dict], freshness: d
 
 def main() -> int:
     merge.common.publish_app_pool = _defer_publication
-    rc = merge.main()
+    rc = merge.main(core_candidates=True)
     if rc not in (None, 0):
         return int(rc)
     if not TCP_REACHABLE.is_file():
@@ -69,9 +69,13 @@ def main() -> int:
         normalized.append(dict(item))
 
     payload = {
+        "tcp_precheck_applied": True,
+        "udp_precheck_bypassed": source.get("udp_precheck_bypassed", 0),
+        "candidate_total": len(normalized),
+        "candidate_stage": "core_pending",
         "schema": 1,
         "generated_at": source.get("generated_at"),
-        "tcp_reachable": len(normalized),
+        "tcp_reachable": source.get("tcp_reachable", len(normalized)),
         "protocol_counts": dict(sorted(counts.items())),
         "source_freshness": source.get("source_freshness") or {},
         "sources": source.get("sources") or [],

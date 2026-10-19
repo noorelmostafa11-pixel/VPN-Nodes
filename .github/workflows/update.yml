@@ -2,6 +2,11 @@ name: Update node catalog
 
 on:
   workflow_dispatch:
+    inputs:
+      core_ref:
+        description: Owned VPN-Core-Test ref resolved once per run
+        type: string
+        default: main
 
 permissions:
   contents: write
@@ -11,6 +16,51 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  owned-core:
+    name: Build pinned owner core once
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+        with:
+          repository: noorelmostafa11-pixel/VPN-Core-Test
+          ref: ${{ inputs.core_ref }}
+          path: owned-core-source
+          persist-credentials: false
+      - uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff
+        with:
+          go-version: '1.27.1'
+          cache-dependency-path: owned-core-source/go.sum
+      - name: Compile production nodecheck and record source and binary identity
+        working-directory: owned-core-source
+        env:
+          GOTOOLCHAIN: local
+          CGO_ENABLED: '0'
+        run: |
+          set -euo pipefail
+          test -f app/nodecheck/exit_metadata.go
+          test -z "$(git status --porcelain)"
+          mkdir -p "$RUNNER_TEMP/owned-core"
+          go build -mod=readonly -trimpath -o "$RUNNER_TEMP/owned-core/vpn-core" ./main
+          test -z "$(git status --porcelain)"
+          CORE_REVISION="$(git rev-parse HEAD)" python3 - <<'PY'
+          import hashlib, json, os
+          from pathlib import Path
+          root = Path(os.environ['RUNNER_TEMP']) / 'owned-core'
+          with (root / 'vpn-core').open('rb') as stream:
+              sha = hashlib.file_digest(stream, 'sha256').hexdigest()
+          manifest = {'repository': 'noorelmostafa11-pixel/VPN-Core-Test',
+                      'revision': os.environ['CORE_REVISION'], 'source_modified': False,
+                      'binary_sha256': sha}
+          (root / 'core-build.json').write_text(json.dumps(manifest, indent=2) + '\n')
+          PY
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: owned-core-${{ github.run_id }}
+          path: ${{ runner.temp }}/owned-core/
+          retention-days: 1
+          if-no-files-found: error
+
   candidates:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -27,20 +77,20 @@ jobs:
 
       - run: pip install -r requirements.txt
 
-      - name: Validate Xray integration sources
+      - name: Validate catalog integration sources
         run: |
           set -euo pipefail
           python -m py_compile \
             scripts/node_identity.py \
+            scripts/core_tcp_filter.py \
             scripts/merge_and_build_tcp_pool.py \
             scripts/xray_matrix/build_tcp_candidates.py \
             scripts/xray_matrix/run_shard.py \
             scripts/xray_matrix/finalize_catalog.py \
             scripts/xray_matrix/verify_final_catalog.py \
-            scripts/xray_tester/vpn_pipeline_core/*.py \
-            scripts/xray_tester/vpn_pipeline_core/parsers/*.py
+            scripts/xray_matrix/owned_core.py
 
-      - name: Collect sources and build TCP candidate snapshot
+      - name: Collect current sources for the owned core
         env:
           GITHUB_TOKEN: ${{ github.token }}
           V2NODES_WORKERS: 80
@@ -65,6 +115,8 @@ jobs:
             output/metadata/health.json
 
           python tests/test_node_identity.py
+          python tests/test_owned_core.py
+          python tests/test_exit_country_and_order.py
           python tests/test_shared_tcp_endpoint.py
           python tests/test_gitverse_adapter.py
           python tests/test_source_freshness.py
@@ -92,15 +144,15 @@ jobs:
             output/metadata/source_freshness.json
             output/metadata/*_cache.json
 
-  xray:
-    needs: candidates
+  core-check:
+    needs: [candidates, owned-core]
     runs-on: ubuntu-latest
-    timeout-minutes: 300
+    timeout-minutes: 45
     strategy:
       fail-fast: false
-      max-parallel: 15
+      max-parallel: 8
       matrix:
-        shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
+        shard: [0, 1, 2, 3, 4, 5, 6, 7]
 
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
@@ -117,41 +169,48 @@ jobs:
           name: xray-candidates
           path: /tmp/xray-candidates
 
-      - name: Run server-identical Xray tester
+      - name: Download this run's owned core
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: owned-core-${{ github.run_id }}
+          path: ${{ runner.temp }}/owned-core
+
+      - name: Run the same actual connectivity checker as VPN-Core-Test
         env:
-          VPN_TEST_URL: ${{ secrets.VPN_TEST_URL }}
-          VPN_COUNTRY_URL: ${{ secrets.VPN_COUNTRY_URL }}
+          VPN_NODECHECK_COUNTRY_URL: ${{ secrets.VPN_COUNTRY_URL }}
         run: |
           set -euo pipefail
-
-          if [ -z "${VPN_TEST_URL:-}" ]; then
-            echo 'VPN_TEST_URL secret is required' >&2
-            exit 1
-          fi
-          if [ -z "${VPN_COUNTRY_URL:-}" ]; then
+          if [ -z "${VPN_NODECHECK_COUNTRY_URL:-}" ]; then
             echo 'VPN_COUNTRY_URL secret is required' >&2
             exit 1
           fi
-
-          printf '::add-mask::%s\n' "$VPN_TEST_URL"
-          printf '::add-mask::%s\n' "$VPN_COUNTRY_URL"
-
+          printf '::add-mask::%s\n' "$VPN_NODECHECK_COUNTRY_URL"
+          chmod +x "$RUNNER_TEMP/owned-core/vpn-core"
           python scripts/xray_matrix/run_shard.py \
             --input /tmp/xray-candidates/xray_candidates.json \
+            --core "$RUNNER_TEMP/owned-core/vpn-core" \
+            --core-manifest "$RUNNER_TEMP/owned-core/core-build.json" \
             --output "/tmp/xray-shard-${{ matrix.shard }}" \
             --shard "${{ matrix.shard }}" \
-            --shards 15
+            --shards 8
 
-      - name: Upload Xray shard result
+      - name: Publish checker summary
+        if: ${{ always() }}
+        run: |
+          report="/tmp/xray-shard-${{ matrix.shard }}/nodecheck/summary.md"
+          if [ -f "$report" ]; then cat "$report" >> "$GITHUB_STEP_SUMMARY"; fi
+
+      - name: Upload owned-core observations and detailed failures
+        if: ${{ always() }}
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: xray-shard-${{ matrix.shard }}
-          retention-days: 1
+          retention-days: 7
           if-no-files-found: error
           path: /tmp/xray-shard-${{ matrix.shard }}/
 
   publish:
-    needs: [candidates, xray]
+    needs: [candidates, core-check]
     runs-on: ubuntu-latest
     timeout-minutes: 45
 
@@ -173,7 +232,7 @@ jobs:
           name: xray-candidates
           path: /tmp/xray-candidates
 
-      - name: Download all fifteen Xray shard results
+      - name: Download all eight owned-core shard results
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
           pattern: xray-shard-*
@@ -195,7 +254,7 @@ jobs:
 
           test -s data/GeoLite2-Country.mmdb
 
-      - name: Build Xray-verified catalog
+      - name: Build owned-core verified catalog
         run: |
           set -euo pipefail
 

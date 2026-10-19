@@ -17,6 +17,7 @@ from vpn_pipeline_core import connectivity  # noqa: E402
 from vpn_pipeline_core.models import Node  # noqa: E402
 import finalize_catalog  # noqa: E402
 import verify_final_catalog  # noqa: E402
+from owned_core import digest, CORE_REPOSITORY
 
 
 class ExitCountryAndOrderTests(unittest.TestCase):
@@ -121,18 +122,19 @@ class ExitCountryAndOrderTests(unittest.TestCase):
                 {"protocol": "vless", "uri": "vless://unknown", "latency_ms": 5, "source": "third"},
                 {"protocol": "vless", "uri": "vless://fast#alias", "latency_ms": 20, "source": "fourth"},
                 {"protocol": "vless", "uri": "vless://fast", "latency_ms": 21, "source": "fifth"},
-            ], "sources": [], "source_freshness": {}}), encoding="utf-8")
+            ], "tcp_reachable": 3, "udp_precheck_bypassed": 2, "sources": [], "source_freshness": {}}), encoding="utf-8")
             source_freshness.write_text("{}", encoding="utf-8")
 
-            for shard in range(15):
+            for shard in range(8):
                 folder = results / f"shard-{shard:02d}"
                 folder.mkdir()
                 n = 1 if shard < 5 else 0
-                summary = {"shard": shard, "shards": 15, "workers": 40, "protocols": {
+                summary = {"schema": 2, "core": {"repository": CORE_REPOSITORY, "revision": "a"*40, "binary_sha256": "b"*64, "source_modified": False}, "candidates_sha256": digest(candidates), "shard": shard, "shards": 8, "workers": 64, "protocols": {
                     protocol: {"assigned": n if protocol == "vless" else 0,
                                "tested": n if protocol == "vless" else 0,
                                "working": n if protocol == "vless" else 0,
-                               "success_endpoints": {"google": n} if protocol == "vless" and n else {},
+                               "failed": 0,
+                               "success_endpoints": {"cloudflare" if shard == 1 else "google": n} if protocol == "vless" and n else {},
                                "failure_stages": {}}
                     for protocol in ("vless", "vmess", "trojan", "ss")
                 }}
@@ -142,7 +144,7 @@ class ExitCountryAndOrderTests(unittest.TestCase):
                     row = {"protocol": "vless", "index": shard, "shard": shard,
                            "raw": ("vless://slow", "vless://fast", "vless://unknown",
                                    "vless://fast#alias", "vless://fast")[shard],
-                           "host": "1.1.1.1", "ok": True, "success_endpoint": "google",
+                           "host": "1.1.1.1", "ok": True, "success_endpoint": "cloudflare" if shard == 1 else "google",
                            "country": ("XX", "US", "XX", "US", "US")[shard],
                            "exit_ip": "8.8.8.8" if shard == 0 else "",
                            "http204_ms": (200.0, 50.0, 25.0, 40.0, 35.0)[shard]}

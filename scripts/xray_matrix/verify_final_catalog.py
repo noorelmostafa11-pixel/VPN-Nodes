@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+from owned_core import MATRIX_SHARDS, WORKERS, SUCCESS_ENDPOINTS, validate_manifest
 
 ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / "output"
@@ -25,22 +26,29 @@ def main() -> int:
     countries = read_json(META / "countries.json")
     index = read_json(META / "index.json")
 
-    if app.get("mode") != "xray_26_9_9_real_https_verified":
+    if app.get("mode") != "vpn_core_real_https_verified":
         raise SystemExit(f"unexpected mode: {app.get('mode')}")
-    if int(app.get("xray_matrix_shards") or 0) != 15:
-        raise SystemExit("matrix must contain exactly 15 shards")
-    if int(app.get("xray_workers_per_runner") or 0) != 40:
-        raise SystemExit("each runner must use exactly 40 workers")
-    if int(app.get("xray_total_concurrency") or 0) != 600:
-        raise SystemExit("total Xray concurrency must be 600")
+    validate_manifest(app.get("core") or {})
+    if index.get("core") != app["core"]:
+        raise SystemExit("Legacy index core provenance mismatch")
+    if int(app.get("xray_matrix_shards") or 0) != MATRIX_SHARDS:
+        raise SystemExit("Unexpected checker shard count")
+    if int(app.get("xray_workers_per_runner") or 0) != WORKERS:
+        raise SystemExit("Unexpected checker worker count")
+    if int(app.get("xray_total_concurrency") or 0) != MATRIX_SHARDS * WORKERS:
+        raise SystemExit("Unexpected total checker concurrency")
     if app.get("country_policy") != "endpoint_first; exit_ip GeoLite2 then entry_host GeoLite2 for XX":
         raise SystemExit("unexpected country policy")
 
     tested = int(app.get("xray_tested_total") or 0)
     tcp = int(app.get("tcp_reachable_total") or 0)
+    candidates = int(app.get("candidate_total") or 0)
+    udp = int(app.get("udp_precheck_bypassed") or 0)
     published = int(app.get("published_total") or 0)
-    if tested <= 0 or tested != tcp:
-        raise SystemExit(f"coverage mismatch tcp={tcp} tested={tested}")
+    if tested <= 0 or tested != candidates or tcp + udp != candidates or min(tcp, udp) < 0:
+        raise SystemExit(f"coverage mismatch tcp={tcp} udp={udp} candidates={candidates} tested={tested}")
+    if index.get("candidate_total") != candidates:
+        raise SystemExit("legacy index candidate count mismatch")
     if published <= 0 or published > tested:
         raise SystemExit(f"invalid published count: {published}/{tested}")
     if int(index.get("published_total") or -1) != published:
@@ -51,13 +59,13 @@ def main() -> int:
     endpoint_counts = app.get("xray_success_endpoints") or {}
     if not isinstance(endpoint_counts, dict):
         raise SystemExit("invalid xray_success_endpoints")
-    unexpected_endpoints = set(endpoint_counts) - {"google", "microsoft"}
+    unexpected_endpoints = set(endpoint_counts) - SUCCESS_ENDPOINTS
     if unexpected_endpoints:
         raise SystemExit(f"unexpected success endpoints: {sorted(unexpected_endpoints)}")
     google_success = int(endpoint_counts.get("google") or 0)
     microsoft_success = int(endpoint_counts.get("microsoft") or 0)
     xray_working = int(app.get("xray_working_total") or 0)
-    if google_success + microsoft_success != xray_working:
+    if sum(int(v) for v in endpoint_counts.values()) != xray_working:
         raise SystemExit("success endpoint totals do not match xray_working_total")
     exact_removed = int(app.get("exact_duplicate_raw_removed_after_xray") or 0)
     before_fragment_removed = int(app.get("literal_before_fragment_duplicate_raw_removed_after_xray") or 0)
