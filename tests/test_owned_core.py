@@ -136,7 +136,7 @@ class OwnedCoreTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 verify_binary(binary, dict(manifest, **changed))
 
-    def test_tcp_only_core_candidates_exclude_udp_and_keep_literal_identity(self):
+    def test_tcp_gate_preserves_udp_labeled_configs_if_endpoint_has_tcp(self):
         tcp_raw = self.raw.replace("type=quic", "type=ws")
         rows = [{"protocol": "vless", "host": "node.example", "port": 443, "uri": raw}
                 for raw in (self.raw, self.raw.replace("#name", "#alias"),
@@ -147,38 +147,52 @@ class OwnedCoreTests(unittest.TestCase):
                      "empty_sources": 0, "included_nodes": 5, "filtering_policy": "fixture"}
 
         async def tcp_check(candidates):
-            self.assertEqual([r["uri"] for r in candidates], [tcp_raw, rows[4]["uri"]])
+            self.assertEqual([r["uri"] for r in candidates],
+                             [self.raw, tcp_raw, rows[4]["uri"]])
             return [{**r, "latency_ms": 10} for r in candidates], 1, 1
 
         with mock.patch.object(merge, "META", meta), mock.patch.object(merge, "INPUTS", [self.root]), \
              mock.patch.object(merge, "load_rows", return_value=(rows, [])), \
              mock.patch.object(merge.source_freshness, "apply_source_freshness", return_value=(rows, [], freshness)), \
              mock.patch.object(merge, "run_tcp_checks_by_endpoint", side_effect=tcp_check), \
-             mock.patch.object(merge.common, "publish_app_pool", return_value={"published_total": 2}):
+             mock.patch.object(merge.common, "publish_app_pool", return_value={"published_total": 3}):
             self.assertEqual(merge.main(core_candidates=True), 0)
         payload = json.loads((meta / "tcp_reachable.json").read_text())
         self.assertTrue(payload["tcp_precheck_applied"])
         self.assertEqual(payload["udp_precheck_bypassed"], 0)
-        self.assertEqual(payload["tcp_reachable"], 2)
-        self.assertEqual([r["uri"] for r in payload["nodes"]], [tcp_raw, rows[4]["uri"]])
+        self.assertEqual(payload["tcp_reachable"], 3)
+        self.assertEqual([r["uri"] for r in payload["nodes"]],
+                         [self.raw, tcp_raw, rows[4]["uri"]])
 
-    def test_prefilter_keeps_tcp_alive_and_excludes_udp(self):
-        rows = [{"uri": uri, "host": "entry.example", "port": 443} for uri in
-                ("vless://alive?type=ws", "vless://dead?type=tcp", "vless://udp?type=quic")]
+    def test_prefilter_uses_tcp_endpoint_only_regardless_of_uri_transport(self):
+        rows = [
+            {"uri": "vless://alive.example:443?type=ws", "host": "alive.example", "port": 443},
+            {"uri": "vless://alive.example:443?type=quic", "host": "alive.example", "port": 443},
+            {"uri": "vless://alive.example:443?type=xhttp&alpn=h2,h3",
+             "host": "alive.example", "port": 443},
+            {"uri": "vless://dead.example:443?type=tcp", "host": "dead.example", "port": 443},
+            {"uri": "vless://dead.example:443?type=kcp", "host": "dead.example", "port": 443},
+        ]
 
         async def tcp_only(candidates):
-            self.assertEqual(candidates, rows[:2])
-            return [rows[0] | {"latency_ms": 10}], 2, 1
+            self.assertEqual(candidates, rows)
+            return [row | {"latency_ms": 10} for row in rows[:3]], 2, 1
 
         with mock.patch.object(merge, "run_tcp_checks_by_endpoint", side_effect=tcp_only):
             selected, endpoints, alive, bypass = asyncio.run(merge.run_core_prefilter(rows))
-        self.assertEqual([row["uri"] for row in selected], [rows[0]["uri"]])
+        self.assertEqual([row["uri"] for row in selected],
+                         [row["uri"] for row in rows[:3]])
         self.assertEqual((endpoints, alive, bypass), (2, 1, 0))
 
-        with mock.patch.object(merge, "run_tcp_checks_by_endpoint",
-                               side_effect=AssertionError("UDP must not reach TCP precheck")):
-            self.assertEqual(asyncio.run(merge.run_core_prefilter([rows[2]])),
-                             ([], 0, 0, 0))
+        async def no_tcp(candidates):
+            self.assertEqual(candidates, [rows[1]])
+            return [], 1, 0
+
+        with mock.patch.object(merge, "run_tcp_checks_by_endpoint", side_effect=no_tcp):
+            self.assertEqual(asyncio.run(merge.run_core_prefilter([rows[1]])),
+                             ([], 1, 0, 0))
+        self.assertEqual(asyncio.run(merge.run_core_prefilter([])),
+                         ([], 0, 0, 0))
 
     def test_udp_hints_cover_native_transports_and_vmess_without_rebuilding_settings(self):
         for transport in ("quic", "kcp", "mkcp", "hysteria2"):

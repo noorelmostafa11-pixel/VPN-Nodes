@@ -73,9 +73,7 @@ async def run_tcp_checks_by_endpoint(rows: list[dict]) -> tuple[list[dict], int,
 
 
 async def run_core_prefilter(rows: list[dict]) -> tuple[list[dict], int, int, int]:
-    # UDP transport candidates are excluded before the shared TCP precheck.
-    tcp = [row for row in rows if not uses_udp_transport(row["uri"])]
-    checked, endpoints, alive = await run_tcp_checks_by_endpoint(tcp) if tcp else ([], 0, 0)
+    checked, endpoints, alive = await run_tcp_checks_by_endpoint(rows) if rows else ([], 0, 0)
     return checked, endpoints, alive, 0
 
 
