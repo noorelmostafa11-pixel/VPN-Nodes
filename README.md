@@ -40,6 +40,21 @@ foreign-core or empty results. It preserves source links, country ordering,
 deduplication after verification and the existing signed publication process.
 The current committed catalog stays intact until a successful manual refresh.
 
+After merging successful shards, publication additionally uses the core's optional
+`connection_key` (`xray-outbound-v1:<SHA256>`). The core fingerprints the complete
+built outbound, excluding its display/runtime tag, and canonicalizes nested
+protobuf settings. Publication keeps the first successful original link in
+candidate order; endpoint, credentials, transport, TLS and every built setting
+remain part of the identity. It does not use the legacy Python parser to guess
+equivalence, and it does not change prechecks, connectivity verdicts, country
+sorting or the application's Saved keys.
+
+Reports without a connection key retain the previous exact/before-fragment
+checks. `app_pool.json` separately records semantic duplicates removed and
+successful identity coverage, including missing keys. Duplicate successes remain
+counted as successful tests. The new behavior is automatic with the next manual
+run using the updated core and publisher; existing published feeds are not rewritten.
+
 Retired official-downloader, Python engine, execution and repair modules were
 removed. Pure legacy identity/parser helpers remain for their existing offline
 regressions and standalone identity tooling, outside the production decision path.

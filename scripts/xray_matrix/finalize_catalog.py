@@ -31,8 +31,8 @@ if str(SCRIPTS) not in sys.path:
     sys.path.insert(0, str(SCRIPTS))
 
 import country_resolver  # noqa: E402
-from owned_core import (MATRIX_SHARDS, WORKERS, SUCCESS_ENDPOINTS,
-                        digest, validate_manifest)  # noqa: E402
+from owned_core import (MATRIX_SHARDS, WORKERS, SUCCESS_ENDPOINTS, CONNECTION_KEY_SCHEMA,
+                        connection_key, digest, validate_manifest)  # noqa: E402
 
 PROTOCOL_ORDER = ("vless", "vmess", "trojan", "ss")
 PUBLIC_PROTOCOL = {"vless": "vless", "vmess": "vmess", "trojan": "trojan", "shadowsocks": "ss"}
@@ -92,19 +92,22 @@ def country_sort_key(row: dict) -> tuple[float, str, str, str]:
     )
 
 
-def deduplicate_working(rows: list[dict]) -> tuple[list[dict], int, int]:
-    """Keep the first tested link for each literal spelling before '#'.
+def deduplicate_working(rows: list[dict]) -> tuple[list[dict], int, int, int]:
+    """Keep the first successful source per complete core-built connection.
 
-    Full raw equality remains the primary check. The additional check compares
-    the original text only: no URL decoding, query reordering, or parser output.
+    Legacy/missing identity retains the existing literal checks. URI text and
+    options are never rewritten or interpreted by the publication stage.
     """
     deduped: list[dict] = []
     seen_raw: set[str] = set()
     seen_before_fragment: set[str] = set()
+    seen_connections: set[tuple[str, str]] = set()
     exact_removed = 0
     fragment_only_removed = 0
+    semantic_removed = 0
     for row in sorted(rows, key=lambda item: (PROTOCOL_ORDER.index(str(item["protocol"])), int(item["index"]))):
         raw = str(row.get("raw") or "")
+        identity = connection_key(row.get("connection_key"))
         if raw in seen_raw:
             exact_removed += 1
             continue
@@ -114,8 +117,14 @@ def deduplicate_working(rows: list[dict]) -> tuple[list[dict], int, int]:
             fragment_only_removed += 1
             continue
         seen_before_fragment.add(before_fragment)
+        if identity:
+            key = (str(row["protocol"]), identity)
+            if key in seen_connections:
+                semantic_removed += 1
+                continue
+            seen_connections.add(key)
         deduped.append(row)
-    return deduped, exact_removed, fragment_only_removed
+    return deduped, exact_removed, fragment_only_removed, semantic_removed
 
 
 def main() -> int:
@@ -306,9 +315,10 @@ def main() -> int:
     endpoint_assigned = len(working) - len(xx_rows)
     xray_working_total = len(working)
 
-    # Add literal before-# equality to the existing full-raw check. Both
-    # checks run after Xray, without interpreting or modifying source links.
-    working, exact_duplicates_removed, fragment_only_duplicates_removed = deduplicate_working(working)
+    # Deduplicate only proven successes, after restoring candidate order across
+    # shards. The core supplies equivalence; publication preserves original URIs.
+    identity_available = sum(bool(connection_key(row.get("connection_key"))) for row in working)
+    working, exact_duplicates_removed, fragment_only_duplicates_removed, semantic_duplicates_removed = deduplicate_working(working)
 
     output = ROOT / "output"
     metadata = output / "metadata"
@@ -410,6 +420,7 @@ def main() -> int:
             "failed": tested - succeeded,
             "success_endpoints": dict(sorted(success_endpoints_by_protocol[protocol].items())),
             "published_after_exact_dedup": protocol_counts[protocol],
+            "published_after_connection_dedup": protocol_counts[protocol],
             "failure_stages": dict(sorted(failure_stages[protocol].items())),
         }
 
@@ -436,6 +447,10 @@ def main() -> int:
         "xray_success_endpoints": dict(sorted(success_endpoint_totals.items())),
         "exact_duplicate_raw_removed_after_xray": exact_duplicates_removed,
         "literal_before_fragment_duplicate_raw_removed_after_xray": fragment_only_duplicates_removed,
+        "semantic_duplicate_raw_removed_after_core": semantic_duplicates_removed,
+        "connection_identity": {"schema": CONNECTION_KEY_SCHEMA,
+                                "successful_with_key": identity_available,
+                                "successful_without_key": xray_working_total - identity_available},
         "endpoint_country_assigned": endpoint_assigned,
         "geoip_xx_fallback": geoip_summary,
         "published_country_nodes": total,
@@ -480,6 +495,7 @@ def main() -> int:
         "geoip_xx_fallback": geoip_summary,
         "xray_success_endpoints": dict(sorted(success_endpoint_totals.items())),
         "test_summary": test_summary,
+        "semantic_duplicate_raw_removed_after_core": semantic_duplicates_removed,
     }
     (metadata / "index.json").write_text(
         json.dumps(legacy_index, ensure_ascii=False, indent=2) + "\n",
@@ -490,6 +506,8 @@ def main() -> int:
         f"OK FINAL tested={sum(tested_by_protocol.values())} xray_working={xray_working_total} "
         f"published={total} exact_duplicates_removed={exact_duplicates_removed} "
         f"literal_before_fragment_removed={fragment_only_duplicates_removed} "
+        f"semantic_duplicates_removed={semantic_duplicates_removed} "
+        f"connection_identity_missing={xray_working_total - identity_available} "
         f"google={success_endpoint_totals['google']} "
         f"microsoft={success_endpoint_totals['microsoft']} "
         f"endpoint_country={endpoint_assigned} xx_geoip_attempted={len(xx_rows)} "

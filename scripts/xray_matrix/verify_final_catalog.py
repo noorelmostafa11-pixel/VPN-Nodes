@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-from owned_core import MATRIX_SHARDS, WORKERS, SUCCESS_ENDPOINTS, validate_manifest
+from owned_core import MATRIX_SHARDS, WORKERS, SUCCESS_ENDPOINTS, CONNECTION_KEY_SCHEMA, validate_manifest
 
 ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / "output"
@@ -69,8 +69,23 @@ def main() -> int:
         raise SystemExit("success endpoint totals do not match xray_working_total")
     exact_removed = int(app.get("exact_duplicate_raw_removed_after_xray") or 0)
     before_fragment_removed = int(app.get("literal_before_fragment_duplicate_raw_removed_after_xray") or 0)
-    if xray_working != published + exact_removed + before_fragment_removed:
+    semantic_removed = int(app.get("semantic_duplicate_raw_removed_after_core") or 0)
+    if min(exact_removed, before_fragment_removed, semantic_removed) < 0:
+        raise SystemExit("negative duplicate accounting")
+    if xray_working != published + exact_removed + before_fragment_removed + semantic_removed:
         raise SystemExit("published/deduplicated working count mismatch")
+    identity = app.get("connection_identity")
+    if identity is not None:
+        if (not isinstance(identity, dict) or identity.get("schema") != CONNECTION_KEY_SCHEMA
+                or not isinstance(identity.get("successful_with_key"), int)
+                or not isinstance(identity.get("successful_without_key"), int)):
+            raise SystemExit("invalid connection identity coverage")
+        with_key = identity["successful_with_key"]
+        without_key = identity["successful_without_key"]
+        if min(with_key, without_key) < 0 or with_key + without_key != xray_working or semantic_removed > with_key:
+            raise SystemExit("connection identity accounting mismatch")
+        if index.get("semantic_duplicate_raw_removed_after_core") != semantic_removed:
+            raise SystemExit("legacy index semantic duplicate count mismatch")
     if (index.get("xray_success_endpoints") or {}) != endpoint_counts:
         raise SystemExit("legacy index success endpoint totals mismatch")
 

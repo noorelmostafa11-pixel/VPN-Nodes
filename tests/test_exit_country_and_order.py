@@ -104,9 +104,10 @@ class ExitCountryAndOrderTests(unittest.TestCase):
             {"protocol": "vless", "index": 2, "raw": base.replace("type=ws&path=%2Fws", "path=%2Fws&type=ws") + "#reordered"},
             {"protocol": "vless", "index": 3, "raw": base.replace("%2Fws", "/ws") + "#decoded"},
         ]
-        selected, exact, fragment_only = finalize_catalog.deduplicate_working(rows)
+        selected, exact, fragment_only, semantic = finalize_catalog.deduplicate_working(rows)
         self.assertEqual([row["index"] for row in selected], [0, 2, 3])
         self.assertEqual((exact, fragment_only), (1, 1))
+        self.assertEqual(semantic, 0)
         self.assertEqual(rows[0]["raw"], base + "#second")
 
     def test_publication_orders_real_delay_and_preserves_all_nodes(self):
@@ -122,13 +123,14 @@ class ExitCountryAndOrderTests(unittest.TestCase):
                 {"protocol": "vless", "uri": "vless://unknown", "latency_ms": 5, "source": "third"},
                 {"protocol": "vless", "uri": "vless://fast#alias", "latency_ms": 20, "source": "fourth"},
                 {"protocol": "vless", "uri": "vless://fast", "latency_ms": 21, "source": "fifth"},
-            ], "tcp_reachable": 3, "udp_precheck_bypassed": 2, "sources": [], "source_freshness": {}}), encoding="utf-8")
+                {"protocol": "vless", "uri": "vless://fast?equivalent=encoding", "latency_ms": 1, "source": "sixth"},
+            ], "tcp_reachable": 4, "udp_precheck_bypassed": 2, "sources": [], "source_freshness": {}}), encoding="utf-8")
             source_freshness.write_text("{}", encoding="utf-8")
 
             for shard in range(8):
                 folder = results / f"shard-{shard:02d}"
                 folder.mkdir()
-                n = 1 if shard < 5 else 0
+                n = 1 if shard < 6 else 0
                 summary = {"schema": 2, "core": {"repository": CORE_REPOSITORY, "revision": "a"*40, "binary_sha256": "b"*64, "source_modified": False}, "candidates_sha256": digest(candidates), "shard": shard, "shards": 8, "workers": 64, "protocols": {
                     protocol: {"assigned": n if protocol == "vless" else 0,
                                "tested": n if protocol == "vless" else 0,
@@ -140,14 +142,16 @@ class ExitCountryAndOrderTests(unittest.TestCase):
                 }}
                 (folder / "summary.json").write_text(json.dumps(summary), encoding="utf-8")
                 row = None
-                if shard < 5:
+                if shard < 6:
                     row = {"protocol": "vless", "index": shard, "shard": shard,
                            "raw": ("vless://slow", "vless://fast", "vless://unknown",
-                                   "vless://fast#alias", "vless://fast")[shard],
+                                   "vless://fast#alias", "vless://fast", "vless://fast?equivalent=encoding")[shard],
                            "host": "1.1.1.1", "ok": True, "success_endpoint": "cloudflare" if shard == 1 else "google",
-                           "country": ("XX", "US", "XX", "US", "US")[shard],
+                           "country": ("XX", "US", "XX", "US", "US", "US")[shard],
                            "exit_ip": "8.8.8.8" if shard == 0 else "",
-                           "http204_ms": (200.0, 50.0, 25.0, 40.0, 35.0)[shard]}
+                           "http204_ms": (200.0, 50.0, 25.0, 40.0, 35.0, 1.0)[shard]}
+                    if shard in (1, 5):
+                        row["connection_key"] = "xray-outbound-v1:" + "a" * 64
                 (folder / "working.jsonl").write_text(
                     json.dumps(row) + "\n" if row else "", encoding="utf-8",
                 )
@@ -175,9 +179,11 @@ class ExitCountryAndOrderTests(unittest.TestCase):
                              ["vless://slow", "vless://fast", "vless://unknown"])
             app = json.loads((out / "metadata" / "app_pool.json").read_text(encoding="utf-8"))
             self.assertEqual(app["published_total"], 3)
-            self.assertEqual(app["xray_working_total"], 5)
+            self.assertEqual(app["xray_working_total"], 6)
             self.assertEqual(app["exact_duplicate_raw_removed_after_xray"], 1)
             self.assertEqual(app["literal_before_fragment_duplicate_raw_removed_after_xray"], 1)
+            self.assertEqual(app["semantic_duplicate_raw_removed_after_core"], 1)
+            self.assertEqual(app["connection_identity"]["successful_without_key"], 4)
             self.assertEqual(app["geoip_xx_fallback"], {
                 "provider": "GeoLite2-Country", "scope": "working_xx_only",
                 "attempted": 2, "exit_ip_available": 1, "exit_ip_missing": 1,

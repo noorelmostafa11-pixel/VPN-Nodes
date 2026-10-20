@@ -17,6 +17,16 @@ TARGET_LABELS = {
     "https://example.com/": "example",
 }
 SUCCESS_ENDPOINTS = frozenset(TARGET_LABELS.values())
+CONNECTION_KEY_SCHEMA = "xray-outbound-v1"
+
+
+def connection_key(value: object) -> str:
+    """Read optional core metadata; never reconstruct connection settings here."""
+    if value is None or value == "":
+        return ""
+    if not isinstance(value, str) or not re.fullmatch(CONNECTION_KEY_SCHEMA + r":[0-9a-f]{64}", value):
+        raise ValueError("Invalid core connection identity")
+    return value
 
 
 def digest(path: Path) -> str:

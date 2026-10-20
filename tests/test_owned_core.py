@@ -77,6 +77,25 @@ class OwnedCoreTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             run_shard.convert_results(self.reports, self.assigned, self.manifest)
 
+    def test_core_identity_survives_handoff_without_changing_raw_or_legacy_ids(self):
+        self.result["connection_key"] = "xray-outbound-v1:" + "c" * 64
+        self.write()
+        rows, counts = run_shard.convert_results(self.reports, self.assigned, self.manifest)
+        self.assertEqual(rows[0]["connection_key"], self.result["connection_key"])
+        self.assertEqual(rows[0]["raw"], self.raw)
+        self.assertEqual(rows[0]["node_id"], self.result["node_id"])
+        self.assertEqual(counts["vless"]["working"], 1)
+        del self.result["connection_key"]
+        self.write()
+        rows, _ = run_shard.convert_results(self.reports, self.assigned, self.manifest)
+        self.assertEqual(rows[0]["connection_key"], "")
+
+    def test_invalid_identity_is_a_report_contract_error(self):
+        self.result["connection_key"] = "not-a-core-digest"
+        self.write()
+        with self.assertRaises(ValueError):
+            run_shard.convert_results(self.reports, self.assigned, self.manifest)
+
     def test_foreign_core_or_snapshot_block_publication(self):
         original = dict(self.summary)
         for field, value in (("revision", "c"*40), ("binary_sha256", "d"*64),

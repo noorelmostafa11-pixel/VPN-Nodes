@@ -11,7 +11,7 @@ from collections import Counter
 from pathlib import Path
 from urllib.parse import urlsplit
 from owned_core import (MATRIX_SHARDS, WORKERS, PROTOCOL_ORDER, PUBLIC_PROTOCOL,
-                        TARGET_LABELS, digest, read_json, verified_attempt, verify_binary)
+                        TARGET_LABELS, connection_key, digest, read_json, verified_attempt, verify_binary)
 
 
 def assign(rows: list[dict], shard: int, shards: int) -> list[tuple[str, int, dict]]:
@@ -86,7 +86,8 @@ def convert_results(report_dir: Path, assigned: list[tuple[str, int, dict]], man
                             "host": candidate.get("host", ""), "port": candidate.get("port", 0),
                             "ok": True, "stage": "ok", "country": country,
                             "exit_ip": metadata.get("ip", ""), "http204_ms": attempt["duration_ms"],
-                            "success_endpoint": endpoint, "node_id": node_id})
+                            "success_endpoint": endpoint, "node_id": node_id,
+                            "connection_key": connection_key(result.get("connection_key"))})
     if len(seen) != count or dict(statuses) != {k: v for k, v in summary.get("statuses", {}).items() if v}:
         raise ValueError("Core observation coverage/count mismatch")
     return working, counts
