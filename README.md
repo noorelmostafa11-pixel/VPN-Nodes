@@ -65,34 +65,40 @@ syntax checks, Windows/Linux core compilation and a synthetic loopback core
 check. No public node scan or workflow dispatch was performed. Run the workflow
 manually to produce a new verified catalog and real-run diagnostics.
 
-### Country ordering by a fixed download sample
+### Country ordering by Real Delay
 
-The manual workflow now prepares the exact successful, connection-deduplicated
-set, then runs eight speed jobs with four simultaneous nodes each (32 maximum).
-The separate `scripts/xray_matrix/node_speed.go` tool belongs to this repository.
-It is compiled once from the selected core's module directory and uses that
-unchanged core library's URI resolver, outbound handlers and dispatcher. The
-helper binary, helper source revision and linked core revision are recorded in
-the same build artifact. No command or API is added to VPN-Core-Test or its AAR.
+The manual workflow prepares this run's exact successful, connection-deduplicated
+set, then runs eight Real Delay jobs with four simultaneous nodes each (32 max).
+The separate `scripts/xray_matrix/node_delay.go` tool belongs to VPN-Nodes and
+links the same selected core library. Core source, commands, SDK and AAR stay
+unchanged. Both tool/core revisions and binary hashes are recorded.
 
-Each connection receives one verified HTTPS download request to
-`https://speed.cloudflare.com/__down?bytes=1048576`, with an eight-second total
-deadline. Only a complete, uncompressed 1 MiB response with verified target TLS
-and HTTP 200 receives a score. The estimate uses bits divided by the interval
-from the first response byte through sample completion, excluding tunnel/TLS
-startup; startup latency is recorded separately. No redirects or retries occur.
-Worker processes recycle after bounded batches to release core transport caches.
+Like v2rayN 7.25.6 Real Ping, each node gets two lightweight HTTPS GETs using one
+HTTP client, with 100 ms between requests. The minimum complete-request time is
+reported in milliseconds, outside node import/build/startup. Keep-alive is enabled
+so the second request can reuse its connection when the target permits it. Target:
+`https://www.google.com/generate_204`, matching the owner's v2rayN configuration.
+The two requests share a five-second node budget. There is no 1 MiB download,
+transfer-rate calculation, download endpoint, redirect following or retry phase.
 
-Country files and their matching country shards put measured download rates
-first, descending; ties retain verified HTTPS-delay ordering. Unmeasured nodes
-remain published after measured nodes, with the previous HTTPS-delay order.
-Missing speed jobs also retain their assigned nodes. Protocol feeds keep their
-original source order. Connectivity PASS, deduplication, country assignment,
-original URI text, credentials and the app's Saved behavior do not change.
+For trustworthy ranking we additionally require verified target TLS, complete
+2xx responses and at most 64 KiB per response (normally an empty 204). A failure
+makes only the delay unavailable: it never removes a previously successful node.
+This is the same Real Ping timing principle, not a byte-for-byte v2rayN clone;
+v2rayN does not apply these same response-status/body bounds.
 
-`output/metadata/node_speeds.json` contains credential-free per-node scores and
-failure codes and is included in the existing signed catalog manifest. The
-catalog summary reports measured/unmeasured counts and missing speed shards.
-This is one sample from GitHub runners at that time, not a guarantee of a
-phone's download speed. It adds sample traffic and elapsed time; the owner
-continues to dispatch the workflow manually.
+Country files and matching country shards put measured delays first, ascending.
+Ties and unavailable measurements retain the previous verified HTTPS-delay order.
+Missing delay jobs also retain all their nodes. Connectivity PASS, complete
+connection deduplication, original URI text, country assignment, protocol-feed
+source order, credentials, catalog signing and the application's Saved behavior
+are unchanged. The input is always from this run, not a previous catalog.
+
+`output/metadata/node_delays.json` stores credential-free delay values, both
+request receipts and failure codes, and is included in the existing signed
+manifest. Previous download-score metadata remains verifiable for old catalogs;
+the next publication removes that old score file. Real Delay estimates response
+latency from GitHub's network. It does not guarantee download throughput or the
+same ordering/numbers on a phone or another network. The owner runs the workflow.
+
+Reference: [v2rayN 7.25.6 GetRealPingTime](https://github.com/2dust/v2rayN/blob/1883178b5f1e222b6c6db2782e7a3d989b7cc18f/v2rayN/ServiceLib/Handler/ConnectionHandler.cs#L63).

@@ -1,5 +1,8 @@
 # Optional country speed ranking
 
+Historical verification only. The active download-sample phase was replaced by
+Real Delay; see [Real Delay verification](VERIFICATION-REAL-DELAY-20261020.md).
+
 Starting VPN-Nodes revision: `ad3a1ae6d68c9058c418132627125ba84a6850b3`.
 Core used for local validation: `aa1b40e50f74bcb41cbefa755800e34975dc09fa`.
 

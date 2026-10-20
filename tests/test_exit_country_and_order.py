@@ -198,18 +198,18 @@ class ExitCountryAndOrderTests(unittest.TestCase):
 
             # The optional ranking phase must keep that exact successful set,
             # changing only country order and regenerating matching shards.
-            from speed_ranking import POLICY, REPORT_SCHEMA, assigned, load_pool
-            pool_dir = root / "speed-input"
+            from delay_ranking import POLICY, REPORT_SCHEMA, assigned, load_pool
+            pool_dir = root / "delay-input"
             with mock.patch.object(finalize_catalog, "ROOT", root), \
-                 mock.patch.object(sys, "argv", argv + ["--prepare-speed", str(pool_dir)]), \
+                 mock.patch.object(sys, "argv", argv + ["--prepare-delay", str(pool_dir)]), \
                  mock.patch.object(finalize_catalog.country_resolver, "resolve_ip") as resolver:
                 self.assertEqual(finalize_catalog.main(), 0)
                 resolver.assert_not_called()
             pool_path = pool_dir / "pool.json"
             pool = load_pool(pool_path)
-            speed_root = root / "speed-results"
+            delay_root = root / "delay-results"
             for shard in range(8):
-                directory = speed_root / str(shard)
+                directory = delay_root / str(shard)
                 directory.mkdir(parents=True)
                 entries = []
                 for local, (global_index, node) in enumerate(assigned(pool, shard)):
@@ -218,21 +218,25 @@ class ExitCountryAndOrderTests(unittest.TestCase):
                         "node_id": node["node_id"], "protocol": node["protocol"],
                         "connection_key": node["connection_key"] or "xray-outbound-v1:"+"d"*64,
                         "status": "MEASURED", "network_tested": True,
-                        "speed": {"target": POLICY["target"], "http_status": 200, "verified_tls": True,
-                                  "bytes": POLICY["sample_bytes"], "transfer_ns": duration,
-                                  "bits_per_second": POLICY["sample_bytes"]*8*1_000_000_000//duration,
-                                  "first_byte_ms": 20}}
+                        "delay": {"target": POLICY["target"], "real_delay_ns": duration,
+                                  "real_delay_ms": max(1,duration//1_000_000),
+                                  "samples": [{"http_status":204, "verified_tls":True, "bytes":0,
+                                      "duration_ns":n, "delay_ms":max(1,n//1_000_000),
+                                      "connection_reused":i>0} for i,n in enumerate((duration+20_000_000,duration))]}}
                     entries.append({"index": global_index, "node_id": node["node_id"], "measurement": measurement})
                 (directory / "observations.jsonl").write_text(''.join(json.dumps(e)+'\n' for e in entries))
                 (directory / "summary.json").write_text(json.dumps({"schema": REPORT_SCHEMA,
                     "core": pool["core"], "policy": POLICY, "pool_sha256": digest(pool_path),
                     "shard": shard, "assigned": len(entries), "statuses": {"MEASURED": len(entries)} if entries else {}}))
+            (out / "metadata/node_speeds.json").write_text('{"legacy":true}')
             with mock.patch.object(finalize_catalog, "ROOT", root), \
                  mock.patch.object(finalize_catalog, "COUNTRY_SHARD_SIZE", 1), \
                  mock.patch.object(finalize_catalog.country_resolver, "country_from_ip", side_effect=lambda ip: {"8.8.8.8": "US", "9.9.9.9": "DE"}.get(ip)), \
                  mock.patch.object(finalize_catalog.country_resolver, "resolve_ip", return_value="9.9.9.9"), \
-                 mock.patch.object(sys, "argv", argv + ["--speed-pool", str(pool_path), "--speed-results", str(speed_root)]):
+                 mock.patch.object(sys, "argv", argv + ["--delay-pool", str(pool_path), "--delay-results", str(delay_root)]):
                 self.assertEqual(finalize_catalog.main(), 0)
+            self.assertFalse((out / "metadata/node_speeds.json").exists())
+            self.assertTrue((out / "metadata/node_delays.json").exists())
             self.assertEqual(contents(out / "countries/US.txt"), ["vless://slow", "vless://fast"])
             self.assertEqual(contents(out / "country_shards/US/000.txt"), ["vless://slow"])
             self.assertEqual(contents(out / "country_shards/US/001.txt"), ["vless://fast"])

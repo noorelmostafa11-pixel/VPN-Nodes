@@ -49,8 +49,8 @@ jobs:
           go build -mod=readonly -trimpath -o "$RUNNER_TEMP/owned-core/vpn-core" ./main
           go build -mod=readonly -trimpath \
             -ldflags "-X main.coreRevision=$(git rev-parse HEAD) -X main.toolRevision=${GITHUB_SHA}" \
-            -o "$RUNNER_TEMP/owned-core/node-speed" \
-            "$GITHUB_WORKSPACE/catalog-source/scripts/xray_matrix/node_speed.go"
+            -o "$RUNNER_TEMP/owned-core/node-delay" \
+            "$GITHUB_WORKSPACE/catalog-source/scripts/xray_matrix/node_delay.go"
           test -z "$(git status --porcelain)"
           CORE_REVISION="$(git rev-parse HEAD)" python3 - <<'PY'
           import hashlib, json, os
@@ -61,9 +61,9 @@ jobs:
           manifest = {'repository': 'noorelmostafa11-pixel/VPN-Core-Test',
                       'revision': os.environ['CORE_REVISION'], 'source_modified': False,
                       'binary_sha256': sha,
-                      'speed_binary_sha256': hashlib.sha256((root / 'node-speed').read_bytes()).hexdigest(),
-                      'speed_core_revision': os.environ['CORE_REVISION'],
-                      'speed_tool_revision': os.environ['GITHUB_SHA']}
+                      'delay_binary_sha256': hashlib.sha256((root / 'node-delay').read_bytes()).hexdigest(),
+                      'delay_core_revision': os.environ['CORE_REVISION'],
+                      'delay_tool_revision': os.environ['GITHUB_SHA']}
           (root / 'core-build.json').write_text(json.dumps(manifest, indent=2) + '\n')
           PY
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
@@ -221,8 +221,8 @@ jobs:
           if-no-files-found: error
           path: /tmp/xray-shard-${{ matrix.shard }}/
 
-  speed-prepare:
-    name: Prepare unique successful nodes for speed ranking
+  delay-prepare:
+    name: Prepare unique successful nodes for delay ranking
     needs: [candidates, core-check]
     runs-on: ubuntu-24.04
     timeout-minutes: 15
@@ -247,17 +247,17 @@ jobs:
             --candidates /tmp/xray-candidates/xray_candidates.json \
             --results-root /tmp/xray-results \
             --source-freshness /tmp/xray-candidates/source_freshness.json \
-            --prepare-speed /tmp/node-speed-input
+            --prepare-delay /tmp/node-delay-input
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
-          name: node-speed-input
+          name: node-delay-input
           retention-days: 7
           if-no-files-found: error
-          path: /tmp/node-speed-input/
+          path: /tmp/node-delay-input/
 
-  speed-check:
-    name: Speed sample (${{ matrix.shard }})
-    needs: [speed-prepare, owned-core]
+  delay-check:
+    name: Real Delay (${{ matrix.shard }})
+    needs: [delay-prepare, owned-core]
     runs-on: ubuntu-24.04
     timeout-minutes: 45
     continue-on-error: true
@@ -273,41 +273,41 @@ jobs:
           python-version: '3.12'
       - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
         with:
-          name: node-speed-input
-          path: /tmp/node-speed-input
+          name: node-delay-input
+          path: /tmp/node-delay-input
       - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
         with:
           name: owned-core-${{ github.run_id }}
           path: ${{ runner.temp }}/owned-core
-      - name: Measure one fixed sample using the pinned core library (four nodes at a time)
+      - name: Measure two lightweight HTTPS requests through the pinned core (four nodes at a time)
         run: |
-          chmod +x "$RUNNER_TEMP/owned-core/vpn-core" "$RUNNER_TEMP/owned-core/node-speed"
-          python scripts/xray_matrix/run_speed_shard.py \
-            --pool /tmp/node-speed-input/pool.json \
+          chmod +x "$RUNNER_TEMP/owned-core/vpn-core" "$RUNNER_TEMP/owned-core/node-delay"
+          python scripts/xray_matrix/run_delay_shard.py \
+            --pool /tmp/node-delay-input/pool.json \
             --core "$RUNNER_TEMP/owned-core/vpn-core" \
-            --tool "$RUNNER_TEMP/owned-core/node-speed" \
+            --tool "$RUNNER_TEMP/owned-core/node-delay" \
             --core-manifest "$RUNNER_TEMP/owned-core/core-build.json" \
-            --output "/tmp/node-speed-shard-${{ matrix.shard }}" \
+            --output "/tmp/node-delay-shard-${{ matrix.shard }}" \
             --shard "${{ matrix.shard }}"
-      - name: Publish speed measurement summary
+      - name: Publish delay measurement summary
         if: ${{ always() }}
         run: |
-          report="/tmp/node-speed-shard-${{ matrix.shard }}/summary.json"
+          report="/tmp/node-delay-shard-${{ matrix.shard }}/summary.json"
           if [ -f "$report" ]; then
-            echo '### Fixed 1 MiB download samples (ranking only)' >> "$GITHUB_STEP_SUMMARY"
+            echo '### Real Delay: minimum of two HTTPS requests in ms (ranking only)' >> "$GITHUB_STEP_SUMMARY"
             cat "$report" >> "$GITHUB_STEP_SUMMARY"
           fi
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         if: ${{ always() }}
         with:
-          name: node-speed-shard-${{ matrix.shard }}
+          name: node-delay-shard-${{ matrix.shard }}
           retention-days: 7
           if-no-files-found: warn
-          path: /tmp/node-speed-shard-${{ matrix.shard }}/
+          path: /tmp/node-delay-shard-${{ matrix.shard }}/
 
   publish:
-    needs: [candidates, core-check, speed-prepare, speed-check]
-    if: ${{ always() && !cancelled() && needs.candidates.result == 'success' && needs.core-check.result == 'success' && needs.speed-prepare.result == 'success' }}
+    needs: [candidates, core-check, delay-prepare, delay-check]
+    if: ${{ always() && !cancelled() && needs.candidates.result == 'success' && needs.core-check.result == 'success' && needs.delay-prepare.result == 'success' }}
     runs-on: ubuntu-latest
     timeout-minutes: 45
 
@@ -351,18 +351,18 @@ jobs:
 
           test -s data/GeoLite2-Country.mmdb
 
-      - name: Download this run's deduplicated speed input
+      - name: Download this run's deduplicated delay input
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
         with:
-          name: node-speed-input
-          path: /tmp/node-speed-input
+          name: node-delay-input
+          path: /tmp/node-delay-input
 
-      - name: Download available speed observations (missing measurements retain nodes)
+      - name: Download available delay observations (missing measurements retain nodes)
         continue-on-error: true
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
         with:
-          pattern: node-speed-shard-*
-          path: /tmp/node-speed-results
+          pattern: node-delay-shard-*
+          path: /tmp/node-delay-results
 
       - name: Build owned-core verified catalog
         run: |
@@ -373,8 +373,8 @@ jobs:
             --results-root /tmp/xray-results \
             --source-freshness /tmp/xray-candidates/source_freshness.json \
             --cache-root /tmp/xray-candidates \
-            --speed-pool /tmp/node-speed-input/pool.json \
-            --speed-results /tmp/node-speed-results
+            --delay-pool /tmp/node-delay-input/pool.json \
+            --delay-results /tmp/node-delay-results
 
           python scripts/xray_matrix/verify_final_catalog.py
 

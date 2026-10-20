@@ -33,7 +33,7 @@ if str(SCRIPTS) not in sys.path:
 import country_resolver  # noqa: E402
 from owned_core import (MATRIX_SHARDS, WORKERS, SUCCESS_ENDPOINTS, CONNECTION_KEY_SCHEMA,
                         connection_key, digest, validate_manifest)  # noqa: E402
-from speed_ranking import apply_ranking, write_pool  # noqa: E402
+from delay_ranking import apply_ranking, write_pool  # noqa: E402
 
 PROTOCOL_ORDER = ("vless", "vmess", "trojan", "ss")
 PUBLIC_PROTOCOL = {"vless": "vless", "vmess": "vmess", "trojan": "trojan", "shadowsocks": "ss"}
@@ -91,11 +91,11 @@ def country_sort_key(row: dict) -> tuple:
         str(row.get("candidate_source") or ""),
         str(row.get("raw") or ""),
     )
-    speed = row.get("_speed")
-    if speed is None:
+    delay = row.get("_delay")
+    if delay is None:
         return fallback
-    measured = speed["status"] == "MEASURED"
-    return (0 if measured else 1, -speed["bits_per_second"] if measured else 0, *fallback)
+    measured = delay["status"] == "MEASURED"
+    return (0 if measured else 1, delay["real_delay_ms"] if measured else 0, *fallback)
 
 
 def deduplicate_working(rows: list[dict]) -> tuple[list[dict], int, int, int]:
@@ -139,9 +139,9 @@ def main() -> int:
     parser.add_argument("--results-root", type=Path, required=True)
     parser.add_argument("--source-freshness", type=Path, required=True)
     parser.add_argument("--cache-root", type=Path)
-    parser.add_argument("--prepare-speed", type=Path)
-    parser.add_argument("--speed-pool", type=Path)
-    parser.add_argument("--speed-results", type=Path)
+    parser.add_argument("--prepare-delay", type=Path)
+    parser.add_argument("--delay-pool", type=Path)
+    parser.add_argument("--delay-results", type=Path)
     args = parser.parse_args()
 
     candidates = read_json(args.candidates)
@@ -289,12 +289,12 @@ def main() -> int:
     if not working:
         raise SystemExit("Refusing to publish an empty Xray-verified catalog")
 
-    if bool(args.speed_pool) != bool(args.speed_results):
-        raise SystemExit("Both speed pool and results are required")
-    if args.prepare_speed:
+    if bool(args.delay_pool) != bool(args.delay_results):
+        raise SystemExit("Both delay pool and results are required")
+    if args.prepare_delay:
         selected, _, _, _ = deduplicate_working(working)
-        write_pool(selected, core_manifest, digest(args.candidates), args.prepare_speed)
-        print(f"SPEED POOL successful={len(working)} unique={len(selected)} shards=8 workers_per_runner=4")
+        write_pool(selected, core_manifest, digest(args.candidates), args.prepare_delay)
+        print(f"DELAY POOL successful={len(working)} unique={len(selected)} shards=8 workers_per_runner=4")
         return 0
 
     # Restore the previous entry-host lookup only when no exit IP is classified.
@@ -336,9 +336,9 @@ def main() -> int:
     # shards. The core supplies equivalence; publication preserves original URIs.
     identity_available = sum(bool(connection_key(row.get("connection_key"))) for row in working)
     working, exact_duplicates_removed, fragment_only_duplicates_removed, semantic_duplicates_removed = deduplicate_working(working)
-    speed_report = None
-    if args.speed_pool:
-        speed_report = apply_ranking(working, args.speed_pool, args.speed_results,
+    delay_report = None
+    if args.delay_pool:
+        delay_report = apply_ranking(working, args.delay_pool, args.delay_results,
                                      core_manifest, digest(args.candidates))
 
     output = ROOT / "output"
@@ -483,13 +483,14 @@ def main() -> int:
         "sources": sources,
         "test_summary": test_summary,
     }
-    if speed_report is not None:
-        app_pool["speed_ranking"] = speed_report["summary"]
-        (metadata / "node_speeds.json").write_text(
-            json.dumps(speed_report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8",
+    (metadata / "node_speeds.json").unlink(missing_ok=True)
+    if delay_report is not None:
+        app_pool["delay_ranking"] = delay_report["summary"]
+        (metadata / "node_delays.json").write_text(
+            json.dumps(delay_report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8",
         )
     else:
-        (metadata / "node_speeds.json").unlink(missing_ok=True)
+        (metadata / "node_delays.json").unlink(missing_ok=True)
     (metadata / "app_pool.json").write_text(
         json.dumps(app_pool, ensure_ascii=False, indent=2) + "\n",
         encoding="utf-8",
@@ -525,11 +526,11 @@ def main() -> int:
         "test_summary": test_summary,
         "semantic_duplicate_raw_removed_after_core": semantic_duplicates_removed,
     }
-    if speed_report is not None:
-        legacy_index["speed_ranking"] = speed_report["summary"]
-        print(f"SPEED RANKING measured={speed_report['summary']['measured']} "
-              f"unmeasured_retained={speed_report['summary']['unmeasured']} "
-              f"missing_shards={speed_report['summary']['missing_shards']}")
+    if delay_report is not None:
+        legacy_index["delay_ranking"] = delay_report["summary"]
+        print(f"DELAY RANKING measured={delay_report['summary']['measured']} "
+              f"unmeasured_retained={delay_report['summary']['unmeasured']} "
+              f"missing_shards={delay_report['summary']['missing_shards']}")
     (metadata / "index.json").write_text(
         json.dumps(legacy_index, ensure_ascii=False, indent=2) + "\n",
         encoding="utf-8",

@@ -1,4 +1,4 @@
-// node_speed is owned by VPN-Nodes. Build this explicit file from the pinned
+// node_delay is owned by VPN-Nodes. Build this explicit file from the pinned
 // VPN-Core-Test module directory; no core source or Android API is modified.
 package main
 
@@ -51,37 +51,42 @@ type options struct {
 	Workers     int           `json:"workers"`
 	NodeTimeout time.Duration `json:"node_timeout"`
 	RootPEM     []byte        `json:"root_pem,omitempty"`
-	Speed       *SpeedOptions `json:"speed"`
+	Delay       *DelayOptions `json:"delay"`
 }
 
 func (o options) validate() error {
-	if o.Speed == nil || o.Workers < 1 || o.Workers > 4 || o.NodeTimeout < 100*time.Millisecond || o.NodeTimeout > time.Minute || len(o.RootPEM) > 1<<20 {
-		return errors.New("invalid speed worker options")
+	if o.Delay == nil || o.Workers < 1 || o.Workers > 4 || o.NodeTimeout < 100*time.Millisecond || o.NodeTimeout > time.Minute || len(o.RootPEM) > 1<<20 {
+		return errors.New("invalid delay worker options")
 	}
-	return o.Speed.validate()
+	return o.Delay.validate()
 }
 
-type speedSample struct {
-	Target        string `json:"target"`
-	HTTPStatus    int    `json:"http_status"`
-	VerifiedTLS   bool   `json:"verified_tls"`
-	Bytes         int64  `json:"bytes"`
-	TransferNS    int64  `json:"transfer_ns"`
-	BitsPerSecond int64  `json:"bits_per_second"`
-	FirstByteMS   int64  `json:"first_byte_ms"`
+type delayAttempt struct {
+	HTTPStatus  int   `json:"http_status"`
+	VerifiedTLS bool  `json:"verified_tls"`
+	Bytes       int64 `json:"bytes"`
+	DurationNS  int64 `json:"duration_ns"`
+	DelayMS     int64 `json:"delay_ms"`
+	Reused      bool  `json:"connection_reused"`
+}
+type delaySample struct {
+	Target      string         `json:"target"`
+	RealDelayNS int64          `json:"real_delay_ns"`
+	RealDelayMS int64          `json:"real_delay_ms"`
+	Samples     []delayAttempt `json:"samples"`
 }
 type result struct {
 	report.Result
-	Speed *speedSample `json:"speed,omitempty"`
+	Delay *delaySample `json:"delay,omitempty"`
 }
-type speedEngine struct {
+type delayEngine struct {
 	instance *core.Instance
 	manager  outbound.Manager
 	roots    *x509.CertPool
 	seq      atomic.Uint64
 }
 
-func newEngine(o options) (*speedEngine, error) {
+func newEngine(o options) (*delayEngine, error) {
 	var roots *x509.CertPool
 	if len(o.RootPEM) > 0 {
 		var err error
@@ -93,7 +98,7 @@ func newEngine(o options) (*speedEngine, error) {
 			return nil, errors.New("invalid measurement CA")
 		}
 	}
-	cfg := &core.Config{App: []*serial.TypedMessage{serial.ToTypedMessage(&dispatcher.Config{}), serial.ToTypedMessage(&proxyman.InboundConfig{}), serial.ToTypedMessage(&proxyman.OutboundConfig{})}, Outbound: []*core.OutboundHandlerConfig{{Tag: "speed-deny-default", ProxySettings: serial.ToTypedMessage(&blackhole.Config{})}}}
+	cfg := &core.Config{App: []*serial.TypedMessage{serial.ToTypedMessage(&dispatcher.Config{}), serial.ToTypedMessage(&proxyman.InboundConfig{}), serial.ToTypedMessage(&proxyman.OutboundConfig{})}, Outbound: []*core.OutboundHandlerConfig{{Tag: "delay-deny-default", ProxySettings: serial.ToTypedMessage(&blackhole.Config{})}}}
 	instance, err := core.New(cfg)
 	if err != nil {
 		return nil, err
@@ -102,7 +107,7 @@ func newEngine(o options) (*speedEngine, error) {
 		instance.Close()
 		return nil, err
 	}
-	return &speedEngine{instance: instance, manager: instance.GetFeature(outbound.ManagerType()).(outbound.Manager), roots: roots}, nil
+	return &delayEngine{instance: instance, manager: instance.GetFeature(outbound.ManagerType()).(outbound.Manager), roots: roots}, nil
 }
 
 type ownedConn struct {
@@ -139,58 +144,62 @@ type discardLogs struct{}
 func (discardLogs) Handle(clog.Message)     {}
 func (discardLogs) Severity() clog.Severity { return clog.Severity(-1) }
 
-const SpeedSampleBytes int64 = 1 << 20
-const DefaultSpeedTarget = "https://speed.cloudflare.com/__down?bytes=1048576"
+const MaxDelayBodyBytes int64 = 64 << 10
+const DelayAttempts = 2
+const DelayInterval = 100 * time.Millisecond
+const DefaultDelayTarget = "https://www.google.com/generate_204"
 
-type SpeedOptions struct {
+type DelayOptions struct {
 	Target string `json:"target"`
-	Bytes  int64  `json:"bytes"`
 }
 
-func (o SpeedOptions) validate() error {
+func (o DelayOptions) validate() error {
 	u, err := url.Parse(o.Target)
-	if err != nil || u.Scheme != "https" || u.Hostname() == "" || u.User != nil || u.Fragment != "" || strings.ContainsAny(o.Target, "\x00\r\n\t") || o.Bytes != SpeedSampleBytes {
-		return errors.New("speed measurement requires HTTPS and a fixed 1 MiB sample")
+	if err != nil || u.Scheme != "https" || u.Hostname() == "" || u.User != nil || u.Fragment != "" || strings.ContainsAny(o.Target, "\x00\r\n\t") {
+		return errors.New("real delay measurement requires an HTTPS target")
 	}
 	return nil
 }
 
-// Measurement uses existing core APIs; connectivity acceptance is unchanged.
-func (e *speedEngine) measureSpeed(parent context.Context, in report.Input, o options) result {
+// Like v2rayN 7.25.6 Real Ping: two GETs on one client, a 100 ms gap,
+// and the minimum positive complete-request time. Setup is outside each timer.
+// Authentication, bounded bodies and a shared deadline protect ranking evidence.
+func (e *delayEngine) measureDelay(parent context.Context, in report.Input, o options) result {
 	started := time.Now()
 	ctx, cancel := context.WithTimeout(parent, o.NodeTimeout)
 	defer cancel()
 	r := result{Result: report.ForInput(in, "UNMEASURED", "")}
-	r.Speed = &speedSample{Target: o.Speed.Target}
+	r.Delay = &delaySample{Target: o.Delay.Target}
 	finish := func(code string) result {
 		r.DurationMS = time.Since(started).Milliseconds()
 		if code != "" {
-			r.Failure = &report.Diagnostic{Code: code, Message: "Speed sample unavailable; connectivity eligibility is unchanged"}
+			r.Failure = &report.Diagnostic{Code: code, Message: "Real Delay unavailable; connectivity eligibility is unchanged"}
 		}
 		return r
 	}
 	parsed, err := conf.ImportNodeURI(in.URI)
 	if err != nil {
-		return finish("SPEED_NODE_INPUT")
+		return finish("DELAY_NODE_INPUT")
 	}
 	r.Protocol = parsed.Node.Protocol
 	cfg, err := parsed.Selection.Outbound.Build()
 	if err != nil {
-		return finish("SPEED_NODE_BUILD")
+		return finish("DELAY_NODE_BUILD")
 	}
 	r.ConnectionKey, err = conf.NodeConnectionKey(cfg)
 	if err != nil {
-		return finish("SPEED_NODE_IDENTITY")
+		return finish("DELAY_NODE_IDENTITY")
 	}
-	tag := "nodespeed-" + strconv.FormatUint(e.seq.Add(1), 10)
+	tag := "nodedelay-" + strconv.FormatUint(e.seq.Add(1), 10)
 	cfg.Tag = tag
 	if err := core.AddOutboundHandler(e.instance, cfg); err != nil {
-		return finish("SPEED_NODE_START")
+		return finish("DELAY_NODE_START")
 	}
 	h := e.manager.GetHandler(tag)
 	defer func() { cancel(); common.Close(h); e.manager.RemoveHandler(context.Background(), tag) }()
 	transport := &http.Transport{
-		Proxy: nil, DisableKeepAlives: true, DisableCompression: true, ForceAttemptHTTP2: false,
+		Proxy: nil, DisableCompression: true, ForceAttemptHTTP2: false,
+		MaxIdleConns: 1, MaxIdleConnsPerHost: 1, IdleConnTimeout: o.NodeTimeout,
 		TLSClientConfig:     &tls.Config{RootCAs: e.roots, MinVersion: tls.VersionTLS12},
 		TLSHandshakeTimeout: o.NodeTimeout, ResponseHeaderTimeout: o.NodeTimeout, MaxResponseHeaderBytes: 64 << 10,
 	}
@@ -209,58 +218,72 @@ func (e *speedEngine) measureSpeed(parent context.Context, in report.Input, o op
 	}
 	defer transport.CloseIdleConnections()
 	client := &http.Client{Transport: transport, CheckRedirect: func(*http.Request, []*http.Request) error { return http.ErrUseLastResponse }}
-	var firstByte atomic.Int64
-	requestStarted := time.Now()
-	ctx = httptrace.WithClientTrace(ctx, &httptrace.ClientTrace{GotFirstResponseByte: func() { firstByte.CompareAndSwap(0, max(1, time.Since(requestStarted).Nanoseconds())) }})
-	request, err := http.NewRequestWithContext(ctx, http.MethodGet, o.Speed.Target, nil)
-	if err != nil {
-		return finish("SPEED_REQUEST")
-	}
-	request.Header.Set("User-Agent", "VPN-Core-Node-Speed/1")
-	request.Header.Set("Accept", "application/octet-stream,*/*")
-	request.Header.Set("Accept-Encoding", "identity")
-	request.Header.Set("Cache-Control", "no-cache, no-store")
-	response, err := client.Do(request)
-	r.NetworkTested = true
-	if err != nil {
-		if response != nil && response.Body != nil {
-			response.Body.Close()
+	var best int64
+	for attempt := 0; attempt < DelayAttempts; attempt++ {
+		if attempt > 0 {
+			timer := time.NewTimer(DelayInterval)
+			select {
+			case <-timer.C:
+			case <-ctx.Done():
+				timer.Stop()
+				return finish("DELAY_" + errorCode(ctx.Err()))
+			}
 		}
-		return finish("SPEED_" + errorCode(err))
+		var reused atomic.Bool
+		trace := &httptrace.ClientTrace{GotConn: func(info httptrace.GotConnInfo) { reused.Store(info.Reused) }}
+		request, err := http.NewRequestWithContext(httptrace.WithClientTrace(ctx, trace), http.MethodGet, o.Delay.Target, nil)
+		if err != nil {
+			return finish("DELAY_REQUEST")
+		}
+		request.Header.Set("User-Agent", "VPN-Nodes-Real-Delay/1")
+		request.Header.Set("Accept-Encoding", "identity")
+		requestStarted := time.Now()
+		response, err := client.Do(request)
+		r.NetworkTested = true
+		if err != nil {
+			if response != nil && response.Body != nil {
+				response.Body.Close()
+			}
+			return finish("DELAY_" + errorCode(err))
+		}
+		sample := delayAttempt{HTTPStatus: response.StatusCode, VerifiedTLS: response.TLS != nil && response.TLS.HandshakeComplete && len(response.TLS.VerifiedChains) > 0, Reused: reused.Load()}
+		code := ""
+		switch {
+		case !sample.VerifiedTLS:
+			code = "DELAY_TLS_UNVERIFIED"
+		case response.StatusCode < 200 || response.StatusCode >= 300:
+			code = "DELAY_HTTP_STATUS"
+		case response.Header.Get("Content-Encoding") != "" && !strings.EqualFold(response.Header.Get("Content-Encoding"), "identity"):
+			code = "DELAY_CONTENT_ENCODING"
+		case response.ContentLength > MaxDelayBodyBytes:
+			code = "DELAY_RESPONSE_TOO_LARGE"
+		}
+		if code == "" {
+			n, readErr := io.CopyN(io.Discard, response.Body, MaxDelayBodyBytes+1)
+			sample.Bytes = n
+			switch {
+			case n > MaxDelayBodyBytes:
+				code = "DELAY_RESPONSE_TOO_LARGE"
+			case readErr != nil && readErr != io.EOF:
+				code = "DELAY_INCOMPLETE_RESPONSE"
+			}
+		}
+		sample.DurationNS = max(1, time.Since(requestStarted).Nanoseconds())
+		sample.DelayMS = max(1, sample.DurationNS/int64(time.Millisecond))
+		response.Body.Close()
+		r.Delay.Samples = append(r.Delay.Samples, sample)
+		if code != "" {
+			return finish(code)
+		}
+		if ctx.Err() != nil || time.Since(started) > o.NodeTimeout {
+			return finish("DELAY_TIMEOUT")
+		}
+		if best == 0 || sample.DurationNS < best {
+			best = sample.DurationNS
+		}
 	}
-	defer response.Body.Close()
-	r.Speed.HTTPStatus = response.StatusCode
-	r.Speed.VerifiedTLS = response.TLS != nil && response.TLS.HandshakeComplete && len(response.TLS.VerifiedChains) > 0
-	if !r.Speed.VerifiedTLS {
-		return finish("SPEED_TLS_UNVERIFIED")
-	}
-	if response.StatusCode != http.StatusOK {
-		return finish("SPEED_HTTP_STATUS")
-	}
-	if encoding := response.Header.Get("Content-Encoding"); encoding != "" && !strings.EqualFold(encoding, "identity") {
-		return finish("SPEED_CONTENT_ENCODING")
-	}
-	if response.ContentLength >= 0 && response.ContentLength != o.Speed.Bytes {
-		return finish("SPEED_SAMPLE_LENGTH")
-	}
-	n, readErr := io.CopyN(io.Discard, response.Body, o.Speed.Bytes)
-	r.Speed.Bytes = n
-	first := firstByte.Load()
-	r.Speed.FirstByteMS = first / int64(time.Millisecond)
-	r.Speed.TransferNS = time.Since(requestStarted).Nanoseconds() - first
-	if readErr != nil || n != o.Speed.Bytes {
-		return finish("SPEED_INCOMPLETE_SAMPLE")
-	}
-	if ctx.Err() != nil || time.Since(started) > o.NodeTimeout {
-		return finish("SPEED_TIMEOUT")
-	}
-	if first <= 0 || r.Speed.TransferNS <= 0 {
-		return finish("SPEED_TIMING")
-	}
-	r.Speed.BitsPerSecond = n * 8 * int64(time.Second) / r.Speed.TransferNS
-	if r.Speed.BitsPerSecond <= 0 {
-		return finish("SPEED_TIMING")
-	}
+	r.Delay.RealDelayNS = best
+	r.Delay.RealDelayMS = max(1, best/int64(time.Millisecond))
 	r.Status = "MEASURED"
 	return finish("")
 }
@@ -275,13 +298,13 @@ func worker(ctx context.Context) error {
 	decoder.DisallowUnknownFields()
 	var j job
 	if decoder.Decode(&j) != nil || len(j.Entries) > 256 {
-		return errors.New("invalid speed job")
+		return errors.New("invalid delay job")
 	}
 	if err := j.Options.validate(); err != nil {
 		return err
 	}
 	if decoder.Decode(new(any)) != io.EOF {
-		return errors.New("trailing speed job")
+		return errors.New("trailing delay job")
 	}
 	engine, err := newEngine(j.Options)
 	if err != nil {
@@ -298,7 +321,7 @@ func worker(ctx context.Context) error {
 		go func() {
 			defer wg.Done()
 			for in := range jobs {
-				results <- engine.measureSpeed(ctx, in, j.Options)
+				results <- engine.measureDelay(ctx, in, j.Options)
 			}
 		}()
 	}
@@ -352,13 +375,13 @@ func runBatch(parent context.Context, executable string, inputs []report.Input, 
 	for scanner.Scan() {
 		var r result
 		if json.Unmarshal(scanner.Bytes(), &r) != nil {
-			protocolErr = errors.New("invalid speed worker response")
+			protocolErr = errors.New("invalid delay worker response")
 			cancel()
 			break
 		}
 		in, ok := valid[r.Index]
 		if !ok || seen[r.Index] || in.ID != r.ID || in.Line != r.Line || in.Source != r.Source {
-			protocolErr = errors.New("foreign speed worker response")
+			protocolErr = errors.New("foreign delay worker response")
 			cancel()
 			break
 		}
@@ -373,13 +396,13 @@ func runBatch(parent context.Context, executable string, inputs []report.Input, 
 	encodeErr := <-encoded
 	for _, in := range inputs {
 		if !seen[in.Index] {
-			if e := sink(result{Result: report.ForInput(in, "RUNNER_ERROR", "SPEED_WORKER_INCOMPLETE")}); e != nil {
+			if e := sink(result{Result: report.ForInput(in, "RUNNER_ERROR", "DELAY_WORKER_INCOMPLETE")}); e != nil {
 				return e
 			}
 		}
 	}
 	if scanner.Err() != nil || waitErr != nil || encodeErr != nil || protocolErr != nil || len(seen) != len(inputs) {
-		return errors.New("speed worker incomplete; samples remain unmeasured")
+		return errors.New("delay worker incomplete; samples remain unmeasured")
 	}
 	return nil
 }
@@ -395,23 +418,23 @@ func main() {
 func execute(ctx context.Context) error {
 	input := flag.String("input", "", "Explicit URI file")
 	output := flag.String("output", "", "Empty report directory")
-	target := flag.String("target", DefaultSpeedTarget, "HTTPS measurement target")
+	target := flag.String("target", DefaultDelayTarget, "HTTPS measurement target")
 	caPath := flag.String("cacert", "", "Additional trusted CA for local fixtures")
 	workers := flag.Int("workers", 4, "Concurrent nodes, maximum four")
-	timeout := flag.Duration("node-timeout", 8*time.Second, "Complete sample deadline")
+	timeout := flag.Duration("node-timeout", 5*time.Second, "Complete two-request deadline")
 	internal := flag.Bool("internal-worker", false, "Private worker IPC")
 	flag.Parse()
 	if *internal {
 		return worker(ctx)
 	}
 	if flag.NArg() != 0 || *input == "" || *output == "" {
-		return errors.New("explicit speed input/output required")
+		return errors.New("explicit delay input/output required")
 	}
 	st, err := os.Stat(*input)
 	if err != nil || !st.Mode().IsRegular() {
-		return errors.New("speed input must be a regular URI file")
+		return errors.New("delay input must be a regular URI file")
 	}
-	o := options{Workers: *workers, NodeTimeout: *timeout, Speed: &SpeedOptions{Target: *target, Bytes: SpeedSampleBytes}}
+	o := options{Workers: *workers, NodeTimeout: *timeout, Delay: &DelayOptions{Target: *target}}
 	if *caPath != "" {
 		f, e := os.Open(*caPath)
 		if e != nil {
@@ -438,7 +461,7 @@ func execute(ctx context.Context) error {
 		return err
 	}
 	if len(files) > 0 {
-		return errors.New("speed output must be empty")
+		return errors.New("delay output must be empty")
 	}
 	out, err := os.OpenFile(filepath.Join(*output, "results.jsonl"), os.O_CREATE|os.O_EXCL|os.O_WRONLY, 0600)
 	if err != nil {
@@ -470,15 +493,15 @@ func execute(ctx context.Context) error {
 		}
 		finished++
 		statuses[r.Status]++
-		bps := int64(0)
-		if r.Speed != nil {
-			bps = r.Speed.BitsPerSecond
+		delay := int64(0)
+		if r.Delay != nil {
+			delay = r.Delay.RealDelayMS
 		}
 		code := "OK"
 		if r.Failure != nil {
 			code = r.Failure.Code
 		}
-		fmt.Fprintf(os.Stderr, "[speed %d/%d] %s node=%.12s download=%.3fMbps code=%s\n", finished, len(inputs), r.Status, r.ID, float64(bps)/1e6, code)
+		fmt.Fprintf(os.Stderr, "[delay %d/%d] %s node=%.12s real_delay=%dms code=%s\n", finished, len(inputs), r.Status, r.ID, delay, code)
 		return nil
 	}
 	for start := 0; start < len(inputs); {
@@ -509,7 +532,7 @@ func execute(ctx context.Context) error {
 	if err = out.Close(); err != nil {
 		return err
 	}
-	summary := map[string]any{"schema": "xray-node-speed-v1", "revision": coreRevision, "tool_revision": toolRevision, "binary_sha256": hex.EncodeToString(hash.Sum(nil)), "input_sha256": hashes, "inventory": len(inputs), "finished": finished, "statuses": statuses, "completed": runErr == nil && finished == len(inputs), "workers": o.Workers, "worker_processes": processes, "target": o.Speed.Target, "sample_bytes": SpeedSampleBytes, "node_timeout_ms": o.NodeTimeout.Milliseconds(), "duration_ms": time.Since(started).Milliseconds()}
+	summary := map[string]any{"schema": "xray-node-delay-v1", "revision": coreRevision, "tool_revision": toolRevision, "binary_sha256": hex.EncodeToString(hash.Sum(nil)), "input_sha256": hashes, "inventory": len(inputs), "finished": finished, "statuses": statuses, "completed": runErr == nil && finished == len(inputs), "workers": o.Workers, "worker_processes": processes, "target": o.Delay.Target, "attempts_per_node": DelayAttempts, "interval_ms": DelayInterval.Milliseconds(), "max_response_bytes": MaxDelayBodyBytes, "node_timeout_ms": o.NodeTimeout.Milliseconds(), "duration_ms": time.Since(started).Milliseconds()}
 	b, err := json.MarshalIndent(summary, "", "  ")
 	if err != nil {
 		return err
