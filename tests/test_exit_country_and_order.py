@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import hashlib
 import sys
 import tempfile
 import unittest
@@ -152,6 +153,7 @@ class ExitCountryAndOrderTests(unittest.TestCase):
                            "http204_ms": (200.0, 50.0, 25.0, 40.0, 35.0, 1.0)[shard]}
                     if shard in (1, 5):
                         row["connection_key"] = "xray-outbound-v1:" + "a" * 64
+                    row["node_id"] = hashlib.sha256(row["raw"].encode()).hexdigest()
                 (folder / "working.jsonl").write_text(
                     json.dumps(row) + "\n" if row else "", encoding="utf-8",
                 )
@@ -190,6 +192,51 @@ class ExitCountryAndOrderTests(unittest.TestCase):
                 "exit_ip_classified": 1, "entry_host_attempted": 1,
                 "entry_host_classified": 1, "classified": 2, "unresolved": 0,
             })
+            with mock.patch.object(verify_final_catalog, "OUT", out), \
+                 mock.patch.object(verify_final_catalog, "META", out / "metadata"):
+                self.assertEqual(verify_final_catalog.main(), 0)
+
+            # The optional ranking phase must keep that exact successful set,
+            # changing only country order and regenerating matching shards.
+            from speed_ranking import POLICY, REPORT_SCHEMA, assigned, load_pool
+            pool_dir = root / "speed-input"
+            with mock.patch.object(finalize_catalog, "ROOT", root), \
+                 mock.patch.object(sys, "argv", argv + ["--prepare-speed", str(pool_dir)]), \
+                 mock.patch.object(finalize_catalog.country_resolver, "resolve_ip") as resolver:
+                self.assertEqual(finalize_catalog.main(), 0)
+                resolver.assert_not_called()
+            pool_path = pool_dir / "pool.json"
+            pool = load_pool(pool_path)
+            speed_root = root / "speed-results"
+            for shard in range(8):
+                directory = speed_root / str(shard)
+                directory.mkdir(parents=True)
+                entries = []
+                for local, (global_index, node) in enumerate(assigned(pool, shard)):
+                    duration = 10_000_000 if node["raw"] == "vless://slow" else 250_000_000
+                    measurement = {"index": local, "source": "nodes.txt", "line": local+1,
+                        "node_id": node["node_id"], "protocol": node["protocol"],
+                        "connection_key": node["connection_key"] or "xray-outbound-v1:"+"d"*64,
+                        "status": "MEASURED", "network_tested": True,
+                        "speed": {"target": POLICY["target"], "http_status": 200, "verified_tls": True,
+                                  "bytes": POLICY["sample_bytes"], "transfer_ns": duration,
+                                  "bits_per_second": POLICY["sample_bytes"]*8*1_000_000_000//duration,
+                                  "first_byte_ms": 20}}
+                    entries.append({"index": global_index, "node_id": node["node_id"], "measurement": measurement})
+                (directory / "observations.jsonl").write_text(''.join(json.dumps(e)+'\n' for e in entries))
+                (directory / "summary.json").write_text(json.dumps({"schema": REPORT_SCHEMA,
+                    "core": pool["core"], "policy": POLICY, "pool_sha256": digest(pool_path),
+                    "shard": shard, "assigned": len(entries), "statuses": {"MEASURED": len(entries)} if entries else {}}))
+            with mock.patch.object(finalize_catalog, "ROOT", root), \
+                 mock.patch.object(finalize_catalog, "COUNTRY_SHARD_SIZE", 1), \
+                 mock.patch.object(finalize_catalog.country_resolver, "country_from_ip", side_effect=lambda ip: {"8.8.8.8": "US", "9.9.9.9": "DE"}.get(ip)), \
+                 mock.patch.object(finalize_catalog.country_resolver, "resolve_ip", return_value="9.9.9.9"), \
+                 mock.patch.object(sys, "argv", argv + ["--speed-pool", str(pool_path), "--speed-results", str(speed_root)]):
+                self.assertEqual(finalize_catalog.main(), 0)
+            self.assertEqual(contents(out / "countries/US.txt"), ["vless://slow", "vless://fast"])
+            self.assertEqual(contents(out / "country_shards/US/000.txt"), ["vless://slow"])
+            self.assertEqual(contents(out / "country_shards/US/001.txt"), ["vless://fast"])
+            self.assertEqual(contents(out / "protocols/vless.txt"), ["vless://slow", "vless://fast", "vless://unknown"])
             with mock.patch.object(verify_final_catalog, "OUT", out), \
                  mock.patch.object(verify_final_catalog, "META", out / "metadata"):
                 self.assertEqual(verify_final_catalog.main(), 0)

@@ -4,6 +4,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 from owned_core import MATRIX_SHARDS, WORKERS, SUCCESS_ENDPOINTS, CONNECTION_KEY_SCHEMA, validate_manifest
+from speed_ranking import verify_ranking
 
 ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / "output"
@@ -156,6 +157,10 @@ def main() -> int:
         raise SystemExit("protocol total mismatch")
     if set(protocol_raw) != set(country_raw):
         raise SystemExit("country/protocol publication sets differ")
+    if app.get("speed_ranking") is not None:
+        if index.get("speed_ranking") != app["speed_ranking"]:
+            raise SystemExit("Legacy speed ranking metadata mismatch")
+        verify_ranking(read_json(META / "node_speeds.json"), app["speed_ranking"], app["core"], protocol_raw, country_files)
 
     geo = app.get("geoip_xx_fallback") or {}
     if geo.get("scope") != "working_xx_only":

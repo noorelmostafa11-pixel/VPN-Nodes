@@ -64,3 +64,35 @@ publication and ordering checks, source/freshness/identity regressions, workflow
 syntax checks, Windows/Linux core compilation and a synthetic loopback core
 check. No public node scan or workflow dispatch was performed. Run the workflow
 manually to produce a new verified catalog and real-run diagnostics.
+
+### Country ordering by a fixed download sample
+
+The manual workflow now prepares the exact successful, connection-deduplicated
+set, then runs eight speed jobs with four simultaneous nodes each (32 maximum).
+The separate `scripts/xray_matrix/node_speed.go` tool belongs to this repository.
+It is compiled once from the selected core's module directory and uses that
+unchanged core library's URI resolver, outbound handlers and dispatcher. The
+helper binary, helper source revision and linked core revision are recorded in
+the same build artifact. No command or API is added to VPN-Core-Test or its AAR.
+
+Each connection receives one verified HTTPS download request to
+`https://speed.cloudflare.com/__down?bytes=1048576`, with an eight-second total
+deadline. Only a complete, uncompressed 1 MiB response with verified target TLS
+and HTTP 200 receives a score. The estimate uses bits divided by the interval
+from the first response byte through sample completion, excluding tunnel/TLS
+startup; startup latency is recorded separately. No redirects or retries occur.
+Worker processes recycle after bounded batches to release core transport caches.
+
+Country files and their matching country shards put measured download rates
+first, descending; ties retain verified HTTPS-delay ordering. Unmeasured nodes
+remain published after measured nodes, with the previous HTTPS-delay order.
+Missing speed jobs also retain their assigned nodes. Protocol feeds keep their
+original source order. Connectivity PASS, deduplication, country assignment,
+original URI text, credentials and the app's Saved behavior do not change.
+
+`output/metadata/node_speeds.json` contains credential-free per-node scores and
+failure codes and is included in the existing signed catalog manifest. The
+catalog summary reports measured/unmeasured counts and missing speed shards.
+This is one sample from GitHub runners at that time, not a guarantee of a
+phone's download speed. It adds sample traffic and elapsed time; the owner
+continues to dispatch the workflow manually.

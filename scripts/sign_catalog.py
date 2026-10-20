@@ -50,7 +50,9 @@ def included_files() -> list[Path]:
     if not shard_files:
         raise SystemExit("No country shards were generated")
 
-    return required + country_files + shard_files + protocol_files
+    speed = META / "node_speeds.json"
+    optional = [speed] if speed.is_file() else []
+    return required + optional + country_files + shard_files + protocol_files
 
 
 def main() -> int:
