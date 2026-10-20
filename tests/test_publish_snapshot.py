@@ -162,7 +162,7 @@ class RecoveryTests(unittest.TestCase):
                     "path": ".github/workflows/update.yml", "head_sha": "a" * 40,
                     "head_repository": {"full_name": "owner/repo"}}
         names = ["candidates", "Build pinned owner core once",
-                 "Prepare unique successful nodes for delay ranking"]
+                 "Prepare unique successful nodes for speed ranking"]
         self.jobs = [{"name": name, "conclusion": "success"}
                      for name in names + [f"core-check ({i})" for i in range(8)]]
 

@@ -12,7 +12,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts/xray_matrix"))
 from finalize_catalog import country_sort_key, deduplicate_working
-from delay_ranking import (POLICY, REPORT_SCHEMA, apply_ranking, assigned, digest,
+from speed_ranking import (POLICY, REPORT_SCHEMA, apply_ranking, assigned, digest,
                            load_pool, observation, verify_ranking, write_pool)
 
 CORE = {"repository": "noorelmostafa11-pixel/VPN-Core-Test", "revision": "a"*40,
@@ -26,18 +26,17 @@ def row(index, latency):
 
 
 def measured(node, local, duration):
-    samples = [{"http_status": 204, "verified_tls": True, "bytes": 0,
-                "duration_ns": n, "delay_ms": max(1, n//1_000_000),
-                "connection_reused": i > 0} for i,n in enumerate((duration+20_000_000, duration))]
     return {"index": local, "source": "nodes.txt", "line": local+1, "node_id": node["node_id"],
             "connection_key": node["connection_key"], "protocol": node["protocol"],
             "status": "MEASURED", "network_tested": True,
-            "delay": {"target": POLICY["target"], "real_delay_ns": duration,
-                      "real_delay_ms": max(1, duration//1_000_000), "samples": samples}}
+            "speed": {"target": POLICY["target"], "http_status": 200, "verified_tls": True,
+                      "bytes": POLICY["sample_bytes"], "transfer_ns": duration,
+                      "bits_per_second": POLICY["sample_bytes"]*8*1_000_000_000//duration,
+                      "first_byte_ms": 20}}
 
 
-class DelayRankingTests(unittest.TestCase):
-    def test_optional_delay_metadata_is_included_in_existing_signed_manifest(self):
+class SpeedRankingTests(unittest.TestCase):
+    def test_optional_speed_metadata_is_included_in_existing_signed_manifest(self):
         sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
         import sign_catalog
         with tempfile.TemporaryDirectory() as d:
@@ -49,10 +48,8 @@ class DelayRankingTests(unittest.TestCase):
                 path = output/relative; path.parent.mkdir(parents=True, exist_ok=True); path.write_text('original\n')
             with mock.patch.object(sign_catalog, "ROOT", root), mock.patch.object(sign_catalog, "OUT", output), mock.patch.object(sign_catalog, "META", metadata):
                 original = sign_catalog.included_files()
-                delay = metadata/"node_delays.json"; delay.write_text('{}')
-                self.assertEqual(set(sign_catalog.included_files()), set(original)|{delay})
-                legacy = metadata/"node_speeds.json"; legacy.write_text('{}')
-                self.assertEqual(set(sign_catalog.included_files()), set(original)|{delay, legacy})
+                speed = metadata/"node_speeds.json"; speed.write_text('{}')
+                self.assertEqual(set(sign_catalog.included_files()), set(original)|{speed})
 
     def prepare(self, root, rows):
         write_pool(rows, CORE, "c"*64, root / "input")
@@ -99,7 +96,7 @@ class DelayRankingTests(unittest.TestCase):
             self.assertEqual([n["raw"] for n in nodes], original)
             self.assertEqual([n["index"] for n in sorted(nodes, key=country_sort_key)], [1, 2, 0])
 
-    def test_lower_real_delay_sorts_first_without_losing_originals(self):
+    def test_full_speed_samples_sort_before_unmeasured_without_losing_originals(self):
         nodes = [row(0, 10), row(1, 100), row(2, 5), row(3, 1)]
         original = {n["raw"] for n in nodes}
         with tempfile.TemporaryDirectory() as d:
@@ -121,14 +118,10 @@ class DelayRankingTests(unittest.TestCase):
     def test_partial_wrong_identity_and_unverified_samples_cannot_receive_scores(self):
         node = row(0, 10)
         valid = measured(node, 0, 200_000_000)
-        variants = [("bytes", 65537), ("http_status", 403), ("verified_tls", False),
-                    ("duration_ns", 0), ("delay_ms", 999)]
+        variants = [("bytes", 1024), ("http_status", 403), ("verified_tls", False),
+                    ("transfer_ns", 0), ("bits_per_second", 999), ("target", "https://different.invalid/")]
         for name, value in variants:
-            bad = copy.deepcopy(valid); bad["delay"]["samples"][0][name] = value
-            with self.subTest(name=name), self.assertRaises(ValueError): observation(bad, node, 0)
-        for name, value in [("target", "https://different.invalid/"), ("real_delay_ns", 1),
-                            ("real_delay_ms", 1), ("samples", valid["delay"]["samples"][:1])]:
-            bad = copy.deepcopy(valid); bad["delay"][name] = value
+            bad = copy.deepcopy(valid); bad["speed"][name] = value
             with self.subTest(name=name), self.assertRaises(ValueError): observation(bad, node, 0)
         bad = copy.deepcopy(valid); bad["connection_key"] = "xray-outbound-v1:"+"d"*64
         with self.assertRaises(ValueError): observation(bad, node, 0)
@@ -137,27 +130,9 @@ class DelayRankingTests(unittest.TestCase):
 
     def test_measurement_failure_is_retained_unmeasured(self):
         node = row(0, 10); result = measured(node, 0, 200_000_000)
-        result["status"] = "UNMEASURED"; result["delay"]["real_delay_ms"] = result["delay"]["real_delay_ns"] = 0
-        result["failure"] = {"code": "DELAY_HTTP_STATUS"}
+        result["status"] = "UNMEASURED"; result["speed"]["bits_per_second"] = 0
+        result["failure"] = {"code": "SPEED_HTTP_STATUS"}
         self.assertEqual(observation(result, node, 0)["status"], "UNMEASURED")
-
-    def test_minimum_can_be_first_request_and_connection_reuse_is_optional(self):
-        node = row(0, 10)
-        result = measured(node, 0, 20_000_000)
-        first, second = result["delay"]["samples"]
-        first["duration_ns"], second["duration_ns"] = second["duration_ns"], first["duration_ns"]
-        first["delay_ms"], second["delay_ms"] = second["delay_ms"], first["delay_ms"]
-        second["connection_reused"] = False
-        self.assertEqual(observation(result, node, 0)["real_delay_ms"], 20)
-        result["delay"]["real_delay_ns"] = second["duration_ns"]
-        result["delay"]["real_delay_ms"] = second["delay_ms"]
-        with self.assertRaises(ValueError): observation(result, node, 0)
-
-    def test_two_individually_valid_requests_must_fit_shared_deadline(self):
-        node = row(0, 10)
-        result = measured(node, 0, 2_000_000_000)
-        result["delay"]["samples"][0].update(duration_ns=3_000_000_000, delay_ms=3000)
-        with self.assertRaises(ValueError): observation(result, node, 0)
 
     def test_foreign_pool_and_shard_provenance_rejected(self):
         with tempfile.TemporaryDirectory() as d:
@@ -170,13 +145,13 @@ class DelayRankingTests(unittest.TestCase):
             with self.assertRaises(ValueError): apply_ranking(nodes, path, root/"results", CORE, "c"*64)
 
     def test_helper_handoff_checks_hashes_and_keeps_failed_measurements(self):
-        import run_delay_shard
+        import run_speed_shard
         for successful in (True, False):
             with self.subTest(successful=successful), tempfile.TemporaryDirectory() as d:
                 root = Path(d); core_file, tool_file = root/"core", root/"tool"
                 core_file.write_bytes(b"synthetic-core"); tool_file.write_bytes(b"synthetic-helper")
-                manifest = dict(CORE, binary_sha256=digest(core_file), delay_binary_sha256=digest(tool_file),
-                                delay_core_revision=CORE["revision"], delay_tool_revision="d"*40)
+                manifest = dict(CORE, binary_sha256=digest(core_file), speed_binary_sha256=digest(tool_file),
+                                speed_core_revision=CORE["revision"], speed_tool_revision="d"*40)
                 manifest_path = root/"core-build.json"; manifest_path.write_text(json.dumps(manifest))
                 nodes = [row(0, 15)]; write_pool(nodes, manifest, "c"*64, root/"input")
                 def invoke(arguments, **kwargs):
@@ -187,17 +162,17 @@ class DelayRankingTests(unittest.TestCase):
                     self.assertEqual(input_path.read_text(), nodes[0]["raw"]+'\n')
                     result = measured(nodes[0], 0, 200_000_000)
                     (report/"results.jsonl").write_text(json.dumps(result)+'\n')
-                    (report/"summary.json").write_text(json.dumps({"schema":"xray-node-delay-v1",
-                        "revision":manifest["revision"], "tool_revision":manifest["delay_tool_revision"],
-                        "binary_sha256":manifest["delay_binary_sha256"], "input_sha256":{"nodes.txt":digest(input_path)},
-                        "inventory":1, "workers":4, "attempts_per_node":2, "interval_ms":100, "max_response_bytes":65536, "target":POLICY["target"],
-                        "node_timeout_ms":5000, "finished":1, "statuses":{"MEASURED":1}, "completed":True}))
+                    (report/"summary.json").write_text(json.dumps({"schema":"xray-node-speed-v1",
+                        "revision":manifest["revision"], "tool_revision":manifest["speed_tool_revision"],
+                        "binary_sha256":manifest["speed_binary_sha256"], "input_sha256":{"nodes.txt":digest(input_path)},
+                        "inventory":1, "workers":4, "sample_bytes":POLICY["sample_bytes"], "target":POLICY["target"],
+                        "node_timeout_ms":8000, "finished":1, "statuses":{"MEASURED":1}, "completed":True}))
                     return SimpleNamespace(returncode=0)
                 output = root/"output"
-                argv = ["run_delay_shard.py", "--pool", str(root/"input/pool.json"), "--core", str(core_file),
+                argv = ["run_speed_shard.py", "--pool", str(root/"input/pool.json"), "--core", str(core_file),
                         "--tool", str(tool_file), "--core-manifest", str(manifest_path), "--output", str(output), "--shard", "0"]
-                with mock.patch.object(sys, "argv", argv), mock.patch.object(run_delay_shard.subprocess, "run", side_effect=invoke):
-                    self.assertEqual(run_delay_shard.main(), 0)
+                with mock.patch.object(sys, "argv", argv), mock.patch.object(run_speed_shard.subprocess, "run", side_effect=invoke):
+                    self.assertEqual(run_speed_shard.main(), 0)
                 summary = json.loads((output/"summary.json").read_text())
                 self.assertEqual(summary["statuses"], {"MEASURED" if successful else "UNMEASURED":1})
                 self.assertFalse((output/"nodes.txt").exists())

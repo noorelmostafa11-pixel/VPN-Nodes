@@ -16,7 +16,7 @@ def validate(run: dict, jobs: list[dict], repository: str) -> str:
             or not re.fullmatch(r"[0-9a-f]{40}", str(run.get("head_sha", "")))):
         raise ValueError("Source must be a completed catalog run on this repository's main")
     required = {"candidates", "Build pinned owner core once",
-                "Prepare unique successful nodes for delay ranking",
+                "Prepare unique successful nodes for speed ranking",
                 *(f"core-check ({i})" for i in range(8))}
     counts = {name: sum(j.get("name") == name and j.get("conclusion") == "success" for j in jobs)
               for name in required}

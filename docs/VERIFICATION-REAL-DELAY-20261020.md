@@ -1,5 +1,7 @@
 # Replace download ranking with Real Delay
 
+Historical record: download speed ranking was subsequently restored at the owner's request. This Real Delay implementation is no longer active.
+
 Date: 2026-10-20. VPN-Nodes starting revision:
 `7dca5ac050ffe2235c87ba9602b748f81471f9c0`.
 Unchanged core used locally: `d0c467ec209652a977874cd3a078f88d9ab78044`.
