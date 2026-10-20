@@ -7,9 +7,14 @@ on:
         description: Owned VPN-Core-Test ref resolved once per run
         type: string
         default: main
+      publish_run_id:
+        description: 'Publish saved results from this completed run ID; leave empty for a new scan'
+        type: string
+        default: ''
 
 permissions:
   contents: write
+  actions: read
 
 concurrency:
   group: catalog-refresh-${{ github.ref }}
@@ -17,6 +22,7 @@ concurrency:
 
 jobs:
   owned-core:
+    if: ${{ inputs.publish_run_id == '' }}
     name: Build pinned owner core once
     runs-on: ubuntu-24.04
     timeout-minutes: 20
@@ -74,6 +80,7 @@ jobs:
           if-no-files-found: error
 
   candidates:
+    if: ${{ inputs.publish_run_id == '' }}
     runs-on: ubuntu-latest
     timeout-minutes: 60
 
@@ -129,6 +136,9 @@ jobs:
           python tests/test_node_identity.py
           python tests/test_owned_core.py
           python tests/test_exit_country_and_order.py
+          python tests/test_connection_dedup.py
+          python tests/test_delay_ranking.py
+          python tests/test_publish_snapshot.py
           python tests/test_shared_tcp_endpoint.py
           python tests/test_gitverse_adapter.py
           python tests/test_source_freshness.py
@@ -157,6 +167,7 @@ jobs:
             output/metadata/*_cache.json
 
   core-check:
+    if: ${{ inputs.publish_run_id == '' }}
     needs: [candidates, owned-core]
     runs-on: ubuntu-latest
     timeout-minutes: 45
@@ -222,6 +233,7 @@ jobs:
           path: /tmp/xray-shard-${{ matrix.shard }}/
 
   delay-prepare:
+    if: ${{ inputs.publish_run_id == '' }}
     name: Prepare unique successful nodes for delay ranking
     needs: [candidates, core-check]
     runs-on: ubuntu-24.04
@@ -256,6 +268,7 @@ jobs:
           path: /tmp/node-delay-input/
 
   delay-check:
+    if: ${{ inputs.publish_run_id == '' }}
     name: Real Delay (${{ matrix.shard }})
     needs: [delay-prepare, owned-core]
     runs-on: ubuntu-24.04
@@ -307,7 +320,7 @@ jobs:
 
   publish:
     needs: [candidates, core-check, delay-prepare, delay-check]
-    if: ${{ always() && !cancelled() && needs.candidates.result == 'success' && needs.core-check.result == 'success' && needs.delay-prepare.result == 'success' }}
+    if: ${{ always() && !cancelled() && (inputs.publish_run_id != '' || (needs.candidates.result == 'success' && needs.core-check.result == 'success' && needs.delay-prepare.result == 'success')) }}
     runs-on: ubuntu-latest
     timeout-minutes: 45
 
@@ -323,15 +336,26 @@ jobs:
 
       - run: pip install -r requirements.txt
 
+      - name: Validate publication-only recovery source
+        if: ${{ inputs.publish_run_id != '' }}
+        env:
+          CATALOG_SOURCE_RUN_ID: ${{ inputs.publish_run_id }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python scripts/validate_catalog_resume.py
+
       - name: Download candidate snapshot
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ inputs.publish_run_id || github.run_id }}
           name: xray-candidates
           path: /tmp/xray-candidates
 
       - name: Download all eight owned-core shard results
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ inputs.publish_run_id || github.run_id }}
           pattern: xray-shard-*
           path: /tmp/xray-results
 
@@ -354,6 +378,8 @@ jobs:
       - name: Download this run's deduplicated delay input
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
         with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ inputs.publish_run_id || github.run_id }}
           name: node-delay-input
           path: /tmp/node-delay-input
 
@@ -361,6 +387,8 @@ jobs:
         continue-on-error: true
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
         with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ inputs.publish_run_id || github.run_id }}
           pattern: node-delay-shard-*
           path: /tmp/node-delay-results
 
@@ -395,90 +423,4 @@ jobs:
 
       - name: Publish latest catalog snapshot
         if: success()
-        run: |
-          set -euo pipefail
-
-          if [ "${GITHUB_REF_NAME}" != "main" ]; then
-            echo "Catalog publishing is allowed only from main; refusing to overwrite main from ${GITHUB_REF_NAME}."
-            exit 1
-          fi
-
-          git config user.name "github-actions[bot]"
-          git config user.email \
-            "41898282+github-actions[bot]@users.noreply.github.com"
-
-          rolling_marker='[rolling-output]'
-          head_is_rolling=false
-
-          if git log -1 --pretty=%B HEAD | grep -Fqx -- "${rolling_marker}"; then
-            head_is_rolling=true
-          fi
-
-          git add -A output
-
-          if git diff --cached --quiet && [ "${head_is_rolling}" = "true" ]; then
-            echo "No catalog changes detected"
-            exit 0
-          fi
-
-          if [ "${head_is_rolling}" = "true" ] && \
-             git rev-parse --verify HEAD^ >/dev/null 2>&1; then
-            base_commit="$(git rev-parse HEAD^)"
-            echo "Reusing existing repository baseline ${base_commit}"
-          else
-            previous_rolling="$(
-              git log \
-                --first-parent \
-                --format='%H' \
-                --grep='\[rolling-output\]' \
-                -n 1 \
-                HEAD \
-                || true
-            )"
-
-            baseline_parent=""
-            if [ -n "${previous_rolling}" ] && \
-               git rev-parse --verify "${previous_rolling}^" >/dev/null 2>&1; then
-              baseline_parent="$(git rev-parse "${previous_rolling}^")"
-            fi
-
-            baseline_index="$(mktemp)"
-            rm -f "${baseline_index}"
-
-            GIT_INDEX_FILE="${baseline_index}" git read-tree HEAD
-            GIT_INDEX_FILE="${baseline_index}" \
-              git rm -r -f --cached --ignore-unmatch output >/dev/null
-
-            baseline_tree="$(GIT_INDEX_FILE="${baseline_index}" git write-tree)"
-            rm -f "${baseline_index}"
-
-            if [ -n "${baseline_parent}" ]; then
-              base_commit="$(
-                printf '%s\n' 'chore: refresh repository baseline' |
-                git commit-tree "${baseline_tree}" -p "${baseline_parent}"
-              )"
-            else
-              base_commit="$(
-                printf '%s\n' 'chore: establish repository baseline' |
-                git commit-tree "${baseline_tree}"
-              )"
-            fi
-
-            echo "Created repository baseline ${base_commit}"
-          fi
-
-          snapshot_tree="$(git write-tree)"
-          snapshot_commit="$(
-            printf '%s\n\n%s\n' \
-              'chore: refresh node catalog' \
-              "${rolling_marker}" |
-            git commit-tree "${snapshot_tree}" -p "${base_commit}"
-          )"
-
-          echo "Publishing rolling catalog ${snapshot_commit}"
-          echo "Baseline: ${base_commit}"
-
-          git push \
-            --force-with-lease=refs/heads/main:${GITHUB_SHA} \
-            origin \
-            "${snapshot_commit}:refs/heads/main"
+        run: python scripts/publish_snapshot.py catalog

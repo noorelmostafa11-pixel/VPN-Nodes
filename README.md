@@ -102,3 +102,19 @@ latency from GitHub's network. It does not guarantee download throughput or the
 same ordering/numbers on a phone or another network. The owner runs the workflow.
 
 Reference: [v2rayN 7.25.6 GetRealPingTime](https://github.com/2dust/v2rayN/blob/1883178b5f1e222b6c6db2782e7a3d989b7cc18f/v2rayN/ServiceLib/Handler/ConnectionHandler.cs#L63).
+# Resume catalog publication
+
+If scanning completed but publication failed, run **Update node catalog** on `main`
+with `publish_run_id` set to the completed source run ID. Leave this input empty
+for the normal collection, connectivity check, and Real Delay pipeline.
+
+Recovery downloads that run's saved candidates, all eight checker shards, and
+its delay pool/observations; it does not build the core or contact proxy nodes.
+The source run and unchanged catalog/finalizer/signing contract are checked before
+the existing catalog validation and signature steps. Expired/missing required
+artifacts fail publication rather than silently losing results.
+
+Both catalog and GeoLite2 publication preserve the latest unrelated changes on
+`main`, use a fresh explicit Git lease, and retry a moved branch up to three times.
+A newer payload of the same kind is retained instead of being replaced by stale
+results. The existing rolling-output history policy remains in effect.
