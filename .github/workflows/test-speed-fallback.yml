@@ -1,0 +1,49 @@
+name: Validate speed fallback
+on:
+  pull_request:
+    paths:
+      - scripts/xray_matrix/node_speed.go
+      - scripts/xray_matrix/run_speed_shard.py
+      - scripts/xray_matrix/speed_ranking.py
+      - tests/test_speed_ranking.py
+      - .github/workflows/test-speed-fallback.yml
+permissions:
+  contents: read
+jobs:
+  speed-python:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
+        with:
+          python-version: '3.12'
+      - run: pip install -r requirements.txt
+      - run: python -m py_compile scripts/xray_matrix/speed_ranking.py scripts/xray_matrix/run_speed_shard.py tests/test_speed_ranking.py
+      - run: python tests/test_speed_ranking.py
+  speed-go:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+        with:
+          path: catalog-source
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+        with:
+          repository: noorelmostafa11-pixel/VPN-Core-Test
+          ref: main
+          path: owned-core-source
+          persist-credentials: false
+      - uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff
+        with:
+          go-version: '1.27.1'
+          cache-dependency-path: owned-core-source/go.sum
+      - name: Build helper against pinned core source
+        working-directory: owned-core-source
+        env:
+          GOTOOLCHAIN: local
+          CGO_ENABLED: '0'
+        run: |
+          set -euo pipefail
+          go build -mod=readonly -trimpath -o "$RUNNER_TEMP/node-speed" "$GITHUB_WORKSPACE/catalog-source/scripts/xray_matrix/node_speed.go"
+          "$RUNNER_TEMP/node-speed" -help > /dev/null
