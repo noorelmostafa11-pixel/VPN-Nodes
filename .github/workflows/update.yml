@@ -1,9 +1,6 @@
 name: Update node catalog
 
 on:
-  schedule:
-    # 04:00 and 16:00 Asia/Dubai (UTC+4), every day.
-    - cron: '0 0,12 * * *'
   workflow_dispatch:
     inputs:
       core_ref:
