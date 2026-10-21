@@ -85,6 +85,17 @@ def load_rows(path: Path) -> tuple[list[dict], list[dict]]:
     return list(payload.get("rows", [])), list(payload.get("sources", payload.get("channels", [])))
 
 
+def normalize_source_row(original: dict) -> dict:
+    raw_uri = str(original.get("uri") or "").strip()
+    # Older caches retain their original one-pass HTML normalization. New
+    # extractor records explicitly mark an already unwrapped literal URI.
+    clean_uri = raw_uri if original.get("uri_encoding") == "literal" else html.unescape(raw_uri)
+    row = {**original, "uri": clean_uri}
+    row.setdefault("original_uri", raw_uri)
+    row["uri_encoding"] = "literal"
+    return row
+
+
 def main(*, core_candidates: bool = False) -> int:
     all_rows: list[dict] = []
     source_health: list[dict] = []
@@ -115,11 +126,10 @@ def main(*, core_candidates: bool = False) -> int:
             continue
         if _endpoint_key(original) is None:
             continue
-        raw_uri = str(original.get("uri") or "").strip()
-        clean_uri = html.unescape(raw_uri)
-        if clean_uri != raw_uri:
+        normalized = normalize_source_row(original)
+        if normalized["uri"] != str(original.get("uri") or "").strip():
             html_uri_normalized += 1
-        protocol_rows.append({**original, "uri": clean_uri})
+        protocol_rows.append(normalized)
 
     unique: dict[str, dict] = {}
     if not core_candidates:

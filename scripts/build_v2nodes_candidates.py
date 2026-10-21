@@ -17,10 +17,10 @@ MAX_PAGES = 5000
 
 def main() -> int:
     started = time.perf_counter()
-    uris = v2nodes_adapter.collect(start_url=BASE, max_pages=MAX_PAGES)
+    uris = v2nodes_adapter.collect(start_url=BASE, max_pages=MAX_PAGES, preserve_original=True)
     if not uris:
         raise SystemExit("v2nodes returned no proxy URIs")
-    rows = catalog.parse_lines("\n".join(uris), "v2nodes")
+    rows = catalog.parse_uri_records(uris, "v2nodes")
     health = {
         "name": "v2nodes",
         "ok": bool(rows),

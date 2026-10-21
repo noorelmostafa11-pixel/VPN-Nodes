@@ -12,7 +12,6 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import datetime, timezone
-import html as html_lib
 import json
 import os
 from pathlib import Path
@@ -22,6 +21,7 @@ from urllib.parse import urljoin, urlparse
 
 from bs4 import BeautifulSoup
 import requests
+from share_link_extractor import extract_uri_records
 
 BASE_URL = "https://outlinekeys.com/"
 CACHE_PATH = Path(__file__).resolve().parents[1] / "output" / "metadata" / "outlinekeys_daily_cache.json"
@@ -91,12 +91,8 @@ def parse_listing(html: str) -> list[KeyRef]:
 
 
 def extract_uri(html: str) -> str | None:
-    soup = BeautifulSoup(html, "html.parser")
-    for text in (soup.get_text("\n", strip=True), html_lib.unescape(html)):
-        match = URI_RE.search(text)
-        if match:
-            return html_lib.unescape(match.group(0)).strip()
-    return None
+    records = extract_uri_records(html, html_source=True)
+    return records[0].uri if records else None
 
 
 def _load_cache(path: Path) -> dict:
@@ -181,12 +177,14 @@ def collect_outlinekeys(*, cache_path: Path = CACHE_PATH, now: datetime | None =
         failed: list[dict] = []
         for key_id, url in sorted(refs.items()):
             try:
-                uri = extract_uri(_request_text(session, url))
-                if not uri:
+                records = extract_uri_records(_request_text(session, url), html_source=True)
+                if not records:
                     raise RuntimeError("supported URI not found")
+                record = records[0]
+                uri = record.uri
                 if uri not in seen_uris:
                     seen_uris.add(uri)
-                    rows.append({"url": uri})
+                    rows.append({"url": uri, **record.source_fields()})
             except Exception as exc:
                 failed.append({"key_id": key_id, "url": url, "error": str(exc)[:300]})
             time.sleep(REQUEST_DELAY_SECONDS)

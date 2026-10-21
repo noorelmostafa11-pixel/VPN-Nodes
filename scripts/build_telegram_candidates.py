@@ -2,7 +2,6 @@
 """Build candidates from telegram_channels.json only."""
 from __future__ import annotations
 
-import html
 import json
 import re
 import time
@@ -61,16 +60,13 @@ def collect_channel(channel: str, max_pages: int, max_uris: int) -> list[dict]:
             print(f"WARN telegram @{channel} page={page_number + 1}: {exc}")
             break
         pages_ok += 1
-        decoded = html.unescape(page)
-        uris = URI_RE.findall(decoded)
-        if uris:
-            for row in catalog.parse_lines("\n".join(uris), f"telegram:@{channel}"):
-                uri = row["uri"]
-                if uri not in seen:
-                    seen.add(uri)
-                    rows.append(row)
-                    if len(rows) >= max_uris:
-                        break
+        for row in catalog.parse_lines(page, f"telegram:@{channel}", html_source=True):
+            uri = row["uri"]
+            if uri not in seen:
+                seen.add(uri)
+                rows.append(row)
+                if len(rows) >= max_uris:
+                    break
         if len(rows) >= max_uris:
             break
         before = next_before(channel, page, before)

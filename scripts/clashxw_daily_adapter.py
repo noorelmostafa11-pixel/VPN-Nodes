@@ -7,6 +7,7 @@ import base64
 import datetime
 import re
 import urllib.request
+from share_link_extractor import extract_uri_records
 
 
 BASE_URL = "https://node.freeclashnode.com/uploads"
@@ -47,7 +48,8 @@ def extract_nodes(text: str) -> list[dict]:
     seen = set()
 
     for content in (text, decode_base64(text)):
-        for line in re.findall(r"(?:vless|vmess|trojan|ss)://[^\s]+", content):
+        for record in extract_uri_records(content):
+            line = record.uri
             if line not in seen:
                 seen.add(line)
                 rows.append(
@@ -55,6 +57,7 @@ def extract_nodes(text: str) -> list[dict]:
                         "name": "ClashXW-Daily",
                         "source": "clashxw-daily",
                         "url": line,
+                        **record.source_fields(),
                     }
                 )
 
