@@ -21,6 +21,33 @@ jobs:
       - run: pip install -r requirements.txt
       - run: python -m py_compile scripts/xray_matrix/speed_ranking.py scripts/xray_matrix/run_speed_shard.py tests/test_speed_ranking.py
       - run: python tests/test_speed_ranking.py
+      - name: Verify OVH supports a strict 1 MiB HTTPS range from GitHub runner
+        run: |
+          python - <<'PY'
+          import urllib.request
+          class NoRedirect(urllib.request.HTTPRedirectHandler):
+              def redirect_request(self, req, fp, code, msg, headers, newurl):
+                  return None
+          url = "https://proof.ovh.net/files/10Mb.dat"
+          opener = urllib.request.build_opener(NoRedirect)
+          req = urllib.request.Request(url, headers={
+              "Range": "bytes=0-1048575",
+              "Accept-Encoding": "identity",
+              "User-Agent": "VPN-Core-Node-Speed/1",
+          })
+          with opener.open(req, timeout=15) as response:
+              status = response.status
+              cr = response.headers.get("Content-Range", "")
+              cl = response.headers.get("Content-Length", "")
+              ce = response.headers.get("Content-Encoding", "")
+              data = response.read(1048577)
+          print("OVH response: status=", status, "range=", cr, "length=", cl, "encoding=", ce, "actual_bytes=", len(data))
+          assert status == 206, "OVH must honor Range and not redirect"
+          assert cr.startswith("bytes 0-1048575/") and cr.split("/", 1)[1].isdigit(), "Invalid Content-Range"
+          assert int(cr.split("/", 1)[1]) > 1048576
+          assert cl == "1048576" and len(data) == 1048576, "OVH sample must be exactly 1 MiB"
+          assert ce in ("", "identity"), "Compressed response not permitted"
+          PY
   speed-go:
     runs-on: ubuntu-24.04
     timeout-minutes: 20
