@@ -50,12 +50,13 @@ var toolRevision = "unknown"
 type options struct {
 	Workers     int           `json:"workers"`
 	NodeTimeout time.Duration `json:"node_timeout"`
+	PrimaryTimeout time.Duration `json:"primary_timeout"`
 	RootPEM     []byte        `json:"root_pem,omitempty"`
 	Speed       *SpeedOptions `json:"speed"`
 }
 
 func (o options) validate() error {
-	if o.Speed == nil || o.Workers < 1 || o.Workers > 4 || o.NodeTimeout < 100*time.Millisecond || o.NodeTimeout > time.Minute || len(o.RootPEM) > 1<<20 {
+	if o.Speed == nil || o.Workers < 1 || o.Workers > 4 || o.NodeTimeout < 100*time.Millisecond || o.NodeTimeout > time.Minute || o.PrimaryTimeout <= 0 || o.PrimaryTimeout >= o.NodeTimeout || len(o.RootPEM) > 1<<20 {
 		return errors.New("invalid speed worker options")
 	}
 	return o.Speed.validate()
@@ -69,6 +70,8 @@ type speedSample struct {
 	TransferNS    int64  `json:"transfer_ns"`
 	BitsPerSecond int64  `json:"bits_per_second"`
 	FirstByteMS   int64  `json:"first_byte_ms"`
+	ContentRange  string `json:"content_range,omitempty"`
+	ContentLength int64  `json:"content_length,omitempty"`
 }
 type result struct {
 	report.Result
@@ -141,18 +144,131 @@ func (discardLogs) Severity() clog.Severity { return clog.Severity(-1) }
 
 const SpeedSampleBytes int64 = 1 << 20
 const DefaultSpeedTarget = "https://speed.cloudflare.com/__down?bytes=1048576"
+const DefaultFallbackTarget = "https://proof.ovh.net/files/10Mb.dat"
+const DefaultPrimaryTimeout = 5 * time.Second
 
 type SpeedOptions struct {
-	Target string `json:"target"`
-	Bytes  int64  `json:"bytes"`
+	Target         string `json:"target"`
+	FallbackTarget string `json:"fallback_target"`
+	Bytes          int64  `json:"bytes"`
 }
 
 func (o SpeedOptions) validate() error {
-	u, err := url.Parse(o.Target)
-	if err != nil || u.Scheme != "https" || u.Hostname() == "" || u.User != nil || u.Fragment != "" || strings.ContainsAny(o.Target, "\x00\r\n\t") || o.Bytes != SpeedSampleBytes {
-		return errors.New("speed measurement requires HTTPS and a fixed 1 MiB sample")
+	if o.Bytes != SpeedSampleBytes || o.Target == o.FallbackTarget {
+		return errors.New("speed measurement requires two distinct HTTPS targets and a fixed 1 MiB sample")
+	}
+	for _, target := range []string{o.Target, o.FallbackTarget} {
+		u, err := url.Parse(target)
+		if err != nil || u.Scheme != "https" || u.Hostname() == "" || u.User != nil || u.Fragment != "" || strings.ContainsAny(target, "\x00\r\n\t") {
+			return errors.New("speed measurement requires valid HTTPS targets")
+		}
 	}
 	return nil
+}
+
+func validSpeedRange(header string, size int64) bool {
+	prefix := fmt.Sprintf("bytes 0-%d/", size-1)
+	if !strings.HasPrefix(header, prefix) {
+		return false
+	}
+	total, err := strconv.ParseInt(strings.TrimPrefix(header, prefix), 10, 64)
+	return err == nil && total > size
+}
+
+// Each attempt must travel through the same core outbound, never the host network.
+// The primary is capped at five seconds; the fallback gets only the remaining
+// time from the original eight-second per-node deadline.
+func (e *speedEngine) downloadSample(ctx context.Context, tag, target string, size int64, partial bool, nodeTimeout time.Duration) (speedSample, string) {
+	sample := speedSample{Target: target}
+	transport := &http.Transport{
+		Proxy: nil, DisableKeepAlives: true, DisableCompression: true, ForceAttemptHTTP2: false,
+		TLSClientConfig: &tls.Config{RootCAs: e.roots, MinVersion: tls.VersionTLS12},
+		TLSHandshakeTimeout: nodeTimeout, ResponseHeaderTimeout: nodeTimeout, MaxResponseHeaderBytes: 64 << 10,
+	}
+	transport.DialContext = func(dctx context.Context, _, address string) (net.Conn, error) {
+		destination, err := xnet.ParseDestination("tcp:" + address)
+		if err != nil {
+			return nil, err
+		}
+		conn, err := core.Dial(session.SetForcedOutboundTagToContext(dctx, tag), e.instance, destination)
+		if err != nil {
+			return nil, err
+		}
+		wrapped := &ownedConn{Conn: conn}
+		context.AfterFunc(ctx, func() { wrapped.Close() })
+		return wrapped, nil
+	}
+	defer transport.CloseIdleConnections()
+	client := &http.Client{Transport: transport, CheckRedirect: func(*http.Request, []*http.Request) error { return http.ErrUseLastResponse }}
+	var firstByte atomic.Int64
+	requestStarted := time.Now()
+	traced := httptrace.WithClientTrace(ctx, &httptrace.ClientTrace{GotFirstResponseByte: func() {
+		firstByte.CompareAndSwap(0, max(1, time.Since(requestStarted).Nanoseconds()))
+	}})
+	request, err := http.NewRequestWithContext(traced, http.MethodGet, target, nil)
+	if err != nil {
+		return sample, "SPEED_REQUEST"
+	}
+	request.Header.Set("User-Agent", "VPN-Core-Node-Speed/1")
+	request.Header.Set("Accept", "application/octet-stream,*/*")
+	request.Header.Set("Accept-Encoding", "identity")
+	request.Header.Set("Cache-Control", "no-cache, no-store")
+	if partial {
+		request.Header.Set("Range", fmt.Sprintf("bytes=0-%d", size-1))
+	}
+	response, err := client.Do(request)
+	if err != nil {
+		if response != nil && response.Body != nil {
+			response.Body.Close()
+		}
+		return sample, "SPEED_" + errorCode(err)
+	}
+	defer response.Body.Close()
+	sample.HTTPStatus = response.StatusCode
+	sample.VerifiedTLS = response.TLS != nil && response.TLS.HandshakeComplete && len(response.TLS.VerifiedChains) > 0
+	if !sample.VerifiedTLS {
+		return sample, "SPEED_TLS_UNVERIFIED"
+	}
+	if partial {
+		sample.ContentRange = response.Header.Get("Content-Range")
+		sample.ContentLength = response.ContentLength
+		if response.StatusCode != http.StatusPartialContent {
+			return sample, "SPEED_HTTP_STATUS"
+		}
+		if !validSpeedRange(sample.ContentRange, size) {
+			return sample, "SPEED_CONTENT_RANGE"
+		}
+		if sample.ContentLength != size {
+			return sample, "SPEED_SAMPLE_LENGTH"
+		}
+	} else if response.StatusCode != http.StatusOK {
+		return sample, "SPEED_HTTP_STATUS"
+	}
+	if encoding := response.Header.Get("Content-Encoding"); encoding != "" && !strings.EqualFold(encoding, "identity") {
+		return sample, "SPEED_CONTENT_ENCODING"
+	}
+	if !partial && response.ContentLength >= 0 && response.ContentLength != size {
+		return sample, "SPEED_SAMPLE_LENGTH"
+	}
+	n, readErr := io.CopyN(io.Discard, response.Body, size)
+	sample.Bytes = n
+	first := firstByte.Load()
+	sample.FirstByteMS = first / int64(time.Millisecond)
+	sample.TransferNS = time.Since(requestStarted).Nanoseconds() - first
+	if readErr != nil || n != size {
+		return sample, "SPEED_INCOMPLETE_SAMPLE"
+	}
+	if ctx.Err() != nil {
+		return sample, "SPEED_TIMEOUT"
+	}
+	if first <= 0 || sample.TransferNS <= 0 {
+		return sample, "SPEED_TIMING"
+	}
+	sample.BitsPerSecond = n * 8 * int64(time.Second) / sample.TransferNS
+	if sample.BitsPerSecond <= 0 {
+		return sample, "SPEED_TIMING"
+	}
+	return sample, ""
 }
 
 // Measurement uses existing core APIs; connectivity acceptance is unchanged.
@@ -189,80 +305,32 @@ func (e *speedEngine) measureSpeed(parent context.Context, in report.Input, o op
 	}
 	h := e.manager.GetHandler(tag)
 	defer func() { cancel(); common.Close(h); e.manager.RemoveHandler(context.Background(), tag) }()
-	transport := &http.Transport{
-		Proxy: nil, DisableKeepAlives: true, DisableCompression: true, ForceAttemptHTTP2: false,
-		TLSClientConfig:     &tls.Config{RootCAs: e.roots, MinVersion: tls.VersionTLS12},
-		TLSHandshakeTimeout: o.NodeTimeout, ResponseHeaderTimeout: o.NodeTimeout, MaxResponseHeaderBytes: 64 << 10,
-	}
-	transport.DialContext = func(dctx context.Context, _, address string) (net.Conn, error) {
-		destination, err := xnet.ParseDestination("tcp:" + address)
-		if err != nil {
-			return nil, err
-		}
-		conn, err := core.Dial(session.SetForcedOutboundTagToContext(dctx, tag), e.instance, destination)
-		if err != nil {
-			return nil, err
-		}
-		wrapped := &ownedConn{Conn: conn}
-		context.AfterFunc(ctx, func() { wrapped.Close() })
-		return wrapped, nil
-	}
-	defer transport.CloseIdleConnections()
-	client := &http.Client{Transport: transport, CheckRedirect: func(*http.Request, []*http.Request) error { return http.ErrUseLastResponse }}
-	var firstByte atomic.Int64
-	requestStarted := time.Now()
-	ctx = httptrace.WithClientTrace(ctx, &httptrace.ClientTrace{GotFirstResponseByte: func() { firstByte.CompareAndSwap(0, max(1, time.Since(requestStarted).Nanoseconds())) }})
-	request, err := http.NewRequestWithContext(ctx, http.MethodGet, o.Speed.Target, nil)
-	if err != nil {
-		return finish("SPEED_REQUEST")
-	}
-	request.Header.Set("User-Agent", "VPN-Core-Node-Speed/1")
-	request.Header.Set("Accept", "application/octet-stream,*/*")
-	request.Header.Set("Accept-Encoding", "identity")
-	request.Header.Set("Cache-Control", "no-cache, no-store")
-	response, err := client.Do(request)
+	primaryCtx, primaryCancel := context.WithTimeout(ctx, o.PrimaryTimeout)
+	primary, primaryCode := e.downloadSample(primaryCtx, tag, o.Speed.Target, o.Speed.Bytes, false, o.NodeTimeout)
+	primaryCancel()
 	r.NetworkTested = true
-	if err != nil {
-		if response != nil && response.Body != nil {
-			response.Body.Close()
-		}
-		return finish("SPEED_" + errorCode(err))
+	r.Speed = &primary
+	if primaryCode == "" && ctx.Err() == nil && time.Since(started) <= o.NodeTimeout {
+		r.Status = "MEASURED"
+		return finish("")
 	}
-	defer response.Body.Close()
-	r.Speed.HTTPStatus = response.StatusCode
-	r.Speed.VerifiedTLS = response.TLS != nil && response.TLS.HandshakeComplete && len(response.TLS.VerifiedChains) > 0
-	if !r.Speed.VerifiedTLS {
-		return finish("SPEED_TLS_UNVERIFIED")
-	}
-	if response.StatusCode != http.StatusOK {
-		return finish("SPEED_HTTP_STATUS")
-	}
-	if encoding := response.Header.Get("Content-Encoding"); encoding != "" && !strings.EqualFold(encoding, "identity") {
-		return finish("SPEED_CONTENT_ENCODING")
-	}
-	if response.ContentLength >= 0 && response.ContentLength != o.Speed.Bytes {
-		return finish("SPEED_SAMPLE_LENGTH")
-	}
-	n, readErr := io.CopyN(io.Discard, response.Body, o.Speed.Bytes)
-	r.Speed.Bytes = n
-	first := firstByte.Load()
-	r.Speed.FirstByteMS = first / int64(time.Millisecond)
-	r.Speed.TransferNS = time.Since(requestStarted).Nanoseconds() - first
-	if readErr != nil || n != o.Speed.Bytes {
-		return finish("SPEED_INCOMPLETE_SAMPLE")
-	}
-	if ctx.Err() != nil || time.Since(started) > o.NodeTimeout {
+	if ctx.Err() != nil {
 		return finish("SPEED_TIMEOUT")
 	}
-	if first <= 0 || r.Speed.TransferNS <= 0 {
-		return finish("SPEED_TIMING")
+	// No second attempt if the primary succeeded, even at the deadline.
+	if primaryCode == "" {
+		return finish("SPEED_TIMEOUT")
 	}
-	r.Speed.BitsPerSecond = n * 8 * int64(time.Second) / r.Speed.TransferNS
-	if r.Speed.BitsPerSecond <= 0 {
-		return finish("SPEED_TIMING")
+	fallback, fallbackCode := e.downloadSample(ctx, tag, o.Speed.FallbackTarget, o.Speed.Bytes, true, o.NodeTimeout)
+	r.Speed = &fallback
+	if fallbackCode == "" && ctx.Err() == nil && time.Since(started) <= o.NodeTimeout {
+		r.Status = "MEASURED"
+		return finish("")
 	}
-	r.Status = "MEASURED"
-	return finish("")
+	if ctx.Err() != nil {
+		return finish("SPEED_TIMEOUT")
+	}
+	return finish(fallbackCode)
 }
 
 type job struct {
@@ -395,7 +463,9 @@ func main() {
 func execute(ctx context.Context) error {
 	input := flag.String("input", "", "Explicit URI file")
 	output := flag.String("output", "", "Empty report directory")
-	target := flag.String("target", DefaultSpeedTarget, "HTTPS measurement target")
+	target := flag.String("target", DefaultSpeedTarget, "Primary HTTPS measurement target")
+	fallbackTarget := flag.String("fallback-target", DefaultFallbackTarget, "Fallback HTTPS range target")
+	primaryTimeout := flag.Duration("primary-timeout", DefaultPrimaryTimeout, "Primary attempt cap within complete node timeout")
 	caPath := flag.String("cacert", "", "Additional trusted CA for local fixtures")
 	workers := flag.Int("workers", 4, "Concurrent nodes, maximum four")
 	timeout := flag.Duration("node-timeout", 8*time.Second, "Complete sample deadline")
@@ -411,7 +481,7 @@ func execute(ctx context.Context) error {
 	if err != nil || !st.Mode().IsRegular() {
 		return errors.New("speed input must be a regular URI file")
 	}
-	o := options{Workers: *workers, NodeTimeout: *timeout, Speed: &SpeedOptions{Target: *target, Bytes: SpeedSampleBytes}}
+	o := options{Workers: *workers, NodeTimeout: *timeout, PrimaryTimeout: *primaryTimeout, Speed: &SpeedOptions{Target: *target, FallbackTarget: *fallbackTarget, Bytes: SpeedSampleBytes}}
 	if *caPath != "" {
 		f, e := os.Open(*caPath)
 		if e != nil {
@@ -509,7 +579,7 @@ func execute(ctx context.Context) error {
 	if err = out.Close(); err != nil {
 		return err
 	}
-	summary := map[string]any{"schema": "xray-node-speed-v1", "revision": coreRevision, "tool_revision": toolRevision, "binary_sha256": hex.EncodeToString(hash.Sum(nil)), "input_sha256": hashes, "inventory": len(inputs), "finished": finished, "statuses": statuses, "completed": runErr == nil && finished == len(inputs), "workers": o.Workers, "worker_processes": processes, "target": o.Speed.Target, "sample_bytes": SpeedSampleBytes, "node_timeout_ms": o.NodeTimeout.Milliseconds(), "duration_ms": time.Since(started).Milliseconds()}
+	summary := map[string]any{"schema": "xray-node-speed-v1", "revision": coreRevision, "tool_revision": toolRevision, "binary_sha256": hex.EncodeToString(hash.Sum(nil)), "input_sha256": hashes, "inventory": len(inputs), "finished": finished, "statuses": statuses, "completed": runErr == nil && finished == len(inputs), "workers": o.Workers, "worker_processes": processes, "target": o.Speed.Target, "fallback_target": o.Speed.FallbackTarget, "primary_timeout_ms": o.PrimaryTimeout.Milliseconds(), "sample_bytes": SpeedSampleBytes, "node_timeout_ms": o.NodeTimeout.Milliseconds(), "duration_ms": time.Since(started).Milliseconds()}
 	b, err := json.MarshalIndent(summary, "", "  ")
 	if err != nil {
 		return err

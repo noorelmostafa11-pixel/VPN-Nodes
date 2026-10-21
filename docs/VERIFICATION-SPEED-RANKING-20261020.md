@@ -16,10 +16,16 @@ country publication. This follows the owner's clarified separation of duties.
    for speed ranking; no old catalog or fixed node count supplies the pool.
 3. Build the helper from this run's pinned core module and this workflow's exact
    VPN-Nodes commit. Record both binary hashes and source revisions.
-4. Eight measurement jobs each run at most four nodes concurrently. Each gets
-   one HTTPS request, a fixed 1 MiB sample and an eight-second complete deadline.
-5. Only a complete HTTP 200 response with verified target TLS and no compression
-   earns a score. Rank by observed bits/second after the first response byte.
+4. Eight measurement jobs each run at most four nodes concurrently. Each starts
+   with Cloudflare HTTPS, a fixed 1 MiB sample, and an eight-second complete
+   deadline. Cloudflare gets at most five seconds; if its verified sample fails,
+   the same outbound attempts an OVHcloud HTTPS byte range for exactly 1 MiB
+   within the remainder of the *same* eight seconds. No concurrent duplicate
+   requests, direct-network fallback, or extra per-node time. OVHcloud must
+   return HTTP 206, a valid 0-1048575 Content-Range and 1048576-byte length.
+5. Only a complete Cloudflare HTTP 200 or strictly validated OVHcloud HTTP 206
+   response with verified target TLS and no compression earns a score. Rank by
+   observed bits/second after the first response byte, keeping provider provenance.
    Recycle subprocesses after bounded batches; never fall back to direct access.
 6. Retain unmeasured nodes and missing-job assignments using the old HTTPS-delay
    order, after measured nodes. Regenerate corresponding country shards, verify
