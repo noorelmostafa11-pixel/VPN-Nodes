@@ -1,9 +1,6 @@
 name: Update node catalog
 
 on:
-  schedule:
-    # 04:00 and 16:00 Asia/Dubai (UTC+4), every day.
-    - cron: '0 0,12 * * *'
   workflow_dispatch:
     inputs:
       core_ref:
@@ -146,6 +143,7 @@ jobs:
           python tests/test_gitverse_adapter.py
           python tests/test_source_freshness.py
           python tests/test_source_pipeline.py
+          python tests/test_share_link_extractor.py
           python tests/test_kort0881_adapter.py
           python tests/test_share_daily_adapter.py
           python tests/test_freeproxydb_adapter.py

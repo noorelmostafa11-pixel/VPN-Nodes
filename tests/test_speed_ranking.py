@@ -25,14 +25,19 @@ def row(index, latency):
             "node_id": hashlib.sha256(raw.encode()).hexdigest(), "connection_key": "xray-outbound-v1:"+f"{index+1:064x}"}
 
 
-def measured(node, local, duration):
+def measured(node, local, duration, fallback=False):
+    target = POLICY["fallback_target"] if fallback else POLICY["target"]
+    speed = {"target": target, "http_status": 206 if fallback else 200, "verified_tls": True,
+             "bytes": POLICY["sample_bytes"], "transfer_ns": duration,
+             "bits_per_second": POLICY["sample_bytes"]*8*1_000_000_000//duration,
+             "first_byte_ms": 20}
+    if fallback:
+        speed["content_range"] = "bytes 0-1048575/10000000"
+        speed["content_length"] = POLICY["sample_bytes"]
     return {"index": local, "source": "nodes.txt", "line": local+1, "node_id": node["node_id"],
             "connection_key": node["connection_key"], "protocol": node["protocol"],
             "status": "MEASURED", "network_tested": True,
-            "speed": {"target": POLICY["target"], "http_status": 200, "verified_tls": True,
-                      "bytes": POLICY["sample_bytes"], "transfer_ns": duration,
-                      "bits_per_second": POLICY["sample_bytes"]*8*1_000_000_000//duration,
-                      "first_byte_ms": 20}}
+            "speed": speed}
 
 
 class SpeedRankingTests(unittest.TestCase):
@@ -128,6 +133,36 @@ class SpeedRankingTests(unittest.TestCase):
         bad = copy.deepcopy(valid); bad["node_id"] = "e"*64
         with self.assertRaises(ValueError): observation(bad, node, 0)
 
+    def test_fallback_requires_verified_exact_partial_content(self):
+        node = row(0, 10)
+        valid = measured(node, 0, 200_000_000, fallback=True)
+        record = observation(valid, node, 0)
+        self.assertEqual(record["status"], "MEASURED")
+        self.assertEqual(record["target"], POLICY["fallback_target"])
+        variants = [("http_status", 200), ("content_range", "bytes 1-1048576/10000000"),
+                    ("content_range", "bytes 0-1048575/*"), ("content_length", 10000000),
+                    ("verified_tls", False), ("target", "https://untrusted.invalid/")]
+        for name, value in variants:
+            with self.subTest(name=name):
+                bad = copy.deepcopy(valid); bad["speed"][name] = value
+                with self.assertRaises(ValueError): observation(bad, node, 0)
+
+    def test_fallback_ranks_with_primary_without_changing_node_eligibility(self):
+        nodes = [row(0, 15), row(1, 5), row(2, 8)]
+        with tempfile.TemporaryDirectory() as d:
+            root = Path(d); path, pool = self.prepare(root, nodes)
+            samples = {nodes[0]["node_id"]: measured(nodes[0], 0, 150_000_000, fallback=True),
+                       nodes[1]["node_id"]: measured(nodes[1], 0, 200_000_000)}
+            for shard in range(8):
+                self.shard(root, path, pool, shard, samples)
+            report = apply_ranking(nodes, path, root/"results", CORE, "c"*64)
+            self.assertEqual((report["summary"]["measured_cloudflare"],
+                              report["summary"]["measured_ovh"]), (1, 1))
+            self.assertEqual([r["index"] for r in sorted(nodes, key=country_sort_key)], [0, 1, 2])
+            self.assertEqual(report["summary"]["unmeasured"], 1)
+            country = root/"US.txt"; country.write_text(''.join(r["raw"]+'\n' for r in sorted(nodes, key=country_sort_key)))
+            verify_ranking(report, report["summary"], CORE, [r["raw"] for r in nodes], [country])
+
     def test_measurement_failure_is_retained_unmeasured(self):
         node = row(0, 10); result = measured(node, 0, 200_000_000)
         result["status"] = "UNMEASURED"; result["speed"]["bits_per_second"] = 0
@@ -156,6 +191,8 @@ class SpeedRankingTests(unittest.TestCase):
                 nodes = [row(0, 15)]; write_pool(nodes, manifest, "c"*64, root/"input")
                 def invoke(arguments, **kwargs):
                     self.assertEqual(arguments[0], str(tool_file.resolve()))
+                    self.assertEqual(arguments[arguments.index("-primary-timeout")+1], "5s")
+                    self.assertEqual(arguments[arguments.index("-fallback-target")+1], POLICY["fallback_target"])
                     if not successful: return SimpleNamespace(returncode=1)
                     report = Path(arguments[arguments.index("-output")+1]); report.mkdir()
                     input_path = Path(arguments[arguments.index("-input")+1])
@@ -166,6 +203,7 @@ class SpeedRankingTests(unittest.TestCase):
                         "revision":manifest["revision"], "tool_revision":manifest["speed_tool_revision"],
                         "binary_sha256":manifest["speed_binary_sha256"], "input_sha256":{"nodes.txt":digest(input_path)},
                         "inventory":1, "workers":4, "sample_bytes":POLICY["sample_bytes"], "target":POLICY["target"],
+                        "fallback_target": POLICY["fallback_target"], "primary_timeout_ms": 5000,
                         "node_timeout_ms":8000, "finished":1, "statuses":{"MEASURED":1}, "completed":True}))
                     return SimpleNamespace(returncode=0)
                 output = root/"output"

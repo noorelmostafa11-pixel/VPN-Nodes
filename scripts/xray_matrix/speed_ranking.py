@@ -10,7 +10,9 @@ from pathlib import Path
 from owned_core import PROTOCOL_ORDER, connection_key, digest, validate_manifest
 
 POLICY = {"target": "https://speed.cloudflare.com/__down?bytes=1048576",
-          "sample_bytes": 1048576, "workers": 4, "shards": 8, "node_timeout_ms": 8000}
+          "fallback_target": "https://proof.ovh.net/files/10Mb.dat",
+          "primary_timeout_ms": 5000, "sample_bytes": 1048576,
+          "workers": 4, "shards": 8, "node_timeout_ms": 8000}
 POOL_SCHEMA = "vpn-node-speed-pool-v1"
 REPORT_SCHEMA = "vpn-node-speed-shard-v1"
 RANK_SCHEMA = "vpn-country-speed-ranking-v1"
@@ -64,6 +66,14 @@ def assigned(pool: dict, shard: int) -> list[tuple[int, dict]]:
     return [(i, row) for i, row in enumerate(pool["nodes"]) if i % POLICY["shards"] == shard]
 
 
+def valid_range_header(value: str, size: int) -> bool:
+    prefix = f"bytes 0-{size - 1}/"
+    if not isinstance(value, str) or not value.startswith(prefix):
+        return False
+    total = value[len(prefix):]
+    return total.isascii() and total.isdecimal() and int(total) > size
+
+
 def observation(result: dict | None, row: dict, local_index: int) -> dict:
     record = {"status": "UNMEASURED", "bits_per_second": 0, "sample_bytes": 0,
               "transfer_ns": 0, "first_byte_ms": 0, "code": "SPEED_NOT_COMPLETED"}
@@ -87,15 +97,20 @@ def observation(result: dict | None, row: dict, local_index: int) -> dict:
     if any(type(sample.get(k)) is not int for k in integers):
         raise ValueError("Invalid speed sample numbers")
     size, duration, bps, first = (sample[k] for k in integers)
+    target = sample.get("target")
+    primary = target == POLICY["target"] and sample.get("http_status") == 200
+    fallback = (target == POLICY["fallback_target"] and sample.get("http_status") == 206
+                and sample.get("content_length") == POLICY["sample_bytes"]
+                and valid_range_header(sample.get("content_range"), POLICY["sample_bytes"]))
     if (result.get("protocol") != row["protocol"] or result.get("network_tested") is not True
             or result.get("failure") or not connection_key(result.get("connection_key"))
-            or sample.get("target") != POLICY["target"] or sample.get("http_status") != 200
+            or not (primary or fallback)
             or sample.get("verified_tls") is not True or size != POLICY["sample_bytes"]
             or duration <= 0 or duration > POLICY["node_timeout_ms"] * 1_000_000
             or first < 0 or first > POLICY["node_timeout_ms"]
             or bps <= 0 or bps != size * 8 * 1_000_000_000 // duration):
         raise ValueError("Measured speed lacks a complete, authenticated, consistent sample")
-    return {"status": "MEASURED", "bits_per_second": bps, "sample_bytes": size,
+    return {"status": "MEASURED", "target": target, "bits_per_second": bps, "sample_bytes": size,
             "transfer_ns": duration, "first_byte_ms": first, "code": "OK"}
 
 
@@ -149,6 +164,8 @@ def apply_ranking(rows: list[dict], pool_path: Path, results_root: Path,
         row["_speed"] = record
         counts[record["status"]] += 1
     summary = {"schema": RANK_SCHEMA, "policy": POLICY, "total_concurrency": 32,
+                "measured_cloudflare": sum(r["status"] == "MEASURED" and r.get("target") == POLICY["target"] for r in records.values()),
+                "measured_ovh": sum(r["status"] == "MEASURED" and r.get("target") == POLICY["fallback_target"] for r in records.values()),
                "pool_sha256": pool_hash, "measured": counts["MEASURED"],
                "unmeasured": counts["UNMEASURED"], "missing_shards": sorted(set(range(8)) - seen_shards),
                "order": "measured download bps descending; unmeasured retained by verified HTTPS delay",
@@ -176,6 +193,8 @@ def verify_ranking(document: dict, summary: dict, core: dict, published: list[st
         if type(rate) is not int or (status == "UNMEASURED" and rate != 0):
             raise ValueError("Invalid published speed score")
         if status == "MEASURED":
+            if record.get("target") not in {POLICY["target"], POLICY["fallback_target"]}:
+                raise ValueError("Unknown speed measurement provider")
             size, duration = record.get("sample_bytes"), record.get("transfer_ns")
             if (size != POLICY["sample_bytes"] or type(duration) is not int or duration <= 0
                     or duration > POLICY["node_timeout_ms"] * 1_000_000
@@ -183,6 +202,10 @@ def verify_ranking(document: dict, summary: dict, core: dict, published: list[st
                 raise ValueError("Invalid published speed sample")
     if summary.get("measured") != counts["MEASURED"] or summary.get("unmeasured") != counts["UNMEASURED"]:
         raise ValueError("Published speed accounting mismatch")
+    if (summary.get("measured_cloudflare") != sum(r.get("target") == POLICY["target"] for r in records.values())
+            or summary.get("measured_ovh") != sum(r.get("target") == POLICY["fallback_target"] for r in records.values())
+            or summary["measured_cloudflare"] + summary["measured_ovh"] != counts["MEASURED"]):
+        raise ValueError("Published speed provider accounting mismatch")
     for path in countries:
         keys = []
         for raw in path.read_text(encoding="utf-8").splitlines():

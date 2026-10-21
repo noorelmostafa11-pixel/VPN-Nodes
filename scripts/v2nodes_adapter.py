@@ -13,6 +13,7 @@ from urllib.parse import urljoin
 
 import requests
 from bs4 import BeautifulSoup
+from share_link_extractor import ExtractedURI, extract_uri_records
 
 BASE = "https://www.v2nodes.com/"
 UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/151 Safari/537.36"
@@ -156,31 +157,28 @@ def discover_server_urls(html: str, limit: int, start_url: str) -> list[str]:
 
 
 def extract_uris(html: str) -> list[str]:
-    soup = BeautifulSoup(html, "html.parser")
-    chunks = [html, soup.get_text(" ", strip=True)]
-    chunks.extend(tag.get_text(" ", strip=False) for tag in soup.find_all("script"))
-
-    seen: set[str] = set()
-    result: list[str] = []
-
-    for chunk in chunks:
-        for m in URI_RE.finditer(chunk):
-            uri = m.group("uri").rstrip("),.;]}>'\"")
-            if uri not in seen:
-                seen.add(uri)
-                result.append(uri)
-
-    return result
+    return list(dict.fromkeys(item.uri for item in _page_records(html)))
 
 
-def process_page(url: str, timeout: float, attempts: int) -> tuple[str, list[str], Exception | None]:
+def _page_records(html: str) -> list[ExtractedURI]:
+    records = extract_uri_records(html, html_source=True)
+    # Keep the existing page-punctuation cleanup for its original simple-link
+    # path. Structured query values must retain their closing braces/brackets.
+    return [item if item.structured else ExtractedURI(
+        item.uri.rstrip("),.;]}>'\""), item.original_uri, item.literal)
+        for item in records]
+
+
+def process_page(url: str, timeout: float, attempts: int, preserve_original: bool = False):
     try:
-        return url, extract_uris(fetch(url, timeout=timeout, attempts=attempts)), None
+        page = fetch(url, timeout=timeout, attempts=attempts)
+        found = _page_records(page) if preserve_original else extract_uris(page)
+        return url, found, None
     except Exception as exc:
         return url, [], exc
 
 
-def collect(start_url: str = BASE, max_pages: int = 5000) -> list[str]:
+def collect(start_url: str = BASE, max_pages: int = 5000, *, preserve_original: bool = False):
     """Collect proxy URIs while retrying transient v2nodes failures gently."""
     primary_workers = env_int("V2NODES_WORKERS", 80, 1, 150)
     retry_workers = env_int("V2NODES_RETRY_WORKERS", 20, 1, 50)
@@ -190,15 +188,16 @@ def collect(start_url: str = BASE, max_pages: int = 5000) -> list[str]:
     start_html = fetch(start_url, timeout=primary_timeout, attempts=3)
     pages = discover_server_urls(start_html, max_pages, start_url)
 
-    nodes: list[str] = []
+    nodes: list[str | ExtractedURI] = []
     seen: set[str] = set()
     retry_urls: list[str] = []
 
-    def add_found(found: list[str]) -> int:
+    def add_found(found) -> int:
         new = 0
         for uri in found:
-            if uri not in seen:
-                seen.add(uri)
+            identity = uri.uri if isinstance(uri, ExtractedURI) else uri
+            if identity not in seen:
+                seen.add(identity)
                 nodes.append(uri)
                 new += 1
         return new
@@ -211,7 +210,7 @@ def collect(start_url: str = BASE, max_pages: int = 5000) -> list[str]:
     # First pass: one request per page. Failed transient pages are deferred
     # instead of retrying immediately while the site is already saturated.
     with ThreadPoolExecutor(max_workers=primary_workers) as pool:
-        futures = [pool.submit(process_page, url, primary_timeout, 1) for url in pages]
+        futures = [pool.submit(process_page, url, primary_timeout, 1, preserve_original) for url in pages]
 
         for completed, future in enumerate(as_completed(futures), 1):
             url, found, error = future.result()
@@ -231,7 +230,7 @@ def collect(start_url: str = BASE, max_pages: int = 5000) -> list[str]:
     if retry_urls:
         print(f"INFO v2nodes second_pass={len(retry_urls)} workers={retry_workers} attempts=3")
         with ThreadPoolExecutor(max_workers=retry_workers) as pool:
-            futures = [pool.submit(process_page, url, retry_timeout, 3) for url in retry_urls]
+            futures = [pool.submit(process_page, url, retry_timeout, 3, preserve_original) for url in retry_urls]
 
             for completed, future in enumerate(as_completed(futures), 1):
                 url, found, error = future.result()

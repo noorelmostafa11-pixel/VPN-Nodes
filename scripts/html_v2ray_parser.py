@@ -8,6 +8,7 @@ from __future__ import annotations
 import base64
 import re
 import urllib.request
+from share_link_extractor import ExtractedURI, extract_uri_records
 
 PATTERNS = (
     r"vless://[^\s\"'<>\\]+",
@@ -22,20 +23,25 @@ def _clean(value: str) -> str:
 
 
 def extract_links(text: str) -> list[str]:
-    found: list[str] = []
-    for pattern in PATTERNS:
-        found.extend(_clean(x) for x in re.findall(pattern, text, flags=re.I))
+    return list(dict.fromkeys(item.uri for item in _extract_records(text)))
+
+
+def _extract_records(text: str) -> list:
+    found = extract_uri_records(text, html_source=True)
 
     # Decode common base64 blocks found in node pages.
     for block in re.findall(r"[A-Za-z0-9+/]{80,}={0,2}", text):
         try:
             decoded = base64.b64decode(block + "===").decode("utf-8", errors="ignore")
-            for pattern in PATTERNS:
-                found.extend(_clean(x) for x in re.findall(pattern, decoded, flags=re.I))
+            found.extend(extract_uri_records(decoded))
         except Exception:
             pass
 
-    return list(dict.fromkeys(x for x in found if "://" in x))
+    # Preserve the old punctuation cleanup on simple links, while keeping all
+    # delimiters belonging to a newly supported structured query value.
+    return list(dict.fromkeys(item if item.structured else ExtractedURI(
+        item.uri.rstrip(" '\"<>),;\\"), item.original_uri, item.literal)
+        for item in found))
 
 
 def fetch_html(url: str, timeout: int = 20) -> str:
@@ -50,4 +56,4 @@ def fetch_html(url: str, timeout: int = 20) -> str:
 
 def collect_html_source(name: str, url: str) -> list[dict]:
     html = fetch_html(url)
-    return [{"name": name, "url": url, "link": link} for link in extract_links(html)]
+    return [{"name": name, "url": url, "link": item.uri, **item.source_fields()} for item in _extract_records(html)]

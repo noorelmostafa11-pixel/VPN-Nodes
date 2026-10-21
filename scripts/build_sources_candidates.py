@@ -33,28 +33,40 @@ def collect_freev2raynodes():
 
 def normalize_adapter_rows(items: list[dict], source_name: str) -> list[dict]:
     rows: list[dict] = []
-    seen_candidates: set[str] = set()
-    seen_uris: set[str] = set()
+    seen_candidates: set[tuple[str, bool]] = set()
+    seen_uris: set[tuple[str, bool]] = set()
 
     def strings(value):
         if isinstance(value, str):
             yield value
         elif isinstance(value, dict):
-            for child in value.values():
-                yield from strings(child)
+            primary = None
+            if "original_uri" in value:
+                primary = next((key for key in ("uri", "url", "link")
+                                if isinstance(value.get(key), str)
+                                and catalog.protocol_from_uri(value[key]) is not None), None)
+                if primary:
+                    yield catalog.ExtractedURI(value[primary], str(value["original_uri"]), value.get("uri_encoding") == "literal")
+            for key, child in value.items():
+                if key not in {"original_uri", "uri_encoding", primary}:
+                    yield from strings(child)
         elif isinstance(value, (list, tuple)):
             for child in value:
                 yield from strings(child)
 
     for item in items:
         for raw in strings(item):
-            candidate = raw.strip()
-            if not candidate or candidate in seen_candidates:
+            record = raw if isinstance(raw, catalog.ExtractedURI) else None
+            candidate = record.uri if record else raw.strip()
+            identity = candidate, bool(record and record.literal)
+            if not candidate or identity in seen_candidates:
                 continue
-            seen_candidates.add(candidate)
-            for row in catalog.parse_lines(candidate, source_name):
-                if row["uri"] not in seen_uris:
-                    seen_uris.add(row["uri"])
+            seen_candidates.add(identity)
+            found = catalog.parse_uri_records([record], source_name) if record else catalog.parse_lines(candidate, source_name)
+            for row in found:
+                identity = row["uri"], row.get("uri_encoding") == "literal"
+                if identity not in seen_uris:
+                    seen_uris.add(identity)
                     rows.append(row)
     return rows
 

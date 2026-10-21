@@ -18,6 +18,7 @@ if str(SCRIPTS_DIR) not in sys.path:
 
 from gitverse_adapter import gitverse_fallback_urls
 from share_daily_adapter import extract_nodes as extract_clash_nodes
+from share_link_extractor import ExtractedURI, extract_uri_records
 
 ROOT = SCRIPTS_DIR.parent
 OUT = ROOT / "output"
@@ -82,7 +83,7 @@ def protocol_from_uri(uri: str) -> str | None:
 
 def extract_uris(text: str) -> list[str]:
     """Extract every URI, including links concatenated without whitespace."""
-    return [match.group(0).strip() for match in URI_RE.finditer(text)]
+    return [item.uri for item in extract_uri_records(text)]
 
 
 def _decode_ss_parts(uri: str):
@@ -214,26 +215,30 @@ def dedup_key(uri: str) -> str:
     return "|".join(identity)
 
 
-def parse_lines(text: str, source_name: str, source_hint_country: str | None = None):
+def parse_uri_records(records: list[ExtractedURI], source_name: str):
     rows = []
-    text = maybe_decode(text.encode("utf-8", errors="ignore"))
-    for line in text.splitlines():
-        line = line.strip().strip('"')
-        if not line or line.startswith(("#", "//", "proxies:", "proxy-groups:")):
-            continue
-        for uri in extract_uris(line):
-            try:
-                protocol = protocol_from_uri(uri)
-                if not protocol or not valid_uri(uri, protocol):
-                    continue
-                host, port, remark, _ = endpoint_from_uri(uri)
-                if not host or port not in ALLOWED_PORTS:
-                    continue
-                rows.append({"uri": uri, "protocol": protocol, "host": host, "port": port, "remark": remark, "country": "UNKNOWN", "source": source_name})
-            except (TypeError, ValueError, UnicodeError):
-                # A malformed node must never discard the remaining source file.
+    for item in records:
+        uri = item.uri
+        try:
+            protocol = protocol_from_uri(uri)
+            if not protocol or not valid_uri(uri, protocol):
                 continue
+            host, port, remark, _ = endpoint_from_uri(uri)
+            if not host or port not in ALLOWED_PORTS:
+                continue
+            rows.append({"uri": uri, "protocol": protocol, "host": host, "port": port, "remark": remark, "country": "UNKNOWN", "source": source_name, **item.source_fields()})
+        except (TypeError, ValueError, UnicodeError):
+            # A malformed node must never discard the remaining source file.
+            continue
     return rows
+
+
+def parse_lines(text: str, source_name: str, source_hint_country: str | None = None, *, html_source: bool | None = None):
+    text = maybe_decode(text.encode("utf-8", errors="ignore"))
+    if html_source is not True:
+        text = "\n".join(line for line in text.splitlines()
+                         if not line.lstrip().startswith(("#", "//", "proxies:", "proxy-groups:")))
+    return parse_uri_records(extract_uri_records(text, html_source=html_source), source_name)
 
 
 def parse_vpngate_csv(data: bytes, source_name: str) -> list[dict]:

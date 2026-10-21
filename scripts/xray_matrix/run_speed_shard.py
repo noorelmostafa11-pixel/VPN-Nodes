@@ -40,7 +40,8 @@ def main() -> int:
             report = args.output / "core-report"
             completed = subprocess.run([str(args.tool.resolve()), "-input", str(nodes.resolve()),
                                         "-output", str(report.resolve()), "-workers", "4", "-node-timeout", "8s",
-                                        "-target", POLICY["target"]], check=False)
+                                        "-primary-timeout", "5s", "-target", POLICY["target"],
+                                        "-fallback-target", POLICY["fallback_target"]], check=False)
             returncode = completed.returncode
             summary_path = report / "summary.json"
             if summary_path.is_file():
@@ -51,6 +52,8 @@ def main() -> int:
                         or summary.get("input_sha256") != {"nodes.txt": digest(nodes)}
                         or summary.get("inventory") != len(targets) or summary.get("workers") != 4
                         or summary.get("sample_bytes") != POLICY["sample_bytes"] or summary.get("target") != POLICY["target"]
+                        or summary.get("fallback_target") != POLICY["fallback_target"]
+                        or summary.get("primary_timeout_ms") != POLICY["primary_timeout_ms"]
                         or summary.get("node_timeout_ms") != POLICY["node_timeout_ms"]):
                     raise ValueError("Speed command provenance/options mismatch")
                 actual = Counter()
