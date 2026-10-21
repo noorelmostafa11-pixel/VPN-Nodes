@@ -1,0 +1,503 @@
+{
+  "schema": 10,
+  "generated_at": "2026-10-21T04:37:10Z",
+  "tcp_reachable_total": 105261,
+  "udp_precheck_bypassed": 0,
+  "candidate_total": 105261,
+  "xray_included": 6346,
+  "config_conversion_failed": 0,
+  "active": 0,
+  "backup": 6346,
+  "failed_after_core": 98915,
+  "healthy": 6346,
+  "published_total": 6346,
+  "countries": 59,
+  "published_by_country": {
+    "AE": {
+      "active": 0,
+      "backup": 17,
+      "total": 17
+    },
+    "AL": {
+      "active": 0,
+      "backup": 4,
+      "total": 4
+    },
+    "AM": {
+      "active": 0,
+      "backup": 8,
+      "total": 8
+    },
+    "AR": {
+      "active": 0,
+      "backup": 7,
+      "total": 7
+    },
+    "AT": {
+      "active": 0,
+      "backup": 19,
+      "total": 19
+    },
+    "AU": {
+      "active": 0,
+      "backup": 14,
+      "total": 14
+    },
+    "AZ": {
+      "active": 0,
+      "backup": 2,
+      "total": 2
+    },
+    "BE": {
+      "active": 0,
+      "backup": 20,
+      "total": 20
+    },
+    "BG": {
+      "active": 0,
+      "backup": 113,
+      "total": 113
+    },
+    "BR": {
+      "active": 0,
+      "backup": 5,
+      "total": 5
+    },
+    "BY": {
+      "active": 0,
+      "backup": 3,
+      "total": 3
+    },
+    "CA": {
+      "active": 0,
+      "backup": 14,
+      "total": 14
+    },
+    "CH": {
+      "active": 0,
+      "backup": 8,
+      "total": 8
+    },
+    "CL": {
+      "active": 0,
+      "backup": 12,
+      "total": 12
+    },
+    "CN": {
+      "active": 0,
+      "backup": 1,
+      "total": 1
+    },
+    "CY": {
+      "active": 0,
+      "backup": 13,
+      "total": 13
+    },
+    "CZ": {
+      "active": 0,
+      "backup": 37,
+      "total": 37
+    },
+    "DE": {
+      "active": 0,
+      "backup": 510,
+      "total": 510
+    },
+    "DK": {
+      "active": 0,
+      "backup": 12,
+      "total": 12
+    },
+    "EE": {
+      "active": 0,
+      "backup": 40,
+      "total": 40
+    },
+    "ES": {
+      "active": 0,
+      "backup": 71,
+      "total": 71
+    },
+    "FI": {
+      "active": 0,
+      "backup": 146,
+      "total": 146
+    },
+    "FR": {
+      "active": 0,
+      "backup": 287,
+      "total": 287
+    },
+    "GB": {
+      "active": 0,
+      "backup": 38,
+      "total": 38
+    },
+    "GR": {
+      "active": 0,
+      "backup": 13,
+      "total": 13
+    },
+    "HK": {
+      "active": 0,
+      "backup": 171,
+      "total": 171
+    },
+    "ID": {
+      "active": 0,
+      "backup": 5,
+      "total": 5
+    },
+    "IE": {
+      "active": 0,
+      "backup": 15,
+      "total": 15
+    },
+    "IL": {
+      "active": 0,
+      "backup": 17,
+      "total": 17
+    },
+    "IN": {
+      "active": 0,
+      "backup": 13,
+      "total": 13
+    },
+    "IT": {
+      "active": 0,
+      "backup": 21,
+      "total": 21
+    },
+    "JP": {
+      "active": 0,
+      "backup": 361,
+      "total": 361
+    },
+    "KG": {
+      "active": 0,
+      "backup": 3,
+      "total": 3
+    },
+    "KR": {
+      "active": 0,
+      "backup": 96,
+      "total": 96
+    },
+    "KZ": {
+      "active": 0,
+      "backup": 10,
+      "total": 10
+    },
+    "LT": {
+      "active": 0,
+      "backup": 8,
+      "total": 8
+    },
+    "LU": {
+      "active": 0,
+      "backup": 2,
+      "total": 2
+    },
+    "LV": {
+      "active": 0,
+      "backup": 14,
+      "total": 14
+    },
+    "MD": {
+      "active": 0,
+      "backup": 111,
+      "total": 111
+    },
+    "MY": {
+      "active": 0,
+      "backup": 1,
+      "total": 1
+    },
+    "NL": {
+      "active": 0,
+      "backup": 987,
+      "total": 987
+    },
+    "NZ": {
+      "active": 0,
+      "backup": 11,
+      "total": 11
+    },
+    "PH": {
+      "active": 0,
+      "backup": 1,
+      "total": 1
+    },
+    "PL": {
+      "active": 0,
+      "backup": 58,
+      "total": 58
+    },
+    "RO": {
+      "active": 0,
+      "backup": 27,
+      "total": 27
+    },
+    "RS": {
+      "active": 0,
+      "backup": 127,
+      "total": 127
+    },
+    "RU": {
+      "active": 0,
+      "backup": 77,
+      "total": 77
+    },
+    "SA": {
+      "active": 0,
+      "backup": 3,
+      "total": 3
+    },
+    "SC": {
+      "active": 0,
+      "backup": 1,
+      "total": 1
+    },
+    "SE": {
+      "active": 0,
+      "backup": 32,
+      "total": 32
+    },
+    "SG": {
+      "active": 0,
+      "backup": 406,
+      "total": 406
+    },
+    "TH": {
+      "active": 0,
+      "backup": 37,
+      "total": 37
+    },
+    "TR": {
+      "active": 0,
+      "backup": 21,
+      "total": 21
+    },
+    "TW": {
+      "active": 0,
+      "backup": 4,
+      "total": 4
+    },
+    "UA": {
+      "active": 0,
+      "backup": 6,
+      "total": 6
+    },
+    "US": {
+      "active": 0,
+      "backup": 2228,
+      "total": 2228
+    },
+    "UZ": {
+      "active": 0,
+      "backup": 1,
+      "total": 1
+    },
+    "VN": {
+      "active": 0,
+      "backup": 38,
+      "total": 38
+    },
+    "ZA": {
+      "active": 0,
+      "backup": 19,
+      "total": 19
+    }
+  },
+  "country_names": {
+    "AE": "United Arab Emirates",
+    "AL": "Albania",
+    "AM": "Armenia",
+    "AR": "Argentina",
+    "AT": "Austria",
+    "AU": "Australia",
+    "AZ": "Azerbaijan",
+    "BE": "Belgium",
+    "BG": "Bulgaria",
+    "BR": "Brazil",
+    "BY": "Belarus",
+    "CA": "Canada",
+    "CH": "Switzerland",
+    "CL": "Chile",
+    "CN": "China",
+    "CY": "Cyprus",
+    "CZ": "Czechia",
+    "DE": "Germany",
+    "DK": "Denmark",
+    "EE": "Estonia",
+    "ES": "Spain",
+    "FI": "Finland",
+    "FR": "France",
+    "GB": "United Kingdom",
+    "GR": "Greece",
+    "HK": "Hong Kong",
+    "ID": "Indonesia",
+    "IE": "Ireland",
+    "IL": "Israel",
+    "IN": "India",
+    "IT": "Italy",
+    "JP": "Japan",
+    "KG": "Kyrgyzstan",
+    "KR": "Korea, Republic of",
+    "KZ": "Kazakhstan",
+    "LT": "Lithuania",
+    "LU": "Luxembourg",
+    "LV": "Latvia",
+    "MD": "Moldova, Republic of",
+    "MY": "Malaysia",
+    "NL": "Netherlands",
+    "NZ": "New Zealand",
+    "PH": "Philippines",
+    "PL": "Poland",
+    "RO": "Romania",
+    "RS": "Serbia",
+    "RU": "Russian Federation",
+    "SA": "Saudi Arabia",
+    "SC": "Seychelles",
+    "SE": "Sweden",
+    "SG": "Singapore",
+    "TH": "Thailand",
+    "TR": "Türkiye",
+    "TW": "Taiwan, Province of China",
+    "UA": "Ukraine",
+    "US": "United States",
+    "UZ": "Uzbekistan",
+    "VN": "Viet Nam",
+    "ZA": "South Africa"
+  },
+  "health_policy": "Owned VPN-Core-Test authenticated HTTPS response required before publication.",
+  "core": {
+    "repository": "noorelmostafa11-pixel/VPN-Core-Test",
+    "revision": "2690971a23b1121fa28754b01a08ef197d4b8f2e",
+    "source_modified": false,
+    "binary_sha256": "42c7de83ba11c9e60d10f608077104252257e46b816a395e889d1d029e20ebc3",
+    "speed_binary_sha256": "e66769dc23b003a59f7aca665309e5c3174bf4ac6d2b8a805f333081b05d9025",
+    "speed_core_revision": "2690971a23b1121fa28754b01a08ef197d4b8f2e",
+    "speed_tool_revision": "8608d2c704e42fd75044668d9d6be1ae27622268"
+  },
+  "country_policy": "country endpoint first; exit IP GeoLite2 then entry host GeoLite2 for XX nodes",
+  "geoip_xx_fallback": {
+    "provider": "GeoLite2-Country",
+    "scope": "working_xx_only",
+    "attempted": 3338,
+    "exit_ip_available": 2394,
+    "exit_ip_missing": 944,
+    "exit_ip_classified": 2394,
+    "entry_host_attempted": 944,
+    "entry_host_classified": 944,
+    "classified": 3338,
+    "unresolved": 0
+  },
+  "xray_success_endpoints": {
+    "cloudflare": 3907,
+    "example": 4022,
+    "google": 3766,
+    "microsoft": 2982
+  },
+  "test_summary": {
+    "vless": {
+      "source_total": 77654,
+      "tested": 77654,
+      "working": 11105,
+      "failed": 66549,
+      "success_endpoints": {
+        "cloudflare": 2798,
+        "example": 2868,
+        "google": 3067,
+        "microsoft": 2372
+      },
+      "published_after_exact_dedup": 5036,
+      "published_after_connection_dedup": 5036,
+      "failure_stages": {
+        "CONFLICTING_NODE": 70,
+        "INVALID_NODE": 1003,
+        "NO_VERIFIED_HTTPS_RESPONSE": 65361,
+        "UNSUPPORTED_NODE": 115
+      }
+    },
+    "vmess": {
+      "source_total": 11737,
+      "tested": 11737,
+      "working": 1003,
+      "failed": 10734,
+      "success_endpoints": {
+        "cloudflare": 335,
+        "example": 320,
+        "google": 178,
+        "microsoft": 170
+      },
+      "published_after_exact_dedup": 110,
+      "published_after_connection_dedup": 110,
+      "failure_stages": {
+        "CONFLICTING_NODE": 103,
+        "INVALID_NODE": 19,
+        "NO_VERIFIED_HTTPS_RESPONSE": 10533,
+        "UNSUPPORTED_NODE": 79
+      }
+    },
+    "trojan": {
+      "source_total": 14921,
+      "tested": 14921,
+      "working": 2417,
+      "failed": 12504,
+      "success_endpoints": {
+        "cloudflare": 708,
+        "example": 790,
+        "google": 495,
+        "microsoft": 424
+      },
+      "published_after_exact_dedup": 1162,
+      "published_after_connection_dedup": 1162,
+      "failure_stages": {
+        "CONFLICTING_NODE": 6,
+        "INVALID_NODE": 544,
+        "NO_VERIFIED_HTTPS_RESPONSE": 11922,
+        "UNSUPPORTED_NODE": 32
+      }
+    },
+    "ss": {
+      "source_total": 949,
+      "tested": 949,
+      "working": 152,
+      "failed": 797,
+      "success_endpoints": {
+        "cloudflare": 66,
+        "example": 44,
+        "google": 26,
+        "microsoft": 16
+      },
+      "published_after_exact_dedup": 38,
+      "published_after_connection_dedup": 38,
+      "failure_stages": {
+        "CONFLICTING_NODE": 3,
+        "INVALID_NODE": 5,
+        "NO_VERIFIED_HTTPS_RESPONSE": 737,
+        "UNSUPPORTED_NODE": 52
+      }
+    }
+  },
+  "semantic_duplicate_raw_removed_after_core": 8331,
+  "speed_ranking": {
+    "schema": "vpn-country-speed-ranking-v1",
+    "policy": {
+      "target": "https://speed.cloudflare.com/__down?bytes=1048576",
+      "sample_bytes": 1048576,
+      "workers": 4,
+      "shards": 8,
+      "node_timeout_ms": 8000
+    },
+    "total_concurrency": 32,
+    "pool_sha256": "b2a16cfa566a7cbd3f13f62b38c370a4473bf4403b526e127c5b9be984a11be7",
+    "measured": 3549,
+    "unmeasured": 2797,
+    "missing_shards": [],
+    "order": "measured download bps descending; unmeasured retained by verified HTTPS delay",
+    "scope": "one 1 MiB sample from GitHub runners; estimate at measurement time, not a speed guarantee",
+    "eligibility_changed": false
+  }
+}
