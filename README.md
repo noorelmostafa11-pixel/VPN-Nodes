@@ -1,11 +1,7 @@
 
 # VPN-Nodes: catalog verified by the owner's core
 
-`Update node catalog` runs daily at **04:00 and 16:00 UAE time** (00:00 and
-12:00 UTC), and can also be started manually. Each run collects current sources
-and builds the selected ref of `noorelmostafa11-pixel/VPN-Core-Test` once. The default
-`core_ref` is `main`; it is resolved to one commit and a SHA256-identified Linux
-binary shared by all eight check shards. No official Xray binary is downloaded.
+
 
 Scheduled runs perform the full collection, core connectivity check, download measurement,
 and signed publication pipeline using the latest core `main`. The schedule does
