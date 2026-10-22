@@ -1,117 +1,61 @@
+# VPN-Nodes
 
-# VPN-Nodes: catalog verified by the owner's core
+Collects proxy-node links, verifies connectivity through the pinned VPN-Core-Test source, and publishes signed country and protocol catalogs.
 
+## Run
 
+Run **Actions → Update node catalog → Run workflow** on `main`.
 
-Scheduled runs perform the full collection, core connectivity check, download measurement,
-and signed publication pipeline using the latest core `main`. The schedule does
-not depend on an external server or push. GitHub may delay scheduled starts under
-load; the configured times are not a guaranteed exact start time.
+- `core_ref`: core branch or revision to resolve once for the complete run; defaults to `main`.
+- `publish_run_id`: leave empty for a fresh catalog, or provide a completed run ID for publication recovery.
 
-The existing fast TCP precheck is retained: each shared host/port is tested once,
-and unavailable TCP endpoints are removed before the expensive core check.
-Explicit UDP transports (KCP, QUIC, Hysteria transport and QUIC plugins), including
-HTTP/3 hints, bypass that TCP gate and go directly to the core. The source
-collectors' existing port policy (currently 443) is preserved. TCP success alone
-never qualifies a node for publication.
+The current catalog workflow is manually dispatched. It has no native schedule or external-server dependency.
 
-Each shard uses the core's original URI parser and `nodecheck` engine with
-64 workers, a six-second node deadline and two-second target deadlines. Targets
-are the same Google, Microsoft, Cloudflare and example.com defaults as the core
-test repository. Any authenticated final HTTPS response with status 200–599
-proves reachability, including 403/429/500. Failures retain phase/error details.
-The original candidate link is published only after that link passed; Python
-does not convert connection settings or repair rejected links.
+## Collection and connectivity
 
-Country enrichment runs only after PASS through that same core handler. The
-existing `VPN_COUNTRY_URL` secret supplies the country service; a missing country
-may fall back to an exit-IP request, local GeoLite2, then the existing entry-host
-lookup, finally XX. A separate four-second enrichment budget cannot change a
-proven node to failed. Private metadata URLs and bodies are omitted from reports.
+Collectors retain complete source links, including encoded and structured connection fields. The existing collection port policy remains 443. Shared TCP host/port checks run once per endpoint; explicit UDP transports bypass the TCP gate. TCP success alone does not qualify a node for publication.
 
-Country feeds, 1000-node country shards, protocol feeds, metadata file paths,
-ECDSA manifest schema and signing key are preserved for the Android app. The
-existing `CATALOG_SIGNING_PRIVATE_KEY_B64` secret is still required to publish.
-`VPN_TEST_URL` is no longer used. Legacy `xray_*` metadata names remain for
-compatibility; the new `core` object identifies the actual owned source/binary.
-Counters distinguish TCP-passed candidates from UDP bypasses.
+The workflow builds the selected core once and shares its exact revision, binary hashes and candidate snapshot across eight checker shards. Each shard uses 64 workers, a six-second node deadline and two-second target deadlines. The four shared HTTPS destinations are Google `generate_204`, Microsoft `robots.txt`, Cloudflare `cdn-cgi/trace` and `example.com`.
 
-Shard artifacts retain `nodecheck/results.jsonl`, `failures.jsonl`, `summary.json`
-and `summary.md` for seven days. The publisher refuses incomplete, mismatched,
-foreign-core or empty results. It preserves source links, country ordering,
-deduplication after verification and the existing signed publication process.
-The current committed catalog stays intact until a successful manual refresh.
+A verified final HTTPS response with status 200–599 establishes connectivity. The original URI must pass through the core's own parser and outbound handler. Collection and publication do not silently rewrite rejected connection settings.
 
-After merging successful shards, publication additionally uses the core's optional
-`connection_key` (`xray-outbound-v1:<SHA256>`). The core fingerprints the complete
-built outbound, excluding its display/runtime tag, and canonicalizes nested
-protobuf settings. Publication keeps the first successful original link in
-candidate order; endpoint, credentials, transport, TLS and every built setting
-remain part of the identity. It does not use the legacy Python parser to guess
-equivalence, and it does not change prechecks, connectivity verdicts, country
-sorting or the application's Saved keys.
+Country enrichment runs after connectivity success through the same handler, with its own bounded budget. Metadata lookup failures do not remove proven connections. Country assignment can fall back through the existing exit-IP, GeoLite2 and entry-host lookup paths, then `XX`.
 
-Reports without a connection key retain the previous exact/before-fragment
-checks. `app_pool.json` separately records semantic duplicates removed and
-successful identity coverage, including missing keys. Duplicate successes remain
-counted as successful tests. The new behavior is automatic with the next manual
-run using the updated core and publisher; existing published feeds are not rewritten.
+## Deduplication and publication
 
-Retired official-downloader, Python engine, execution and repair modules were
-removed. Pure legacy identity/parser helpers remain for their existing offline
-regressions and standalone identity tooling, outside the production decision path.
+Successful nodes are deduplicated using the core-built connection identity when available. The identity includes endpoint, credentials, transport, TLS and all effective connection settings; display names do not create distinct connections. The first successful original link is retained in source order. Reports without a connection key keep the existing exact-link checks.
 
-Local validation: owned-core integration/coverage/provenance checks, country
-publication and ordering checks, source/freshness/identity regressions, workflow
-syntax checks, Windows/Linux core compilation and a synthetic loopback core
-check. No public node scan or workflow dispatch was performed. Run the workflow
-manually to produce a new verified catalog and real-run diagnostics.
+Country feeds, 1000-node country shards, protocol feeds and metadata remain compatible with the signed Android catalog format. Publication requires the configured signing key. The last valid catalog remains available if a refresh fails.
 
-### Country ordering by a fixed download sample
+Required repository secrets include `CATALOG_SIGNING_PRIVATE_KEY_B64` and `VPN_COUNTRY_URL`. Configure their values through repository secrets; their contents are not published in reports.
 
-The workflow prepares the exact successful, connection-deduplicated
-set, then runs eight speed jobs with four simultaneous nodes each (32 maximum).
-The separate `scripts/xray_matrix/node_speed.go` tool belongs to this repository.
-It is compiled once from the selected core's module directory and uses that
-unchanged core library's URI resolver, outbound handlers and dispatcher. The
-helper binary, helper source revision and linked core revision are recorded in
-the same build artifact. No command or API is added to VPN-Core-Test or its AAR.
+## Download ranking
 
-Each connection receives one verified HTTPS download request to
-`https://speed.cloudflare.com/__down?bytes=1048576`, with an eight-second total
-deadline. Only a complete, uncompressed 1 MiB response with verified target TLS
-and HTTP 200 receives a score. The estimate uses bits divided by the interval
-from the first response byte through sample completion, excluding tunnel/TLS
-startup; startup latency is recorded separately. No redirects or retries occur.
-Worker processes recycle after bounded batches to release core transport caches.
+Ranking runs after connectivity and connection deduplication. The Go helper in `scripts/xray_matrix/node_speed.go` links the same pinned core library; it does not add a core or Android SDK API.
 
-Country files and their matching country shards put measured download rates
-first, descending; ties retain verified HTTPS-delay ordering. Unmeasured nodes
-remain published after measured nodes, with the previous HTTPS-delay order.
-Missing speed jobs also retain their assigned nodes. Protocol feeds keep their
-original source order. Connectivity PASS, deduplication, country assignment,
-original URI text, credentials and the app's Saved behavior do not change.
+There are eight speed shards with four concurrent nodes each, at most 32 measurements in parallel. Each node has one eight-second total budget:
 
-`output/metadata/node_speeds.json` contains credential-free per-node scores and
-failure codes and is included in the existing signed catalog manifest. The
-catalog summary reports measured/unmeasured counts and missing speed shards.
-This is one sample from GitHub runners at that time, not a guarantee of a
-phone's download speed. It adds sample traffic and elapsed time; the owner
-continues to dispatch the workflow manually.
+1. Request a complete 1 MiB sample from `https://speed.cloudflare.com/__down?bytes=1048576`, with the primary attempt capped at five seconds.
+2. If that attempt fails and time remains, request bytes `0–1048575` from `https://proof.ovh.net/files/10Mb.dat` through the same core outbound.
 
-# Resume catalog publication
+Both paths require verified HTTPS and uncompressed data. The primary requires HTTP 200 and the complete fixed-size response. The fallback requires HTTP 206, the exact 1 MiB content length and a valid matching `Content-Range`. It uses only the time remaining from the original eight-second budget. Redirects are not followed.
 
-If scanning completed but publication failed, run **Update node catalog** on `main`
-with `publish_run_id` set to the completed source run ID. Leave this input empty
-for the normal collection, connectivity check, and download measurement pipeline.
+The score is sample bits divided by the interval from the first response byte to sample completion. Startup latency is recorded separately. The selected target and fallback use remain identifiable in measurement metadata. These are observations from the runner's network and measurement time, not a guarantee of performance on another connection.
 
-Recovery downloads that run's saved candidates, all eight checker shards, and
-its speed pool/observations; it does not build the core or contact proxy nodes.
-The source run and unchanged catalog/finalizer/signing contract are checked before
-the existing catalog validation and signature steps. Expired/missing required
-artifacts fail publication rather than silently losing results.
+Country files and their matching shards put measured rates first, descending. Ties retain verified HTTPS-delay ordering. Unmeasured nodes, including nodes assigned to missing speed jobs, remain published after measured nodes. Protocol feeds retain source order. A speed-measurement failure does not change connectivity eligibility.
 
-Both catalog and GeoLite2 publication preserve the latest unrelated changes on
-`main`, use a fresh explicit Git lease, and retry a moved branch up to three times.
-A newer payload of the same kind is retained instead of being replaced by stale
-results. The existing rolling-output history policy remains in effect.
+`output/metadata/node_speeds.json` contains credential-free per-node observations and is included in the signed catalog manifest. Summaries record measured and unmeasured counts, policy and missing shards.
+
+## Recover publication
+
+If scanning completed but publication failed, rerun **Update node catalog** with `publish_run_id` set to the source run. Recovery reuses saved candidates, checker shards and speed observations. It does not rebuild the core or rescan nodes.
+
+Recovery validates source-run provenance, complete checker coverage and the catalog/finalizer/signing contract. Missing or expired required artifacts stop recovery instead of silently dropping nodes.
+
+Catalog and GeoLite2 publishers fetch the latest `main`, overlay only their intended generated payload and use an explicit Git lease. They retry branch movement at most three times, preserve unrelated changes and refuse stale replacement of a newer payload of the same kind.
+
+## Reports and development
+
+Checker artifacts include per-node results, failures and summaries. Source URIs remain in the intended node feeds and input artifacts; diagnostic metadata omits credentials and private service bodies. Checker artifacts are retained for seven days.
+
+The `Validate speed fallback` workflow covers changes to speed-related source and tests on pull requests. It does not dispatch the catalog workflow. Historical validation records under `docs/` describe their recorded source revisions and environments.

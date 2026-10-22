@@ -55,6 +55,13 @@ def verify_binary(binary: Path, manifest: dict) -> None:
         raise ValueError("Owned core binary SHA256 mismatch")
 
 
+def verify_prepared_input(snapshot: dict, manifest: dict) -> None:
+    # Older immutable snapshots remain usable with their original strict checks.
+    if "core_input" in snapshot and snapshot["core_input"] != {
+            "schema": "vpn-node-input-v1", "core": manifest}:
+        raise ValueError("Candidate input was prepared by another core build")
+
+
 def verified_attempt(result: dict) -> dict:
     for attempt in result.get("attempts", []):
         status = attempt.get("http_status")

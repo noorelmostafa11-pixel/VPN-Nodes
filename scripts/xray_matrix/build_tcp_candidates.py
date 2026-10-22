@@ -8,6 +8,7 @@ Country publication is deferred until after the actual core connectivity test.
 """
 from __future__ import annotations
 
+import argparse
 import json
 import sys
 from collections import Counter
@@ -19,6 +20,8 @@ if str(SCRIPTS) not in sys.path:
     sys.path.insert(0, str(SCRIPTS))
 
 import merge_and_build_tcp_pool as merge  # noqa: E402
+from owned_core import read_json  # noqa: E402
+from prepare_core_input import prepare_rows  # noqa: E402
 
 META = ROOT / "output" / "metadata"
 TCP_REACHABLE = META / "tcp_reachable.json"
@@ -39,8 +42,14 @@ def _defer_publication(rows: list[dict], source_health: list[dict], freshness: d
 
 
 def main() -> int:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--input-tool", type=Path, required=True)
+    parser.add_argument("--core-manifest", type=Path, required=True)
+    args = parser.parse_args()
+    manifest = read_json(args.core_manifest)
     merge.common.publish_app_pool = _defer_publication
-    rc = merge.main(core_candidates=True)
+    rc = merge.main(core_candidates=True,
+                    prepare_core_rows=lambda rows: prepare_rows(rows, args.input_tool, manifest))
     if rc not in (None, 0):
         return int(rc)
     if not TCP_REACHABLE.is_file():
@@ -74,6 +83,7 @@ def main() -> int:
         "candidate_total": len(normalized),
         "candidate_stage": "core_pending",
         "schema": 1,
+        "core_input": {"schema": "vpn-node-input-v1", "core": manifest},
         "generated_at": source.get("generated_at"),
         "tcp_reachable": source.get("tcp_reachable", len(normalized)),
         "protocol_counts": dict(sorted(counts.items())),

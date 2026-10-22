@@ -96,7 +96,7 @@ def normalize_source_row(original: dict) -> dict:
     return row
 
 
-def main(*, core_candidates: bool = False) -> int:
+def main(*, core_candidates: bool = False, prepare_core_rows=None) -> int:
     all_rows: list[dict] = []
     source_health: list[dict] = []
     for path in INPUTS:
@@ -124,12 +124,20 @@ def main(*, core_candidates: bool = False) -> int:
     for original in all_rows:
         if str(original.get("protocol") or "").lower() == "openvpn":
             continue
-        if _endpoint_key(original) is None:
+        if (not core_candidates or prepare_core_rows is None) and _endpoint_key(original) is None:
             continue
         normalized = normalize_source_row(original)
         if normalized["uri"] != str(original.get("uri") or "").strip():
             html_uri_normalized += 1
         protocol_rows.append(normalized)
+
+    if core_candidates and prepare_core_rows is not None:
+        # Expand joined records before deduplication, endpoint filtering and
+        # sharding. The pinned core remains the only URI interpretation authority.
+        original_count = len(protocol_rows)
+        protocol_rows = prepare_core_rows(protocol_rows)
+        print(f"INFO core_input source_records={original_count} nodes={len(protocol_rows)}")
+        protocol_rows = [row for row in protocol_rows if _endpoint_key(row) is not None]
 
     unique: dict[str, dict] = {}
     if not core_candidates:

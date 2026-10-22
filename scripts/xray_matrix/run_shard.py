@@ -11,7 +11,8 @@ from collections import Counter
 from pathlib import Path
 from urllib.parse import urlsplit
 from owned_core import (MATRIX_SHARDS, WORKERS, PROTOCOL_ORDER, PUBLIC_PROTOCOL,
-                        TARGET_LABELS, connection_key, digest, read_json, verified_attempt, verify_binary)
+                        TARGET_LABELS, connection_key, digest, read_json, verified_attempt, verify_binary,
+                        verify_prepared_input)
 
 
 def assign(rows: list[dict], shard: int, shards: int) -> list[tuple[str, int, dict]]:
@@ -110,7 +111,9 @@ def main() -> int:
     parsed = urlsplit(country_url)
     if parsed.scheme != "https" or not parsed.hostname or parsed.username or parsed.password or parsed.fragment:
         raise ValueError("VPN_COUNTRY_URL must configure a valid HTTPS country service")
-    rows = read_json(args.input).get("nodes")
+    snapshot = read_json(args.input)
+    verify_prepared_input(snapshot, manifest)
+    rows = snapshot.get("nodes")
     if not isinstance(rows, list) or not rows:
         raise ValueError("Candidate snapshot is empty or invalid")
     assigned = assign(rows, args.shard, args.shards)

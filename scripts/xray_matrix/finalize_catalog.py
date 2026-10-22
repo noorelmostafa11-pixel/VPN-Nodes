@@ -32,7 +32,7 @@ if str(SCRIPTS) not in sys.path:
 
 import country_resolver  # noqa: E402
 from owned_core import (MATRIX_SHARDS, WORKERS, SUCCESS_ENDPOINTS, CONNECTION_KEY_SCHEMA,
-                        connection_key, digest, validate_manifest)  # noqa: E402
+                        connection_key, digest, validate_manifest, verify_prepared_input)  # noqa: E402
 from speed_ranking import apply_ranking, write_pool  # noqa: E402
 
 PROTOCOL_ORDER = ("vless", "vmess", "trojan", "ss")
@@ -178,6 +178,7 @@ def main() -> int:
     summaries = [read_json(path) for path in summary_paths]
     core_manifest = summaries[0].get("core") or {}
     validate_manifest(core_manifest)
+    verify_prepared_input(candidates, core_manifest)
     if any(item.get("core") != core_manifest or item.get("candidates_sha256") != digest(args.candidates)
            or item.get("schema") != 2 for item in summaries):
         raise SystemExit("Shard core provenance/candidate snapshot mismatch")
