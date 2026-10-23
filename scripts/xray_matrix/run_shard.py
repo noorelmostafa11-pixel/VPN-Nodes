@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Feed exact source links to VPN-Core-Test's production nodecheck command."""
+"""Feed exact source links to VPN-Core's production nodecheck command."""
 from __future__ import annotations
 import argparse
 import hashlib

@@ -1,11 +1,14 @@
-"""Shared contract for the owner-built VPN-Core-Test checker and catalog."""
+"""Shared contract for the owner-built VPN-Core checker and catalog."""
 from __future__ import annotations
 import hashlib
 import json
 import re
 from pathlib import Path
 
-CORE_REPOSITORY = "noorelmostafa11-pixel/VPN-Core-Test"
+CORE_REPOSITORY = "noorelmostafa11-pixel/VPN-Core"
+# The repository was renamed, not replaced. Immutable pre-rename snapshots and
+# recovery artifacts retain their original identity and all original hash checks.
+_CORE_REPOSITORY_NAMES = (CORE_REPOSITORY, "noorelmostafa11-pixel/VPN-Core-Test")
 MATRIX_SHARDS = 8
 WORKERS = 64
 PROTOCOL_ORDER = ("vless", "vmess", "trojan", "ss")
@@ -42,7 +45,7 @@ def read_json(path: Path) -> dict:
 
 
 def validate_manifest(manifest: dict) -> None:
-    if (manifest.get("repository") != CORE_REPOSITORY
+    if (manifest.get("repository") not in _CORE_REPOSITORY_NAMES
             or not re.fullmatch(r"[0-9a-f]{40}", str(manifest.get("revision", "")))
             or not re.fullmatch(r"[0-9a-f]{64}", str(manifest.get("binary_sha256", "")))
             or manifest.get("source_modified") is not False):

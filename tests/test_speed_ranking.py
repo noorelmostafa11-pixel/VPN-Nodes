@@ -12,10 +12,11 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts/xray_matrix"))
 from finalize_catalog import country_sort_key, deduplicate_working
+from owned_core import CORE_REPOSITORY
 from speed_ranking import (POLICY, REPORT_SCHEMA, apply_ranking, assigned, digest,
                            load_pool, observation, verify_ranking, write_pool)
 
-CORE = {"repository": "noorelmostafa11-pixel/VPN-Core-Test", "revision": "a"*40,
+CORE = {"repository": CORE_REPOSITORY, "revision": "a"*40,
         "binary_sha256": "b"*64, "source_modified": False}
 
 

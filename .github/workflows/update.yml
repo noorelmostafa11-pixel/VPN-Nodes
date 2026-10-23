@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       core_ref:
-        description: Owned VPN-Core-Test ref resolved once per run
+        description: Owned VPN-Core ref resolved once per run
         type: string
         default: main
       publish_run_id:
@@ -29,7 +29,7 @@ jobs:
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
         with:
-          repository: noorelmostafa11-pixel/VPN-Core-Test
+          repository: noorelmostafa11-pixel/VPN-Core
           ref: ${{ inputs.core_ref || 'main' }}
           path: owned-core-source
           persist-credentials: false
@@ -71,7 +71,7 @@ jobs:
           root = Path(os.environ['RUNNER_TEMP']) / 'owned-core'
           with (root / 'vpn-core').open('rb') as stream:
               sha = hashlib.file_digest(stream, 'sha256').hexdigest()
-          manifest = {'repository': 'noorelmostafa11-pixel/VPN-Core-Test',
+          manifest = {'repository': 'noorelmostafa11-pixel/VPN-Core',
                       'revision': os.environ['CORE_REVISION'], 'source_modified': False,
                       'binary_sha256': sha,
                       'input_binary_sha256': hashlib.sha256((root / 'node-input').read_bytes()).hexdigest(),
@@ -224,7 +224,7 @@ jobs:
           name: owned-core-${{ github.run_id }}
           path: ${{ runner.temp }}/owned-core
 
-      - name: Run the same actual connectivity checker as VPN-Core-Test
+      - name: Run the same actual connectivity checker as VPN-Core
         env:
           VPN_NODECHECK_COUNTRY_URL: ${{ secrets.VPN_COUNTRY_URL }}
         run: |

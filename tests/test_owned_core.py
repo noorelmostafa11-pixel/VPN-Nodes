@@ -18,7 +18,7 @@ sys.path.insert(0, str(ROOT / "scripts" / "xray_matrix"))
 sys.path.insert(0, str(ROOT / "scripts"))
 import run_shard
 import merge_and_build_tcp_pool as merge
-from owned_core import CORE_REPOSITORY, TARGET_LABELS, digest, verify_binary
+from owned_core import CORE_REPOSITORY, TARGET_LABELS, digest, verify_binary, verify_prepared_input
 from core_tcp_filter import uses_udp_transport
 
 
@@ -154,6 +154,40 @@ class OwnedCoreTests(unittest.TestCase):
         for changed in ({"repository": "XTLS/Xray-core"}, {"source_modified": True}, {"binary_sha256": "0"*64}):
             with self.assertRaises(ValueError):
                 verify_binary(binary, dict(manifest, **changed))
+
+    def test_repository_rename_preserves_pinned_legacy_recovery_artifacts(self):
+        binary = self.root / "core"
+        binary.write_bytes(b"same-owner-core-fixture")
+        for repository in ("noorelmostafa11-pixel/VPN-Core", "noorelmostafa11-pixel/VPN-Core-Test"):
+            with self.subTest(repository=repository):
+                manifest = dict(self.manifest, repository=repository, binary_sha256=digest(binary))
+                original = copy.deepcopy(manifest)
+                verify_binary(binary, manifest)
+                snapshot = {"core_input": {"schema": "vpn-node-input-v1", "core": copy.deepcopy(manifest)}}
+                verify_prepared_input(snapshot, manifest)
+                self.assertEqual(manifest, original)
+                for changed in ({"revision": "not-pinned"}, {"source_modified": True},
+                                {"binary_sha256": "0"*64}):
+                    with self.assertRaises(ValueError):
+                        verify_binary(binary, dict(manifest, **changed))
+                other_name = "noorelmostafa11-pixel/VPN-Core-Test" if repository == CORE_REPOSITORY else CORE_REPOSITORY
+                with self.assertRaises(ValueError):
+                    verify_prepared_input(snapshot, dict(manifest, repository=other_name))
+
+    def test_repository_rename_does_not_trust_other_owners_or_malformed_identities(self):
+        binary = self.root / "core"
+        binary.write_bytes(b"fixture")
+        manifest = dict(self.manifest, binary_sha256=digest(binary))
+        for repository in ("someone-else/VPN-Core", "someone-else/VPN-Core-Test",
+                           "noorelmostafa11-pixel/other-core", None, {}, []):
+            with self.subTest(repository=repository), self.assertRaises(ValueError):
+                verify_binary(binary, dict(manifest, repository=repository))
+
+    def test_workflow_checkout_and_build_manifest_use_the_canonical_repository(self):
+        workflow = (ROOT / ".github/workflows/update.yml").read_text(encoding="utf-8")
+        self.assertIn("repository: " + CORE_REPOSITORY + "\n", workflow)
+        self.assertIn("manifest = {'repository': '" + CORE_REPOSITORY + "',", workflow)
+        self.assertNotIn("noorelmostafa11-pixel/VPN-Core-Test", workflow)
 
     def test_tcp_gate_preserves_udp_labeled_configs_if_endpoint_has_tcp(self):
         tcp_raw = self.raw.replace("type=quic", "type=ws")

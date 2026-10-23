@@ -454,7 +454,7 @@ def main() -> int:
         "tcp_precheck_applied": True,
         "udp_precheck_bypassed": udp_bypassed,
         "candidate_total": len(candidate_rows),
-        "final_runtime_test": "VPN-Core-Test nodecheck; multiple authenticated HTTPS targets; HTTP 200-599",
+        "final_runtime_test": "VPN-Core nodecheck; multiple authenticated HTTPS targets; HTTP 200-599",
         "core": core_manifest,
         "xray_matrix_shards": MATRIX_SHARDS,
         "xray_workers_per_runner": WORKERS_PER_RUNNER,
@@ -519,7 +519,7 @@ def main() -> int:
             for country, count in country_counts.items()
         },
         "country_names": {item["code"]: item["name"] for item in countries_meta},
-        "health_policy": "Owned VPN-Core-Test authenticated HTTPS response required before publication.",
+        "health_policy": "Owned VPN-Core authenticated HTTPS response required before publication.",
         "core": core_manifest,
         "country_policy": "country endpoint first; exit IP GeoLite2 then entry host GeoLite2 for XX nodes",
         "geoip_xx_fallback": geoip_summary,

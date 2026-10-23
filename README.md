@@ -1,6 +1,6 @@
 # VPN-Nodes
 
-Collects proxy-node links, verifies connectivity through the pinned VPN-Core-Test source, and publishes signed country and protocol catalogs.
+Collects proxy-node links, verifies connectivity through the pinned VPN-Core source, and publishes signed country and protocol catalogs.
 
 ## Run
 
@@ -16,6 +16,11 @@ The current catalog workflow is manually dispatched. It has no native schedule o
 Collectors retain complete source links, including encoded and structured connection fields. The existing collection port policy remains 443. Shared TCP host/port checks run once per endpoint; explicit UDP transports bypass the TCP gate. TCP success alone does not qualify a node for publication.
 
 The workflow builds the selected core once and shares its exact revision, binary hashes and candidate snapshot across eight checker shards. Each shard uses 64 workers, a six-second node deadline and two-second target deadlines. The four shared HTTPS destinations are Google `generate_204`, Microsoft `robots.txt`, Cloudflare `cdn-cgi/trace` and `example.com`.
+
+The canonical core repository is `noorelmostafa11-pixel/VPN-Core`. Stored core
+provenance also accepts its former name, `noorelmostafa11-pixel/VPN-Core-Test`,
+with the same pinned-source, binary and snapshot checks. Publication recovery
+still requires an unchanged finalizer/signing contract and a valid source run.
 
 A verified final HTTPS response with status 200–599 establishes connectivity. The original URI must pass through the core's own parser and outbound handler. Collection and publication do not silently rewrite rejected connection settings.
 

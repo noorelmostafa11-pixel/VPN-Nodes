@@ -1,5 +1,5 @@
 // node_speed is owned by VPN-Nodes. Build this explicit file from the pinned
-// VPN-Core-Test module directory; no core source or Android API is modified.
+// VPN-Core module directory; no core source or Android API is modified.
 package main
 
 import (
