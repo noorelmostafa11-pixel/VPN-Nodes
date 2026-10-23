@@ -8,6 +8,7 @@ output/metadata/telegram_candidates.json
 output/metadata/v2nodes_candidates.json
 output/metadata/tcp_reachable.json
 output/metadata/merged_pool.json
+output/metadata/xray_candidates.json
 
 # Removed legacy/experimental outputs; keep them from being re-added accidentally.
 # output/country_shards/ is intentionally tracked for on-demand Android paging.
@@ -20,3 +21,4 @@ output/metadata/staged_health.json
 output/metadata/xray_probe_experiment.json
 output/metadata/openvpn_candidates.json
 output/metadata/health.json
+.github/push-trigger-test.txt
