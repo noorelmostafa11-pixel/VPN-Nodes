@@ -1,6 +1,5 @@
 name: Update node catalog
-
-on:
+'on':
   workflow_dispatch:
     inputs:
       core_ref:
@@ -8,340 +7,131 @@ on:
         type: string
         default: main
       publish_run_id:
-        description: 'Publish saved results from this completed run ID; leave empty for a new scan'
+        description: Publish saved results from this completed run ID; leave empty for a new scan
         type: string
         default: ''
-
 permissions:
-  contents: write
+  contents: read
   actions: read
-
 concurrency:
   group: catalog-refresh-${{ github.ref }}
   cancel-in-progress: false
-
 jobs:
   owned-core:
     if: ${{ !inputs.publish_run_id }}
     name: Build pinned owner core once
     runs-on: ubuntu-24.04
     timeout-minutes: 20
+    outputs:
+      pipeline_revision: ${{ steps.pin.outputs.revision }}
     steps:
-      - name: Require private core access and encrypted transport
-        env:
-          VPN_CORE_READ_TOKEN: ${{ secrets.VPN_CORE_READ_TOKEN }}
-          VPN_CORE_ARTIFACT_KEY_B64: ${{ secrets.VPN_CORE_ARTIFACT_KEY_B64 }}
-        run: |
-          test -n "$VPN_CORE_READ_TOKEN" || { echo 'VPN_CORE_READ_TOKEN is required' >&2; exit 1; }
-          test -n "$VPN_CORE_ARTIFACT_KEY_B64" || { echo 'VPN_CORE_ARTIFACT_KEY_B64 is required' >&2; exit 1; }
-      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
-        with:
-          repository: noorelmostafa11-pixel/VPN-Core
-          token: ${{ secrets.VPN_CORE_READ_TOKEN }}
-          ref: ${{ inputs.core_ref || 'main' }}
-          path: owned-core-source
-          persist-credentials: false
-      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
-        with:
-          ref: ${{ github.sha }}
-          path: catalog-source
-          persist-credentials: false
-      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
-        with:
-          python-version: '3.12'
-      - name: Install and test authenticated artifact transport
-        working-directory: catalog-source
-        run: |
-          python -m pip install -r requirements-core-artifact.txt
-          python -m pip install PyYAML==6.0.2
-          python tests/test_core_artifact.py
-      - uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff
-        with:
-          go-version: '1.27.1'
-          cache: false
-      - name: Compile production nodecheck and record source and binary identity
-        working-directory: owned-core-source
-        env:
-          GOTOOLCHAIN: local
-          CGO_ENABLED: '0'
-        run: |
-          set -euo pipefail
-          test -f app/nodecheck/exit_metadata.go
-          test -z "$(git status --porcelain)"
-          mkdir -p "$RUNNER_TEMP/owned-core"
-          go build -mod=readonly -trimpath -o "$RUNNER_TEMP/owned-core/vpn-core" ./main
-          go test -mod=readonly \
-            "$GITHUB_WORKSPACE/catalog-source/scripts/xray_matrix/node_input.go" \
-            "$GITHUB_WORKSPACE/catalog-source/scripts/xray_matrix/node_input_test.go"
-          go build -mod=readonly -trimpath \
-            -ldflags "-X main.coreRevision=$(git rev-parse HEAD) -X main.toolRevision=${GITHUB_SHA}" \
-            -o "$RUNNER_TEMP/owned-core/node-input" \
-            "$GITHUB_WORKSPACE/catalog-source/scripts/xray_matrix/node_input.go"
-          go build -mod=readonly -trimpath \
-            -ldflags "-X main.coreRevision=$(git rev-parse HEAD) -X main.toolRevision=${GITHUB_SHA}" \
-            -o "$RUNNER_TEMP/owned-core/node-speed" \
-            "$GITHUB_WORKSPACE/catalog-source/scripts/xray_matrix/node_speed.go"
-          test -z "$(git status --porcelain)"
-          CORE_REVISION="$(git rev-parse HEAD)" python3 - <<'PY'
-          import hashlib, json, os
-          from pathlib import Path
-          root = Path(os.environ['RUNNER_TEMP']) / 'owned-core'
-          with (root / 'vpn-core').open('rb') as stream:
-              sha = hashlib.file_digest(stream, 'sha256').hexdigest()
-          manifest = {'repository': 'noorelmostafa11-pixel/VPN-Core',
-                      'revision': os.environ['CORE_REVISION'], 'source_modified': False,
-                      'binary_sha256': sha,
-                      'input_binary_sha256': hashlib.sha256((root / 'node-input').read_bytes()).hexdigest(),
-                      'input_core_revision': os.environ['CORE_REVISION'],
-                      'input_tool_revision': os.environ['GITHUB_SHA'],
-                      'speed_binary_sha256': hashlib.sha256((root / 'node-speed').read_bytes()).hexdigest(),
-                      'speed_core_revision': os.environ['CORE_REVISION'],
-                      'speed_tool_revision': os.environ['GITHUB_SHA']}
-          (root / 'core-build.json').write_text(json.dumps(manifest, indent=2) + '\n')
-          PY
-      - name: Encrypt all core-linked tools for this run
-        working-directory: catalog-source
-        env:
-          VPN_CORE_ARTIFACT_KEY_B64: ${{ secrets.VPN_CORE_ARTIFACT_KEY_B64 }}
-        run: |
-          python scripts/core_artifact.py seal \
-            --source "$RUNNER_TEMP/owned-core" \
-            --destination "$RUNNER_TEMP/owned-core-sealed/core.bundle"
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
-        with:
-          name: owned-core-${{ github.run_id }}
-          path: ${{ runner.temp }}/owned-core-sealed/core.bundle
-          compression-level: 0
-          retention-days: 1
-          if-no-files-found: error
-
+    - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+      with:
+        repository: noorelmostafa11-pixel/VPN-Nodes-Private
+        ssh-key: ${{ secrets.VPN_NODES_PRIVATE_READ_KEY }}
+        ref: main
+        path: catalog-source
+        fetch-depth: 0
+        persist-credentials: false
+    - name: Pin private source once
+      id: pin
+      shell: bash
+      run: echo "revision=$(git -C catalog-source rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+    - uses: ./catalog-source/.github/actions/catalog
+      with:
+        stage: owned-core
+        private_revision: ${{ steps.pin.outputs.revision }}
+        node_key: ${{ secrets.VPN_NODES_ARTIFACT_KEY_B64 }}
+        core_ref: ${{ inputs.core_ref || 'main' }}
+        core_token: ${{ secrets.VPN_CORE_READ_TOKEN }}
+        core_key: ${{ secrets.VPN_CORE_ARTIFACT_KEY_B64 }}
   candidates:
     if: ${{ !inputs.publish_run_id }}
-    needs: [owned-core]
+    needs:
+    - owned-core
     runs-on: ubuntu-latest
     timeout-minutes: 60
-
     steps:
-      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
-        with:
-          fetch-depth: 0
-
-      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
-        with:
-          python-version: '3.12'
-          cache: 'pip'
-
-      - run: pip install -r requirements.txt
-
-      - name: Download this run's core-linked input adapter
-        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
-        with:
-          name: owned-core-${{ github.run_id }}
-          path: ${{ runner.temp }}/owned-core-sealed
-
-      - name: Authenticate and decrypt this run's core tools
-        env:
-          VPN_CORE_ARTIFACT_KEY_B64: ${{ secrets.VPN_CORE_ARTIFACT_KEY_B64 }}
-        run: |
-          python scripts/core_artifact.py unseal \
-            --source "$RUNNER_TEMP/owned-core-sealed/core.bundle" \
-            --destination "$RUNNER_TEMP/owned-core"
-
-      - name: Validate catalog integration sources
-        run: |
-          set -euo pipefail
-          python -m py_compile \
-            scripts/node_identity.py \
-            scripts/core_tcp_filter.py \
-            scripts/merge_and_build_tcp_pool.py \
-            scripts/xray_matrix/build_tcp_candidates.py \
-            scripts/xray_matrix/run_shard.py \
-            scripts/xray_matrix/finalize_catalog.py \
-            scripts/xray_matrix/verify_final_catalog.py \
-            scripts/xray_matrix/owned_core.py
-          python -m py_compile scripts/xray_matrix/prepare_core_input.py
-
-      - name: Collect current sources for the owned core
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-          V2NODES_WORKERS: 80
-          V2NODES_RETRY_WORKERS: 20
-          V2NODES_TIMEOUT: 25
-          V2NODES_RETRY_TIMEOUT: 30
-          VPN_NODE_INPUT_TOOL: ${{ runner.temp }}/owned-core/node-input
-          VPN_NODE_INPUT_MANIFEST: ${{ runner.temp }}/owned-core/core-build.json
-          VPN_NODECHECK_BINARY: ${{ runner.temp }}/owned-core/vpn-core
-        run: |
-          set -euo pipefail
-
-          rm -rf \
-            output/country_shards \
-            output/active \
-            output/backup
-
-          rm -f \
-            output/metadata/transport_handshake.json \
-            output/metadata/real_delay.json \
-            output/metadata/core_driven_health.json \
-            output/metadata/staged_health.json \
-            output/metadata/xray_probe_experiment.json \
-            output/metadata/openvpn_candidates.json \
-            output/metadata/health.json
-
-          python tests/test_node_identity.py
-          python tests/test_owned_core.py
-          chmod +x "$VPN_NODE_INPUT_TOOL" "$VPN_NODECHECK_BINARY"
-          python tests/test_core_input.py
-          python tests/test_exit_country_and_order.py
-          python tests/test_connection_dedup.py
-          python tests/test_speed_ranking.py
-          python tests/test_publish_snapshot.py
-          python tests/test_shared_tcp_endpoint.py
-          python tests/test_gitverse_adapter.py
-          python tests/test_source_freshness.py
-          python tests/test_source_pipeline.py
-          python tests/test_share_link_extractor.py
-          python tests/test_kort0881_adapter.py
-          python tests/test_share_daily_adapter.py
-          python tests/test_freeproxydb_adapter.py
-
-          python scripts/build_sources_candidates.py
-          python scripts/build_telegram_candidates.py
-          python scripts/build_v2nodes_candidates.py
-          python scripts/xray_matrix/build_tcp_candidates.py \
-            --input-tool "$VPN_NODE_INPUT_TOOL" \
-            --core-manifest "$VPN_NODE_INPUT_MANIFEST"
-
-          test -s output/metadata/xray_candidates.json
-          test -s output/metadata/source_freshness.json
-
-      - name: Upload immutable candidate snapshot
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
-        with:
-          name: xray-candidates
-          retention-days: 1
-          if-no-files-found: error
-          path: |
-            output/metadata/xray_candidates.json
-            output/metadata/source_freshness.json
-            output/metadata/*_cache.json
-
+    - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+      with:
+        repository: noorelmostafa11-pixel/VPN-Nodes-Private
+        ssh-key: ${{ secrets.VPN_NODES_PRIVATE_READ_KEY }}
+        ref: ${{ needs.owned-core.outputs.pipeline_revision }}
+        path: catalog-source
+        fetch-depth: 0
+        persist-credentials: false
+    - uses: ./catalog-source/.github/actions/catalog
+      with:
+        stage: candidates
+        private_revision: ${{ needs.owned-core.outputs.pipeline_revision }}
+        node_key: ${{ secrets.VPN_NODES_ARTIFACT_KEY_B64 }}
+        core_key: ${{ secrets.VPN_CORE_ARTIFACT_KEY_B64 }}
   core-check:
     if: ${{ !inputs.publish_run_id }}
-    needs: [candidates, owned-core]
+    needs:
+    - candidates
+    - owned-core
     runs-on: ubuntu-latest
     timeout-minutes: 45
     strategy:
       fail-fast: false
       max-parallel: 8
       matrix:
-        shard: [0, 1, 2, 3, 4, 5, 6, 7]
-
+        shard:
+        - 0
+        - 1
+        - 2
+        - 3
+        - 4
+        - 5
+        - 6
+        - 7
     steps:
-      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
-        with:
-          fetch-depth: 0
-
-      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
-        with:
-          python-version: '3.12'
-
-      - name: Install authenticated artifact transport
-        run: python -m pip install -r requirements-core-artifact.txt
-
-      - name: Download candidate snapshot
-        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
-        with:
-          name: xray-candidates
-          path: /tmp/xray-candidates
-
-      - name: Download this run's owned core
-        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
-        with:
-          name: owned-core-${{ github.run_id }}
-          path: ${{ runner.temp }}/owned-core-sealed
-
-      - name: Authenticate and decrypt this run's core tools
-        env:
-          VPN_CORE_ARTIFACT_KEY_B64: ${{ secrets.VPN_CORE_ARTIFACT_KEY_B64 }}
-        run: |
-          python scripts/core_artifact.py unseal \
-            --source "$RUNNER_TEMP/owned-core-sealed/core.bundle" \
-            --destination "$RUNNER_TEMP/owned-core"
-
-      - name: Run the same actual connectivity checker as VPN-Core
-        env:
-          VPN_NODECHECK_COUNTRY_URL: ${{ secrets.VPN_COUNTRY_URL }}
-        run: |
-          set -euo pipefail
-          if [ -z "${VPN_NODECHECK_COUNTRY_URL:-}" ]; then
-            echo 'VPN_COUNTRY_URL secret is required' >&2
-            exit 1
-          fi
-          printf '::add-mask::%s\n' "$VPN_NODECHECK_COUNTRY_URL"
-          chmod +x "$RUNNER_TEMP/owned-core/vpn-core"
-          python scripts/xray_matrix/run_shard.py \
-            --input /tmp/xray-candidates/xray_candidates.json \
-            --core "$RUNNER_TEMP/owned-core/vpn-core" \
-            --core-manifest "$RUNNER_TEMP/owned-core/core-build.json" \
-            --output "/tmp/xray-shard-${{ matrix.shard }}" \
-            --shard "${{ matrix.shard }}" \
-            --shards 8
-
-      - name: Publish checker summary
-        if: ${{ always() }}
-        run: |
-          report="/tmp/xray-shard-${{ matrix.shard }}/nodecheck/summary.md"
-          if [ -f "$report" ]; then cat "$report" >> "$GITHUB_STEP_SUMMARY"; fi
-
-      - name: Upload owned-core observations and detailed failures
-        if: ${{ always() }}
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
-        with:
-          name: xray-shard-${{ matrix.shard }}
-          retention-days: 7
-          if-no-files-found: error
-          path: /tmp/xray-shard-${{ matrix.shard }}/
-
+    - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+      with:
+        repository: noorelmostafa11-pixel/VPN-Nodes-Private
+        ssh-key: ${{ secrets.VPN_NODES_PRIVATE_READ_KEY }}
+        ref: ${{ needs.owned-core.outputs.pipeline_revision }}
+        path: catalog-source
+        fetch-depth: 0
+        persist-credentials: false
+    - uses: ./catalog-source/.github/actions/catalog
+      with:
+        stage: core-check
+        private_revision: ${{ needs.owned-core.outputs.pipeline_revision }}
+        node_key: ${{ secrets.VPN_NODES_ARTIFACT_KEY_B64 }}
+        core_key: ${{ secrets.VPN_CORE_ARTIFACT_KEY_B64 }}
+        country_url: ${{ secrets.VPN_COUNTRY_URL }}
+        shard: ${{ matrix.shard }}
   speed-prepare:
     if: ${{ !inputs.publish_run_id }}
     name: Prepare unique successful nodes for speed ranking
-    needs: [candidates, core-check]
+    needs:
+    - candidates
+    - core-check
+    - owned-core
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
-      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
-        with:
-          python-version: '3.12'
-          cache: 'pip'
-      - run: pip install -r requirements.txt
-      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
-        with:
-          name: xray-candidates
-          path: /tmp/xray-candidates
-      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
-        with:
-          pattern: xray-shard-*
-          path: /tmp/xray-results
-      - name: Validate successes and deduplicate using the unchanged publication rules
-        run: |
-          python scripts/xray_matrix/finalize_catalog.py \
-            --candidates /tmp/xray-candidates/xray_candidates.json \
-            --results-root /tmp/xray-results \
-            --source-freshness /tmp/xray-candidates/source_freshness.json \
-            --prepare-speed /tmp/node-speed-input
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
-        with:
-          name: node-speed-input
-          retention-days: 7
-          if-no-files-found: error
-          path: /tmp/node-speed-input/
-
+    - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+      with:
+        repository: noorelmostafa11-pixel/VPN-Nodes-Private
+        ssh-key: ${{ secrets.VPN_NODES_PRIVATE_READ_KEY }}
+        ref: ${{ needs.owned-core.outputs.pipeline_revision }}
+        path: catalog-source
+        fetch-depth: 0
+        persist-credentials: false
+    - uses: ./catalog-source/.github/actions/catalog
+      with:
+        stage: speed-prepare
+        private_revision: ${{ needs.owned-core.outputs.pipeline_revision }}
+        node_key: ${{ secrets.VPN_NODES_ARTIFACT_KEY_B64 }}
   speed-check:
     if: ${{ !inputs.publish_run_id }}
     name: Download speed (${{ matrix.shard }})
-    needs: [speed-prepare, owned-core]
+    needs:
+    - speed-prepare
+    - owned-core
     runs-on: ubuntu-24.04
     timeout-minutes: 45
     continue-on-error: true
@@ -349,158 +139,74 @@ jobs:
       fail-fast: false
       max-parallel: 8
       matrix:
-        shard: [0, 1, 2, 3, 4, 5, 6, 7]
+        shard:
+        - 0
+        - 1
+        - 2
+        - 3
+        - 4
+        - 5
+        - 6
+        - 7
     steps:
-      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
-      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
-        with:
-          python-version: '3.12'
-      - name: Install authenticated artifact transport
-        run: python -m pip install -r requirements-core-artifact.txt
-      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
-        with:
-          name: node-speed-input
-          path: /tmp/node-speed-input
-      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
-        with:
-          name: owned-core-${{ github.run_id }}
-          path: ${{ runner.temp }}/owned-core-sealed
-      - name: Authenticate and decrypt this run's core tools
-        env:
-          VPN_CORE_ARTIFACT_KEY_B64: ${{ secrets.VPN_CORE_ARTIFACT_KEY_B64 }}
-        run: |
-          python scripts/core_artifact.py unseal \
-            --source "$RUNNER_TEMP/owned-core-sealed/core.bundle" \
-            --destination "$RUNNER_TEMP/owned-core"
-      - name: Measure two lightweight HTTPS requests through the pinned core (four nodes at a time)
-        run: |
-          chmod +x "$RUNNER_TEMP/owned-core/vpn-core" "$RUNNER_TEMP/owned-core/node-speed"
-          python scripts/xray_matrix/run_speed_shard.py \
-            --pool /tmp/node-speed-input/pool.json \
-            --core "$RUNNER_TEMP/owned-core/vpn-core" \
-            --tool "$RUNNER_TEMP/owned-core/node-speed" \
-            --core-manifest "$RUNNER_TEMP/owned-core/core-build.json" \
-            --output "/tmp/node-speed-shard-${{ matrix.shard }}" \
-            --shard "${{ matrix.shard }}"
-      - name: Publish speed measurement summary
-        if: ${{ always() }}
-        run: |
-          report="/tmp/node-speed-shard-${{ matrix.shard }}/summary.json"
-          if [ -f "$report" ]; then
-            echo '### Fixed 1 MiB download samples (ranking only)' >> "$GITHUB_STEP_SUMMARY"
-            cat "$report" >> "$GITHUB_STEP_SUMMARY"
-          fi
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
-        if: ${{ always() }}
-        with:
-          name: node-speed-shard-${{ matrix.shard }}
-          retention-days: 7
-          if-no-files-found: warn
-          path: /tmp/node-speed-shard-${{ matrix.shard }}/
-
+    - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+      with:
+        repository: noorelmostafa11-pixel/VPN-Nodes-Private
+        ssh-key: ${{ secrets.VPN_NODES_PRIVATE_READ_KEY }}
+        ref: ${{ needs.owned-core.outputs.pipeline_revision }}
+        path: catalog-source
+        fetch-depth: 0
+        persist-credentials: false
+    - uses: ./catalog-source/.github/actions/catalog
+      with:
+        stage: speed-check
+        private_revision: ${{ needs.owned-core.outputs.pipeline_revision }}
+        node_key: ${{ secrets.VPN_NODES_ARTIFACT_KEY_B64 }}
+        core_key: ${{ secrets.VPN_CORE_ARTIFACT_KEY_B64 }}
+        shard: ${{ matrix.shard }}
   publish:
-    needs: [candidates, core-check, speed-prepare, speed-check]
-    if: ${{ always() && !cancelled() && (inputs.publish_run_id || (needs.candidates.result == 'success' && needs.core-check.result == 'success' && needs.speed-prepare.result == 'success')) }}
+    needs:
+    - candidates
+    - core-check
+    - speed-prepare
+    - speed-check
+    - owned-core
+    if: ${{ always() && !cancelled() && (inputs.publish_run_id || (needs.candidates.result == 'success' && needs.core-check.result == 'success'
+      && needs.speed-prepare.result == 'success')) }}
     runs-on: ubuntu-latest
     timeout-minutes: 45
-
+    permissions:
+      contents: read
+      actions: read
     steps:
-      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
-        with:
-          fetch-depth: 0
-
-      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
-        with:
-          python-version: '3.12'
-          cache: 'pip'
-
-      - run: pip install -r requirements.txt
-
-      - name: Validate publication-only recovery source
-        if: ${{ inputs.publish_run_id }}
-        env:
-          CATALOG_SOURCE_RUN_ID: ${{ inputs.publish_run_id }}
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: python scripts/validate_catalog_resume.py
-
-      - name: Download candidate snapshot
-        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          run-id: ${{ inputs.publish_run_id || github.run_id }}
-          name: xray-candidates
-          path: /tmp/xray-candidates
-
-      - name: Download all eight owned-core shard results
-        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          run-id: ${{ inputs.publish_run_id || github.run_id }}
-          pattern: xray-shard-*
-          path: /tmp/xray-results
-
-      - name: Prepare GeoLite2 database for XX-only fallback
-        run: |
-          set -euo pipefail
-          mkdir -p data
-
-          if [ ! -s data/GeoLite2-Country.mmdb ]; then
-            curl --fail --location --silent --show-error \
-              'https://cdn.jsdelivr.net/npm/geolite2-country/GeoLite2-Country.mmdb.gz' \
-              --output /tmp/GeoLite2-Country.mmdb.gz
-
-            gzip -dc /tmp/GeoLite2-Country.mmdb.gz \
-              > data/GeoLite2-Country.mmdb
-          fi
-
-          test -s data/GeoLite2-Country.mmdb
-
-      - name: Download this run's deduplicated speed input
-        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          run-id: ${{ inputs.publish_run_id || github.run_id }}
-          name: node-speed-input
-          path: /tmp/node-speed-input
-
-      - name: Download available speed observations (missing measurements retain nodes)
-        continue-on-error: true
-        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          run-id: ${{ inputs.publish_run_id || github.run_id }}
-          pattern: node-speed-shard-*
-          path: /tmp/node-speed-results
-
-      - name: Build owned-core verified catalog
-        run: |
-          set -euo pipefail
-
-          python scripts/xray_matrix/finalize_catalog.py \
-            --candidates /tmp/xray-candidates/xray_candidates.json \
-            --results-root /tmp/xray-results \
-            --source-freshness /tmp/xray-candidates/source_freshness.json \
-            --cache-root /tmp/xray-candidates \
-            --speed-pool /tmp/node-speed-input/pool.json \
-            --speed-results /tmp/node-speed-results
-
-          python scripts/xray_matrix/verify_final_catalog.py
-
-      - name: Build and sign catalog manifest
-        env:
-          CATALOG_SIGNING_PRIVATE_KEY_B64: ${{ secrets.CATALOG_SIGNING_PRIVATE_KEY_B64 }}
-          REQUIRE_CATALOG_SIGNATURE: '1'
-        run: |
-          set -euo pipefail
-          python scripts/sign_catalog.py
-          test -s output/metadata/catalog_manifest.json
-          test -s output/metadata/catalog_manifest.sig
-
-      - name: Restore previous catalog on failure
-        if: failure()
-        run: |
-          git checkout HEAD -- output/ || true
-
-      - name: Publish latest catalog snapshot
-        if: success()
-        run: python scripts/publish_snapshot.py catalog
+    - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+      with:
+        path: runner-source
+        sparse-checkout: .github/pipeline_context.py
+        sparse-checkout-cone-mode: false
+        persist-credentials: false
+    - name: Resolve trusted private source
+      id: context
+      env:
+        GH_TOKEN: ${{ github.token }}
+        SOURCE_RUN_ID: ${{ inputs.publish_run_id }}
+        EXPECTED_PIPELINE_REVISION: ${{ needs.owned-core.outputs.pipeline_revision }}
+      run: python3 runner-source/.github/pipeline_context.py
+    - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+      with:
+        repository: noorelmostafa11-pixel/VPN-Nodes-Private
+        ssh-key: ${{ secrets.VPN_NODES_PRIVATE_WRITE_KEY }}
+        ref: ${{ steps.context.outputs.pipeline_revision }}
+        path: catalog-source
+        fetch-depth: 0
+        persist-credentials: true
+    - uses: ./catalog-source/.github/actions/catalog
+      with:
+        stage: publish
+        private_revision: ${{ steps.context.outputs.pipeline_revision }}
+        node_key: ${{ secrets.VPN_NODES_ARTIFACT_KEY_B64 }}
+        publish_run_id: ${{ inputs.publish_run_id }}
+        source_run_id: ${{ steps.context.outputs.source_run_id }}
+        source_private_revision: ${{ steps.context.outputs.source_pipeline_revision }}
+        legacy_source: ${{ steps.context.outputs.legacy_source }}
+        signing_key: ${{ secrets.CATALOG_SIGNING_PRIVATE_KEY_B64 }}

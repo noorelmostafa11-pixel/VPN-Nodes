@@ -1,24 +1,12 @@
+# Publish only the runner and temporary migration snapshot.
+/*
+!/.gitignore
+!/.github/
+!/README.md
+!/LICENSE
+!/output/
+!/data/
+/data/*
+!/data/catalog_signing_public_key.pem
 __pycache__/
 *.pyc
-.venv/
-
-# Runtime-only catalog intermediates.
-output/metadata/sources_candidates.json
-output/metadata/telegram_candidates.json
-output/metadata/v2nodes_candidates.json
-output/metadata/tcp_reachable.json
-output/metadata/merged_pool.json
-output/metadata/xray_candidates.json
-
-# Removed legacy/experimental outputs; keep them from being re-added accidentally.
-# output/country_shards/ is intentionally tracked for on-demand Android paging.
-output/active/
-output/backup/
-output/metadata/transport_handshake.json
-output/metadata/real_delay*.json
-output/metadata/core_driven_health.json
-output/metadata/staged_health.json
-output/metadata/xray_probe_experiment.json
-output/metadata/openvpn_candidates.json
-output/metadata/health.json
-.github/push-trigger-test.txt
