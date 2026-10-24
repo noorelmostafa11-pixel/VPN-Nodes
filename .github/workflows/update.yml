@@ -27,9 +27,17 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     steps:
+      - name: Require private core access and encrypted transport
+        env:
+          VPN_CORE_READ_TOKEN: ${{ secrets.VPN_CORE_READ_TOKEN }}
+          VPN_CORE_ARTIFACT_KEY_B64: ${{ secrets.VPN_CORE_ARTIFACT_KEY_B64 }}
+        run: |
+          test -n "$VPN_CORE_READ_TOKEN" || { echo 'VPN_CORE_READ_TOKEN is required' >&2; exit 1; }
+          test -n "$VPN_CORE_ARTIFACT_KEY_B64" || { echo 'VPN_CORE_ARTIFACT_KEY_B64 is required' >&2; exit 1; }
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
         with:
           repository: noorelmostafa11-pixel/VPN-Core
+          token: ${{ secrets.VPN_CORE_READ_TOKEN }}
           ref: ${{ inputs.core_ref || 'main' }}
           path: owned-core-source
           persist-credentials: false
@@ -38,10 +46,19 @@ jobs:
           ref: ${{ github.sha }}
           path: catalog-source
           persist-credentials: false
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
+        with:
+          python-version: '3.12'
+      - name: Install and test authenticated artifact transport
+        working-directory: catalog-source
+        run: |
+          python -m pip install -r requirements-core-artifact.txt
+          python -m pip install PyYAML==6.0.2
+          python tests/test_core_artifact.py
       - uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff
         with:
           go-version: '1.27.1'
-          cache-dependency-path: owned-core-source/go.sum
+          cache: false
       - name: Compile production nodecheck and record source and binary identity
         working-directory: owned-core-source
         env:
@@ -82,10 +99,19 @@ jobs:
                       'speed_tool_revision': os.environ['GITHUB_SHA']}
           (root / 'core-build.json').write_text(json.dumps(manifest, indent=2) + '\n')
           PY
+      - name: Encrypt all core-linked tools for this run
+        working-directory: catalog-source
+        env:
+          VPN_CORE_ARTIFACT_KEY_B64: ${{ secrets.VPN_CORE_ARTIFACT_KEY_B64 }}
+        run: |
+          python scripts/core_artifact.py seal \
+            --source "$RUNNER_TEMP/owned-core" \
+            --destination "$RUNNER_TEMP/owned-core-sealed/core.bundle"
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: owned-core-${{ github.run_id }}
-          path: ${{ runner.temp }}/owned-core/
+          path: ${{ runner.temp }}/owned-core-sealed/core.bundle
+          compression-level: 0
           retention-days: 1
           if-no-files-found: error
 
@@ -111,7 +137,15 @@ jobs:
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
         with:
           name: owned-core-${{ github.run_id }}
-          path: ${{ runner.temp }}/owned-core
+          path: ${{ runner.temp }}/owned-core-sealed
+
+      - name: Authenticate and decrypt this run's core tools
+        env:
+          VPN_CORE_ARTIFACT_KEY_B64: ${{ secrets.VPN_CORE_ARTIFACT_KEY_B64 }}
+        run: |
+          python scripts/core_artifact.py unseal \
+            --source "$RUNNER_TEMP/owned-core-sealed/core.bundle" \
+            --destination "$RUNNER_TEMP/owned-core"
 
       - name: Validate catalog integration sources
         run: |
@@ -212,6 +246,9 @@ jobs:
         with:
           python-version: '3.12'
 
+      - name: Install authenticated artifact transport
+        run: python -m pip install -r requirements-core-artifact.txt
+
       - name: Download candidate snapshot
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
@@ -222,7 +259,15 @@ jobs:
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
         with:
           name: owned-core-${{ github.run_id }}
-          path: ${{ runner.temp }}/owned-core
+          path: ${{ runner.temp }}/owned-core-sealed
+
+      - name: Authenticate and decrypt this run's core tools
+        env:
+          VPN_CORE_ARTIFACT_KEY_B64: ${{ secrets.VPN_CORE_ARTIFACT_KEY_B64 }}
+        run: |
+          python scripts/core_artifact.py unseal \
+            --source "$RUNNER_TEMP/owned-core-sealed/core.bundle" \
+            --destination "$RUNNER_TEMP/owned-core"
 
       - name: Run the same actual connectivity checker as VPN-Core
         env:
@@ -310,6 +355,8 @@ jobs:
       - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
         with:
           python-version: '3.12'
+      - name: Install authenticated artifact transport
+        run: python -m pip install -r requirements-core-artifact.txt
       - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
         with:
           name: node-speed-input
@@ -317,7 +364,14 @@ jobs:
       - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
         with:
           name: owned-core-${{ github.run_id }}
-          path: ${{ runner.temp }}/owned-core
+          path: ${{ runner.temp }}/owned-core-sealed
+      - name: Authenticate and decrypt this run's core tools
+        env:
+          VPN_CORE_ARTIFACT_KEY_B64: ${{ secrets.VPN_CORE_ARTIFACT_KEY_B64 }}
+        run: |
+          python scripts/core_artifact.py unseal \
+            --source "$RUNNER_TEMP/owned-core-sealed/core.bundle" \
+            --destination "$RUNNER_TEMP/owned-core"
       - name: Measure two lightweight HTTPS requests through the pinned core (four nodes at a time)
         run: |
           chmod +x "$RUNNER_TEMP/owned-core/vpn-core" "$RUNNER_TEMP/owned-core/node-speed"

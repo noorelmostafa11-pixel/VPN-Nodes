@@ -34,6 +34,14 @@ Country feeds, 1000-node country shards, protocol feeds and metadata remain comp
 
 Required repository secrets include `CATALOG_SIGNING_PRIVATE_KEY_B64` and `VPN_COUNTRY_URL`. Configure their values through repository secrets; their contents are not published in reports.
 
+## Private core access
+
+The core source is private. This public catalog workflow requires `VPN_CORE_READ_TOKEN`, a fine-grained token with read-only Contents access to `noorelmostafa11-pixel/VPN-Core`, and `VPN_CORE_ARTIFACT_KEY_B64`, a separate random 32-byte key encoded as Base64. Both belong in this repository's Actions secrets; neither is stored in the source or published catalog.
+
+The three core-linked executables and their unchanged build manifest are encrypted together with AES-256-GCM before artifact upload. Each envelope is authenticated for this repository and workflow run. Collection, connectivity and download-ranking jobs decrypt inside the runner and retain the original manifest/hash checks. Wrong keys, modified envelopes and artifacts from another run fail closed. No unencrypted core artifact or Go build cache is exported.
+
+Publication-only recovery consumes the existing candidate/result artifacts and does not need the private core or the encryption key. Connectivity rules, deduplication, download ranking and catalog signing are unchanged.
+
 ## Download ranking
 
 Ranking runs after connectivity and connection deduplication. The Go helper in `scripts/xray_matrix/node_speed.go` links the same pinned core library; it does not add a core or Android SDK API.
