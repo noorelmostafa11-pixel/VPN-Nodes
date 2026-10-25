@@ -78,9 +78,25 @@ def resolve():
             raise ValueError('Ambiguous private source context')
         data = artifact_context(int(contexts[0]['id']))
         revision = data.get('pipeline_revision', '')
+        # Early v1 producers mistakenly wrote the private revision twice. Accept
+        # that encoding only when GitHub independently binds the artifact to the
+        # original owned run, public commit and both repository IDs.
+        binding = contexts[0].get('workflow_run') or {}
+        repository_id = (run.get('repository') or {}).get('id')
+        head_repository_id = (run.get('head_repository') or {}).get('id')
+        legacy_binding = (
+            data.get('runner_revision') == revision
+            and type(repository_id) is int and type(head_repository_id) is int
+            and binding.get('id') == run.get('id')
+            and str(binding.get('id')) == source
+            and binding.get('head_branch') == 'main'
+            and binding.get('head_sha') == run['head_sha']
+            and binding.get('repository_id') == repository_id
+            and binding.get('head_repository_id') == head_repository_id
+        )
         if (data.get('schema') != 'vpn-private-pipeline-v1' or data.get('repository') != PUBLIC
                 or data.get('private_repository') != PRIVATE or str(data.get('run_id')) != source
-                or data.get('runner_revision') != run['head_sha']
+                or not (data.get('runner_revision') == run['head_sha'] or legacy_binding)
                 or not re.fullmatch(r'[0-9a-f]{40}', revision)):
             raise ValueError('Private source context failed provenance checks')
         return {'pipeline_revision': revision, 'source_pipeline_revision': revision,
