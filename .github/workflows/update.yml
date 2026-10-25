@@ -196,14 +196,18 @@ jobs:
       with:
         repository: noorelmostafa11-pixel/VPN-Nodes-Private
         ssh-key: ${{ secrets.VPN_NODES_PRIVATE_WRITE_KEY }}
-        ref: ${{ steps.context.outputs.pipeline_revision }}
+        ref: ${{ inputs.publish_run_id && 'main' || steps.context.outputs.pipeline_revision }}
         path: catalog-source
         fetch-depth: 0
         persist-credentials: true
+    - name: Pin publication implementation once
+      id: publish_revision
+      shell: bash
+      run: echo "revision=$(git -C catalog-source rev-parse HEAD)" >> "$GITHUB_OUTPUT"
     - uses: ./catalog-source/.github/actions/catalog
       with:
         stage: publish
-        private_revision: ${{ steps.context.outputs.pipeline_revision }}
+        private_revision: ${{ steps.publish_revision.outputs.revision }}
         node_key: ${{ secrets.VPN_NODES_ARTIFACT_KEY_B64 }}
         publish_run_id: ${{ inputs.publish_run_id }}
         source_run_id: ${{ steps.context.outputs.source_run_id }}
