@@ -1,0 +1,84 @@
+name: Refresh private sources (public runner)
+
+on:
+  workflow_dispatch:
+
+
+# Only the private repository gets source-file commits. Never write to public.
+permissions:
+  contents: read
+
+concurrency:
+  group: source-refresh-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+
+  maintain:
+    if: ${{ github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 50
+    steps:
+      - name: Check out private maintenance implementation and source data
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+        with:
+          repository: noorelmostafa11-pixel/VPN-Nodes-Private
+          ssh-key: ${{ secrets.VPN_NODES_PRIVATE_WRITE_KEY }}
+          ref: main
+          path: private-source
+          fetch-depth: 0
+          persist-credentials: true
+
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
+        with:
+          python-version: '3.12'
+
+      - name: Install source parsers
+        working-directory: private-source
+        run: python -m pip install requests==2.32.5 PyYAML==6.0.2
+
+      - name: Verify private maintenance rules offline
+        working-directory: private-source
+        run: python tests/test_refresh_sources.py
+
+      - name: Check active and retry sources, then discover recent public feeds
+        working-directory: private-source
+        env:
+          GITHUB_TOKEN: ${{ secrets.SOURCE_SEARCH_TOKEN || github.token }}
+        run: |
+          python scripts/refresh_sources.py \
+            --hours 24 --max-repos 500 --max-requests 6500 \
+            --api-reserve 200 --output "$RUNNER_TEMP/source-refresh"
+
+      - name: Commit source changes to the private repository only
+        shell: bash
+        working-directory: private-source
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          for attempt in 1 2 3; do
+            git fetch origin main
+            git switch --detach FETCH_HEAD
+            python scripts/refresh_sources.py --apply-plan "$RUNNER_TEMP/source-refresh/plan.json"
+            git add -- sources/sources.json sources/source_refresh_state.json
+            if git diff --cached --quiet; then
+              exit 0
+            fi
+            git commit -m 'chore: refresh active sources and retry unavailable feeds'
+            if git push origin HEAD:main; then
+              exit 0
+            fi
+          done
+          echo 'Private main moved repeatedly; no forced push attempted.' >&2
+          exit 1
+
+      # Log only aggregate counts. plan.json retains source headers and MUST
+      # never be logged, uploaded, or committed to the public repository.
+      - name: Publish aggregate counts in the Actions summary
+        if: always()
+        shell: bash
+        run: |
+          if test -f "$RUNNER_TEMP/source-refresh/summary.md"; then
+            cat "$RUNNER_TEMP/source-refresh/summary.md" >> "$GITHUB_STEP_SUMMARY"
+          fi
