@@ -3,9 +3,6 @@ name: Refresh private sources (public runner)
 on:
   workflow_dispatch:
 
-  pull_request:
-    paths:
-      - .github/workflows/refresh_sources.yml
 
 # Only the private repository gets source-file commits. Never write to public.
 permissions:
@@ -16,37 +13,9 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  preflight:
-    # Temporary read-only live validation. Removed before merging.
-    if: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository }}
-    runs-on: ubuntu-24.04
-    timeout-minutes: 10
-    steps:
-      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
-        with:
-          repository: noorelmostafa11-pixel/VPN-Nodes-Private
-          ssh-key: ${{ secrets.VPN_NODES_PRIVATE_WRITE_KEY }}
-          ref: main
-          path: private-source
-          fetch-depth: 0
-          persist-credentials: true
-      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
-        with:
-          python-version: '3.12'
-      - name: Validate credentials without publishing
-        working-directory: private-source
-        shell: bash
-        run: |
-          set -euo pipefail
-          git push --dry-run origin HEAD:main
-      - name: Validate private scripts offline
-        working-directory: private-source
-        run: |
-          python -m pip install requests==2.32.5 PyYAML==6.0.2
-          python tests/test_refresh_sources.py
 
   maintain:
-    if: ${{ github.event_name == 'workflow_dispatch' }}
+    if: ${{ github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 50
     steps:
